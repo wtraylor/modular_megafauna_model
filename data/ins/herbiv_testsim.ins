@@ -1,0 +1,56 @@
+!////////////////////////////////////////////////////////////
+!///////    INSTRUCTION FILE FOR HERBIVORY TEST SIMULATION   
+!////////////////////////////////////////////////////////////
+
+! Use this instruction file with the executable herbivsim, which
+! is created in the build directory along with the guess binary.
+! See the doxygen documentation for more details on the test
+! simulations of the herbivory module.
+! 
+! In the comments below, the value range of the parameters is 
+! denoted in mathematical notation.
+
+! Directory for the output files
+outputdirectory "./"
+
+import "herbiv_output.ins"
+
+!////////////////////////////////////////////////////////////
+! /// [Simulation Parameters] 
+
+! Number of simulation years. [1,∞)
+nyears 100
+
+! Years without herbivory. [1,∞) and <nyears
+veg_spinup_years 50
+
+! Number of habitat groups.
+nhabitat_groups 2
+
+! Number of habitats per group.
+nhabitats_per_group 5
+
+! Proportional daily grass decay rate. (0,∞)
+grass_decay 0.0
+
+! Fractional grass digestibility. (0,1]
+grass_digestibility 0.5
+
+! Foliar Percentage Cover of the grass. [0,1]
+grass_fpc 0.8
+
+! Proportional daily grass growth rate. [0,∞)
+! A value of 0.1 means an increase of 10% every day.
+grass_growth 0.01
+
+! Initial grass biomass [kgDM/m²]. [0,∞) and <grass_saturation
+grass_init_mass 0.0
+
+! Ungrazable grass reserve [kgDM/m²]. [0,∞)
+! Not available to grazers but necessary for regrowth
+grass_reserve 0.02
+
+! Saturation grass biomass [kgDM/m²]. (0,∞) and >grass_init_mass
+grass_saturation 0.2
+
+! /// [Simulation Parameters] 
