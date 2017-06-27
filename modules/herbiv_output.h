@@ -27,6 +27,8 @@ namespace GuessOutput {
 	/// Output module for the herbivory module.
 	/** 
 	 * \ingroup group_herbivory 
+	 * \see sec_herbiv_new_output
+	 * \see sec_herbiv_limit_output
 	 */
 	class HerbivoryOutput : public OutputModule {
 		public:
@@ -38,8 +40,7 @@ namespace GuessOutput {
 			void init();
 
 			/// Write annual output for gridcell.
-			/** If \ref ifherbivory is false, this does nothing. 
-			 * \see \ref OutputModule::outannual() */
+			/** \see \ref OutputModule::outannual() */
 			void outannual(Gridcell& gridcell);
 
 			/// Write annual output for a number of habitats.
@@ -90,6 +91,7 @@ namespace GuessOutput {
 
 			/// Temporal aggregation interval (monthly, yearly, ...)
 			enum {
+				// TODO: DAILY
 				MONTHLY,
 				ANNUAL
 			} interval;

@@ -8,6 +8,7 @@
 
 #include "config.h"
 #include "herbiv_patchhabitat.h"
+#include "herbiv_digestibility.h"
 #include "guess.h"
 
 using namespace Fauna;
@@ -15,6 +16,9 @@ using namespace Fauna;
 HabitatForage PatchHabitat::get_available_forage() const {
 	/// Result object
 	HabitatForage forage; 
+
+	/// Reference to the digestibility model
+	const DigestibilityModel& dig_model = DigestibilityModel::get_model();
 
 	/// Sum of grass digestibility to build average
 	double gr_dig_sum_weight, gr_dig_sum = 0.0;
@@ -29,7 +33,7 @@ HabitatForage PatchHabitat::get_available_forage() const {
 
 		// Get common forage properties
 		// TODO: Digestibility Model
-		const double indiv_dig  = indiv.pft.digestibility; // [frac]
+		const double indiv_dig  = dig_model.get_digestibility(indiv); // [frac]
 		const double indiv_mass = indiv.get_forage_mass(); // [kg/m²]
 		assert(indiv_mass >= 0.0);
 

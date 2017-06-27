@@ -13,6 +13,7 @@
 #include "herbiv_testsimulation.h"
 #include "herbiv_framework.h"
 #include "herbiv_output.h"
+#include "herbiv_parameters.h"
 #include <climits> // for INT_MAX
 #include <cfloat> // for DBL_MAX
 
@@ -46,13 +47,13 @@ int main(int argc,char* argv[]) {
 		if (std::string(argv[1]) == "-help")
 			plibhelp();
 		else {
-			// Read the instruction file to obtain PFT static parameters and
-			// simulation settings
+			// Read the instruction file to obtain simulation settings
 			const char* instruction_filename = argv[1];
 
 			if (!fileexists(instruction_filename))
 				fail("Could not open instruction file");
 
+			// let plib parse the instruction script
 			if (!plib(instruction_filename)) 
 				fail("Bad instruction file!");
 		}
@@ -210,7 +211,9 @@ void TestSimulator::run(){
 	}
 
 	/// The simulator for the habitats
-	Simulator habitat_simulator;
+	// Pass the global parameters that were read from the 
+	// instruction file.
+	Simulator habitat_simulator(Parameters::get_global());
 
 	/// Time counters
 	int year, day_of_year;

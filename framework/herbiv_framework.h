@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbiv_framework.h
+/// \file 
 /// \brief Central management of the herbivory simulation.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -8,16 +8,19 @@
 #ifndef HERBIV_FRAMEWORK_H
 #define HERBIV_FRAMEWORK_H
 
-// Forward declarations
-class Date;
+#include "herbiv_digestibility.h" // for DigestibilityModelType
 
 namespace Fauna{
 	// Forward declarations
 	class Habitat;
+	class Parameters;
 
 	/// Central herbivory framework class.
 	class Simulator{
 	public:
+		/// Constructor, initializing simulation settings.
+		Simulator(const Parameters& params);
+
 		/// Simulate all herbivore interactions for the current day.
 		/**
 		 * Call this even if you don’t want herbivores in your model
@@ -30,6 +33,8 @@ namespace Fauna{
 		 */
 		void simulate_day(const int day_of_year, Habitat& habitat,
 				const bool do_herbivores);
+	protected:
+		const Parameters& params;
 	};
 }
 #endif // HERBIV_FRAMEWORK_H

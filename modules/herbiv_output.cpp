@@ -26,15 +26,15 @@ HerbivoryOutput::HerbivoryOutput():
 			"Interval for herbivory output: annual|monthly\n"
 			"Defaults to annual if omitted");
 
-	// Annual output variables
+	// output variables
 	declare_parameter("file_forage_avail", &file_forage_avail, 300, 
 			"File for herbivory output: "
 			"Available forage [kgDM/m²]");
 	declare_parameter("file_digestibility", &file_digestibility, 300,
-			"File for annual herbivory output: "
+			"File for herbivory output: "
 			"Forage digestibility [frac]");
 	declare_parameter("file_forage_eaten", &file_forage_eaten, 300, 
-			"File for annual herbivory output: "
+			"File for herbivory output: "
 			"Eaten forage [kgDM/m²]");
 }
 
@@ -87,9 +87,6 @@ bool HerbivoryOutput::include_date(const Date& d) const{
 }
 
 void HerbivoryOutput::outannual(Gridcell& gridcell){
-	if (!ifherbivory)
-		return;
-
 	// Abort if there is no output this year.
 	if (!include_date(date))
 		return;
@@ -209,6 +206,7 @@ void HerbivoryOutput::outannual(
 				first_day_of_month += date.ndaymonth[i];
 			}
 			break;
+			// TODO: DAILY
 	}
 }
 
@@ -217,15 +215,15 @@ void HerbivoryOutput::add_output_object(OutputRows out, const HabitatOutputData&
 	// AWARENESS: Be sure to add the forage types in the same order as the columns
 	// that are defined in get_forage_columns!
 
-	// annual digestibility
+	// digestibility
 	out.add_value(out_digestibility, data.available_forage.grass.get_digestibility());
 	out.add_value(out_digestibility, data.available_forage.get_total().get_digestibility());
 
-	// annual available DM mass
+	// available DM mass
 	out.add_value(out_forage_avail, data.available_forage.grass.get_mass());
 	out.add_value(out_forage_avail, data.available_forage.get_total().get_mass());
 
-	// annual eaten forage
+	// eaten forage
 	out.add_value(out_forage_eaten, data.eaten_forage.grass);
 	out.add_value(out_forage_eaten, data.eaten_forage.sum());
 }
