@@ -71,6 +71,7 @@ namespace Fauna{
 	/** \ingroup group_herbivory 
 	 * \note While this base class implements the output functions, any derived class
 	 * is responsible to add output data to \ref daily_output.
+	 * \sa \ref sec_liskov_substitution
 	 */
 	class Habitat{
 	public:

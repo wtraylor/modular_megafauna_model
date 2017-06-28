@@ -26,7 +26,10 @@ namespace GuessOutput {
 
 	/// Output module for the herbivory module.
 	/** 
+	 * If \ref deactivate() is called, all public methods will not
+	 * do anything anymore.
 	 * \ingroup group_herbivory 
+	 * \see sec_herbiv_output
 	 * \see sec_herbiv_new_output
 	 * \see sec_herbiv_limit_output
 	 */
@@ -62,6 +65,8 @@ namespace GuessOutput {
 			/** \see \ref OutputModule::outdaily() */
 			void outdaily(Gridcell& gridcell){}
 
+			/// Disable any activity all together.
+			static void deactivate(){ isactive = false; }
 		protected:
 
 			/// Create a column descriptor for each forage type.
@@ -69,7 +74,8 @@ namespace GuessOutput {
 					const int width, const int precision) const;
 
 			/// Create a column descriptor for each \ref Fauna::Hft
-			const ColumnDescriptors get_hft_columns(const int width, const int precision) const;
+			const ColumnDescriptors get_hft_columns(const int width, 
+					const int precision) const;
 
 			/// Check whether the date shall be included in the output.
 			/** 
@@ -96,21 +102,10 @@ namespace GuessOutput {
 				ANNUAL
 			} interval;
 
-			enum ColumnType {
-				CS_HFT,
-				CS_FORAGE,
-			};
-
-			// TODO: Document
-			struct Field{
-				std::string identifier;
-				std::string help;
-				ColumnType column_type;
-				std::string filename;
-				Table table;
-			};
-			std::vector<Field> fields;
 		private: 
+			/// Whether the whole output is activated
+			static bool isactive;
+
 			/// Interval parameter string as read from instruction file.
 			xtring interval_xtring;
 
@@ -125,7 +120,8 @@ namespace GuessOutput {
 
 			/**@{ \name Output file names */
 			/// forage output files
-			std::string file_forage_avail, file_forage_eaten, file_digestibility;
+			std::string file_forage_avail, file_forage_eaten, 
+				file_digestibility;
 			/**@} */ //Output file names
 
 			/**@{ \name Output tables */
@@ -133,7 +129,6 @@ namespace GuessOutput {
 			Table out_forage_avail, out_forage_eaten, out_digestibility;
 			/**@} */ // Output tables
 	};
-
 }
 
 #endif // HERBIV_OUTPUT_MODULE_H

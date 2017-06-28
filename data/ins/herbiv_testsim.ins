@@ -14,15 +14,15 @@
 outputdirectory "./"
 
 import "herbiv_output.ins"
+import "herbivores.ins"
+
+ifherbivory 1
 
 !////////////////////////////////////////////////////////////
 ! /// [Simulation Parameters] 
 
 ! Number of simulation years. [1,∞)
 nyears 100
-
-! Years without herbivory. [1,∞) and <nyears
-veg_spinup_years 50
 
 ! Number of habitat groups.
 nhabitat_groups 2

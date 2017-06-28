@@ -8,9 +8,9 @@
 
 #include "config.h"
 #include "herbiv_output.h"
-#include "guess.h" // for Date class
+#include "guess.h"             // for Date class
 #ifndef NO_GUESS_PARAMETERS
-#include "parameters.h" // for declare_parameter()
+#include "parameters.h"        // for declare_parameter()
 #endif // NO_GUESS_PARAMETERS
 
 using namespace GuessOutput;
@@ -18,13 +18,16 @@ using namespace Fauna;
 
 REGISTER_OUTPUT_MODULE("herbivory", HerbivoryOutput)
 
+// initialize static variable
+bool HerbivoryOutput::isactive = true;
+
+
 HerbivoryOutput::HerbivoryOutput():
 	interval(ANNUAL)
 {
 	declare_parameter("herbiv_output_interval", 
 			&interval_xtring, 128,
-			"Interval for herbivory output: annual|monthly\n"
-			"Defaults to annual if omitted");
+			"Interval for herbivory output: \"annual\", \"monthly\"\n");
 
 	// output variables
 	declare_parameter("file_forage_avail", &file_forage_avail, 300, 
@@ -40,11 +43,21 @@ HerbivoryOutput::HerbivoryOutput():
 
 
 void HerbivoryOutput::init() {
+	if (!isactive) return;
+
 	if (interval_xtring == "annual")
 		interval = ANNUAL;
 	else if (interval_xtring == "monthly")
 		interval = MONTHLY;
-
+	else if (interval_xtring == ""){
+		dprintf("HerbivoryOutput: parameter herbiv_output_interval "
+				"is missing in the instruction file.");
+		fail();
+	} else {
+		dprintf("HerbivoryOutput: parameter herbiv_output_interval "
+				"has invalid value: %s", (char*) interval_xtring);
+		fail();
+	}
 	define_output_tables();
 }
 
@@ -87,6 +100,8 @@ bool HerbivoryOutput::include_date(const Date& d) const{
 }
 
 void HerbivoryOutput::outannual(Gridcell& gridcell){
+	if (!isactive) return;
+
 	// Abort if there is no output this year.
 	if (!include_date(date))
 		return;
@@ -118,6 +133,8 @@ void HerbivoryOutput::outannual(
 		const int day_of_year, const int year,
 		const std::vector<const Fauna::Habitat*> habitats) const
 {
+	if (!isactive) return;
+
 	assert(interval == MONTHLY || interval == ANNUAL);
 
 	/////////////////////////////////////////////////////////////

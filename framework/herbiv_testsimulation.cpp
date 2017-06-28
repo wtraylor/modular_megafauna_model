@@ -66,8 +66,8 @@ int main(int argc,char* argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	// Run the simulation
-	simulator.run();
+	// Run the simulation with the global parametersü
+	simulator.run(Parameters::get_global());
 
 	dprintf("\nFinished\n");
 	return EXIT_SUCCESS;
@@ -98,12 +98,6 @@ void TestSimulator::declare_parameters(){
 				1,INT_MAX, // min, max
 				"Number of simulation years.");
 		mandatory_parameters.push_back("nyears");
-
-		declare_parameter("veg_spinup_years",
-				&params.veg_spinup_years,
-				1,INT_MAX, // min, max
-				"Years without herbivory.");
-		mandatory_parameters.push_back("veg_spinup_years");
 
 		declare_parameter("nhabitat_groups",
 				&params.ngroups,
@@ -165,18 +159,20 @@ void TestSimulator::declare_parameters(){
 }
 
 void TestSimulator::plib_callback(int callback) {
-	// Simply check each parameter in the list
-	for (int i=0; i<mandatory_parameters.size(); i++) {
-		const std::string& item = mandatory_parameters[i];
-		if (!itemparsed(item.c_str())){
-			dprintf("Error: %s was not defined in the instruction file.\n",
-					item.c_str());
-			fail();
-		} 	
+	// Simply check each global parameter in the list
+	if (callback == CB_CHECKGLOBAL) {
+		for (int i=0; i<mandatory_parameters.size(); i++) {
+			const std::string& item = mandatory_parameters[i];
+			if (!itemparsed(item.c_str())){
+				dprintf("Error: %s was not defined in the instruction file.\n",
+						item.c_str());
+				fail();
+			} 	
+		}
 	}
 }
 
-void TestSimulator::run(){
+void TestSimulator::run(const Fauna::Parameters& global_params){
 
 	// PREPARE OUTPUT
 	// Since we only use HerbivoryOutput here, we don’t use the output
@@ -215,16 +211,12 @@ void TestSimulator::run(){
 	// instruction file.
 	Simulator habitat_simulator(Parameters::get_global());
 
-	/// Time counters
-	int year, day_of_year;
-
-
-	// START THE SIMULATION
 
 	dprintf("Starting simulation.\n");
 
 	for (int year=0; year < params.nyears; year++) {
-		for (int day_of_year=0; day_of_year < 365; day_of_year++){
+		int day_of_year;
+		for (day_of_year=0; day_of_year < 365; day_of_year++){
 
 			// loop through habitat groups
 			for (int g=0; g<habitat_groups.size(); g++) {
@@ -236,7 +228,10 @@ void TestSimulator::run(){
 					TestHabitat &habitat =  group_habitats[h];
 
 					// VEGATATION AND HERBIVORE SIMULATION
-					const bool do_herbivores = (year >= params.veg_spinup_years);
+					const bool do_herbivores = 
+						global_params.ifherbivory && 
+						(year >= global_params.free_herbivory_years);
+
 					habitat_simulator.simulate_day(day_of_year, habitat, do_herbivores); 
 				}
 			} 

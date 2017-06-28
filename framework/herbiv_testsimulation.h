@@ -14,6 +14,8 @@
 #include "herbiv_output.h" // for HerbivoryOutput
 
 namespace Fauna{
+	// forward declaration
+	class Parameters;
 
 	/// Performs test simulations for herbivores outside of the LPJ-GUESS vegetation model
 	/** \see \ref sec_singleton for an explanation of the design pattern used.
@@ -28,8 +30,10 @@ namespace Fauna{
 			}
 
 			/// Run a simulation
-			/** Call this only after ins file has been read. */
-			void run();
+			/** Call this only after ins file has been read.
+			 * \param global_params Instruction file parameters from
+			 * the herbivory module not specific to the test simulation.*/
+			void run(const Parameters& global_params);
 
 
 			/// Check if all mandatory parameters have been read, terminates on error.
@@ -49,7 +53,7 @@ namespace Fauna{
 			/// Parameter values from instruction file
 			struct InstructionParameters{
 				std::string outputdirectory;
-				int nyears, veg_spinup_years;
+				int nyears;
 				int nhabitats_per_group, ngroups;
 				TestHabitatSettings settings;
 			} params; 

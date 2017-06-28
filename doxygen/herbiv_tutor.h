@@ -45,8 +45,15 @@ in your new class.
 hide the constructors as protected.
 - Add a new enum entry in \ref Fauna::DigestibilityModelType.
 - Construct an instance of the new class in 
-\ref Simulator::Simulator().  
-
+\ref Fauna::Simulator::Simulator().  
+- \ref Fauna::Parameters:
+    + Add description in \ref Fauna::Parameters::declare_parameters().
+    + Implement parameter parsing for CB_DIG_MODEL in
+    \ref Fauna::Parameters::callback(). (Also add your model name
+    in the error message.)
+    + If your model needs PFT parameters, make sure to check
+    them in \ref Fauna::Parameters::callback() unter CB_PFT.
+- Add a description of your model in `data/ins/herbivores.ins`.
 
 
 
@@ -66,7 +73,7 @@ Pft parameters are declared and parsed outside of the core LPJ-GUESS functions o
 	+ add a new enum item both in \ref parameters.cpp and (as static const int) in 
 	\ref Fauna::Parameters. 
 	+ Initialise the latter in \ref parameters.cpp with the value from the enum value.
-	+ add a new case block in \ref Parameters::callback().
+	+ add a new case block in \ref Fauna::Parameters::callback().
 
 
 \subsection sec_herbiv_new_hft_parameter How to add a new HFT parameter
@@ -101,7 +108,7 @@ averaged value.
 	+ Initialize it for each day in \ref Fauna::Habitat::init_todays_output().
 	+ Fill it with data somehow.
 	+ Add it in the merge function: \ref Fauna::HabitatOutputData::merge().
-- In class \ref GuessOutput::HerbivoryOutput:
+- In class \ref GuessOutput::HerbivoryOutput :
 	+ Add new member variables for a file name and a \ref Table object.
 	+ Call \ref declare_parameter() in \ref GuessOutput::HerbivoryOutput::HerbivoryOutput()
 	for your new output file.
@@ -111,6 +118,7 @@ averaged value.
 
 \subsection sec_herbiv_limit_output How to limit output to a specific time period
 Simply adjust \ref GuessOutput::HerbivoryOutput::include_date().
+\see \ref sec_herbiv_output
 
 
 \todo How to add a new test vegetation model.

@@ -56,11 +56,15 @@ It takes the instruction script as one command line parameter.
 (The Windows GUI is not supported.)
 
 An example instruction file is provided in 
-`data/ins/herbiv_testsim.ins`:
+`data/ins/herbiv_testsim.ins`.
+These are the relevant parameters:
 
 <!-- Alternatively to the snippet command, the dontinclude command -->
 <!-- could be used. -->
 \snippet herbiv_testsim.ins Simulation Parameters
+
+\note Make sure that `ifherbivory` is true because otherwise
+no output will be produced (see \ref sec_herbiv_output).
 
 
 \brief Details on unit tests and test simulations.

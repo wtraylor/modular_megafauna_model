@@ -22,9 +22,32 @@
  *
  *
  *
- * \section sec_design_patterns Design Patterns
+ *
+ * \section sec_object_orientation Object-oriented Design
  * In the Herbivore Module a couple of object-oriented design patterns
- * were employed that are explained here.
+ * were employed that are explained here along with general 
+ * concepts of object-oriented programming.
+ *
+ * \subsection sec_design_solid SOLID
+ * \subsubsection sec_single_responsibility Single Responsibility Principle
+ * A class should have only a single responsibility:
+ * A class should have only one reason to change.
+ * \subsubsection sec_open_closed Open/Closed Principle
+ * A class/module/function should be open for extension, but
+ * closed for modification.
+ * \subsubsection sec_liskov_substitution Liskov’s Substitution Principle
+ * Objects in a program should be replaceable with instances of
+ * their subtypes without altering the correctness of that program.
+ * \subsubsection sec_interface_segregation Interface Segregation Principle
+ * Many client-specific interfaces are better than one 
+ * general-purpose interface.
+ * \subsubsection sec_dependency_inversion Dependency Inversion Principle
+ * a. High-level modules should not depend on low-level modules.
+ * Both should depend on abstractions.
+ * b. Abstractions should not depend on details. 
+ * Details should depend on abstractions.
+
+ *
  * \subsection sec_singleton Singleton
  * A class is called *singleton* if it permits only one global
  * instantiation in the program.
@@ -55,6 +78,32 @@ class MySingleton{
  * MySingleton::get_instance();
  * \endcode
  *
+ *
+ * \section sec_herbiv_output Herbivory Output
+ * The output module \ref GuessOutput::HerbivoryOutput is used both in the 
+ * standard LPJ-GUESS framework and in the test simulations
+ * (\ref page_herbiv_tests).
+ * If the parameter `ifherbivory` is 0, the whole class is
+ * deactivated and won’t produce any output or create files.
+ * 
+ * This is necessary because some herbivore module parameters,
+ * like `digestibility_model`, are not checked when reading
+ * the instruction file.
+ *
+ * While the class \ref GuessOutput::HerbivoryOutput complies with the output
+ * module framework of LPJ-GUESS, a few technical improvements
+ * to \ref GuessOutput::CommonOutput were made:
+ * - Output interval can be chosen freely with one variable
+ *   instead of different output files. The table structure
+ *   stays always the same (no month columns).
+ * - The functions are smaller and better maintainable.
+ * - The preprocessing of the data (building averages etc.) is
+ *   done in \ref Fauna::HabitatOutputData and other data-holding
+ *   classes (e.g. \ref Fauna::HabitatForage). This approach
+ *   honours the \ref sec_single_responsibility.
+ * - The inherited functions outannual() and outdaily() delegate
+ *   to more generic functions, which are also used by
+ *   \ref Fauna::TestSimulator.
  *
  *
  *

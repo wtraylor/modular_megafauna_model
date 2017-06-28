@@ -13,6 +13,7 @@
 #include "herbiv_digestibility.h"
 #include "herbiv_parameters.h"
 #include "assert.h"
+#include <stdexcept> // for std::logic_error, std::invalid_argument
 
 using namespace Fauna;
 

@@ -76,13 +76,10 @@ namespace Fauna {
 			 */
 			static void callback(const int callback, Pft* ppft);
 
-		private:
-			/**@{ \name Constants and variables from \ref parameters.cpp */
-			static const int CB_NONE, CB_CHECKGLOBAL, CB_FORAGE_TYPE, 
-									 CB_PFT, CB_DIG_MODEL;
-			static const int BLOCK_GLOBAL, BLOCK_PFT, BLOCK_HFT;
-			/**@}*/
-			
+			/// Initialise herbivory-related parameters in a new Pft
+			static void init_pft(Pft& pft);
+
+		private: 
 			/// Holds the currently parsed string parameter
 			static std::string strparam;
 	};
