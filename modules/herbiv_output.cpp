@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbiv_output.h
+/// \file 
 /// \brief Output module for the herbivory module.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -8,7 +8,7 @@
 
 #include "config.h"
 #include "herbiv_output.h"
-#include "guess.h"             // for Date class
+#include "guess.h"             // for Date and Gridcell
 #ifndef NO_GUESS_PARAMETERS
 #include "parameters.h"        // for declare_parameter()
 #endif // NO_GUESS_PARAMETERS
@@ -16,10 +16,17 @@
 using namespace GuessOutput;
 using namespace Fauna;
 
+bool NoSpinupLimiter::include_date(const int year, 
+		const int day_of_year) const{
+	return year >= nyear_spinup;
+}
+
 REGISTER_OUTPUT_MODULE("herbivory", HerbivoryOutput)
 
-// initialize static variable
-bool HerbivoryOutput::isactive = true;
+// define and initialize static variable
+bool HerbivoryOutput::isactive  = true;
+int  HerbivoryOutput::precision = 4;
+OutputLimiter* HerbivoryOutput::limiter = NULL;
 
 
 HerbivoryOutput::HerbivoryOutput():
@@ -28,6 +35,12 @@ HerbivoryOutput::HerbivoryOutput():
 	declare_parameter("herbiv_output_interval", 
 			&interval_xtring, 128,
 			"Interval for herbivory output: \"annual\", \"monthly\"\n");
+
+	declare_parameter("herbiv_output_precision",
+			&precision,
+			0, 20, // min,max
+			"Decimal precision of values in the herbivory output tables. "
+			"Defaults to 4 if not defined.");
 
 	// output variables
 	declare_parameter("file_forage_avail", &file_forage_avail, 300, 
@@ -49,6 +62,8 @@ void HerbivoryOutput::init() {
 		interval = ANNUAL;
 	else if (interval_xtring == "monthly")
 		interval = MONTHLY;
+	else if (interval_xtring == "daily")
+		interval = DAILY;
 	else if (interval_xtring == ""){
 		dprintf("HerbivoryOutput: parameter herbiv_output_interval "
 				"is missing in the instruction file.");
@@ -58,10 +73,12 @@ void HerbivoryOutput::init() {
 				"has invalid value: %s", (char*) interval_xtring);
 		fail();
 	}
+
 	define_output_tables();
 }
 
-const ColumnDescriptors HerbivoryOutput::get_forage_columns(const int width, const int precision)const {
+const ColumnDescriptors HerbivoryOutput::get_forage_columns(
+		const int width, const int precision)const {
 	ColumnDescriptors forage_columns;
 	forage_columns += ColumnDescriptor(get_forage_type_name(FT_GRASS).c_str(), 
 			width, precision);
@@ -70,23 +87,22 @@ const ColumnDescriptors HerbivoryOutput::get_forage_columns(const int width, con
 	return forage_columns;
 }
 
-const ColumnDescriptors HerbivoryOutput::get_hft_columns(const int width, const int precision)const {
+const ColumnDescriptors HerbivoryOutput::get_hft_columns(
+		const int width, const int precision)const {
 	ColumnDescriptors hft_columns;
 	// TODO
 	return hft_columns;
 }
 
 void HerbivoryOutput::define_output_tables() {
-	/// Width for one column
-	const int default_width = 8;
-	/// Decimal precision for the columns
-	const int default_precision = 3;
+	assert(column_width >= 1);
+	assert(precision    >= 0);
 
 	// Create commonly used columns
 	const ColumnDescriptors forage_columns = get_forage_columns(
-			default_width, default_precision);
+			column_width, precision);
 	const ColumnDescriptors hft_columns = get_hft_columns(
-			default_width, default_precision);
+			column_width, precision);
 
 	// Create the columns for each output file
 	create_output_table(out_forage_avail , file_forage_avail.c_str() , forage_columns);
@@ -95,16 +111,8 @@ void HerbivoryOutput::define_output_tables() {
 	create_output_table(out_digestibility, file_digestibility.c_str(), forage_columns);
 }
 
-bool HerbivoryOutput::include_date(const Date& d) const{
-	return d.year >= nyear_spinup;
-}
-
 void HerbivoryOutput::outannual(Gridcell& gridcell){
 	if (!isactive) return;
-
-	// Abort if there is no output this year.
-	if (!include_date(date))
-		return;
 
 	/// References to all Habitat objects in the gridcell.
 	std::vector<const Habitat*> habitats;
@@ -124,94 +132,94 @@ void HerbivoryOutput::outannual(Gridcell& gridcell){
 
 	// Use the more general outannual function to do the rest
 	outannual(gridcell.get_lon(), gridcell.get_lat(), 
-			date.day, date.year, habitats);
+			date.year, habitats);
 }	
 
 
 void HerbivoryOutput::outannual(
 		const double longitude, const double latitude,
-		const int day_of_year, const int year,
+		const int year,
 		const std::vector<const Fauna::Habitat*> habitats) const
 {
 	if (!isactive) return;
 
-	assert(interval == MONTHLY || interval == ANNUAL);
-
-	/////////////////////////////////////////////////////////////
-	// PREPARE VARIABLES
-	/////////////////////////////////////////////////////////////
 	
 	/// Vector of habitat output data objects.
 	typedef std::vector<HabitatOutputData> OutputVector;
-	
-	/// Vector holding the annual output for each habitat.
-	OutputVector annual_habitat;
-	// reserve space in the vector (without filling it yet).
-	annual_habitat.reserve(habitats.size());
 
-	/// Vector of 12 vectors, each of which holds one month’s output of all patches.
-	std::vector<OutputVector> monthly_habitat;
-	monthly_habitat.resize(12); // create 12 new vector objects
-	// reserve space for the patches
-	for (int i=0; i<12; i++)
-		monthly_habitat[i].reserve(habitats.size()); 
+	// Abort already if there is no output for the whole year
+	if (interval == ANNUAL && include_date(0,year)) {
 
-	/////////////////////////////////////////////////////////////
-	// GATHER OUTPUT DATA
-	/////////////////////////////////////////////////////////////
+		/// Vector holding the annual output for each habitat.
+		OutputVector annual_habitat;
+		// reserve space in the vector (without filling it yet).
+		annual_habitat.reserve(habitats.size());
 
-	for (int i=0; i<habitats.size(); i++)
-	{
-		const Habitat& habitat = *(habitats[i]);
-		
-		// Add this habitat’s annual output to the vector
-		annual_habitat.push_back(habitat.get_annual_output());
-		assert( annual_habitat.back().is_valid );
+		// GATHER DATA
+		for (int i=0; i<habitats.size(); i++) {
+			const Habitat& habitat = *(habitats[i]);
 
-		// Add this habitat’s monthly output by appending the
-		// data month by month to the big list.
-		const OutputVector habitats_monthly = habitat.get_monthly_output();
-		for (int i=0; i<12; i++){
-			assert( habitats_monthly[i].is_valid );
-			monthly_habitat[i].push_back(habitats_monthly[i]); 
+			// Add this habitat’s annual output to the vector
+			annual_habitat.push_back(habitat.get_annual_output());
+			assert( annual_habitat.back().is_valid );
 		}
-	}
 
-	/////////////////////////////////////////////////////////////
-	// MERGE VECTORS TO SINGLE DATA POINTS
-	/////////////////////////////////////////////////////////////
+		// MERGE DATA
 
-	/// Annual output from all habitats in this gridcell merged in one object.
-	const HabitatOutputData merged_annual = 
-		HabitatOutputData::merge(annual_habitat);
+		/// Annual output from all habitats in this gridcell merged in one object.
+		const HabitatOutputData merged_annual = 
+			HabitatOutputData::merge(annual_habitat);
 
-	/// Monthly output from all habitats in one object per month.
-	std::vector<HabitatOutputData> merged_monthly;
-	merged_monthly.reserve(12); // make space for 12 objects
-	// merge vector of data for each month and add it
-	for (int i=0; i<12; i++){
-		merged_monthly.push_back(HabitatOutputData::merge(monthly_habitat[i]));
-	}
-	
-	/////////////////////////////////////////////////////////////
-	// ADD DATA TO TABLES
-	/////////////////////////////////////////////////////////////
+		// WRITE DATA
+		add_output_object(
+				OutputRows(output_channel,
+					longitude, 
+					latitude,
+					year,
+					0), // day of year
+				merged_annual );
 
-	switch (interval) {
-		case ANNUAL:
-			add_output_object(
-					OutputRows(output_channel,
-						longitude, 
-						latitude,
-						year,
-						0), // day of year
-					merged_annual );
-			break;
-		case MONTHLY:
-			assert(merged_monthly.size() == 12);
-			/// Day of the year at the beginning of the month
-			int first_day_of_month = 0;
-			for (int i=0; i<12; i++) {
+	} else if (interval == MONTHLY) {
+
+		/// Array of 12 vectors, each of which holds one month’s output of all patches.
+		OutputVector monthly_habitat[12];
+
+		// reserve space for the patches
+		for (int i=0; i<12; i++)
+			monthly_habitat[i].reserve(habitats.size()); 
+
+		// GATHER DATA
+
+		for (int i=0; i<habitats.size(); i++) { 
+			const Habitat& habitat = *(habitats[i]);
+
+			// Add this habitat’s monthly output by appending the
+			// data month by month to the big list.
+			const OutputVector habitats_monthly = habitat.get_monthly_output();
+			for (int i=0; i<12; i++){
+				assert( habitats_monthly[i].is_valid );
+				monthly_habitat[i].push_back(habitats_monthly[i]); 
+			}
+		}
+
+		// MERGE DATA
+		
+		/// Monthly output from all habitats in one object per month.
+		HabitatOutputData merged_monthly[12]; 
+
+		// merge vector of data for each month and add it
+		for (int i=0; i<12; i++)
+			merged_monthly[i] = HabitatOutputData::merge(monthly_habitat[i]);
+		
+
+		// WRITE DATA
+
+		/// Day of the year at the beginning of the month
+		int first_day_of_month = 0;
+
+		for (int i=0; i<12; i++) {
+			// check if output is included
+			if (include_date(first_day_of_month, year)) {
 				add_output_object(
 						OutputRows(output_channel,
 							longitude, 
@@ -219,13 +227,45 @@ void HerbivoryOutput::outannual(
 							year,
 							first_day_of_month),
 						merged_monthly[i]);
-				// set it to the next day of the month
-				first_day_of_month += date.ndaymonth[i];
 			}
-			break;
-			// TODO: DAILY
+			// set it to the next day of the month
+			first_day_of_month += date.ndaymonth[i];
+		}
+
+	} else if (interval == DAILY) {
+
+		// loop through each day
+		for (int d=0; d<Date::MAX_YEAR_LENGTH; d++) {
+
+			// Skip this day if it’s not included
+			if (!include_date(d, year))
+				continue;
+
+			/// Vector holding this day’s data for each habitat
+			OutputVector days_habitat_data = OutputVector();
+			days_habitat_data.reserve(habitats.size());
+			
+			// GATHER DATA for this day from all habitats 
+			for (int i=0; i<habitats.size(); i++) { 
+				const Habitat& habitat = *(habitats[i]);
+
+				days_habitat_data.push_back(habitat.get_daily_output(d));
+			}
+			
+			// MERGE AND WRITE DATA 
+			add_output_object(
+					OutputRows(output_channel,
+						longitude,
+						latitude,
+						year,
+						d),
+					HabitatOutputData::merge(days_habitat_data));
+		}
+		
+
 	}
 }
+
 
 void HerbivoryOutput::add_output_object(OutputRows out, const HabitatOutputData& data) const{
 

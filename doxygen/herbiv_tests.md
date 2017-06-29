@@ -34,7 +34,7 @@ framework.
 
 
 
-Herbivory Test Simulations
+Herbivory Test Simulations {#sec_herbiv_testsimulations}
 --------------------------
 
 In order to simulate herbivore dynamics in a controlled environment

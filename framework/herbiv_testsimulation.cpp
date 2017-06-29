@@ -215,8 +215,7 @@ void TestSimulator::run(const Fauna::Parameters& global_params){
 	dprintf("Starting simulation.\n");
 
 	for (int year=0; year < params.nyears; year++) {
-		int day_of_year;
-		for (day_of_year=0; day_of_year < 365; day_of_year++){
+		for (int day_of_year=0; day_of_year < 365; day_of_year++){
 
 			// loop through habitat groups
 			for (int g=0; g<habitat_groups.size(); g++) {
@@ -234,7 +233,7 @@ void TestSimulator::run(const Fauna::Parameters& global_params){
 
 					habitat_simulator.simulate_day(day_of_year, habitat, do_herbivores); 
 				}
-			} 
+			} // end of habitat loop
 		}// end of year
 
 
@@ -244,8 +243,7 @@ void TestSimulator::run(const Fauna::Parameters& global_params){
 		for (int g=0; g<habitat_groups.size(); g++) {
 			TestHabitatGroup& group = habitat_groups[g];
 			herbiv_out.outannual(group.get_lon(), group.get_lat(), 
-					day_of_year, year,
-					group.get_habitat_references());
+					year, group.get_habitat_references());
 		}
 	}
 }

@@ -69,9 +69,9 @@ namespace Fauna{
 
 	/// Abstract class of a spatial unit populated by herbivores
 	/** \ingroup group_herbivory 
-	 * \note While this base class implements the output functions, any derived class
-	 * is responsible to add output data to \ref daily_output.
-	 * \sa \ref sec_liskov_substitution
+	 * \note While this base class implements the output functions,
+	 * any derived class is responsible to add output data to 
+	 * \ref daily_output.
 	 */
 	class Habitat{
 	public:
@@ -105,12 +105,12 @@ namespace Fauna{
 		virtual void init_todays_output(const int today);
 
 		/// Get output data for each day in the year.
-		/** Call this only at the end of the year to have no empty values or data from
-		 * last year.
-		 * \return Vector of size \ref Date::MAX_YEAR_LENGTH. 
-         * \todo Once moving to C++11, this should be of type \ref std::array. */
-		const std::vector<HabitatOutputData>& get_daily_output() const{
-			return daily_output;
+		/** Call this only at the end of the year to have no empty
+		 * values or data from last year.
+		 * \param day day of the year (0=Jan 1st) */
+		HabitatOutputData get_daily_output(const int day) const{
+			assert( day >= 0 && day <= daily_output.size() );
+			return daily_output[day];
 		}
 
 		/// Get output data for the current day.
@@ -120,10 +120,12 @@ namespace Fauna{
 		const HabitatOutputData& read_todays_output();
 
 		/// Get output data as monthly averages for the last year.
-		/** Call this only at the end of the year to have no empty values or data from
+		/** Call this only at the end of the year to have no empty
+		 * values or data from
 		 * last year.
 		 * \return Vector of size 12.  
-         * \todo Once moving to C++11, this should be of type \ref std::array. */
+		 * \todo Once moving to C++11, this should be of type 
+		 * \ref std::array. */
 		std::vector<HabitatOutputData> get_monthly_output() const;
 
 		/// Get output data averaged over the whole year.
@@ -138,16 +140,20 @@ namespace Fauna{
 		 * for actual output, call \ref read_todays_output() from
 		 * outside.
 		 * This function uses the date as set by \ref read_todays_output(). */
-		HabitatOutputData& get_todays_output();
+		HabitatOutputData& get_todays_output(){
+			return  daily_output[day_of_year];
+		}
 	private:
 		/// The current day as set by \ref read_todays_output().
 		/** \see Date::day */
 		int day_of_year;
+		//
 		/// The herbivores that live in this habitat.
 		std::list<HerbivoreUnit*> herbivores;
+
 		/// Vector with output for every day of the year.
-		/** \todo When switching to C++11 standard, this should be \ref std::array so that
-		 * the container size is fixed.*/ 
+		/** \todo When switching to C++11 standard, this should be 
+		 * \ref std::array so that the container size is fixed.*/ 
 		std::vector<HabitatOutputData> daily_output;
 	};
 }

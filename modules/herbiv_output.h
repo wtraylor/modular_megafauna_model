@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 //
-/// \file herbiv_output.h
+/// \file 
 /// \brief Output module for the herbivory module.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -24,6 +24,31 @@ namespace Fauna {
 
 namespace GuessOutput {
 
+	/// Abstract helper class to limit output to a specific time.
+	/** \see \ref sec_herbiv_limit_output 
+	 * \todo A simple function would actuall suffice here:
+	 * Pass the pointer to a function 
+	 * `bool (*include_date)(const int, const int)`
+	 * to \ref HerbivoryOutput. */
+	struct OutputLimiter{
+		/// Check whether the date shall be included in the output.
+		/** 
+		 * \param day_of_year Day of year (0=Jan 1st).
+		 * \param year Simulation year (0=first year).
+		 * \return True if the given year/date shall be included.
+		 * \note This is equivalent to the check in \ref outlimit() in \ref commonoutput.cpp, 
+		 * but implemented as a class member function.
+		 */
+		virtual bool include_date(const int year, 
+				const int day_of_year) const = 0; 
+	};
+
+	/// Limits output to the time after \ref nyear_spinup.
+	struct NoSpinupLimiter: public OutputLimiter{
+		virtual bool include_date(const int year, 
+				const int day_of_year) const;
+	};
+
 	/// Output module for the herbivory module.
 	/** 
 	 * If \ref deactivate() is called, all public methods will not
@@ -42,33 +67,43 @@ namespace GuessOutput {
 			/// Initialize, defines output tables.
 			void init();
 
-			/// Write annual output for gridcell.
-			/** \see \ref OutputModule::outannual() */
+			/// Write output of one year for a gridcell.
+			/** \see \ref OutputModule::outannual() 
+			 * \see \ref outannual() */
 			void outannual(Gridcell& gridcell);
 
-			/// Write annual output for a number of habitats.
+			/// Write output of one year for a number of habitats.
 			/** 
-			 * This function is independent of any global LPJ-GUESS
+			 * Depending on \ref interval, for each day, each month,
+			 * or the one year one output row is written.
+			 * \note This function is independent of any global LPJ-GUESS
 			 * variables (except for \ref Date::ndaymonth).
 			 * \param longitude Value for the longitude column.
 			 * \param latitude  Value for the latitude column.
-			 * \param day_of_year Day of year (0 = Jan 1st).
 			 * \param year Simulation year (starting with 0).
 			 * \param habitats A vector of pointers to habitats whose
 			 * output will be merged.
 			 */
 			void outannual( const double longitude, const double latitude,
-					const int day_of_year, const int year,
+					const int year,
 					const std::vector<const Fauna::Habitat*> habitats) const;
 
-			/// Write daily output for gridcell (currently not used).
-			/** \see \ref OutputModule::outdaily() */
+			/// Write daily output for gridcell (not used).
+			/** Also daily output is done in \ref outannual().
+			 * \see \ref OutputModule::outdaily() */
 			void outdaily(Gridcell& gridcell){}
 
 			/// Disable any activity all together.
 			static void deactivate(){ isactive = false; }
-		protected:
 
+			/// Set an object that limits the output to a time.
+			/** \param l Reference Limiter object. Make sure this object
+			 * is not released over the whole program run! 
+			 * Pass NULL in order to have no limits.*/
+			static void set_limiter(OutputLimiter* l){
+				limiter = l;
+			}
+		protected:
 			/// Create a column descriptor for each forage type.
 			const ColumnDescriptors get_forage_columns(
 					const int width, const int precision) const;
@@ -76,15 +111,6 @@ namespace GuessOutput {
 			/// Create a column descriptor for each \ref Fauna::Hft
 			const ColumnDescriptors get_hft_columns(const int width, 
 					const int precision) const;
-
-			/// Check whether the date shall be included in the output.
-			/** 
-			 * \param d The %date.
-			 * \return True if the given year/date shall be included.
-			 * \note This is equivalent to the check in \ref outlimit() in \ref commonoutput.cpp, 
-			 * but implemented as a class member function.
-			 */
-			virtual bool include_date(const Date& d) const;
 
 			/// Add one line to each output table
 			/**
@@ -95,16 +121,34 @@ namespace GuessOutput {
 			 */
 			void add_output_object(OutputRows out, const Fauna::HabitatOutputData& data) const;
 
+			/// Helper function to check if \ref limiter includes the day.
+			/** \see GuessOutput::OutputLimiter::include_date() */
+			bool include_date(const int day, const int year) const{
+				if (limiter != NULL) 
+					return limiter->include_date(day, year);
+				else
+					return true;
+			}
+
 			/// Temporal aggregation interval (monthly, yearly, ...)
 			enum {
-				// TODO: DAILY
+				DAILY,
 				MONTHLY,
 				ANNUAL
 			} interval;
 
+			/// Width of one column in the output table.
+			static const int column_width = 8;
+			
+			/// Decimal precision for the values in the columns
+			static int precision; 
+
 		private: 
 			/// Whether the whole output is activated
 			static bool isactive;
+
+			/// Reference to the object that limits the output.
+			static OutputLimiter* limiter;
 
 			/// Interval parameter string as read from instruction file.
 			xtring interval_xtring;

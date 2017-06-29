@@ -101,6 +101,7 @@ Pft parameters are declared and parsed outside of the core LPJ-GUESS functions o
 
 \section sec_herbiv_output_tutor Output
 
+\see \ref sec_herbiv_output
 \subsection sec_herbiv_new_output How to add a new output variable
 
 - Add a new variable in \ref Fauna::HabitatOutputData, either as an accumulated or
@@ -117,8 +118,14 @@ averaged value.
 - Add the file name in your instruction script.
 
 \subsection sec_herbiv_limit_output How to limit output to a specific time period
-Simply adjust \ref GuessOutput::HerbivoryOutput::include_date().
-\see \ref sec_herbiv_output
+Declare in any header file a class derived from 
+\ref GuessOutput::OutputLimiter and implement the inherited
+pure virtual method \ref GuessOutput::OutputLimiter::include_date().
+In the \ref framework() function call
+\ref GuessOutput::HerbivoryOutput::set_limiter() passing a 
+persistent instantiation of your class.
+
+
 
 
 \todo How to add a new test vegetation model.

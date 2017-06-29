@@ -133,9 +133,6 @@ HabitatOutputData Habitat::get_annual_output() const {
 	return HabitatOutputData::merge(daily_output);
 }
 
-HabitatOutputData& Habitat::get_todays_output(){
-	return  daily_output[day_of_year];
-}
 
 void Habitat::remove_eaten_forage(const ForageMass& eaten_forage){
 	assert(eaten_forage.grass >= 0.0);
