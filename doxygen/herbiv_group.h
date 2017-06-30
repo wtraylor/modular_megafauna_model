@@ -9,13 +9,36 @@
  * are declared and checked in the class \ref Fauna::Parameters.
  *
  * Note that the implementation is rather a dirty fix around
- * the inflexible design of LPJ-GUESS parameter library.
+ * the inflexible design of LPJ-GUESS parameter library. Some
+ * global constants (checkback and block codes) and global
+ * pointers from \ref parameters.h and \ref parameters.cpp are
+ * used in \ref herbiv_parameters.cpp.
  * \see \ref sec_herbiv_new_pft_parameter
+ *
+ * HFT parameters are declared and parsed by 
+ * \ref Fauna::Parameters, but checked for integrity by \ref Hft
+ * itself.
+ *
+ * An example instruction file is provided in 
+ * `data/ins/herbivores.ins`:
+ * \snippet herbivores.ins Example Herbivore
  * \see \ref sec_herbiv_new_hft_parameter
  *
  *
  *
+ * \bug When printing out the help with \ref plibhelp() 
+ * (by running `guess -help`), the global parameters declared in 
+ * \ref Fauna::Parameters::declare_parameters() under 
+ * `BLOCK_GLOBAL` appear out of order in the output.
  *
+ *
+ *
+ *
+ * \todo UML diagram with tiers:
+ * herbivory module <-> LPJ-GUESS
+ * herbiv_parameters -> parameters
+ * low-level and high-level classes
+ * highlight replacable modules: digestibility model, energy model etc.
  *
  *
  *
@@ -57,7 +80,8 @@
  *
  * It is used in these classes: 
  * \ref Fauna::DigestibilityModel, 
- * \ref Fauna::TestSimulator
+ * \ref Fauna::TestSimulator,
+ * \ref Fauna::HftList
  * 
  * The basic implementation is as follows:
  * \code

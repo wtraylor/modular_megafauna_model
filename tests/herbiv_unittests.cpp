@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbivores_test.cpp
+/// \file 
 /// \brief Unit tests for megafauna herbivores.
 /// \ingroup group_herbivory 
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -9,7 +9,9 @@
 #include "catch.hpp" 
 #include "herbiv_foraging.h" 
 #include "herbiv_testhabitat.h" 
+#include "herbiv_hft.h"
 #include <vector>
+
 
 using namespace Fauna;
 
@@ -124,7 +126,6 @@ TEST_CASE("Fauna::ForageMass", "Tests the ForageMass functions") {
 		REQUIRE( Approx(fm.sum()) == fm.grass );
 	}
 }
-
 
 TEST_CASE("Fauna::TestGrass", "") {
 	TestHabitatSettings::Grass grass_settings;
@@ -274,3 +275,68 @@ TEST_CASE("Fauna::TestHabitatGroup","") {
 			CHECK( refs[j] == &objects[j]);
 	}
 }
+
+TEST_CASE("Fauna::HftList",""){
+	HftList& hftlist = HftList::get_global();
+
+	// check initial size
+	REQUIRE(hftlist.size()==0);
+
+	// invalid access
+	CHECK_THROWS(hftlist[1]);
+	CHECK_THROWS(hftlist["abc"]);
+
+	// add Hft without name
+	CHECK_THROWS(hftlist.insert( Hft() ));
+
+	// add some real HFTs
+	Hft hft1; 
+	hft1.name="hft1";
+	hft1.is_included = true;
+	REQUIRE_NOTHROW(hftlist.insert(hft1));
+	REQUIRE(hftlist.size()==1);
+	REQUIRE(hftlist[0].name == "hft1");
+
+	Hft hft2;
+	hft2.name = "hft2";
+	hft2.is_included = false;
+	REQUIRE_NOTHROW( hftlist.insert(hft2) );
+	REQUIRE( hftlist.size()==2 );
+	REQUIRE_NOTHROW( hftlist[1] );
+
+	// find elements
+	CHECK(hftlist["hft2"].name == "hft2");
+	CHECK(hftlist["hft1"].name == "hft1");
+	CHECK(hftlist.contains("hft1"));
+	CHECK(hftlist.contains("hft2"));
+	CHECK_FALSE(hftlist.contains("abc"));
+
+	// substitute element 
+	hft2.lifespan *= 2; // change a property outside list
+	REQUIRE(hftlist[hft2.name].lifespan != hft2.lifespan);
+	hftlist.insert(hft2); // replace existing
+	CHECK( hftlist[hft2.name].lifespan == hft2.lifespan );
+	
+	// remove excluded
+	hftlist.remove_excluded();
+	CHECK(hftlist.size()==1);
+	CHECK(hftlist.contains(hft1.name)); // hft1 included
+	CHECK_FALSE(hftlist.contains(hft2.name)); // hft2 NOT included
+
+	// close the list
+	Hft hft3;
+	hft3.name = "hft3";
+	hftlist.close();
+	CHECK_THROWS(hftlist.insert(hft3));
+	CHECK_THROWS(hftlist.remove_excluded());
+}
+
+TEST_CASE("Fauna::Hft",""){
+	Hft hft = Hft();
+	CHECK( hft.name == "" );
+	std::string msg;
+
+	// not valid without name
+	CHECK_FALSE( hft.is_valid(msg) );
+}
+

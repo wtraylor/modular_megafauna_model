@@ -29,11 +29,6 @@ Simulator::Simulator(const Parameters& params):
 				DigestibilityModel::init_global(pft_dig);
 				break;
 			// add other models here ...
-			case DM_UNDEFINED:
-				throw std::logic_error(
-						"DigestibilityModel::init_model(): "
-						" model type undefined.");
-				break;
 			default:
 				// TODO: Use exceptions or assertions?
 				throw std::invalid_argument(

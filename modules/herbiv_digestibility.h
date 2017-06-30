@@ -17,8 +17,6 @@ namespace Fauna {
 
 	/// Type of digestibility model, corresponding to one class
 	enum DigestibilityModelType{
-		/// Undefined model type.
-		DM_UNDEFINED,
 		/// \ref PftDigestibility: The fixed value \ref Pft::digestibility is taken.
 		DM_PFT_FIXED
 	};

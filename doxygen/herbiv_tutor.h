@@ -1,4 +1,5 @@
 
+namespace Fauna{
 
 /** \page page_herbiv_tutor Tutor for the Large Herbivore Module
 \brief Instructions how to use the herbivore module and adapt it to one’s needs.
@@ -13,46 +14,46 @@
 
 \subsection sec_herbiv_new_forage_type How to add a new forage type
 
-- Create new enum entry in \ref Fauna::ForageType.
-- Increase \ref Fauna::FORAGE_TYPE_COUNT.
-- Add a short name for it in \ref Fauna::get_forage_type_name().
+- Create new enum entry in \ref ForageType.
+- Increase \ref FORAGE_TYPE_COUNT.
+- Add a short name for it in \ref get_forage_type_name().
 - Instruction file (\ref herbiv_parameters.cpp):
-	+ \ref Fauna::Parameters::declare_parameters(): Add parameter description
-	+ \ref Fauna::Parameters::callback(): Add forage type under \ref CB_FORAGE_TYPE
-- Create new member variable in \ref Fauna::ForageMass and include it in 
-the constructor, in \ref Fauna::ForageMass::sum() and in all overloaded operators.
-- Derive new class from \ref Fauna::ForageBase.
-- Add a new member variable in \ref Fauna::HabitatForage of that class and include
-it in \ref Fauna::HabitatForage::get_total().
-- Add it in \ref Fauna::HabitatForage::get_forage_type_name().
-- Implement average building in \ref Fauna::HabitatForage::merge().
+	+ \ref Parameters::declare_parameters(): Add parameter description
+	+ \ref Parameters::callback(): Add forage type under \ref CB_FORAGE_TYPE
+- Create new member variable in \ref ForageMass and include it in 
+the constructor, in \ref ForageMass::sum() and in all overloaded operators.
+- Derive new class from \ref ForageBase.
+- Add a new member variable in \ref HabitatForage of that class and include
+it in \ref HabitatForage::get_total().
+- Add it in \ref HabitatForage::get_forage_type_name().
+- Implement average building in \ref HabitatForage::merge().
 - Adjust \ref Individual::get_forage_mass() \ref Individual::reduce_forage_mass().
-- Adjust \ref Fauna::PatchHabitat::get_available_forage() and 
-\ref Fauna::Habitat::remove_eaten_forage().
+- Adjust \ref PatchHabitat::get_available_forage() and 
+\ref Habitat::remove_eaten_forage().
 - Output:
 	+ Add a new column descriptor in \ref GuessOutput::HerbivoryOutput::get_forage_columns().
 	+ Add output file names and tables as member variables in \ref GuessOutput::HerbivoryOutput.
 	+ Declare output file parameters in \ref GuessOutput::HerbivoryOutput::HerbivoryOutput().
 	+ Define output tables in \ref GuessOutput::HerbivoryOutput::define_output_tables().
-- Perhaps adjust the digestibility in your chosen \ref Fauna::DigestibilityModel.
+- Perhaps adjust the digestibility in your chosen \ref DigestibilityModel.
 
 \subsection sec_herbiv_new_digestibility_model How to add a new model for forage digestibility
-- Derive a new class from \ref Fauna::DigestibilityModel 
+- Derive a new class from \ref DigestibilityModel 
 (it does not need to be in \ref herbiv_digestibility.h).
-- Implement \ref Fauna::DigestibilityModel::get_digestibility() 
+- Implement \ref DigestibilityModel::get_digestibility() 
 in your new class.
 - To comply with the singleton design pattern (\ref sec_singleton),
 hide the constructors as protected.
-- Add a new enum entry in \ref Fauna::DigestibilityModelType.
+- Add a new enum entry in \ref DigestibilityModelType.
 - Construct an instance of the new class in 
-\ref Fauna::Simulator::Simulator().  
-- \ref Fauna::Parameters:
-    + Add description in \ref Fauna::Parameters::declare_parameters().
+\ref Simulator::Simulator().  
+- \ref Parameters:
+    + Add description in \ref Parameters::declare_parameters().
     + Implement parameter parsing for CB_DIG_MODEL in
-    \ref Fauna::Parameters::callback(). (Also add your model name
+    \ref Parameters::callback(). (Also add your model name
     in the error message.)
     + If your model needs PFT parameters, make sure to check
-    them in \ref Fauna::Parameters::callback() unter CB_PFT.
+    them in \ref Parameters::callback() unter CB_PFT.
 - Add a description of your model in `data/ins/herbivores.ins`.
 
 
@@ -62,21 +63,43 @@ hide the constructors as protected.
 
 \section sec_herbiv_tutor_parameters Parameters
 
+\note Instruction file parameter names and member variables
+should be equal if possible.
+
 \subsection sec_herbiv_new_pft_parameter How to add a new PFT parameter
 Pft parameters are declared and parsed outside of the core LPJ-GUESS functions of
 \ref parameters.cpp (see \ref sec_herbiv_parameters).
 
 - Create the member variable in \ref Pft. Place it with the other herbivory variables.
-- Declare the parameter in \ref Fauna::Parameters::declare_parameters().
-- Check if the parameter was parsed and is okay in \ref Fauna::Parameters::callback().
 - If the parameters needs its own callback:
-	+ add a new enum item both in \ref parameters.cpp and (as static const int) in 
-	\ref Fauna::Parameters. 
-	+ Initialise the latter in \ref parameters.cpp with the value from the enum value.
-	+ add a new case block in \ref Fauna::Parameters::callback().
+	+ add a new enum item both in \ref parameters.h.
+	+ add a new if statement in \ref Parameters::callback().
+- Declare the parameter in \ref Parameters::declare_parameters()
+	(possibly with your own CB_* code).
+- You can initialize it in \ref Parameters::init_pft().
+- Check if the parameter was parsed and is okay in \ref Parameters::callback().
+- Extend the example instruction files in the directory `data/ins`.
 
 
 \subsection sec_herbiv_new_hft_parameter How to add a new HFT parameter
+
+- Declare your member variable in \ref Hft 
+  (observe alphabetical order, please)
+- Initialize it with a default value in \ref Hft::Hft().
+- Write a validity check in \ref Hft::is_valid().
+- If the parameter needs to be parsed from a string, add your
+	own callback:
+	+ add a new enum item CB_* in \ref parameters.h.
+	+ add a new if statement in \ref Parameters::callback().
+- Call the plib function \ref declareitem() in 
+	\ref Parameters::declare_parameters()
+	(possibly with your own CB_* code).
+- If you wish, add it to \ref Parameters::mandatory_hft_params so
+	that it must not be omitted. This can be done conditionally
+	from anywhere in the framework (e.g. only by activation of
+	other modules). If your parameter is not mandatory, make sure
+	it is initialized with a valid value in \ref Hft::Hft().
+- Extend the example instruction file `data/ins/herbivores.ins`.
 
 
 
@@ -104,11 +127,11 @@ Pft parameters are declared and parsed outside of the core LPJ-GUESS functions o
 \see \ref sec_herbiv_output
 \subsection sec_herbiv_new_output How to add a new output variable
 
-- Add a new variable in \ref Fauna::HabitatOutputData, either as an accumulated or
+- Add a new variable in \ref HabitatOutputData, either as an accumulated or
 averaged value.
-	+ Initialize it for each day in \ref Fauna::Habitat::init_todays_output().
+	+ Initialize it for each day in \ref Habitat::init_todays_output().
 	+ Fill it with data somehow.
-	+ Add it in the merge function: \ref Fauna::HabitatOutputData::merge().
+	+ Add it in the merge function: \ref HabitatOutputData::merge().
 - In class \ref GuessOutput::HerbivoryOutput :
 	+ Add new member variables for a file name and a \ref Table object.
 	+ Call \ref declare_parameter() in \ref GuessOutput::HerbivoryOutput::HerbivoryOutput()
@@ -153,3 +176,4 @@ persistent instantiation of your class.
 \see The page \ref page_herbiv_model gives background on the science.
 \see The page \ref page_herbiv_tests explains the testing %framework.
 */
+};

@@ -9,12 +9,17 @@
 #define HERBIV_PARAMETERS_H
 
 #include <string>
+#include <vector> // for mandatory_hft_params
+#include <stdexcept>
 #include "herbiv_digestibility.h"
 
 // forward declarations
 class Pft;
 
 namespace Fauna {
+
+	// forward declarations
+	class Hft;
 
 	/// Parameters manager for the herbivory module.
 	/**
@@ -49,8 +54,7 @@ namespace Fauna {
 			/// Constructor with default settings
 			Parameters():
 				ifherbivory(false),
-				free_herbivory_years(0),
-				dig_model(DM_UNDEFINED) {}
+				free_herbivory_years(0){}
 			
 			/// Declare parameters within the plib framework.
 			/** Helper function to \ref plib_declarations().
@@ -59,9 +63,11 @@ namespace Fauna {
 			 * \param setname The name of the currently parsed block.
 			 * \param ppft Pointer to the currently parsed \ref Pft
 			 * object if id=\ref BLOCK_PFT, NULL otherwise. 
+			 * \param is_help True if only help message is printed --> No
+			 * assignments and validity checks, only parameters declared.
 			 */
 			static void declare_parameters(const int id, 
-					const std::string& setname, Pft* ppft); 
+					const std::string& setname, Pft* ppft, const bool is_help); 
 
 			/// Check global parameters within the plib framework.
 			/** 
@@ -80,6 +86,12 @@ namespace Fauna {
 			static void init_pft(Pft& pft);
 
 		private: 
+			/// The \ref Hft object that’s currently being parsed.
+			static Hft current_hft;
+
+			/// List of names of mandatory HFT parameters
+			static std::vector<std::string> mandatory_hft_params;
+
 			/// Holds the currently parsed string parameter
 			static std::string strparam;
 	};

@@ -1,5 +1,6 @@
 Unit Tests of the Herbivore Module {#page_herbiv_tests}
 ==================================
+
 Introduction
 ------------
 
@@ -53,7 +54,7 @@ objects and thus corresponds to a \ref Gridcell.
 When compiling the project, in addition to `guess` another 
 executable binary file is produced: `herbivsim`.
 It takes the instruction script as one command line parameter.
-(The Windows GUI is not supported.)
+The Windows GUI is not supported. Help output is also not supported.
 
 An example instruction file is provided in 
 `data/ins/herbiv_testsim.ins`.
