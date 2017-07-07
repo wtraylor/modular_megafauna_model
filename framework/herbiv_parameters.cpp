@@ -35,12 +35,32 @@ void Parameters::declare_parameters(
 	// members are initialized in parameters.cpp and cannot be
 	// used in as constant values in a switch-case statement.)
 	
+	// add new parameters in alphabetical order
+	
 	if (id == BLOCK_GLOBAL) {
-		declareitem("ifherbivory", 
-				&(get_global().ifherbivory),
-				1, // number of parameters
-				CB_NONE, 
-				"Whether herbivory is enabled");
+
+		declareitem("dead_herbivore_threshold",
+				&(get_global().dead_herbivore_threshold),
+				0.0, DBL_MAX, // min, max
+				1,          // number of parameters
+				CB_NONE,
+				"Minimum mass density [kg/km²] for a living herbivore object.");
+
+		declareitem("digestibility_model",
+				&strparam,
+				128, // max length of string
+				CB_DIG_MODEL,
+				"Digestibility model for herbivore forage. "
+				"Possible values: "
+				"\"pft_fixed\"");
+
+		declareitem("forage_distribution",
+				&strparam,
+				128, // max length of string
+				CB_FORAGE_DISTRIBUTION,
+				"Algorithm for how to distribute available forage among "
+				"herbivores. Possible values: "
+				"\"equally\"");
 
 		declareitem("free_herbivory_years",
 				&(get_global().free_herbivory_years),
@@ -49,44 +69,24 @@ void Parameters::declare_parameters(
 				CB_NONE,
 				"Number of years without herbivory, as part of vegetation spinup.");
 
-		declareitem("digestibility_model",
+		declareitem("herbivore_type",
 				&strparam,
 				128, // max length of string
-				CB_DIG_MODEL,
-				"Digestibility model for herbivore forage. "
-				"Possible values: \"PFT_FIXED\"");
+				CB_HERBIVORE_TYPE,
+				"Which kind of herbivore class to use."
+				"Possible values: "
+				"\"cohort\", \"individual\"");
 
 		declareitem("hft",
 				BLOCK_HFT,
 				CB_NONE,
 				"Header for block defining HFT (Herbivore Functional Type)");
 
-	} 
-
-	if (id == BLOCK_PFT) {
-
-		if (!is_help)
-			assert(ppft != NULL);
-
-		declareitem("c_in_dm_forage",
-				&ppft->c_in_dm_forage,
-				DBL_MIN, 1.0, // min, max
-				1,            // number of parameters
-				CB_NONE,
-				"Herbivory: Fractional carbon content in dry matter forage.");
-
-		declareitem("digestibility",
-				&ppft->digestibility,
-				DBL_MIN, 1.0, // min, max
-				1,            // number of parameters
-				CB_NONE,
-				"Herbivory: Fractional digestibility of herbivore forage for ruminants");
-
-		declareitem("forage_type",
-				&strparam,
-				64, // max length of string
-				CB_FORAGE_TYPE,
-				"Forage Type (\"INEDIBLE\",\"GRASS\")"); // Add more forage types here
+		declareitem("ifherbivory", 
+				&(get_global().ifherbivory),
+				1, // number of parameters
+				CB_NONE, 
+				"Whether herbivory is enabled");
 
 	} 
 
@@ -180,6 +180,33 @@ void Parameters::declare_parameters(
 		// let plib call function plib_callback() with given code
 		callwhendone(CB_CHECKHFT);
 	}
+
+	if (id == BLOCK_PFT) {
+
+		if (!is_help)
+			assert(ppft != NULL);
+
+		declareitem("c_in_dm_forage",
+				&ppft->c_in_dm_forage,
+				DBL_MIN, 1.0, // min, max
+				1,            // number of parameters
+				CB_NONE,
+				"Herbivory: Fractional carbon content in dry matter forage.");
+
+		declareitem("digestibility",
+				&ppft->digestibility,
+				DBL_MIN, 1.0, // min, max
+				1,            // number of parameters
+				CB_NONE,
+				"Herbivory: Fractional digestibility of herbivore forage for ruminants");
+
+		declareitem("forage_type",
+				&strparam,
+				64, // max length of string
+				CB_FORAGE_TYPE,
+				"Forage Type (\"INEDIBLE\",\"GRASS\")"); // Add more forage types here
+
+	} 
 }
 
 void Parameters::callback(const int callback, Pft* ppft){
@@ -189,97 +216,8 @@ void Parameters::callback(const int callback, Pft* ppft){
 	std::transform(strparam.begin(), strparam.end(), 
 			strparam.begin(), ::toupper);
 
-	if (callback == CB_CHECKGLOBAL) {
-
-		if (!itemparsed("ifherbivory"))
-			dprintf("Notice: ifherbivory was not declared. "
-					"It is disabled by default.\n");
-
-		if (!get_global().ifherbivory) {
-			dprintf("Notice: ifherbivory is disabled. "
-					"The herbivory output module will be deactivated.\n");
-			GuessOutput::HerbivoryOutput::deactivate();
-		}
-
-		if (get_global().ifherbivory) {
-
-			if (!itemparsed("free_herbivory_years")) {
-				sendmessage("Error", "free_herbivory_years needs "
-						"to be defined if ifherbivory is true.");
-				plibabort();
-			}
-
-			if (!itemparsed("digestibility_model")) {
-				sendmessage("Error", "digestibility_model needs "
-						"to be defined if ifherbivory is true.");
-				plibabort();
-			}
-		}
-
-		// Finish and close HFT list
-		HftList& hftlist = HftList::get_global();
-		hftlist.remove_excluded();
-		hftlist.close(); // no further changes possible
-
-		if (get_global().ifherbivory && hftlist.size()==0) {
-			dprintf("Warning: ifherbivory is true, but "
-					"no HFTs were included. The herbivory output "
-					"module will be active, but no herbivory simulation "
-					"will be done.\n");
-		}
-	} 
-
-	if (callback == CB_PFT) {
-		assert (ppft != NULL);
-
-		if (get_global().ifherbivory && ppft->is_edible()) {
-
-			if (!itemparsed("digestibility") &&
-					get_global().dig_model == DM_PFT_FIXED) 
-			{
-				sendmessage("Error", 
-						(xtring) "Edible Pft " + ppft->name +
-						" is missing \"digestibility\". "
-						"It needs to be defined with ifherbivory=true and "
-						"the chosen digestibility model.");
-				plibabort();
-			}
-
-			if (!itemparsed("c_in_dm_forage")) {
-				sendmessage("Error", 
-						(xtring) "Edible Pft " + ppft->name +
-						" is missing \"c_in_dm_forage\". "
-						"It needs to be defined with ifherbivory=true.");
-				plibabort();
-			}
-		}
-	}
-
-	if (callback == CB_FORAGE_TYPE) {
-		if (strparam == "INEDIBLE") 
-			ppft->forage_type = Fauna::FT_INEDIBLE;
-		else if (strparam == "GRASS") 
-			ppft->forage_type = Fauna::FT_GRASS;
-		else {
-			sendmessage("Error",
-					"Unknown forage type; valid types: "
-					"\"INEDIBLE\", \"GRASS\"");
-			plibabort();
-		}
-	}
-
-	if (callback == CB_DIG_MODEL) {
-		if (strparam == "PFT_FIXED")
-			get_global().dig_model = DM_PFT_FIXED;
-		// add other digestibility models here
-		else {
-			sendmessage("Error",
-					"Unknown digestibility model; valid types: "
-					"\"PFT_FIXED\"");
-			plibabort();
-		}
-	} 
-
+	// add checkback codes in alphabetical order
+	
 	if (callback == CB_CHECKHFT) {
 
 		// COMPLETION CHECK
@@ -318,6 +256,76 @@ void Parameters::callback(const int callback, Pft* ppft){
 		HftList::get_global().insert(current_hft);
 	}
 
+	if (callback == CB_CHECKGLOBAL) {
+
+		if (!itemparsed("ifherbivory"))
+			dprintf("Notice: ifherbivory was not declared. "
+					"It is disabled by default.\n");
+
+		if (!get_global().ifherbivory) {
+			dprintf("Notice: ifherbivory is disabled. "
+					"The herbivory output module will be deactivated.\n");
+			GuessOutput::HerbivoryOutput::deactivate();
+		}
+
+		if (get_global().ifherbivory) {
+
+			if (!itemparsed("free_herbivory_years")) {
+				dprintf("Error: free_herbivory_years needs "
+						"to be defined if ifherbivory is true.\n");
+				plibabort();
+			}
+
+			if (!itemparsed("digestibility_model")) {
+				dprintf("Error: digestibility_model needs "
+						"to be defined if ifherbivory is true.\n");
+				plibabort();
+			}
+
+			if (!itemparsed("forage_distribution")) {
+				dprintf("Notice: forage_distribution not defined. "
+						"It defaults to \"equally\".");
+			}
+
+			if (!itemparsed("dead_herbivore_threshold")) {
+				dprintf("Error: dead_herbivore_threshold needs "
+						"to be defined if ifherbivory is true.\n");
+				plibabort();
+			} 
+
+			if (!itemparsed("herbivore_type")) {
+				dprintf("Error: herbivore_type needs "
+						"to be defined if ifherbivory is true.\n");
+				plibabort();
+			}
+
+		}
+
+		// Finish and close HFT list
+		HftList& hftlist = HftList::get_global();
+		hftlist.remove_excluded();
+		hftlist.close(); // no further changes possible
+
+		if (get_global().ifherbivory && hftlist.size()==0) {
+			dprintf("Warning: ifherbivory is true, but "
+					"no HFTs were included. The herbivory output "
+					"module will be active, but no herbivory simulation "
+					"will be done.\n");
+		}
+	} 
+
+	if (callback == CB_DIG_MODEL) {
+		if (strparam == "PFT_FIXED")
+			get_global().dig_model = DM_PFT_FIXED;
+		// add other digestibility models here
+		else {
+			sendmessage("Error",
+					"Unknown digestibility model; valid types: "
+					"\"pft_fixed\"");
+			plibabort();
+		}
+	} 
+
 	if (callback == CB_DIGESTION_TYPE) {
 		if (strparam == "RUMINANT")
 			current_hft.digestion_type = DT_RUMINANT;
@@ -331,6 +339,71 @@ void Parameters::callback(const int callback, Pft* ppft){
 			plibabort();
 		} 
 	}
+
+	if (callback == CB_FORAGE_DISTRIBUTION) {
+		if (strparam == "EQUALLY")
+			get_global().forage_distribution = FD_EQUALLY;
+		else {
+			sendmessage("Error", std::string(
+					"Unknown value for parameter \"forage_distribution\" "
+					"Possible values: "
+					"\"equally\"").c_str());
+			plibabort();
+		}
+	}
+
+	if (callback == CB_FORAGE_TYPE) {
+		if (strparam == "INEDIBLE") 
+			ppft->forage_type = Fauna::FT_INEDIBLE;
+		else if (strparam == "GRASS") 
+			ppft->forage_type = Fauna::FT_GRASS;
+		else {
+			sendmessage("Error",
+					"Unknown forage type; valid types: "
+					"\"inedible\", \"grass\"");
+			plibabort();
+		}
+	}
+
+	if (callback == CB_HERBIVORE_TYPE) {
+		if (strparam == "COHORT")
+			get_global().herbivore_type = HT_COHORT;
+		else if (strparam == "INDIVIDUAL")
+			get_global().herbivore_type = HT_INDIVIDUAL;
+		else {
+			sendmessage("Error",
+					"Unknown value for herbivore_type; valid types: "
+					"\"cohort\", \"individual\"");
+			plibabort();
+		}
+	}
+
+	if (callback == CB_PFT) {
+		assert (ppft != NULL);
+
+		if (get_global().ifherbivory && ppft->is_edible()) {
+
+			if (!itemparsed("digestibility") &&
+					get_global().dig_model == DM_PFT_FIXED) 
+			{
+				sendmessage("Error", 
+						(xtring) "Edible Pft " + ppft->name +
+						" is missing \"digestibility\". "
+						"It needs to be defined with ifherbivory=true and "
+						"the chosen digestibility model.");
+				plibabort();
+			}
+
+			if (!itemparsed("c_in_dm_forage")) {
+				sendmessage("Error", 
+						(xtring) "Edible Pft " + ppft->name +
+						" is missing \"c_in_dm_forage\". "
+						"It needs to be defined with ifherbivory=true.");
+				plibabort();
+			}
+		}
+	}
+
 }
 
 void Parameters::init_pft(Pft& pft){

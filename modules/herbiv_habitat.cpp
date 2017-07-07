@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbiv_habitat.cpp
+/// \file 
 /// \brief Classes for the spatial units where herbivores live.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -32,10 +32,10 @@ HabitatOutputData HabitatOutputData::merge(
 	assert (first < data.size());
 	assert (last < data.size());
 
-	/// Result object with the merged data
+	// Result object with the merged data
 	HabitatOutputData result;
 
-	/// Vector of habitat forage.
+	// Vector of habitat forage.
 	std::vector<const HabitatForage*> available_forage_vector;
 
 	for (int i=first; i<=last; i++) {
@@ -65,6 +65,7 @@ Habitat::Habitat():
 	daily_output(Date::MAX_YEAR_LENGTH)
 {}
 
+
 void Habitat::init_todays_output(const int today){
 	// Set the state variable
 	day_of_year = today;
@@ -75,7 +76,7 @@ void Habitat::init_todays_output(const int today){
 			daily_output[i].is_valid = false;
 	}
 
-	/// The data object for todays output.
+	// The data object for todays output.
 	HabitatOutputData& todays_output = get_todays_output();
 
 	// reset the output by overwriting it with a newly constructed 
@@ -89,7 +90,7 @@ void Habitat::init_todays_output(const int today){
 }
 
 const HabitatOutputData& Habitat::read_todays_output() {
-	/// Reference to this day’s output
+	// Reference to this day’s output
 	HabitatOutputData& todays_output = get_todays_output();
 
 	assert(todays_output.is_valid);

@@ -32,7 +32,6 @@ HabitatForage PatchHabitat::get_available_forage() const {
 		const Individual& indiv = patch.vegetation.getobj();
 
 		// Get common forage properties
-		// TODO: Digestibility Model
 		const double indiv_dig  = dig_model.get_digestibility(indiv); // [frac]
 		const double indiv_mass = indiv.get_forage_mass(); // [kg/m²]
 		assert(indiv_mass >= 0.0);
@@ -94,7 +93,7 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	/// sum of the new grass forage after eating [kg/m²]
 	const double new_grass = old_grass - eaten_forage.grass;
 	assert(new_grass >= 0.0);
-	assert(old_grass > 0.0);
+	assert(old_grass >= 0.0);
 	assert(new_grass <= old_grass);
 
 	// Reduce the forage of each plant individual

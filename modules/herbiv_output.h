@@ -25,11 +25,10 @@ namespace Fauna {
 namespace GuessOutput {
 
 	/// Abstract helper class to limit output to a specific time.
-	/** \see \ref sec_herbiv_limit_output 
-	 * \todo A simple function would actuall suffice here:
-	 * Pass the pointer to a function 
-	 * `bool (*include_date)(const int, const int)`
-	 * to \ref HerbivoryOutput. */
+	/**
+	 * \ingroup group_herbivory
+	 * \see \ref sec_herbiv_limit_output 
+	 */
 	struct OutputLimiter{
 		/// Check whether the date shall be included in the output.
 		/** 
@@ -44,6 +43,7 @@ namespace GuessOutput {
 	};
 
 	/// Limits output to the time after \ref nyear_spinup.
+	/** \ingroup group_herbivory */
 	struct NoSpinupLimiter: public OutputLimiter{
 		virtual bool include_date(const int year, 
 				const int day_of_year) const;

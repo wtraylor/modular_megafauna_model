@@ -86,7 +86,8 @@ namespace Fauna {
 
 		protected:
 			/// Current forage
-			/** Excluding the reserve \ref grass::reserve. */
+			/** Excluding the reserve 
+             * \ref TestHabitatSettings::Grass::reserve. */
 			GrassForage forage;
 
 			TestHabitatSettings::Grass settings;

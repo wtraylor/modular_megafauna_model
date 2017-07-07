@@ -8,14 +8,103 @@
 
 #include "catch.hpp" 
 #include "herbiv_foraging.h" 
+#include "herbiv_herbivore.h"
 #include "herbiv_testhabitat.h" 
 #include "herbiv_hft.h"
 #include <vector>
 
+namespace Fauna{
+	/// A dummy herbivore that does nothing
+	class DummyHerbivore: public HerbivoreInterface{
+		public:
+			DummyHerbivore(const Hft& hft, const double density,
+					const ForageMass demand=ForageMass()):
+				hft(hft), density(density), demand(demand){}
+			
+			virtual void eat(const ForageMass& forage){}
+
+			virtual double get_bodymass() const{return 1.0;}
+
+			virtual ForageMass get_forage_demands(
+					const int day,
+					const HabitatForage& available_forage)const{
+				return demand;
+			}
+
+			virtual const Hft& get_hft()const{return hft;}
+
+			virtual double get_mass_density()const{return density;}
+
+			virtual void simulate_day(const int day,
+					double& offspring){offspring=0.0;}
+		private:
+			const Hft& hft;
+			/// mass density
+			const double density; 
+			/// demanded forage
+			const ForageMass demand;
+	};
+	
+	class DummyPopulation: public PopulationInterface{
+		private:
+			const Hft& hft;
+			std::vector<DummyHerbivore> vec;
+		public:
+			DummyPopulation(const Hft& hft):hft(hft){}
+
+			virtual void create(const double density, const int age=0){
+				vec.push_back(DummyHerbivore(get_hft(), density));
+			}
+
+			virtual const Hft& get_hft()const{return hft;}
+
+			virtual std::vector<const HerbivoreInterface*> get_list()const{
+				std::vector<const HerbivoreInterface*> res;
+				for (int i=0; i<vec.size(); i++)
+					res.push_back(&vec[i]);
+				return res;
+			}
+			virtual std::vector<HerbivoreInterface*> get_list(){ 
+				std::vector<HerbivoreInterface*> res;
+				for (int i=0; i<vec.size(); i++)
+					res.push_back(&vec[i]);
+				return res;
+			}
+
+			virtual void remove_dead(){}
+	};
+
+} // namespace
+
 
 using namespace Fauna;
 
-TEST_CASE("Fauna::HabitatForage", "Tests the HabitatForage class") {
+// test cases in alphabetical order, please
+
+TEST_CASE("Fauna::Dummies", "") {
+	Hft hft1;
+	hft1.name="hft1";
+	DummyHerbivore dummy1 = DummyHerbivore(hft1, 1.0);
+	DummyHerbivore dummy2 = DummyHerbivore(hft1, 0.0);
+
+	DummyPopulation pop = DummyPopulation(hft1);
+	pop.create(1.0);
+	REQUIRE(pop.get_list().size() == 1);
+}
+
+TEST_CASE("Fauna::ForageMass", "") {
+	ForageMass fm;
+
+	// Initialization
+	REQUIRE( Approx(fm.sum()) == 0.0);
+
+	SECTION( "adding grass" ){ 
+		fm.grass = 2.0;
+		REQUIRE( Approx(fm.sum()) == fm.grass );
+	}
+}
+
+TEST_CASE("Fauna::HabitatForage", "") {
 	HabitatForage hf1 = HabitatForage();
 
 	// Initialization
@@ -115,16 +204,122 @@ TEST_CASE("Fauna::HabitatOutputData","") {
 
 }
 
-TEST_CASE("Fauna::ForageMass", "Tests the ForageMass functions") {
-	ForageMass fm;
+TEST_CASE("Fauna::Hft",""){
+	Hft hft = Hft();
+	CHECK( hft.name == "" );
+	std::string msg;
 
-	// Initialization
-	REQUIRE( Approx(fm.sum()) == 0.0);
+	// not valid without name
+	CHECK_FALSE( hft.is_valid(msg) );
+}
 
-	SECTION( "adding grass" ){ 
-		fm.grass = 2.0;
-		REQUIRE( Approx(fm.sum()) == fm.grass );
+TEST_CASE("Fauna::HftList",""){
+	HftList& hftlist = HftList::get_global();
+
+	// check initial size
+	REQUIRE(hftlist.size()==0);
+
+	// invalid access
+	CHECK_THROWS(hftlist[1]);
+	CHECK_THROWS(hftlist["abc"]);
+
+	// add Hft without name
+	CHECK_THROWS(hftlist.insert( Hft() ));
+
+	// add some real HFTs
+	Hft hft1; 
+	hft1.name="hft1";
+	hft1.is_included = true;
+	REQUIRE_NOTHROW(hftlist.insert(hft1));
+	REQUIRE(hftlist.size()==1);
+	REQUIRE(hftlist[0].name == "hft1");
+
+	Hft hft2;
+	hft2.name = "hft2";
+	hft2.is_included = false;
+	REQUIRE_NOTHROW( hftlist.insert(hft2) );
+	REQUIRE( hftlist.size()==2 );
+	REQUIRE_NOTHROW( hftlist[1] );
+
+	// find elements
+	CHECK(hftlist["hft2"].name == "hft2");
+	CHECK(hftlist["hft1"].name == "hft1");
+	CHECK(hftlist.contains("hft1"));
+	CHECK(hftlist.contains("hft2"));
+	CHECK_FALSE(hftlist.contains("abc"));
+
+	// substitute element 
+	hft2.lifespan *= 2; // change a property outside list
+	REQUIRE(hftlist[hft2.name].lifespan != hft2.lifespan);
+	hftlist.insert(hft2); // replace existing
+	CHECK( hftlist[hft2.name].lifespan == hft2.lifespan );
+	
+	// remove excluded
+	hftlist.remove_excluded();
+	CHECK(hftlist.size()==1);
+	CHECK(hftlist.contains(hft1.name)); // hft1 included
+	CHECK_FALSE(hftlist.contains(hft2.name)); // hft2 NOT included
+
+	// close the list
+	Hft hft3;
+	hft3.name = "hft3";
+	hftlist.close();
+	CHECK_THROWS(hftlist.insert(hft3));
+	CHECK_THROWS(hftlist.remove_excluded());
+}
+
+TEST_CASE("Fauna::HftPopulationsMap", "") {
+	HftPopulationsMap map;
+	const int NPOP    = 3; // populations count
+	const int NHERBIS = 5; // herbivores count
+
+	// create some HFTs
+	Hft hfts[NPOP];
+	hfts[0].name = "hft1";
+	hfts[1].name = "hft2";
+	hfts[2].name = "hft3";
+	for (int i=0; i<NPOP; i++)
+		hfts[i].establishment_density = (double) i;
+
+	// create some populations with establishment_density
+	DummyPopulation* pops[NPOP];
+	for (int i=0; i<NPOP; i++) {
+		pops[i] = new DummyPopulation(hfts[i]);
+		for (int j=0; j<NHERBIS; j++)
+			pops[i]->create(hfts[i].establishment_density); 
+
+		REQUIRE(pops[i]->get_list().size() == NHERBIS);
+		// add them to the map
+		map.add(pops[i]);
 	}
+
+	REQUIRE(map.size() == NPOP);
+
+	// throw some exceptions
+	CHECK_THROWS(map.add(NULL));
+	CHECK_THROWS(map.add(pops[0]));
+
+	// check if iterator access works
+	HftPopulationsMap::const_iterator itr = map.begin();
+	while (itr != map.end()) {
+		const PopulationInterface& pop = **itr;
+		bool found = false; 
+		// check against HFTs (order in the map is not defined)
+		for (int i=0; i<NPOP; i++)
+			if (pop.get_hft() == hfts[i]) {
+				found = true;
+				const HerbivoreInterface& herbiv = **pop.get_list().begin();
+				// check if density is the same and herbivore access works
+				CHECK(herbiv.get_mass_density()  == hfts[i].establishment_density ); 
+			}
+		CHECK(found);
+		itr++;
+	}
+
+	// check random access
+	for (int i=0; i<NPOP; i++)
+		CHECK(&map[hfts[i]] == pops[i]);
+	CHECK_THROWS(map[Hft()]); // unnamed Hft is not in map
 }
 
 TEST_CASE("Fauna::TestGrass", "") {
@@ -274,69 +469,5 @@ TEST_CASE("Fauna::TestHabitatGroup","") {
 		for (int j=0; j<refs.size(); j++)
 			CHECK( refs[j] == &objects[j]);
 	}
-}
-
-TEST_CASE("Fauna::HftList",""){
-	HftList& hftlist = HftList::get_global();
-
-	// check initial size
-	REQUIRE(hftlist.size()==0);
-
-	// invalid access
-	CHECK_THROWS(hftlist[1]);
-	CHECK_THROWS(hftlist["abc"]);
-
-	// add Hft without name
-	CHECK_THROWS(hftlist.insert( Hft() ));
-
-	// add some real HFTs
-	Hft hft1; 
-	hft1.name="hft1";
-	hft1.is_included = true;
-	REQUIRE_NOTHROW(hftlist.insert(hft1));
-	REQUIRE(hftlist.size()==1);
-	REQUIRE(hftlist[0].name == "hft1");
-
-	Hft hft2;
-	hft2.name = "hft2";
-	hft2.is_included = false;
-	REQUIRE_NOTHROW( hftlist.insert(hft2) );
-	REQUIRE( hftlist.size()==2 );
-	REQUIRE_NOTHROW( hftlist[1] );
-
-	// find elements
-	CHECK(hftlist["hft2"].name == "hft2");
-	CHECK(hftlist["hft1"].name == "hft1");
-	CHECK(hftlist.contains("hft1"));
-	CHECK(hftlist.contains("hft2"));
-	CHECK_FALSE(hftlist.contains("abc"));
-
-	// substitute element 
-	hft2.lifespan *= 2; // change a property outside list
-	REQUIRE(hftlist[hft2.name].lifespan != hft2.lifespan);
-	hftlist.insert(hft2); // replace existing
-	CHECK( hftlist[hft2.name].lifespan == hft2.lifespan );
-	
-	// remove excluded
-	hftlist.remove_excluded();
-	CHECK(hftlist.size()==1);
-	CHECK(hftlist.contains(hft1.name)); // hft1 included
-	CHECK_FALSE(hftlist.contains(hft2.name)); // hft2 NOT included
-
-	// close the list
-	Hft hft3;
-	hft3.name = "hft3";
-	hftlist.close();
-	CHECK_THROWS(hftlist.insert(hft3));
-	CHECK_THROWS(hftlist.remove_excluded());
-}
-
-TEST_CASE("Fauna::Hft",""){
-	Hft hft = Hft();
-	CHECK( hft.name == "" );
-	std::string msg;
-
-	// not valid without name
-	CHECK_FALSE( hft.is_valid(msg) );
 }
 

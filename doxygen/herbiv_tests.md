@@ -1,5 +1,12 @@
 Unit Tests of the Herbivore Module {#page_herbiv_tests}
 ==================================
+<!-- For doxygen, this is the *page* header -->
+\brief Details on unit tests and test simulations.
+
+Unit Tests of the Herbivore Module {#sec_herbiv_tests}
+==================================
+<!-- For doxygen, this is the *section* header -->
+
 
 Introduction
 ------------
@@ -43,13 +50,14 @@ a testing framework has been implemented.
 The software design allows any vegetation model to be combined
 with the herbivore model.
 
-The class \ref TestHabitat implements a very basic vegetation
+The class \ref Fauna::TestHabitat implements a very basic vegetation
 model that can be parametrized with custom parameters in the
 instruction file.
 One TestHabitat object corresponds to a \ref Patch in a way.
 
-The class \ref TestHabitatGroup holds a list of \ref TestHabitat
-objects and thus corresponds to a \ref Gridcell.
+The class \ref Fauna::TestHabitatGroup holds a list of 
+\ref Fauna::TestHabitat objects and thus corresponds to a 
+\ref Gridcell.
 
 When compiling the project, in addition to `guess` another 
 executable binary file is produced: `herbivsim`.
@@ -67,11 +75,11 @@ These are the relevant parameters:
 \note Make sure that `ifherbivory` is true because otherwise
 no output will be produced (see \ref sec_herbiv_output).
 
+------------------------------------------------------------
 
-\brief Details on unit tests and test simulations.
 \author Wolfgang Pappa, Senckenberg BiK-F
 \date June 2017
-\see The page \ref group_herbivory gives implementation details.
-\see The page \ref page_herbiv_model gives background on the science.
-\see The page \ref page_herbiv_tutor offers tutorials on how to use the model.
-
+\see \ref page_herbiv_design
+\see \ref page_herbiv_model
+\see \ref page_herbiv_tutor
+\see \ref group_herbivory

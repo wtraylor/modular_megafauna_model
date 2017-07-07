@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbiv_habitat.h
+/// \file 
 /// \brief Classes for the spatial units where herbivores live.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -8,17 +8,18 @@
 #ifndef HERBIV_HABITAT_H
 #define HERBIV_HABITAT_H
 
-#include "herbiv_foraging.h" // for ForageMass
-#include <list>
-#include <vector>
-#include <map>
+#include "herbiv_foraging.h"   // for ForageMass
+#include "herbiv_population.h" // for HftPopulationsMap
+#include <vector>              // for merging data vectors
+#include <map>                 // for output data mapped to HFTs
+#include <stdexcept>           // for get_populations
 
 
 namespace Fauna{
 
 	// Forward declaration of classes in the same namespace
-	class HerbivoreUnit; // defined in herbiv_individual.h
-	class Hft;           // defined in herbiv_hft.h
+	class HerbivoreInterface; 
+	class Hft;
 
 	/// Output data for one time unit (day, month, …) in a \ref Habitat.
 	/** \ingroup group_herbivory */
@@ -65,7 +66,8 @@ namespace Fauna{
 		);
 	};
 
-    typedef std::vector<HabitatOutputData> HabitatOutputVector;
+	/// A vector of \ref HabitatOutputData objects
+	typedef std::vector<HabitatOutputData> HabitatOutputVector;
 
 	/// Abstract class of a spatial unit populated by herbivores
 	/** \ingroup group_herbivory 
@@ -77,10 +79,16 @@ namespace Fauna{
 	public:
 		/// Constructor
 		Habitat();
-		
+
+		/// Destructor
+		virtual ~Habitat(){}
+
 		/// Get dry-matter biomass [kg/m²] that is available to herbivores to eat.
 		virtual HabitatForage get_available_forage() const = 0;
 
+		/// Get the herbivore populations in the habitat.
+		HftPopulationsMap& get_populations(){ return populations; }
+		
 		/// Remove forage eaten by herbivores.
 		/**
 		 * The base class implements only adding the eaten forage
@@ -90,9 +98,6 @@ namespace Fauna{
 		 * must not exceed available forage.
 		 */
 		virtual void remove_eaten_forage(const ForageMass& eaten_forage);
-
-		/// Get a list of herbivores that live in this habitat.
-		std::list<HerbivoreUnit*>& get_herbivores(){return herbivores;}
 
 		//-----------------------------------------------
 		/** @{ \name Output routines. */
@@ -125,7 +130,7 @@ namespace Fauna{
 		 * last year.
 		 * \return Vector of size 12.  
 		 * \todo Once moving to C++11, this should be of type 
-		 * \ref std::array. */
+		 * std::array. */
 		std::vector<HabitatOutputData> get_monthly_output() const;
 
 		/// Get output data averaged over the whole year.
@@ -147,14 +152,13 @@ namespace Fauna{
 		/// The current day as set by \ref read_todays_output().
 		/** \see Date::day */
 		int day_of_year;
-		//
-		/// The herbivores that live in this habitat.
-		std::list<HerbivoreUnit*> herbivores;
 
 		/// Vector with output for every day of the year.
 		/** \todo When switching to C++11 standard, this should be 
-		 * \ref std::array so that the container size is fixed.*/ 
+		 * std::array so that the container size is fixed.*/ 
 		std::vector<HabitatOutputData> daily_output;
+
+		HftPopulationsMap populations;
 	};
 }
 #endif //HERBIV_HABITAT_H

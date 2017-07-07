@@ -22,6 +22,7 @@ Hft::Hft():
 
 bool Hft::is_valid(std::string& msg) const{
 	bool is_valid = true;
+	// TODO: make validity check dependent on HerbivoreType
 
 	// The message text is written into an output string stream
 	std::ostringstream stream;

@@ -58,6 +58,9 @@ namespace Fauna{
 			/// Type of digestion (ruminant or hindgut fermenter)
 			DigestionType digestion_type;
 
+			/// Habitat population mass density for initial establishment [kg/km²]
+			double establishment_density; //TODO
+
 			/// Maximum age in years [1–∞).
 			int lifespan;
 
@@ -76,10 +79,21 @@ namespace Fauna{
 			// add more parameters in alphabetical order
 
 			/**@}*/ // group simulation parameters
+
+			/** @{ \name Comparison operators*/
+			/** Comparison operators are solely based on string 
+			 * comparison of the \ref name.
+			 */
+			bool operator==(const Hft& rhs)const{return name==rhs.name;}
+			bool operator<( const Hft& rhs)const{return name<rhs.name;}
+			/** @} */ // Comparison
+
 	};
 
 	/// The set of herbivore functional types (singleton)
 	/** \see \ref sec_singleton
+	 * \todo operator==() -> comparison by name + compatible with 
+	 * std::map
 	 */
 	class HftList{
 		public:

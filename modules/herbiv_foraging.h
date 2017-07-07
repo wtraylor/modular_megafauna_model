@@ -121,7 +121,6 @@ namespace Fauna{
 
 	/// All values for large herbivore forage in a \ref Habitat.
 	/** 
-	 * \todo snow cover
 	 * \ingroup group_herbivory
 	 */
 	struct HabitatForage {

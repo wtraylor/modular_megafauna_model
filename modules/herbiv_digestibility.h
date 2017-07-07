@@ -15,15 +15,11 @@ class Individual;
 
 namespace Fauna {
 
-	/// Type of digestibility model, corresponding to one class
-	enum DigestibilityModelType{
-		/// \ref PftDigestibility: The fixed value \ref Pft::digestibility is taken.
-		DM_PFT_FIXED
-	};
-
 	/// Abstract base class (interface) for calculating forage digestibility
-	/** \ingroup group_herbivory 
-	 * \see \ref sec_singleton **/
+	/** 
+	 * This class implements the following design patterns:
+	 * \ref sec_singleton, \ref sec_strategy.
+	 * \ingroup group_herbivory **/
 	class DigestibilityModel{
 	public:
 		/// Get current forage digestibility for one plant individual.

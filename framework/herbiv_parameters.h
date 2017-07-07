@@ -11,7 +11,6 @@
 #include <string>
 #include <vector> // for mandatory_hft_params
 #include <stdexcept>
-#include "herbiv_digestibility.h"
 
 // forward declarations
 class Pft;
@@ -20,6 +19,30 @@ namespace Fauna {
 
 	// forward declarations
 	class Hft;
+	
+	/// Type of digestibility model, corresponding to one class
+	/** \ingroup group_herbivory */
+	enum DigestibilityModelType{
+		/// \ref PftDigestibility : The fixed value \ref Pft::digestibility is taken.
+		DM_PFT_FIXED
+	};
+
+
+	/// Parameter for selecting algorithm for forage distribution among herbivores
+	/** \ingroup group_herbivory */
+	enum ForageDistributionAlgorithm{
+		/// Equal forage distribution
+		/** \see \ref Simulator::distribute_forage_equally() */
+		FD_EQUALLY
+	};
+
+	/// Parameter for selecting
+	/** \ingroup group_herbivory */
+	// TODO document
+	enum HerbivoreType{
+		HT_COHORT,
+		HT_INDIVIDUAL
+	};
 
 	/// Parameters manager for the herbivory module.
 	/**
@@ -31,6 +54,7 @@ namespace Fauna {
 	 * parameters from the instruction script. The herbivory module
 	 * itself does not use the global instance.
 	 * \see \ref sec_herbiv_parameters
+	 * \ingroup group_herbivory
 	 */
 	class Parameters{
 		public:
@@ -41,8 +65,14 @@ namespace Fauna {
 			}
 
 		public: 
+			/// Minimum mass density [kg/km²] for a living herbivore object.
+			double dead_herbivore_threshold; 
+
 			/// Whether herbivory is enabled.
 			bool ifherbivory;
+
+			/// Algorithm for how to distribute available forage among herbivores
+			ForageDistributionAlgorithm forage_distribution; 
 
 			/// Simulation years without herbivores (as part of spinup). 
 			int free_herbivory_years;
@@ -50,10 +80,14 @@ namespace Fauna {
 			/// How the forage digestibility is calculated
 			DigestibilityModelType dig_model;
 
+			/// Which kind of herbivore class to use
+			HerbivoreType herbivore_type;
+
 		public: 
 			/// Constructor with default settings
-			Parameters():
+			Parameters(): // alphabetical order
 				ifherbivory(false),
+				forage_distribution(FD_EQUALLY),
 				free_herbivory_years(0){}
 			
 			/// Declare parameters within the plib framework.
@@ -76,7 +110,7 @@ namespace Fauna {
 			 * because otherwise the plib functions cause addressing errors.
 			 *
 			 * \param callback The callback code defined with
-			 * \ref declareitems().
+			 * \ref declareitem().
 			 * \param ppft The reference to the \ref Pft object that
 			 * is currently parsed. 
 			 */
