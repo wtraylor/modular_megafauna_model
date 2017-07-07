@@ -9,8 +9,9 @@
 #include "catch.hpp" 
 #include "herbiv_foraging.h" 
 #include "herbiv_herbivore.h"
-#include "herbiv_testhabitat.h" 
 #include "herbiv_hft.h"
+#include "herbiv_parameters.h"
+#include "herbiv_testhabitat.h" 
 #include <vector>
 
 namespace Fauna{
@@ -210,7 +211,7 @@ TEST_CASE("Fauna::Hft",""){
 	std::string msg;
 
 	// not valid without name
-	CHECK_FALSE( hft.is_valid(msg) );
+	CHECK_FALSE( hft.is_valid(Parameters(), msg) );
 }
 
 TEST_CASE("Fauna::HftList",""){

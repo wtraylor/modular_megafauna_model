@@ -136,6 +136,14 @@ void Parameters::declare_parameters(
 				"Digestion type: \"ruminant\", \"hindgut\"");
 		mandatory_hft_params.push_back("digestion_type");
 
+		declareitem("establishment_density",
+				&current_hft.establishment_density,
+				DBL_MIN, DBL_MAX, // min, max
+				1,                // number of parameters
+				CB_NONE,
+				"Habitat population mass density for initial establishment [kg/km²].");
+		mandatory_hft_params.push_back("establishment_density");
+
 		declareitem("lifespan",
 				&current_hft.lifespan,
 				1, INT_MAX, // min, max
@@ -243,7 +251,9 @@ void Parameters::callback(const int callback, Pft* ppft){
 
 		// Let the Hft class do its own checks for validity
 		std::string hft_messages; 
-		const bool hft_valid = current_hft.is_valid(hft_messages);
+		const bool hft_valid = current_hft.is_valid(
+				get_global(), hft_messages);
+
 		// print warnings and error messages
 		if (hft_messages != "")
 			dprintf(std::string(

@@ -15,6 +15,8 @@
 
 namespace Fauna{
 
+	// forward declarations
+	class Parameters;
 
 	/// The different digestion types of the herbivores.
 	/** \ingroup group_herbivory */
@@ -36,9 +38,9 @@ namespace Fauna{
 			Hft();
 
 			/// Check if all variables are okay
-			/** \param msg Warning or error messages for output.
+			/** \param[out] msg Warning or error messages for output.
 			 * \return true if the object has valid values */
-			bool is_valid(std::string& msg) const;
+			bool is_valid(const Parameters& params, std::string& msg) const;
 
 			/// Whether to include the HFT in the simulation.
 			bool is_included;
@@ -59,7 +61,7 @@ namespace Fauna{
 			DigestionType digestion_type;
 
 			/// Habitat population mass density for initial establishment [kg/km²]
-			double establishment_density; //TODO
+			double establishment_density;
 
 			/// Maximum age in years [1–∞).
 			int lifespan;
@@ -92,8 +94,6 @@ namespace Fauna{
 
 	/// The set of herbivore functional types (singleton)
 	/** \see \ref sec_singleton
-	 * \todo operator==() -> comparison by name + compatible with 
-	 * std::map
 	 */
 	class HftList{
 		public:
@@ -120,9 +120,15 @@ namespace Fauna{
 				return vec.at(pos);
 			}
 
-			/// Number of elements in the list
-			const int size() const{ return vec.size(); }
-			
+			/// Close the list for any future change attempts.
+			void close(){ is_closed=true; }
+
+			/// Check whether an \ref Hft of given name exists in the list
+			/** \return true if object in list, false if not */
+			bool contains(const std::string& name) const{
+				return find(name) >= 0;
+			}
+
 			/// Add or replace an \ref Hft object.
 			/** If an object of the same name already exists,
 			 * it will be replaced with the new one.
@@ -143,12 +149,6 @@ namespace Fauna{
 					vec.push_back(hft); // append new
 			}
 
-			/// Check whether an \ref Hft of given name exists in the list
-			/** \return true if object in list, false if not */
-			bool contains(const std::string& name) const{
-				return find(name) >= 0;
-			}
-
 			/// Remove all elements with `is_included==false`
 			/** \throw std::logic_error if list is closed */
 			void remove_excluded(){
@@ -163,8 +163,9 @@ namespace Fauna{
 						iter++;
 			}
 
-			/// Close the list for any future change attempts.
-			void close(){ is_closed=true; }
+			/// Number of elements in the list
+			const int size() const{ return vec.size(); }
+			
 		private:
 			/// Vector holding the Hft instances.
 			std::vector< Hft > vec;
