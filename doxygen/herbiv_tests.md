@@ -16,7 +16,7 @@ New classes have been introduced with unit-testing and flexibility in mind.
 This has the following implications:
 
 - All classes do not rely on global variables of LPJ-GUESS
-(except for \ref Fauna::Parameters).
+(except for \ref Fauna::ParamReader).
 
 - The herbivore model is ignorant of the absolute date, but only knows the 
 day of the year.
@@ -58,6 +58,32 @@ One TestHabitat object corresponds to a \ref Patch in a way.
 The class \ref Fauna::TestHabitatGroup holds a list of 
 \ref Fauna::TestHabitat objects and thus corresponds to a 
 \ref Gridcell.
+
+@startuml "Class interactions of the Herbivory Test Simulations"
+hide members
+hide methods 
+annotation "parameters.h" as parameters 
+namespace Fauna {
+	class "TestSimulator" <<singleton>>
+	class "ParamReader"   <<singleton>>
+	interface Habitat 
+	TestSimulator ..> ParamReader                    : <<use>>
+	TestSimulator ..> .parameters                    : <<use>>
+	TestSimulator ..> Simulator                      : <<create>>
+	Simulator     ..> Habitat                        : <<call>>
+	TestSimulator ..> .GuessOutput.HerbivoryOutput   : <<create>>
+	TestSimulator ..> .GuessOutput.FileOutputChannel : <<create>>
+	TestSimulator ..> "*" TestHabitatGroup           : <<create>>
+	TestHabitatGroup "1" *-- "*" TestHabitat
+	Habitat <|-- TestHabitat 
+	class TestHabitat
+	note left : simple vegetation model \nlike Patch
+	class TestHabitatGroup
+	note bottom : like Gridcell
+}
+annotation "main()" as main
+main ..> Fauna.TestSimulator : <<call>>
+@enduml
 
 When compiling the project, in addition to `guess` another 
 executable binary file is produced: `herbivsim`.

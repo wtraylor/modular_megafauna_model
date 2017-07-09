@@ -20,6 +20,7 @@ namespace Fauna{
 	class DistributeForage;
 	class Habitat;
 	class HerbivoreInterface;
+	class HftList;
 	class Parameters;
 
 	/// Central herbivory framework class.
@@ -27,7 +28,7 @@ namespace Fauna{
 	class Simulator{
 	public:
 		/// Constructor, initializing simulation settings.
-		Simulator(const Parameters& params);
+		Simulator(const Parameters& params, const HftList& hftlist);
 
 		/// Simulate all herbivore interactions for the current day.
 		/**
@@ -46,6 +47,7 @@ namespace Fauna{
 		/// Get simulation parameters
 		const Parameters& get_params(){return params;}
 	private:
+		const HftList& hftlist;
 		const Parameters& params;
 		
 		/// Instantiate populations for one \ref Habitat.

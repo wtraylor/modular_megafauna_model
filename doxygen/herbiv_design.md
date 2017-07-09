@@ -7,6 +7,59 @@ Software Design of the Herbivory Module {#sec_herbiv_design}
 ============================================================
 <!-- For doxygen, this is the *section* header -->
 
+\startuml "Basic interactions of the herbivory module"
+[Herbivory Module] as herbivory
+() "Fauna::ParamReader" as paramreader
+() "Fauna::PatchHabitat" as patchhabitat
+() "GuessOutput::HerbivoryOutput" as herbivoutput
+node "Output Files" as outputfiles
+[LPJ-GUESS] as guess
+node "Instruction Files" as insfiles
+database "Driving Data" as drivers
+
+guess        <..> patchhabitat
+patchhabitat <..> herbivory
+
+herbivory    <..  herbivoutput : read
+herbivoutput  ..> outputfiles : write
+
+herbivory     ..> paramreader : get parameters
+paramreader   ..> insfiles : read
+
+drivers      <.. guess : read
+\enduml
+
+
+@startuml "Basic simulation classes in the Herbivory Module and their connection to LPJ-GUESS"
+
+hide members
+hide methods
+
+namespace guess {
+	class "framework()" as framework
+	Gridcell "1" *--> "*" Stand
+	Stand    "1" *--> "*" Patch
+	Pft      "1"  -left-> "*" Individual
+	Patch    "1" *--> "*" Individual
+}
+
+namespace Fauna{
+	Simulator          ..> Habitat            : <<call>>
+	guess.framework    ..> Simulator          : <<create>>
+	Simulator          ..> HerbivoreInterface : <<call>>
+	PatchHabitat      <--* guess.Patch
+	note on link: plant–animal interactions
+	Hft           "1" <-- "*"  HerbivoreInterface
+	interface HerbivoreInterface
+	abstract Habitat
+	abstract HerbivoreBase
+	Habitat            <|-- PatchHabitat
+	HerbivoreInterface <|-- HerbivoreBase
+	HerbivoreBase      <|-- HerbivoreIndividual
+	HerbivoreBase      <|-- HerbivoreCohort
+}
+@enduml
+
 Herbivory Parameters {#sec_herbiv_parameters}
 ---------------------------------------------
 
@@ -26,8 +79,8 @@ used in \ref herbiv_parameters.cpp.
 HFT parameters are declared and parsed by 
 \ref Fauna::Parameters, but checked for integrity by \ref Fauna::Hft
 itself.
+The same principle applies for \ref Fauna::Parameters and \ref Fauna::PftParams (each of the classes have a method `is_valid()`).
 
-\image html herbiv_parameters.svg "UML class diagram of instruction file parameters in the herbivory module" width=800px
 
 An example instruction file is provided in 
 `data/ins/herbivores.ins`:
@@ -43,15 +96,48 @@ An example instruction file is provided in
 
 
 
-
 \todo UML diagram with tiers:
 low-level and high-level classes
 \todo UML diagram of replacable modules: digestibility model, energy model etc.
 
 
-\image html herbiv_overview_classes.svg "Overview on herbivory-related classes" width=800px
-
-
+@startuml "Interactions of parameter-related classes in the herbivory module" 
+hide members
+hide methods
+annotation "framework()"       as framework
+annotation "Instruction Files" as insfiles
+annotation "plib.h"            as plib
+annotation "parameters.h"      as parameters
+class "Fauna.TestSimulator" <<singleton>>
+class "Fauna.ParamReader"   <<singleton>>
+Pft                "1" *-- "1" Fauna.PftParams
+framework           ..> Fauna.ParamReader : <<use>>
+parameters          ..> Pft               : <<use>>
+GuessOutput.HerbivoryOutput     ..> parameters        : <<use>>
+parameters          ..> plib              : <<use>>
+plib                ..> insfiles          : <<read>>
+framework           ..> parameters        : <<use>>
+namespace Fauna {
+	TestSimulator ..> ParamReader : <<use>>
+	ParamReader  <..> .parameters : <<call>>
+	ParamReader   ..> .plib       : <<call>>
+	ParamReader   ..> Hft         : <<create>>
+	ParamReader   ..> PftParams   : <<call>>
+	ParamReader   ..> Parameters  : <<create>>
+	class Hft {
+		+is_valid()
+	}
+	show Hft methods
+	class Parameters {
+		+is_valid()
+	}
+	show Parameters methods
+	class PftParams {
+		+is_valid()
+	}
+	show PftParams methods
+}
+@enduml
 
 
 Object-oriented Design {#sec_object_orientation}
@@ -99,7 +185,7 @@ is flexible.
 It is used in these classes: 
 \ref Fauna::DigestibilityModel, 
 \ref Fauna::TestSimulator,
-\ref Fauna::HftList
+\ref Fauna::ParamReader
 
 The basic implementation is as follows:
 
@@ -126,11 +212,11 @@ Here is a basic implementation:
 			virtual operator()(const int param) const = 0;
 		};
 
-		struct StrategyOne {
+		struct StrategyOne: public Strategy {
 			virtual operator()(const int param) const{ /*...*/ };
 		};
 
-		struct StrategyTwo {
+		struct StrategyTwo: public Strategy {
 			virtual operator()(const int param) const{ /*...*/ };
 		};
 
@@ -149,7 +235,9 @@ Their implemented algorithm can be called by using the object like a function:
 Obviously, the class name (and the names of their instances and pointers) should be verbs.
 The class name should of course be capitalized.
 
-## Herbivory Output {#sec_herbiv_output}
+Herbivory Output {#sec_herbiv_output}
+-------------------------------------
+
 The output module \ref GuessOutput::HerbivoryOutput is used both in the 
 standard LPJ-GUESS framework and in the test simulations
 (\ref page_herbiv_tests).
@@ -178,6 +266,36 @@ to \ref GuessOutput::CommonOutput were made:
   in order to observe the \ref sec_dependency_inversion and
   to avoid global variables.
   See also: \ref sec_herbiv_limit_output.
+
+@startuml "Output classes of the herbivory module"
+hide members 
+annotation "Output Directory" as outputdirectory 
+namespace GuessOutput{
+	HerbivoryOutput     --> OutputChannel : <<use>>
+	OutputModule      <|--  HerbivoryOutput
+	OutputChannel     <|--  FileOutputChannel
+	FileOutputChannel   --> .outputdirectory : write
+	enum interval {
+		DAILY
+		MONTHLY
+		ANNUAL
+	}
+	show interval members
+	HerbivoryOutput *-- interval
+}
+namespace Fauna{
+	abstract Habitat
+	Habitat o-- "365" HabitatOutputData
+	note on link: daily
+	GuessOutput.HerbivoryOutput ..> Fauna.HabitatOutputData : <<use>>
+	HabitatOutputData --> HabitatForage
+	note on link : available forage
+	HabitatOutputData --> ForageMass
+	note on link : eaten forage
+	class HabitatOutputData
+	note right : various other values
+}
+@enduml
 
 
 ------------------------------------------------------------

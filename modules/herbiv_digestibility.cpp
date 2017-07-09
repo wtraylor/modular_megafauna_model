@@ -17,5 +17,5 @@ using namespace Fauna;
 DigestibilityModel* DigestibilityModel::global_model = NULL;
 
 double PftDigestibility::get_digestibility(const Individual& individual) const{
-	return individual.pft.digestibility;
+	return individual.pft.herbiv_params.digestibility;
 }

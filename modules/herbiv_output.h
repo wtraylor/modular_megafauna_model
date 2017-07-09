@@ -132,6 +132,7 @@ namespace GuessOutput {
 
 			/// Temporal aggregation interval (monthly, yearly, ...)
 			enum {
+
 				DAILY,
 				MONTHLY,
 				ANNUAL

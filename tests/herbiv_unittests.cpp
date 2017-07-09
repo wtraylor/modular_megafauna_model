@@ -215,7 +215,7 @@ TEST_CASE("Fauna::Hft",""){
 }
 
 TEST_CASE("Fauna::HftList",""){
-	HftList& hftlist = HftList::get_global();
+	HftList hftlist;
 
 	// check initial size
 	REQUIRE(hftlist.size()==0);
@@ -234,6 +234,7 @@ TEST_CASE("Fauna::HftList",""){
 	REQUIRE_NOTHROW(hftlist.insert(hft1));
 	REQUIRE(hftlist.size()==1);
 	REQUIRE(hftlist[0].name == "hft1");
+	REQUIRE(hftlist.begin()->name == "hft1");
 
 	Hft hft2;
 	hft2.name = "hft2";
@@ -250,7 +251,7 @@ TEST_CASE("Fauna::HftList",""){
 	CHECK_FALSE(hftlist.contains("abc"));
 
 	// substitute element 
-	hft2.lifespan *= 2; // change a property outside list
+	hft2.lifespan += 2; // change a property outside list
 	REQUIRE(hftlist[hft2.name].lifespan != hft2.lifespan);
 	hftlist.insert(hft2); // replace existing
 	CHECK( hftlist[hft2.name].lifespan == hft2.lifespan );
@@ -260,13 +261,6 @@ TEST_CASE("Fauna::HftList",""){
 	CHECK(hftlist.size()==1);
 	CHECK(hftlist.contains(hft1.name)); // hft1 included
 	CHECK_FALSE(hftlist.contains(hft2.name)); // hft2 NOT included
-
-	// close the list
-	Hft hft3;
-	hft3.name = "hft3";
-	hftlist.close();
-	CHECK_THROWS(hftlist.insert(hft3));
-	CHECK_THROWS(hftlist.remove_excluded());
 }
 
 TEST_CASE("Fauna::HftPopulationsMap", "") {

@@ -92,17 +92,9 @@ namespace Fauna{
 
 	};
 
-	/// The set of herbivore functional types (singleton)
-	/** \see \ref sec_singleton
-	 */
+	/// A set of herbivore functional types, unique by name
 	class HftList{
 		public:
-			/// Get the global singleton instance.
-			static HftList& get_global(){
-				static HftList instance = HftList(); // instantiated on first call
-				return instance;
-			}
-
 			/// Get \ref Hft object by its name identifier.
 			const Hft& operator[](const std::string& name) const{
 				const int pos = find(name);
@@ -120,9 +112,6 @@ namespace Fauna{
 				return vec.at(pos);
 			}
 
-			/// Close the list for any future change attempts.
-			void close(){ is_closed=true; }
-
 			/// Check whether an \ref Hft of given name exists in the list
 			/** \return true if object in list, false if not */
 			bool contains(const std::string& name) const{
@@ -133,11 +122,8 @@ namespace Fauna{
 			/** If an object of the same name already exists,
 			 * it will be replaced with the new one.
 			 * \throw std::invalid_argument `if (hft.name=="")`
-			 * \throw std::logic_error if the list is closed*/
+			 */
 			void insert(const Hft hft){ 
-				if (is_closed)
-					throw std::logic_error("HftList::add(): "
-							"List is closed to changes.");
 				if (hft.name == "")
 					throw std::invalid_argument("HftList::add(): "
 							"Hft.name is empty");
@@ -150,11 +136,7 @@ namespace Fauna{
 			}
 
 			/// Remove all elements with `is_included==false`
-			/** \throw std::logic_error if list is closed */
 			void remove_excluded(){
-				if (is_closed)
-					throw std::logic_error("HftList::remove_excluded(): "
-							"List is closed.");
 				std::vector<Hft>::iterator iter = vec.begin();
 				while (iter != vec.end())
 					if (!iter->is_included)
@@ -163,15 +145,21 @@ namespace Fauna{
 						iter++;
 			}
 
-			/// Number of elements in the list
-			const int size() const{ return vec.size(); }
 			
+			//------------------------------------------------------------
+			/** @{ \name Wrapper around std::vector */
+			typedef std::vector<Hft>::iterator iterator;
+			typedef std::vector<Hft>::const_iterator const_iterator;
+			iterator begin(){return vec.begin();}
+			const_iterator begin()const{return vec.begin();}
+			iterator end(){return vec.end();}
+			const_iterator end()const{return vec.end();}
+			const int size() const{ return vec.size(); }
+			/** @} */ // Container Functionality
 		private:
 			/// Vector holding the Hft instances.
 			std::vector< Hft > vec;
 			
-			bool is_closed;
-
 			/// Find the position of the \ref Hft with given name.
 			/** \param name \ref Hft::name identifier
 			 * \return list position if found, -1 if not in list */
@@ -181,10 +169,6 @@ namespace Fauna{
 						return i;
 				return -1;
 			}
-
-			HftList():is_closed(false){}     // hidden constructor
-			HftList(HftList const&);        // deleted copy constructor
-			void operator=(HftList const&); // deleted assignment constructor
 	};
 	
 }

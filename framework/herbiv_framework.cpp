@@ -8,20 +8,43 @@
 
 #include "config.h"
 #include "herbiv_framework.h"
-#include "guess.h"                // for Date
 #include "herbiv_digestibility.h" // for DigestibilityModel
 #include "herbiv_habitat.h"       // for Habitat and Population
 #include "herbiv_herbivore.h"     // for HerbivoreInterface
 #include "herbiv_hft.h"           // for Hft and HftList
 #include "herbiv_parameters.h"    // for Fauna::Parameters
 #include "assert.h"
+#include "shell.h" // for dprintf()
 #include <stdexcept> // for std::logic_error, std::invalid_argument
 
 using namespace Fauna;
 
-Simulator::Simulator(const Parameters& params):
-	params(params)
+Simulator::Simulator(const Parameters& params, const HftList& hftlist):
+	hftlist(hftlist), params(params)
 {
+	// CHECK PARAMETERS OF HFTS AND GLOBALLY
+
+	std::string all_msg; 
+	bool all_valid = true;
+
+	HftList::const_iterator itr = hftlist.begin();
+	while (itr != hftlist.end()){
+		std::string msg;
+		all_valid &= itr->is_valid(params, msg);
+		all_msg   += msg;
+		itr++;
+	}
+
+	std::string global_msg;
+	all_valid &= params.is_valid(global_msg);
+	all_msg   += global_msg;
+
+	if (!all_valid)
+		throw std::runtime_error(all_msg);
+	else
+		dprintf(all_msg.c_str()); // maybe warnings or notifications
+
+
 	// DIGESTIBILITY MODEL
 	// The global object instance is held in a static variable.
 
@@ -43,7 +66,6 @@ Simulator::Simulator(const Parameters& params):
 
 HftPopulationsMap Simulator::create_populations(){
 	HftPopulationsMap map;
-	const HftList& hftlist = HftList::get_global();
 	for (int i=0; i<=hftlist.size(); i++){
 		const Hft& hft = hftlist[i];
 		switch (params.herbivore_type){
@@ -78,7 +100,6 @@ void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
 	// pass the current date into the herbivore module
 	habitat.init_todays_output(day_of_year);
 
-	const HftList& hftlist = HftList::get_global();
 	if (do_herbivores && hftlist.size()>0) {
 
 		// all populations in the habitat (one for each HFT)

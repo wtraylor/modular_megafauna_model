@@ -15,6 +15,7 @@
 
 namespace Fauna{
 	// forward declaration
+	class HftList;
 	class Parameters;
 
 	/// Performs test simulations for herbivores outside of the LPJ-GUESS vegetation model
@@ -33,7 +34,7 @@ namespace Fauna{
 			/** Call this only after ins file has been read.
 			 * \param global_params Instruction file parameters from
 			 * the herbivory module not specific to the test simulation.*/
-			void run(const Parameters& global_params);
+			void run(const Parameters& global_params, const HftList& hftlist);
 
 
 			/// Check if all mandatory parameters have been read, terminates on error.

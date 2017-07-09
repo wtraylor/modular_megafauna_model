@@ -10,7 +10,7 @@
 #include "config.h"
 #include "herbiv_hft.h"
 #include "herbiv_parameters.h"
-#include <sstream>
+#include <sstream> // for is_valid() messages
 
 using namespace Fauna;
 

@@ -22,7 +22,7 @@ from \ref Fauna::HerbivoreBase.
 
 Add a new ID enum element in \ref Fauna::HerbivoreType and make it
 accessible to the instruction file parser by checking for your
-string identifier in \ref Fauna::Parameters::callback() under
+string identifier in \ref Fauna::ParamReader::callback() under
 `CB_HERBIVORE_TYPE`.
 
 Then, derive a new class from \ref Fauna::Population to construct
@@ -42,9 +42,9 @@ Forage Tutorials {#sec_herbiv_tutor_forage}
 - Add a short name for it in [get_forage_type_name()](\ref Fauna::get_forage_type_name()).
 
 - Instruction file (\ref herbiv_parameters.cpp):
-	+ [Parameters::declare_parameters()](\ref Fauna::Parameters::declare_parameters()): 
+	+ ParamReader::declare_parameters():
 	Add parameter description
-	+ [Parameters::callback()](\ref Fauna::Parameters::callback()): 
+	+ ParamReader::callback():
 	Add forage type under [CB_FORAGE_TYPE](\ref Fauna::CB_FORAGE_TYPE).
 
 - Create new member variable in [ForageMass](\ref Fauna::ForageMass) 
@@ -88,12 +88,12 @@ of that class and include it in
   \ref Fauna::Simulator::distribute_forage().
 
 - Add an identifier in \ref Fauna::ForageDistributionAlgorithm and
-  add your string identifier in \ref Fauna::Parameters::callback()
+  add your string identifier in \ref Fauna::ParamReader::callback()
 	under `CB_FORAGE_DISTRIBUTION`.
 
 - Don’t forget to add your identifier as possible values in
-  the message output in \ref Fauna::Parameters::declare_parameters()
-	and \ref Fauna::Parameters::callback(), as well as in the
+  the message output in \ref Fauna::ParamReader::declare_parameters()
+	and \ref Fauna::ParamReader::callback(), as well as in the
 	example instruction file `data/ins/herbivores.ins`.
 
 Parameters Tutorials {#sec_herbiv_tutor_parameters}
@@ -101,17 +101,17 @@ Parameters Tutorials {#sec_herbiv_tutor_parameters}
 
 ### How to add a new PFT parameter {#sec_herbiv_new_pft_parameter}
 
-Pft parameters are declared and parsed outside of the core LPJ-GUESS functions of
-\ref parameters.cpp (see \ref sec_herbiv_parameters).
+Herbivory-related PFT parameters are declared and parsed by \ref Fauna::ParamReader, but initialized and checked in \ref Fauna::PftParams.
 
-- Create the member variable in \ref Pft. Place it with the other herbivory variables.
+- Create the member variable in \ref Fauna::PftParams.
 - If the parameters needs its own callback:
 	+ add a new enum item both in \ref parameters.h.
-	+ add a new if statement in \ref Fauna::Parameters::callback().
-- Declare the parameter in \ref Fauna::Parameters::declare_parameters()
+	+ add a new if statement in \ref Fauna::ParamReader::callback().
+- Declare the parameter in \ref Fauna::ParamReader::declare_parameters()
 	(possibly with your own CB_* code).
-- You can initialize it in \ref Fauna::Parameters::init_pft().
-- Check if the parameter was parsed and is okay in \ref Fauna::Parameters::callback().
+- You can initialize it in \ref Fauna::ParamReader::init_pft().
+- Check if the parameter was *parsed* in \ref Fauna::ParamReader::callback().
+- Check if the parameter is *valid* in \ref Fauna::PftParams::is_valid().
 - Extend the example instruction files in the directory `data/ins`.
 
 
@@ -124,15 +124,11 @@ Pft parameters are declared and parsed outside of the core LPJ-GUESS functions o
 - If the parameter needs to be parsed from a string, add your
 	own callback:
 	+ add a new enum item CB_* in \ref parameters.h.
-	+ add a new if statement in \ref Fauna::Parameters::callback().
+	+ add a new if statement in \ref Fauna::ParamReader::callback().
 - Call the plib function \ref declareitem() in 
-	\ref Fauna::Parameters::declare_parameters()
+	\ref Fauna::ParamReader::declare_parameters()
 	(possibly with your own CB_* code).
-- If you wish, add it to \ref Fauna::Parameters::mandatory_hft_params so
-	that it must not be omitted. This can be done conditionally
-	from anywhere in the framework (e.g. only by activation of
-	other modules). If your parameter is not mandatory, make sure
-	it is initialized with a valid value in \ref Fauna::Hft::Hft().
+- If you wish, add it to \ref Fauna::ParamReader::mandatory_hft_params so that it must not be omitted. If your parameter is not mandatory, make sure it is initialized with a valid value in \ref Fauna::Hft::Hft().
 - Extend the example instruction file `data/ins/herbivores.ins`.
 
 

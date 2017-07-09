@@ -10,8 +10,13 @@
 #include "herbiv_patchhabitat.h"
 #include "herbiv_digestibility.h"
 #include "guess.h"
+#include <sstream> // for is_valid() messages
 
 using namespace Fauna;
+
+//============================================================
+// PatchHabitat
+//============================================================
 
 HabitatForage PatchHabitat::get_available_forage() const {
 	/// Result object
@@ -109,5 +114,29 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 
 		patch.vegetation.nextobj();
 	} 
+}
+
+//============================================================
+// PftParams
+//============================================================
+
+bool PftParams::is_valid(const Parameters& params, 
+		std::string& messages)const{
+
+	bool is_valid = true;
+	
+	// The message text is written into an output string stream
+	std::ostringstream stream;
+
+	if (forage_type == FT_GRASS && pft.lifeform != GRASS){
+		stream << "forage_type=\"grass\", but lifeform!=\"grass\""
+			<< std::endl;
+		is_valid = false;
+	}
+
+	// convert stream to string
+	messages = stream.str();
+
+	return is_valid;
 }
 

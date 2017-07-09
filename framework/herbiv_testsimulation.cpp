@@ -13,7 +13,7 @@
 #include "herbiv_testsimulation.h"
 #include "herbiv_framework.h"
 #include "herbiv_output.h"
-#include "herbiv_parameters.h"
+#include "herbiv_paramreader.h"
 #include <climits> // for INT_MAX
 #include <cfloat> // for DBL_MAX
 
@@ -66,8 +66,12 @@ int main(int argc,char* argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	// Run the simulation with the global parametersü
-	simulator.run(Parameters::get_global());
+	// store the parameters
+	const Parameters params = ParamReader::get_instance().get_params();
+	const HftList hftlist = ParamReader::get_instance().get_hftlist();
+
+	// Run the simulation with the global parameters
+	simulator.run(params, hftlist);
 
 	dprintf("\nFinished\n");
 	return EXIT_SUCCESS;
@@ -172,7 +176,8 @@ void TestSimulator::plib_callback(int callback) {
 	}
 }
 
-void TestSimulator::run(const Fauna::Parameters& global_params){
+void TestSimulator::run(const Fauna::Parameters& global_params,
+		const HftList& hftlist){
 
 	// PREPARE OUTPUT
 	// Since we only use HerbivoryOutput here, we don’t use the output
@@ -209,7 +214,7 @@ void TestSimulator::run(const Fauna::Parameters& global_params){
 	/// The simulator for the habitats
 	// Pass the global parameters that were read from the 
 	// instruction file.
-	Simulator habitat_simulator(Parameters::get_global());
+	Simulator habitat_simulator(global_params, hftlist);
 
 
 	dprintf("Starting simulation.\n");
