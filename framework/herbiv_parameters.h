@@ -17,7 +17,6 @@ namespace Fauna {
 
 	
 	/// Type of digestibility model, corresponding to one class
-	/** \ingroup group_herbivory */
 	enum DigestibilityModelType{
 		/// \ref PftDigestibility : The fixed value \ref Pft::digestibility is taken.
 		DM_PFT_FIXED
@@ -25,7 +24,6 @@ namespace Fauna {
 
 
 	/// Parameter for selecting algorithm for forage distribution among herbivores
-	/** \ingroup group_herbivory */
 	enum ForageDistributionAlgorithm{
 		/// Equal forage distribution
 		/** \see \ref Simulator::distribute_forage_equally() */
@@ -33,7 +31,6 @@ namespace Fauna {
 	};
 
 	/// Parameter for selecting the class implementing \ref HerbivoreInterface.
-	/** \ingroup group_herbivory */
 	// TODO document
 	enum HerbivoreType{
 		HT_COHORT,
@@ -41,7 +38,6 @@ namespace Fauna {
 	};
 
 	/// Parameters for the herbivory module.
-	/** \ingroup group_herbivory */
 	struct Parameters{
 			/// Minimum mass density [kg/km²] for a living herbivore object.
 			double dead_herbivore_threshold; 

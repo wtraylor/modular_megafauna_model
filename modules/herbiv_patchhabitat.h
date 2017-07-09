@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbiv_patchhabitat.h
+/// \file 
 /// \brief Implementation of a herbivore habitat for a \ref Patch.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -27,8 +27,6 @@ namespace Fauna {
 	 * \note There are no unit tests for this class because the
 	 * class \ref Patch cannot reasonably be instantiated in a
 	 * unit test without the whole LPJ-GUESS framework.
-	 *
-	 * \ingroup group_herbivory 
 	 */
 	class PatchHabitat : public Habitat{
 	public:

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file    herbiv_testhabitat.h
+/// \file    
 /// \brief   \ref Fauna::Habitat implementations for testing purpose.
 /// \ingroup group_herbivory
 /// \author  Wolfgang Pappa, Senckenberg BiK-F

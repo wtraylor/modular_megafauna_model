@@ -24,7 +24,6 @@ namespace Fauna{
 	class Parameters;
 
 	/// Central herbivory framework class.
-	/** \ingroup group_herbivory */
 	class Simulator{
 	public:
 		/// Constructor, initializing simulation settings.
@@ -64,12 +63,10 @@ namespace Fauna{
 	};
 	
 	/// Map defining which herbivore gets what to eat.
-	/** \ingroup group_herbivory */
 	typedef std::map<HerbivoreInterface*, ForageMass> ForageDistribution;
 
 	/// Interface for a forage distribution algorithm
-	/** \see \ref sec_functor, \ref sec_strategy
-	 * \ingroup group_herbivory */
+	/** \see \ref sec_functor, \ref sec_strategy */
 	struct DistributeForage{
 		/// Distribute forage equally among herbivores
 		/**

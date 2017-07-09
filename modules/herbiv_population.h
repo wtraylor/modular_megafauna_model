@@ -23,7 +23,6 @@ namespace Fauna{
 	 * have all the same \ref Hft.
 	 * It also instantiates all new objects of herbivore classes
 	 * (derived from \ref HerbivoreInterface) in a simulation.
-	 * \ingroup group_herbivory
 	 */
 	struct PopulationInterface{
 		/// Virtual destructor
@@ -59,7 +58,6 @@ namespace Fauna{
 	};
 
 	/// A population of \ref HerbivoreIndividual objects.
-	/** \ingroup group_herbivory */
 	class IndividualPopulation: public PopulationInterface{
 		public:
 			/// Constructor
@@ -82,7 +80,6 @@ namespace Fauna{
 	};
 
 	/// A population of \ref HerbivoreCohort objects.
-	/** \ingroup group_herbivory */
 	class CohortPopulation: public PopulationInterface{
 		public:
 			/// Constructor
@@ -119,7 +116,6 @@ namespace Fauna{
 	 *
 	 * \ref Population object instances passed to this class are
 	 * owned by this class and will be deleted in the destructor.
-	 * \ingroup group_herbivory
 	 */
 	class HftPopulationsMap{
 		public:

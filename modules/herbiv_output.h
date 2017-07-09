@@ -1,5 +1,4 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-//
 /// \file 
 /// \brief Output module for the herbivory module.
 /// \ingroup group_herbivory
@@ -26,7 +25,6 @@ namespace GuessOutput {
 
 	/// Abstract helper class to limit output to a specific time.
 	/**
-	 * \ingroup group_herbivory
 	 * \see \ref sec_herbiv_limit_output 
 	 */
 	struct OutputLimiter{
@@ -43,7 +41,6 @@ namespace GuessOutput {
 	};
 
 	/// Limits output to the time after \ref nyear_spinup.
-	/** \ingroup group_herbivory */
 	struct NoSpinupLimiter: public OutputLimiter{
 		virtual bool include_date(const int year, 
 				const int day_of_year) const;
@@ -53,7 +50,6 @@ namespace GuessOutput {
 	/** 
 	 * If \ref deactivate() is called, all public methods will not
 	 * do anything anymore.
-	 * \ingroup group_herbivory 
 	 * \see sec_herbiv_output
 	 * \see sec_herbiv_new_output
 	 * \see sec_herbiv_limit_output

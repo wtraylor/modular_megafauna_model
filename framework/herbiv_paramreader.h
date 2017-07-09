@@ -23,7 +23,6 @@ namespace Fauna {
 	 * The global instance may only be accessed from \ref framework()
 	 * and \ref parameters.cpp. The herbivory module itself does
 	 * not use this class.
-	 * \ingroup group_herbivory
 	 */
 	class ParamReader{
 		public:

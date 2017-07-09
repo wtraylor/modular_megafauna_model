@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbiv_foraging.h
+/// \file 
 /// \ingroup group_herbivory
 /// \brief Large herbivore forage.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -15,7 +15,6 @@
 namespace Fauna{
 
 	/// Different types of forage.
-	/** \ingroup group_herbivory **/
 	enum ForageType {
 		/// Forage type grass.
 		FT_GRASS,   
@@ -29,8 +28,7 @@ namespace Fauna{
 	std::string get_forage_type_name(const ForageType ft);
 
 	/// Dry matter mass values [DMkg] for different forage types
-	/** This struct is so primitive that it does not contain getters and setters.
-	 * \ingroup group_herbivory **/
+	/** This struct is so primitive that it does not contain getters and setters.  */
 	struct ForageMass {
 		/// Dry matter grass forage biomass [DMkg].
 		double grass;
@@ -60,7 +58,6 @@ namespace Fauna{
 	/// Abstract base class for herbivore forage of one type in a habitat.
 	/**
 	 * For more forage types create more child classes (like \ref GrassForage).
-	 * \ingroup group_herbivory
 	 */
 	class ForageBase {
 		private:
@@ -91,7 +88,6 @@ namespace Fauna{
 	};
 
 	/// Grass forage in a habitat.
-	/** \ingroup group_herbivory **/
 	class GrassForage: public ForageBase {
 		private:
 			double fpc;
@@ -120,9 +116,6 @@ namespace Fauna{
 	};
 
 	/// All values for large herbivore forage in a \ref Habitat.
-	/** 
-	 * \ingroup group_herbivory
-	 */
 	struct HabitatForage {
 		/// Constructor with zero values
 		HabitatForage(){}

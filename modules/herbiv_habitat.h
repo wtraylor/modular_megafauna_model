@@ -22,7 +22,6 @@ namespace Fauna{
 	class Hft;
 
 	/// Output data for one time unit (day, month, …) in a \ref Habitat.
-	/** \ingroup group_herbivory */
 	class HabitatOutputData{
 	public:
 		/// Constructor
@@ -70,7 +69,7 @@ namespace Fauna{
 	typedef std::vector<HabitatOutputData> HabitatOutputVector;
 
 	/// Abstract class of a spatial unit populated by herbivores
-	/** \ingroup group_herbivory 
+	/** 
 	 * \note While this base class implements the output functions,
 	 * any derived class is responsible to add output data to 
 	 * \ref daily_output.

@@ -20,7 +20,6 @@ namespace Fauna{
 	/// Interface of a herbivore of a specific \ref Hft.
 	/** 
 	 * This does not define any model functionality.
-	 * \ingroup group_herbivory
 	 */
 	class HerbivoreInterface{
 		public:
@@ -73,9 +72,6 @@ namespace Fauna{
 	};
 
 	/// Abstract base class for herbivores.
-	/**
-	 * \ingroup group_herbivory
-	 */
 	class HerbivoreBase: public HerbivoreInterface{
 		public:
 			/// Constructor
@@ -107,7 +103,6 @@ namespace Fauna{
 	};
 
 	/// One herbivore individual
-	/** \ingroup group_herbivory */
 	class HerbivoreIndividual: public HerbivoreBase{
 		public:
 	};
@@ -124,7 +119,6 @@ namespace Fauna{
 	 * Any state variables describe mean values across all 
 	 * individuals.
 	 * All individuals have the same age.
-	 * \ingroup group_herbivory
 	 */
 	class HerbivoreCohort: public HerbivoreBase{
 			/// Number of individuals.

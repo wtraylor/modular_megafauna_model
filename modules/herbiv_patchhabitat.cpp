@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbiv_patchhabitat.cpp
+/// \file 
 /// \brief Implementation of a herbivore habitat for a \ref Patch.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F

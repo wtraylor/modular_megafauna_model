@@ -19,7 +19,7 @@ namespace Fauna {
 	/** 
 	 * This class implements the following design patterns:
 	 * \ref sec_singleton, \ref sec_strategy.
-	 * \ingroup group_herbivory **/
+	 */
 	class DigestibilityModel{
 	public:
 		/// Get current forage digestibility for one plant individual.
@@ -48,7 +48,6 @@ namespace Fauna {
 	/// Digestibility model using \ref Pft::digestibility.
 	/** 
 	 * Digestibility is a fixed value for each \ref Pft.
-	 * \ingroup group_herbivory
 	 */
 	class PftDigestibility : public DigestibilityModel{
 	public:

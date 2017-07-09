@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbiv_testsimulation.h
+/// \file 
 /// \brief Test simulations for the herbivory module.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F

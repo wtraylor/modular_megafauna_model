@@ -19,7 +19,6 @@ namespace Fauna{
 	class Parameters;
 
 	/// The different digestion types of the herbivores.
-	/** \ingroup group_herbivory */
 	enum DigestionType{
 		/// Hindgut fermenter (caecalid)
 		DT_HINDGUT, 
@@ -28,9 +27,6 @@ namespace Fauna{
 	};
 
 	/// One herbivore functional type (i.e. one species).
-	/**
-	 * \ingroup group_herbivory
-	 */
 	struct Hft{
 			/// Constructor initializing values
 			/** All values do not necessary need to be valid because

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbiv_testsimulation.cpp
+/// \file 
 /// \brief Herbivory test simulation independent of the LPJ-GUESS %framework.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////
-/// \file herbiv_foraging.cpp
+/// \file 
 /// \ingroup group_herbivory
 /// \brief Large herbivore forage.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
