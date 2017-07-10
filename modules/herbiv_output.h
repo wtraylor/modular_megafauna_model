@@ -17,8 +17,9 @@
 // forward declarations of referenced classes
 class Date;
 namespace Fauna { 
-	class HabitatOutputData;
 	class Habitat;
+	class HabitatOutputData;
+	class HftList;
 }
 
 namespace GuessOutput {
@@ -50,15 +51,28 @@ namespace GuessOutput {
 	/** 
 	 * If \ref deactivate() is called, all public methods will not
 	 * do anything anymore.
-	 * \see sec_herbiv_output
-	 * \see sec_herbiv_new_output
-	 * \see sec_herbiv_limit_output
+	 * \see \ref sec_herbiv_output
+	 * \see \ref sec_herbiv_new_output
+	 * \see \ref sec_herbiv_limit_output
 	 */
 	class HerbivoryOutput : public OutputModule {
 		public:
 
-			/// Constructor, declaring parameters
+			/// Constructor, declaring parameters, setting global instance
+			/**
+			 * There is only one single instance of this class in the
+			 * program.
+			 * \throw std::logic_error If the constructor is called 
+			 * a second time.
+			 */
 			HerbivoryOutput();
+
+			/// Returns the one global instance of this class
+			/**
+			 * \throw std::logic_error If no global instance has been
+			 * created yet.
+			 */
+			static HerbivoryOutput& get_instance(); 
 
 			/// Initialize, defines output tables.
 			void init();
@@ -90,23 +104,33 @@ namespace GuessOutput {
 			void outdaily(Gridcell& gridcell){}
 
 			/// Disable any activity all together.
-			static void deactivate(){ isactive = false; }
+			void deactivate(){ isactive = false; }
+
+			/// Set the list of HFTs for the output tables
+			void set_hftlist(const Fauna::HftList& _hftlist){hftlist = &_hftlist;}
 
 			/// Set an object that limits the output to a time.
 			/** \param l Reference Limiter object. Make sure this object
 			 * is not released over the whole program run! 
 			 * Pass NULL in order to have no limits.*/
-			static void set_limiter(OutputLimiter* l){
-				limiter = l;
-			}
+			void set_limiter(OutputLimiter* l){ limiter = l; }
 		protected:
+			/// Temporal aggregation interval (monthly, yearly, ...)
+			enum Interval{
+				/// Daily output
+				DAILY,
+				/// Monthly output
+				MONTHLY,
+				/// Annual output
+				ANNUAL
+			};
+
 			/// Create a column descriptor for each forage type.
-			const ColumnDescriptors get_forage_columns(
-					const int width, const int precision) const;
+			const ColumnDescriptors get_forage_columns() const;
 
 			/// Create a column descriptor for each \ref Fauna::Hft
-			const ColumnDescriptors get_hft_columns(const int width, 
-					const int precision) const;
+			/** \throw std::logic_error if \ref hftlist not defined. */
+			const ColumnDescriptors get_hft_columns() const;
 
 			/// Add one line to each output table
 			/**
@@ -126,29 +150,26 @@ namespace GuessOutput {
 					return true;
 			}
 
-			/// Temporal aggregation interval (monthly, yearly, ...)
-			enum {
-
-				DAILY,
-				MONTHLY,
-				ANNUAL
-			} interval;
-
 			/// Width of one column in the output table.
 			static const int column_width = 8;
-			
+
+			/// Temporal aggregation interval
+			Interval get_interval()const{return interval;}
+
 			/// Decimal precision for the values in the columns
-			static int precision; 
+			double get_precision()const{return precision;}
 
 		private: 
-			/// Whether the whole output is activated
-			static bool isactive;
+			Fauna::HftList const* hftlist;
+			static HerbivoryOutput* global_instance;
 
-			/// Reference to the object that limits the output.
-			static OutputLimiter* limiter;
-
+			Interval interval;
 			/// Interval parameter string as read from instruction file.
 			xtring interval_xtring;
+
+			bool isactive;
+			OutputLimiter* limiter;
+			int precision; 
 
 			/// Defines all output tables and their formats.
 			/** This function specifies all columns in all output tables, their names,

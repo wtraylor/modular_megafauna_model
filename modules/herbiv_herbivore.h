@@ -17,6 +17,13 @@ namespace Fauna{
 	// Forward declaration of classes in the same namespace
 	class Hft;
 
+	struct HerbivoreOutputData {
+		/// Body mass herbivore density [kg/km²].
+		double density_ind;
+		/// Individual herbivore density [ind/km²].
+		double density_mass;
+	};
+
 	/// Interface of a herbivore of a specific \ref Hft.
 	/** 
 	 * This does not define any model functionality.

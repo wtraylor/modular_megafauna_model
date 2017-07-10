@@ -9,6 +9,7 @@
 #include "config.h"
 #include "herbiv_output.h"
 #include "guess.h"             // for Date and Gridcell
+#include "herbiv_hft.h"        // for Hft and HftList
 #ifndef NO_GUESS_PARAMETERS
 #include "parameters.h"        // for declare_parameter()
 #endif // NO_GUESS_PARAMETERS
@@ -24,14 +25,23 @@ bool NoSpinupLimiter::include_date(const int year,
 REGISTER_OUTPUT_MODULE("herbivory", HerbivoryOutput)
 
 // define and initialize static variable
-bool HerbivoryOutput::isactive  = true;
-int  HerbivoryOutput::precision = 4;
-OutputLimiter* HerbivoryOutput::limiter = NULL;
-
+HerbivoryOutput* HerbivoryOutput::global_instance = NULL;
 
 HerbivoryOutput::HerbivoryOutput():
-	interval(ANNUAL)
+	interval(ANNUAL),
+	isactive(true),
+	precision(4),
+	limiter(NULL)
 {
+	// Check if someone is trying to create another instance
+	if (global_instance == NULL)
+		global_instance = this; 
+	else
+		throw std::logic_error("GuessOutput::HerbivoryOutput::HerbivoryOutput(): "
+				"Constructor called a second time. There should be only "
+				"one global instance of an output module.");
+
+
 	declare_parameter("herbiv_output_interval", 
 			&interval_xtring, 128,
 			"Interval for herbivory output: \"annual\", \"monthly\"\n");
@@ -52,6 +62,13 @@ HerbivoryOutput::HerbivoryOutput():
 	declare_parameter("file_forage_eaten", &file_forage_eaten, 300, 
 			"File for herbivory output: "
 			"Eaten forage [kgDM/m²]");
+}
+
+HerbivoryOutput& HerbivoryOutput::get_instance(){
+	if (global_instance == NULL)
+		throw std::logic_error("GuessOutput::HerbivoryOutput::get_instance(): "
+				"No instance for this class created yet.");
+	return *global_instance;
 }
 
 
@@ -77,20 +94,28 @@ void HerbivoryOutput::init() {
 	define_output_tables();
 }
 
-const ColumnDescriptors HerbivoryOutput::get_forage_columns(
-		const int width, const int precision)const {
+const ColumnDescriptors HerbivoryOutput::get_forage_columns()const {
 	ColumnDescriptors forage_columns;
 	forage_columns += ColumnDescriptor(get_forage_type_name(FT_GRASS).c_str(), 
-			width, precision);
+			column_width, precision);
 	// add other forage types here
-	forage_columns += ColumnDescriptor("total", width, precision);
+	forage_columns += ColumnDescriptor("total", column_width, precision);
 	return forage_columns;
 }
 
-const ColumnDescriptors HerbivoryOutput::get_hft_columns(
-		const int width, const int precision)const {
+const ColumnDescriptors HerbivoryOutput::get_hft_columns()const {
+	if (hftlist == NULL)
+		throw std::logic_error("GuessOutput::HerbivoryOutput::get_hft_columns(): "
+				"hftlist not declared. Call set_hftlist() before.");
+
 	ColumnDescriptors hft_columns;
-	// TODO
+	HftList::const_iterator itr = hftlist->begin();
+	while (itr != hftlist->end()){
+		hft_columns += ColumnDescriptor(itr->name.c_str(),
+				column_width, precision);
+		itr++;
+	}
+	hft_columns += ColumnDescriptor("total", column_width, precision);
 	return hft_columns;
 }
 
@@ -99,10 +124,8 @@ void HerbivoryOutput::define_output_tables() {
 	assert(precision    >= 0);
 
 	// Create commonly used columns
-	const ColumnDescriptors forage_columns = get_forage_columns(
-			column_width, precision);
-	const ColumnDescriptors hft_columns = get_hft_columns(
-			column_width, precision);
+	const ColumnDescriptors forage_columns = get_forage_columns();
+	const ColumnDescriptors hft_columns = get_hft_columns();
 
 	// Create the columns for each output file
 	create_output_table(out_forage_avail , file_forage_avail.c_str() , forage_columns);

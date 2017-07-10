@@ -235,6 +235,8 @@ Their implemented algorithm can be called by using the object like a function:
 Obviously, the class name (and the names of their instances and pointers) should be verbs.
 The class name should of course be capitalized.
 
+### Factory {#sec_factory}
+\todo Factory design pattern
 Herbivory Output {#sec_herbiv_output}
 -------------------------------------
 
@@ -266,6 +268,16 @@ to \ref GuessOutput::CommonOutput were made:
   in order to observe the \ref sec_dependency_inversion and
   to avoid global variables.
   See also: \ref sec_herbiv_limit_output.
+- The \ref GuessOutput::OutputModuleRegistry instantiates the
+  class. There is only one global instance, but there is no direct
+	way to access that global instance like in the
+	[Singleton design pattern](\ref sec_singleton).
+	To circumvent this restriction (instead of working with a lot
+	of `static` members) the function
+	[get_instance()](\ref GuessOutput::HerbivoryOutput::get_instance())
+	has been introduced.
+	To assert that no other instance can be created, the constructor
+	throws an exception on second call. 
 
 @startuml "Output classes of the herbivory module"
 hide members 
