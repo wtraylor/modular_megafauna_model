@@ -11,52 +11,56 @@
 
 #include "herbiv_habitat.h"
 
-namespace Fauna {
+using namespace Fauna;
 
-	/// Simulation parameters for a \ref TestHabitat
-	struct TestHabitatSettings {
-		/// Settings for grass growth
-		struct Grass {
-			/// Proportional daily rate of grass decay (day^-1)
-			/** Owen-Smith (2002) gives a value of 0.01 week^-1, that is 1.01^(1/7)-1 = 0.0014
-			 * Illius & O'Connor 2000  give a value of 0.03 day^-1*/
-			double decay;
+namespace FaunaSim {
 
-			/// Proportional digestibility of the grass [frac].
-			double digestibility;
-
-			/// Percentage of habitat covered with grass (Foliar Percentage Cover) [frac]
-			double fpc;
-
-			/// Proportional daily grass growth rate
-			double growth;
-
-			/// Initial available forage [kgDM/m²]
-			/** This should be smaller than \ref saturation */
-			double init_mass;
-
-			/// Ungrazable grass biomass reserve, inaccessable to herbivores [kgDM/m²]
-			/** Owen-Smith (2002) gives value of 20 g/m²*/
-			double reserve;
-
-			/// Saturation grass biomass [kgDM/m²]
-			/** Owen-Smith (2002): 200 g/m²*/
-			double saturation;
-
-			/// Constructor with arbitrary simple values that are valid
-			Grass():decay(0.0), digestibility(0.1), fpc(0.1), growth(0.0),
-			init_mass(0.0), reserve(0.1), saturation(1.0){}
-		} grass;
-
-		/// Constructor with zero values
-		TestHabitatSettings():grass(){}
-	};
 
 	/// Helper class for performing simple grass growth to test herbivore functionality
-	class TestGrass {
+	/**
+	 * \startuml
+	 * hide members
+	 * hide methods
+	 * FaunaSim.SimpleHabitat *--> FaunaSim.LogisticGrass
+	 * \enduml
+	 */
+	class LogisticGrass {
 		public:
+			/// Settings for grass growth
+			struct Parameters {
+				/// Proportional daily rate of grass decay (day^-1)
+				/** Owen-Smith (2002) gives a value of 0.01 week^-1, that is 1.01^(1/7)-1 = 0.0014
+				 * Illius & O'Connor 2000  give a value of 0.03 day^-1*/
+				double decay;
+
+				/// Proportional digestibility of the grass [frac].
+				double digestibility;
+
+				/// Percentage of habitat covered with grass (Foliar Percentage Cover) [frac]
+				double fpc;
+
+				/// Proportional daily grass growth rate
+				double growth;
+
+				/// Initial available forage [kgDM/m²]
+				/** This should be smaller than \ref saturation */
+				double init_mass;
+
+				/// Ungrazable grass biomass reserve, inaccessable to herbivores [kgDM/m²]
+				/** Owen-Smith (2002) gives value of 20 g/m²*/
+				double reserve;
+
+				/// Saturation grass biomass [kgDM/m²]
+				/** Owen-Smith (2002): 200 g/m²*/
+				double saturation;
+
+				/// Constructor with arbitrary simple values that are valid
+				Parameters():decay(0.0), digestibility(0.1), fpc(0.1), growth(0.0),
+				init_mass(0.0), reserve(0.1), saturation(1.0){}
+			};
+
 			/// Constructor
-			TestGrass(const TestHabitatSettings::Grass& settings): 
+			LogisticGrass(const LogisticGrass::Parameters& settings): 
 				settings(settings){
 					assert( settings.decay         >= 0.0 );
 					assert( settings.digestibility >  0.0 );
@@ -87,24 +91,39 @@ namespace Fauna {
 		protected:
 			/// Current forage
 			/** Excluding the reserve 
-             * \ref TestHabitatSettings::Grass::reserve. */
+			 * \ref LogisticGrass::Parameters::reserve. */
 			GrassForage forage;
 
-			TestHabitatSettings::Grass settings;
+			LogisticGrass::Parameters settings;
 	};
 
 	/// A herbivore habitat independent of the LPJ-GUESS framework for testing.
-	class TestHabitat: public Habitat{
+	/**
+	 * \startuml
+	 * namespace FaunaSim{
+	 * hide members
+	 * hide methods
+	 * SimpleHabitat --|> .Fauna.Habitat
+	 * LogisticGrass "1" <--* "1" SimpleHabitat
+	 * }
+	 * \enduml
+	 */
+	class SimpleHabitat: public Habitat{
 		public:
+			/// Simulation parameters for a \ref SimpleHabitat object.
+			struct Parameters {
+				/// Parameters for logistic grass growth
+				LogisticGrass::Parameters grass;
+			};
 
 			/// Constructor with simulation settings.
 			/**
-			 * \param populations Herbivore populations; see \ref Habitat::Habitat()
+			 * \param populations Herbivore populations; see \ref Fauna::Habitat::Habitat()
 			 * \param settings Simulation settings for the vegetation
 			 * model.
 			 */
-			TestHabitat(std::auto_ptr<HftPopulationsMap> populations,
-					const TestHabitatSettings settings):
+			SimpleHabitat(std::auto_ptr<HftPopulationsMap> populations,
+					const SimpleHabitat::Parameters settings):
 				Habitat(populations), grass(settings.grass){}
 
 			/// Update output and perform vegetation growth
@@ -127,27 +146,35 @@ namespace Fauna {
 			virtual void grow_daily(const int day_of_year){
 				grass.grow_daily(day_of_year);
 			}
-
+		private:
 			/// Grass in the habitat
-			TestGrass grass;
+			LogisticGrass grass;
 	};
 
-	/// A set of \ref Habitat objects.
+	/// A set of \ref Fauna::Habitat objects.
 	/** In the herbivore test simulations this corresponds semantically
-	 * to a \ref Gridcell with \ref Patch objects. */
-	class TestHabitatGroup{
+	 * to a \ref ::Gridcell with \ref ::Patch objects. 
+	 * \startuml
+	 * hide members
+	 * hide methods
+	 * interface Fauna.Habitat
+	 * FaunaSim.SimpleHabitat --|> Fauna.Habitat
+	 * Fauna.Habitat "*" <--* FaunaSim.HabitatGroup
+	 * \enduml
+	 */
+	class HabitatGroup{
 		public:
 
-			/// Constructor, creating \ref TestHabitat objects
+			/// Constructor
 			/** 
 			 * \param lon longitude (just for output labels)
 			 * \param lat latitude  (just for output labels)
 			 */
-			TestHabitatGroup(const double lon, const double lat):
+			HabitatGroup(const double lon, const double lat):
 		lon(lon), lat(lat){}
 
-			/// Destructor, deleting all \ref Habitat instances.
-			~TestHabitatGroup(){
+			/// Destructor, deleting all \ref Fauna::Habitat instances.
+			~HabitatGroup(){
 				iterator iter = begin();
 				while (iter != end()){
 					delete *iter;
@@ -160,15 +187,16 @@ namespace Fauna {
 			/// Latitude as defined in the constructor.
 			double get_lat()const{return lat;}
 
-			/// Add a newly created \ref Habitat object
-			/** The \ref Habitat instance will be owned by the group
+			/// Add a newly created \ref Fauna::Habitat object
+			/** The \ref Fauna::Habitat instance will be owned by the group
 			 * and released on its destruction.
 			 * \param new_habitat Pointer to a newly created object
 			 * \throw std::invalid_argument if `new_habitat==NULL`
+			 * \todo use std::auto_ptr for parameter, to make it safer
 			 */
 			void add(Habitat* new_habitat){
 				if (new_habitat == NULL)
-					throw std::invalid_argument("TestHabitatGroup::add(): "
+					throw std::invalid_argument("HabitatGroup::add(): "
 							"received NULL-Pointer as argument.");
 				vec.push_back(new_habitat);
 			}
@@ -199,8 +227,8 @@ namespace Fauna {
 			// Deleted copy constructor and copy assignment operator.
 			// If they were not deleted, the unique ownership of the
 			// PopulationInterface objects could be lost. 
-			TestHabitatGroup(const TestHabitatGroup& other);
-			TestHabitatGroup& operator=(const TestHabitatGroup& other);
+			HabitatGroup(const HabitatGroup& other);
+			HabitatGroup& operator=(const HabitatGroup& other);
 	};
 
 }

@@ -26,6 +26,8 @@ namespace Fauna {
 	 * instantiating and releasing.
 	 *
 	 * @startuml "Dependencies of Fauna::PatchHabitat" 
+	 * hide members
+	 * hide methods
 	 * Patch "1"                 <--> "1" Fauna.PatchHabitat
 	 * abstract Fauna.Habitat
 	 * Fauna.Habitat         <|-- Fauna.PatchHabitat

@@ -10,12 +10,13 @@
 #include "herbiv_testhabitat.h"
 
 using namespace Fauna;
+using namespace FaunaSim;
 
 //============================================================
-// TestGrass
+// LogisticGrass
 //============================================================
 
-void TestGrass::grow_daily(const int day_of_year){
+void LogisticGrass::grow_daily(const int day_of_year){
 	assert( day_of_year >= 0 );
 	assert( day_of_year < 365 );
 	forage.set_fpc(settings.fpc);
@@ -46,10 +47,10 @@ void TestGrass::grow_daily(const int day_of_year){
 }
 
 //============================================================
-// TestHabitat
+// SimpleHabitat
 //============================================================
 
-void TestHabitat::init_todays_output(const int today){
+void SimpleHabitat::init_todays_output(const int today){
 	assert( today >= 0 );
 	assert( today <= 365 );
 	// Call parent function
@@ -57,7 +58,7 @@ void TestHabitat::init_todays_output(const int today){
 	grow_daily(today);
 }
 
-void TestHabitat::remove_eaten_forage(const ForageMass& eaten_forage){
+void SimpleHabitat::remove_eaten_forage(const ForageMass& eaten_forage){
 	// call parent class implementation
 	Habitat::remove_eaten_forage(eaten_forage);
 
@@ -66,7 +67,3 @@ void TestHabitat::remove_eaten_forage(const ForageMass& eaten_forage){
 	new_grass.set_mass(new_grass.get_mass() - eaten_forage.grass);
 	grass.set_forage(new_grass);
 }
-
-//============================================================
-// TestHabitatGroup
-//============================================================

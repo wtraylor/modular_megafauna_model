@@ -46,44 +46,43 @@ framework.
 Herbivory Test Simulations {#sec_herbiv_testsimulations}
 --------------------------
 
-In order to simulate herbivore dynamics in a controlled environment
-a testing framework has been implemented.
-The software design allows any vegetation model to be combined
-with the herbivore model.
+In order to simulate herbivore dynamics in a controlled environment a testing framework has been implemented. 
+Since the herbivore model can be attached to any vegetation model that implements the \ref Fauna::Habitat interface, it is easy to perform herbivore simulations independent of LPJ-GUESS.
 
-The class \ref Fauna::TestHabitat implements a very basic vegetation
-model that can be parametrized with custom parameters in the
-instruction file.
-One TestHabitat object corresponds to a \ref Patch in a way.
+All classes that are not connected to the actual herbivory simulations but only serve the independent test simulations, are gathered in the namespace \ref FaunaSim.
+The central class running the simulations is \ref FaunaSim::Framework, which in turn employs \ref Fauna::Simulator.
 
-The class \ref Fauna::TestHabitatGroup holds a list of 
-\ref Fauna::TestHabitat objects and thus corresponds to a 
-\ref Gridcell.
+The class \ref FaunaSim::SimpleHabitat implements a very basic vegetation model that can be parametrized with custom parameters in the instruction file. 
+One SimpleHabitat object corresponds to a \ref Patch in a way.
+So far, only this one kind of vegetation model is implemented.
+(However, if desirable, also other types of vegetation models could be implemented as classes derived from \ref Fauna::Habitat.)
+
+The class \ref FaunaSim::HabitatGroup holds a list of objects which implement \ref Fauna::Habitat and thus corresponds to a \ref Gridcell.
 
 @startuml "Class interactions of the Herbivory Test Simulations"
 hide members
 hide methods 
 annotation "parameters.h" as parameters 
+namespace FaunaSim {
+	class "Framework" <<singleton>>
+	class HabitatGroup
+	class SimpleHabitat
+	HabitatGroup "1" *-- "*" SimpleHabitat
+}
 namespace Fauna {
-	class "TestSimulator" <<singleton>>
 	class "ParamReader"   <<singleton>>
 	interface Habitat 
-	TestSimulator ..> ParamReader                    : <<use>>
-	TestSimulator ..> .parameters                    : <<use>>
-	TestSimulator ..> Simulator                      : <<create>>
 	Simulator     ..> Habitat                        : <<call>>
-	TestSimulator ..> .GuessOutput.HerbivoryOutput   : <<create>>
-	TestSimulator ..> .GuessOutput.FileOutputChannel : <<create>>
-	TestSimulator ..> "*" TestHabitatGroup           : <<create>>
-	TestHabitatGroup "1" *-- "*" TestHabitat
-	Habitat <|-- TestHabitat 
-	class TestHabitat
-	note left : simple vegetation model \nlike Patch
-	class TestHabitatGroup
-	note bottom : like Gridcell
 }
+FaunaSim.SimpleHabitat --|> Fauna.Habitat
+FaunaSim.Framework ..> Fauna.ParamReader              : <<use>>
+FaunaSim.Framework ..> .parameters                    : <<use>>
+FaunaSim.Framework ..> Fauna.Simulator                : <<create>>
+FaunaSim.Framework ..> .GuessOutput.HerbivoryOutput   : <<create>>
+FaunaSim.Framework ..> .GuessOutput.FileOutputChannel : <<create>>
+FaunaSim.Framework ..> "*" FaunaSim.HabitatGroup      : <<create>>
 annotation "main()" as main
-main ..> Fauna.TestSimulator : <<call>>
+main ..> FaunaSim.Framework : <<call>>
 @enduml
 
 When compiling the project, in addition to `guess` another 
@@ -101,6 +100,12 @@ These are the relevant parameters:
 
 \note Make sure that `ifherbivory` is true because otherwise
 no output will be produced (see \ref sec_herbiv_output).
+
+The header file \ref parameters.h declares a number of LPJ-GUESS instruction file parameters, which are not relevant to the herbivore test simulations.
+In order to prevent error messages that those parameters were missing when running the `herbivsim` executable, the preprocessor flag `NO_GUESS_PARAMETERS` has been introduced.
+It is only defined when the target `herbivsim` is being compiled.
+This solution promised the least amount of change of main LPJ-GUESS code.
+See \ref parameters.cpp for the affected code regions.
 
 ------------------------------------------------------------
 

@@ -11,10 +11,20 @@
  */
 
 
+
 /**
  * \ingroup group_herbivory
  * \namespace Fauna
- * \brief Namespace for all classes in the herbivory module.
+ * \brief Namespace for all classes in the herbivory model.
  * \author Wolfgang Pappa, Senckenberg BiK-F
  * \date May 2017
+ */
+
+/**
+ * \ingroup group_herbivory
+ * \namespace FaunaSim
+ * \brief Namespace for the test simulation framework independent of LPJ-GUESS vegetation.
+ * \see \ref sec_herbiv_testsimulations
+ * \author Wolfgang Pappa, Senckenberg BiK-F
+ * \date July 2017
  */

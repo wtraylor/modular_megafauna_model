@@ -112,7 +112,7 @@ annotation "framework()"       as framework
 annotation "Instruction Files" as insfiles
 annotation "plib.h"            as plib
 annotation "parameters.h"      as parameters
-class "Fauna.TestSimulator" <<singleton>>
+class "FaunaSim.Framework" <<singleton>>
 class "Fauna.ParamReader"   <<singleton>>
 Pft                "1" *-- "1" Fauna.PftParams
 framework           ..> Fauna.ParamReader : <<use>>
@@ -122,7 +122,6 @@ parameters          ..> plib              : <<use>>
 plib                ..> insfiles          : <<read>>
 framework           ..> parameters        : <<use>>
 namespace Fauna {
-	TestSimulator ..> ParamReader : <<use>>
 	ParamReader  <..> .parameters : <<call>>
 	ParamReader   ..> .plib       : <<call>>
 	ParamReader   ..> Hft         : <<create>>
@@ -141,6 +140,7 @@ namespace Fauna {
 	}
 	show PftParams methods
 }
+FaunaSim.Framework ..> Fauna.ParamReader : <<use>>
 @enduml
 
 
@@ -249,7 +249,7 @@ Wrapping global variables and free functions into a singleton class is good, but
 A few classes in the herbivory module employ are built singleton in order to interact in a save manner with the existing LPJ-GUESS framework, namely the declaration of instruction file parameters.
 
 The following classes of the herbivory module are singleton:
-\ref Fauna::TestSimulator,
+\ref FaunaSim::Framework,
 \ref Fauna::ParamReader.
 The principle of a global single class shows also up in 
 \ref GuessOutput::HerbivoryOutput.
@@ -357,7 +357,7 @@ to \ref GuessOutput::CommonOutput were made:
   honours the \ref sec_single_responsibility.
 - The inherited functions outannual() and outdaily() delegate
   to more generic functions, which are also used by
-  \ref Fauna::TestSimulator.
+  \ref FaunaSim::Framework.
 - The class \ref GuessOutput::OutputLimiter has been introduced
   in order to observe the \ref sec_dependency_inversion and
   to avoid global variables.

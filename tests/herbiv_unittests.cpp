@@ -18,6 +18,7 @@
 #include <vector>
 
 using namespace Fauna;
+using namespace FaunaSim;
 
 namespace {
 	/// A dummy habitat that does nothing
@@ -238,7 +239,7 @@ TEST_CASE("Fauna::Hft",""){
 	std::string msg;
 
 	// not valid without name
-	CHECK_FALSE( hft.is_valid(Parameters(), msg) );
+	CHECK_FALSE( hft.is_valid(Fauna::Parameters(), msg) );
 }
 
 TEST_CASE("Fauna::HftList",""){
@@ -345,7 +346,7 @@ TEST_CASE("Fauna::HftPopulationsMap", "") {
 }
 
 TEST_CASE("Fauna::Simulator", "") {
-	Parameters params;
+	Fauna::Parameters params;
 
 	// prepare HFT list
 	HftList hftlist = create_hfts(3); 
@@ -381,8 +382,8 @@ TEST_CASE("Fauna::Simulator", "") {
 	}
 }
 
-TEST_CASE("Fauna::TestGrass", "") {
-	TestHabitatSettings::Grass grass_settings;
+TEST_CASE("FaunaSim::LogisticGrass", "") {
+	LogisticGrass::Parameters grass_settings;
 	grass_settings.reserve   = 2.0; // just an arbitrary positive number
 	grass_settings.init_mass = 1.0;
 	grass_settings.saturation = 10*grass_settings.init_mass;
@@ -390,7 +391,7 @@ TEST_CASE("Fauna::TestGrass", "") {
 	const int day = 1; // day of the year
 	
 	SECTION("Grass initialization"){
-		TestGrass grass(grass_settings);
+		LogisticGrass grass(grass_settings);
 		CHECK( grass.get_forage().get_mass() == Approx(grass_settings.init_mass) );
 		CHECK( grass.get_forage().get_digestibility()
 				== Approx(grass_settings.digestibility));
@@ -403,7 +404,7 @@ TEST_CASE("Fauna::TestGrass", "") {
 		grass_settings.growth = 0.0;
 		grass_settings.decay  = 0.0;
 
-		TestGrass grass(grass_settings);
+		LogisticGrass grass(grass_settings);
 
 
 		const GrassForage before = grass.get_forage();
@@ -417,7 +418,7 @@ TEST_CASE("Fauna::TestGrass", "") {
 		grass_settings.growth = 0.1;
 		grass_settings.decay  = 0.0;
 
-		TestGrass grass(grass_settings);
+		LogisticGrass grass(grass_settings);
 
 		// Let the grass grow for one day and check it’s greater
 
@@ -437,7 +438,7 @@ TEST_CASE("Fauna::TestGrass", "") {
 		grass_settings.growth = 0.1;
 		grass_settings.decay  = grass_settings.growth;
 
-		TestGrass grass(grass_settings);
+		LogisticGrass grass(grass_settings);
 
 		// Let the grass grow for one day and check it’s greater
 
@@ -452,7 +453,7 @@ TEST_CASE("Fauna::TestGrass", "") {
 		grass_settings.growth =  0.1;
 		grass_settings.decay  = 2.0 * grass_settings.growth;
 
-		TestGrass grass(grass_settings);
+		LogisticGrass grass(grass_settings);
 
 		// Let the grass grow for one day and check it’s greater
 
@@ -464,16 +465,16 @@ TEST_CASE("Fauna::TestGrass", "") {
 	}
 }
 
-TEST_CASE("Fauna::TestHabitat", "") {
-	TestHabitatSettings settings;
+TEST_CASE("FaunaSim::SimpleHabitat", "") {
+	SimpleHabitat::Parameters settings;
 	settings.grass.init_mass     = 1.0;
 	settings.grass.growth        = 0.0;
 	settings.grass.saturation    = 3.0;
 	settings.grass.digestibility = 0.5;
 
 	// create a habitat with some populations
-	Simulator sim(Parameters(), create_hfts(4)); 
-	TestHabitat habitat(sim.create_populations(), settings);
+	Simulator sim(Fauna::Parameters(), create_hfts(4)); 
+	SimpleHabitat habitat(sim.create_populations(), settings);
 	
 	SECTION("Initialization") {
 		CHECK( habitat.get_available_forage().grass.get_fpc() 
@@ -514,9 +515,9 @@ TEST_CASE("Fauna::TestHabitat", "") {
 
 }
 
-TEST_CASE("Fauna::TestHabitatGroup","") {
+TEST_CASE("FaunaSim::HabitatGroup","") {
 	// Make sure the group creates its habitats
-	TestHabitatGroup group(1.0,1.0); // lon,lat
+	HabitatGroup group(1.0,1.0); // lon,lat
 	group.reserve(5);
 	for (int i=1; i<5; i++) {
 		// add a habitat
@@ -526,7 +527,7 @@ TEST_CASE("Fauna::TestHabitatGroup","") {
 	}
 	// Make sure the references are pointing correctly to the objects
 	const std::vector<const Habitat*> refs = group.get_habitat_references();
-	TestHabitatGroup::const_iterator itr = group.begin();
+	HabitatGroup::const_iterator itr = group.begin();
 	int j=0;
 	while (itr != group.end()){
 		CHECK( refs[j] == *itr );

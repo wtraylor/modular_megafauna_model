@@ -10,23 +10,36 @@
 #define HERBIV_TESTSIMULATION_H
 
 #include <vector>
-#include "herbiv_testhabitat.h" // for TestGrass::Settings
-#include "herbiv_output.h" // for HerbivoryOutput
+#include "herbiv_testhabitat.h" // for SimpleHabitat::Parameters
+#include "herbiv_output.h"      // for HerbivoryOutput
 
 namespace Fauna{
 	// forward declaration
 	class HftList;
 	class Parameters;
-
+}
+namespace FaunaSim{
 	/// Performs test simulations for herbivores outside of the LPJ-GUESS vegetation model
-	/** \see \ref sec_singleton for an explanation of the design pattern used.
+	/** 
+	 * \startuml
+	 * hide members
+	 * hide methods
+	 * namespace FaunaSim{
+	 * 	Framework ..> "*" SimpleHabitat : <<create>>
+	 * 	Framework ..> "*" HabitatGroup : <<create>>
+	 * 	SimpleHabitat "*" <--* HabitatGroup
+	 * 	Framework ..> "1" .Fauna.Simulator : <<create>>
+	 * 	Framework ..> .Fauna.ParamReader : <<use>>
+	 * }
+	 * \enduml
+	 * \see \ref sec_singleton for an explanation of the design pattern used.
 	 */
-	class TestSimulator{
+	class Framework{
 		public:
 			/// Get singleton instance of the class.
 			/** Creates the object on first call. */
-			static TestSimulator& get_instance(){
-				static TestSimulator instance;
+			static Framework& get_instance(){
+				static Framework instance;
 				return instance;
 			}
 
@@ -36,7 +49,7 @@ namespace Fauna{
 			 * the herbivory module not specific to the test simulation.
 			 * \param hftlist List of HFTs
 			 */
-			void run(const Parameters& global_params, const HftList& hftlist);
+			void run(const Fauna::Parameters& global_params, const Fauna::HftList& hftlist);
 
 			/// Check if all mandatory parameters have been read, terminates on error.
 			/**
@@ -53,11 +66,11 @@ namespace Fauna{
 			GuessOutput::HerbivoryOutput herbiv_out;
 
 			/// Parameter values from instruction file
-			struct InstructionParameters{
+			struct {
 				std::string outputdirectory;
 				int nyears;
 				int nhabitats_per_group, ngroups;
-				TestHabitatSettings settings;
+				SimpleHabitat::Parameters habitat;
 			} params; 
 
 			/// List of mandatory instruction file parameters.
@@ -67,12 +80,12 @@ namespace Fauna{
 			static const int COORDINATES_PRECISION;
 		
 			/// Constructor, declares parameters
-			TestSimulator(){declare_parameters();}
+			Framework(){declare_parameters();}
 
 			/// Deleted copy constructor
-			TestSimulator(TestSimulator const&); //don’t implement, it’s deleted
+			Framework(Framework const&); //don’t implement, it’s deleted
 			/// Deleted assignment constructor
-			void operator=(TestSimulator const&); //don’t implement, it’s deleted
+			void operator=(Framework const&); //don’t implement, it’s deleted
 	};
 
 }

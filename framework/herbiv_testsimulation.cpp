@@ -18,6 +18,7 @@
 #include <cfloat> // for DBL_MAX
 
 using namespace Fauna;
+using namespace FaunaSim;
 using namespace GuessOutput;
 
 // The name of the log file to which output from all dprintf and fail calls is sent
@@ -38,8 +39,8 @@ int main(int argc,char* argv[]) {
 	dprintf("This is the test simulator for the herbivory module "
 			"of LPJ-GUESS.\n");
 
-	// The singleton instance of the simulator
-	TestSimulator& simulator = TestSimulator::get_instance();
+	// The singleton instance of FaunaSim::Manager
+	Framework& simulator = Framework::get_instance();
 
 	// Read ins file from command line parameters.
 	// we expect one argument: the ins file name
@@ -88,9 +89,9 @@ int main(int argc,char* argv[]) {
 
 ////////////////////////////////////////////////////////
 
-const int TestSimulator::COORDINATES_PRECISION = 0;
+const int Framework::COORDINATES_PRECISION = 0;
 
-void TestSimulator::declare_parameters(){
+void Framework::declare_parameters(){
 
 	static bool parameters_declared = false;
 
@@ -122,43 +123,43 @@ void TestSimulator::declare_parameters(){
 
 		// Grass growth 
 		declare_parameter("grass_decay",
-				&params.settings.grass.decay,
+				&params.habitat.grass.decay,
 				0.0, DBL_MAX, // min, max
 				"Proportional daily grass decay rate.");
 		mandatory_parameters.push_back("grass_decay");
 
 		declare_parameter("grass_digestibility",
-				&params.settings.grass.digestibility,
+				&params.habitat.grass.digestibility,
 				DBL_MIN, 1.0, // min, max
 				"Fractional grass digestibility.");
 		mandatory_parameters.push_back("grass_digestibility");
 
 		declare_parameter("grass_fpc",
-				&params.settings.grass.fpc,
+				&params.habitat.grass.fpc,
 				0.0, 1.0, // min, max
 				"Foliar Percentage Cover of the grass.");
 		mandatory_parameters.push_back("grass_fpc");
 
 		declare_parameter("grass_growth",
-				&params.settings.grass.growth,
+				&params.habitat.grass.growth,
 				0.0, DBL_MAX, // min, max
 				"Proportional daily grass growth rate.");
 		mandatory_parameters.push_back("grass_growth");
 
 		declare_parameter("grass_init_mass",
-				&params.settings.grass.init_mass,
+				&params.habitat.grass.init_mass,
 				0.0, DBL_MAX, // min, max
 				"Initial grass biomass [kgDM/m²]");
 		mandatory_parameters.push_back("grass_init_mass");
 
 		declare_parameter("grass_reserve",
-				&params.settings.grass.reserve,
+				&params.habitat.grass.reserve,
 				0.0, DBL_MAX, // min, max
 				"Ungrazable grass reserve [kgDM/m²]");
 		mandatory_parameters.push_back("grass_reserve");
 
 		declare_parameter("grass_saturation",
-				&params.settings.grass.saturation,
+				&params.habitat.grass.saturation,
 				0.0, DBL_MAX, // min, max
 				"Saturation grass biomass [kgDM/m²]");
 		mandatory_parameters.push_back("grass_saturation");
@@ -167,7 +168,7 @@ void TestSimulator::declare_parameters(){
 	}
 }
 
-void TestSimulator::plib_callback(int callback) {
+void Framework::plib_callback(int callback) {
 	// Simply check each global parameter in the list
 	if (callback == CB_CHECKGLOBAL) {
 		for (int i=0; i<mandatory_parameters.size(); i++) {
@@ -181,7 +182,7 @@ void TestSimulator::plib_callback(int callback) {
 	}
 }
 
-void TestSimulator::run(const Fauna::Parameters& global_params,
+void Framework::run(const Fauna::Parameters& global_params,
 		const HftList& hftlist){
 
 	// PREPARE OUTPUT
@@ -207,9 +208,9 @@ void TestSimulator::run(const Fauna::Parameters& global_params,
 
 
 	// The habitat groups in this run
-	// these are pointers (because TestHabitatGroup cannot be
+	// these are pointers (because HabitatGroup cannot be
 	// copied), which need to be deleted later
-	std::vector<TestHabitatGroup*> habitat_groups;
+	std::vector<HabitatGroup*> habitat_groups;
 	try {
 	for (int g=0; g<params.ngroups; g++){
 		// The x and y coordinates are just for labeling the
@@ -218,17 +219,17 @@ void TestSimulator::run(const Fauna::Parameters& global_params,
 		const double y = (double) g;
 
 		// create a habitat group 
-		habitat_groups.push_back( new TestHabitatGroup(x,y) );
-		TestHabitatGroup& group = *habitat_groups.back();
+		habitat_groups.push_back( new HabitatGroup(x,y) );
+		HabitatGroup& group = *habitat_groups.back();
 
 		// fill group with habitats
 		group.reserve( params.nhabitats_per_group );
 		for (int h=0; h<params.nhabitats_per_group; h++){
 			// At this point, any other Habitat object
 			// could be inserted too.
-			group.add(new TestHabitat(
+			group.add(new SimpleHabitat(
 						habitat_simulator.create_populations(),
-						params.settings
+						params.habitat
 						));
 		}
 	}
@@ -240,9 +241,9 @@ void TestSimulator::run(const Fauna::Parameters& global_params,
 
 			// loop through habitat groups
 			for (int g=0; g<habitat_groups.size(); g++) {
-				TestHabitatGroup& group = *habitat_groups[g];
+				HabitatGroup& group = *habitat_groups[g];
 				//loop through habitat objects in this group
-				TestHabitatGroup::iterator itr_habitat = group.begin();
+				HabitatGroup::iterator itr_habitat = group.begin();
 				while (itr_habitat != group.end()) {
 					Habitat& habitat = **itr_habitat;
 
@@ -265,7 +266,7 @@ void TestSimulator::run(const Fauna::Parameters& global_params,
 
 		// Write output for all habitat groups
 		for (int g=0; g<habitat_groups.size(); g++) {
-			TestHabitatGroup& group = *habitat_groups[g];
+			HabitatGroup& group = *habitat_groups[g];
 			herbiv_out.outannual(group.get_lon(), group.get_lat(), 
 					year, group.get_habitat_references());
 		}
@@ -281,7 +282,7 @@ void TestSimulator::run(const Fauna::Parameters& global_params,
 	// release
 	} catch (...){
 		// release habitat_groups
-		std::vector<TestHabitatGroup*>::iterator itr = habitat_groups.begin();
+		std::vector<HabitatGroup*>::iterator itr = habitat_groups.begin();
 		while (itr != habitat_groups.end()) {
 			delete *itr;
 			habitat_groups.erase(itr);

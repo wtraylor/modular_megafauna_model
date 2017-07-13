@@ -80,8 +80,8 @@ namespace Fauna{
 		reduce_forage_mass()
 	}
 	PatchHabitat ..> HabitatForage : <<use>>
-	TestHabitat  ..> HabitatForage : <<use>>
 }
+FaunaSim.SimpleHabitat  ..> Fauna.HabitatForage : <<use>>
 class Individual{
 	get_forage_mass()
 }
