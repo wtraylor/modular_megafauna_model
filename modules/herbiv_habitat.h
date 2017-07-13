@@ -8,11 +8,12 @@
 #ifndef HERBIV_HABITAT_H
 #define HERBIV_HABITAT_H
 
-#include "herbiv_foraging.h"   // for ForageMass
-#include "herbiv_population.h" // for HftPopulationsMap
-#include <vector>              // for merging data vectors
-#include <map>                 // for output data mapped to HFTs
-#include <stdexcept>           // for get_populations
+#include "herbiv_forageclasses.h" // for ForageMass
+#include "herbiv_population.h"    // for HftPopulationsMap
+#include <map>                    // for output data mapped to HFTs
+#include <memory>                 // for std::auto_ptr
+#include <stdexcept>              // for get_populations
+#include <vector>                 // for merging data vectors
 
 
 namespace Fauna{
@@ -75,18 +76,16 @@ namespace Fauna{
 	 * \ref daily_output.
 	 */
 	class Habitat{
-	public:
-		/// Constructor
-		Habitat();
-
-		/// Destructor
+	public: 
+		/// Virtual Destructor
+		/** Destructor must be virtual in an interface. */
 		virtual ~Habitat(){}
 
 		/// Get dry-matter biomass [kg/m²] that is available to herbivores to eat.
 		virtual HabitatForage get_available_forage() const = 0;
 
 		/// Get the herbivore populations in the habitat.
-		HftPopulationsMap& get_populations(){ return populations; }
+		HftPopulationsMap& get_populations(){ return *populations; }
 		
 		/// Remove forage eaten by herbivores.
 		/**
@@ -139,6 +138,19 @@ namespace Fauna{
 		/** @} */ // output routines
 		//-----------------------------------------------
 	protected:
+		/// Constructor
+		/**
+		 * \param populations object holding the herbivore populations
+		 * \see constructor injection: \ref sec_inversion_of_control
+		 */
+		Habitat(std::auto_ptr<HftPopulationsMap> populations):
+			populations(populations),
+			daily_output(365){}
+
+		/// The current day as set by \ref read_todays_output().
+		/** \see Date::day */
+		int get_day()const{return day_of_year;}
+
 		/// Get an editable reference to today’s output object.
 		/** Use this within this and derived classes. To get the data
 		 * for actual output, call \ref read_todays_output() from
@@ -148,8 +160,6 @@ namespace Fauna{
 			return  daily_output[day_of_year];
 		}
 	private:
-		/// The current day as set by \ref read_todays_output().
-		/** \see Date::day */
 		int day_of_year;
 
 		/// Vector with output for every day of the year.
@@ -157,7 +167,7 @@ namespace Fauna{
 		 * std::array so that the container size is fixed.*/ 
 		std::vector<HabitatOutputData> daily_output;
 
-		HftPopulationsMap populations;
+		std::auto_ptr<HftPopulationsMap> populations;
 	};
 }
 #endif //HERBIV_HABITAT_H

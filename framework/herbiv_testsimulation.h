@@ -33,9 +33,10 @@ namespace Fauna{
 			/// Run a simulation
 			/** Call this only after ins file has been read.
 			 * \param global_params Instruction file parameters from
-			 * the herbivory module not specific to the test simulation.*/
+			 * the herbivory module not specific to the test simulation.
+			 * \param hftlist List of HFTs
+			 */
 			void run(const Parameters& global_params, const HftList& hftlist);
-
 
 			/// Check if all mandatory parameters have been read, terminates on error.
 			/**
@@ -47,7 +48,7 @@ namespace Fauna{
 			/// Declare instruction file parameters.
 			/** Fills \ref mandatory_parameters.*/
 			virtual void declare_parameters();
-		protected:
+		private:
 			/// Output module
 			GuessOutput::HerbivoryOutput herbiv_out;
 
@@ -64,7 +65,7 @@ namespace Fauna{
 
 			/// Number of decimal places in output tables.
 			static const int COORDINATES_PRECISION;
-		private:
+		
 			/// Constructor, declares parameters
 			TestSimulator(){declare_parameters();}
 

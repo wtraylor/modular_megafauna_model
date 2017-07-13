@@ -11,6 +11,10 @@
 
 using namespace Fauna;
 
+//============================================================
+// TestGrass
+//============================================================
+
 void TestGrass::grow_daily(const int day_of_year){
 	assert( day_of_year >= 0 );
 	assert( day_of_year < 365 );
@@ -41,15 +45,9 @@ void TestGrass::grow_daily(const int day_of_year){
 	forage.set_mass(dm_avail_new);
 }
 
-TestHabitatGroup::TestHabitatGroup(
-		const double lon, const double lat,
-		const int nhabitats,
-		const TestHabitatSettings settings):
-	lon(lon), lat(lat) {
-		assert( nhabitats >= 1 );
-		for (int i=0; i< nhabitats; i++)
-			habitats.push_back( TestHabitat(settings) );
-	}
+//============================================================
+// TestHabitat
+//============================================================
 
 void TestHabitat::init_todays_output(const int today){
 	assert( today >= 0 );
@@ -58,6 +56,7 @@ void TestHabitat::init_todays_output(const int today){
 	Habitat::init_todays_output(today);
 	grow_daily(today);
 }
+
 void TestHabitat::remove_eaten_forage(const ForageMass& eaten_forage){
 	// call parent class implementation
 	Habitat::remove_eaten_forage(eaten_forage);
@@ -67,3 +66,7 @@ void TestHabitat::remove_eaten_forage(const ForageMass& eaten_forage){
 	new_grass.set_mass(new_grass.get_mass() - eaten_forage.grass);
 	grass.set_forage(new_grass);
 }
+
+//============================================================
+// TestHabitatGroup
+//============================================================

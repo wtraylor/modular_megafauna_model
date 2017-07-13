@@ -8,13 +8,28 @@
 
 #include "catch.hpp" 
 #include "herbiv_foraging.h" 
+#include "herbiv_forageclasses.h" 
+#include "herbiv_framework.h"
 #include "herbiv_herbivore.h"
 #include "herbiv_hft.h"
 #include "herbiv_parameters.h"
 #include "herbiv_testhabitat.h" 
+#include <memory> // for std::auto_ptr
 #include <vector>
 
-namespace Fauna{
+using namespace Fauna;
+
+namespace {
+	/// A dummy habitat that does nothing
+	class DummyHabitat: public Habitat{
+		public:
+			/// Constructor with empty populations
+			DummyHabitat(): 
+				Habitat(std::auto_ptr<HftPopulationsMap>(new HftPopulationsMap())) {}
+			virtual HabitatForage get_available_forage() const { return HabitatForage(); }
+			int get_day_public()const{return get_day();}
+	};
+
 	/// A dummy herbivore that does nothing
 	class DummyHerbivore: public HerbivoreInterface{
 		public:
@@ -46,6 +61,7 @@ namespace Fauna{
 			const ForageMass demand;
 	};
 	
+	/// A population of dummy herbivores
 	class DummyPopulation: public PopulationInterface{
 		private:
 			const Hft& hft;
@@ -75,10 +91,21 @@ namespace Fauna{
 			virtual void remove_dead(){}
 	};
 
-} // namespace
+	/// Create a simple HftList
+	HftList create_hfts(const int count){
+		HftList hftlist;
+		for (int i=0; i<count; i++){
+			Hft hft;
+			hft.is_included = true;
+			// construct name for HFT
+			std::ostringstream stream;
+			stream << "hft"<<i;
+			hft.name = stream.str();
+		}
+		return hftlist;
+	}
+} // namespace Fauna
 
-
-using namespace Fauna;
 
 // test cases in alphabetical order, please
 
@@ -317,6 +344,43 @@ TEST_CASE("Fauna::HftPopulationsMap", "") {
 	CHECK_THROWS(map[Hft()]); // unnamed Hft is not in map
 }
 
+TEST_CASE("Fauna::Simulator", "") {
+	Parameters params;
+
+	// prepare HFT list
+	HftList hftlist = create_hfts(3); 
+	
+	Simulator sim(params, hftlist);
+
+	// Check create_populations()
+	std::auto_ptr<HftPopulationsMap> pops = sim.create_populations();
+	CHECK(pops->size() == hftlist.size());
+	// find all HFTs
+	HftList::const_iterator itr_hft = hftlist.begin();
+	while (itr_hft != hftlist.end()){
+		bool found_hft = false;
+		HftPopulationsMap::const_iterator itr_pop = pops->begin();
+		while (itr_pop != pops->end()) {
+			if ((*itr_pop)->get_hft() == *itr_hft)
+				found_hft = true;
+			itr_pop++;
+		}
+		CHECK(found_hft);
+		itr_hft++;
+	}
+
+	// Check simulate_day()
+	DummyHabitat habitat;
+	CHECK_THROWS( sim.simulate_day(-1, habitat, true) );
+	CHECK_THROWS( sim.simulate_day(366, habitat, true) );
+	const bool do_herbivores = true;
+	for (int d=0; d<365; d++){
+		sim.simulate_day(d,habitat, do_herbivores);
+		// NOTE: So far, only the day is checked!
+		CHECK(habitat.get_day_public() == d);
+	}
+}
+
 TEST_CASE("Fauna::TestGrass", "") {
 	TestHabitatSettings::Grass grass_settings;
 	grass_settings.reserve   = 2.0; // just an arbitrary positive number
@@ -406,8 +470,10 @@ TEST_CASE("Fauna::TestHabitat", "") {
 	settings.grass.growth        = 0.0;
 	settings.grass.saturation    = 3.0;
 	settings.grass.digestibility = 0.5;
-	
-	TestHabitat habitat(settings);
+
+	// create a habitat with some populations
+	Simulator sim(Parameters(), create_hfts(4)); 
+	TestHabitat habitat(sim.create_populations(), settings);
 	
 	SECTION("Initialization") {
 		CHECK( habitat.get_available_forage().grass.get_fpc() 
@@ -450,19 +516,22 @@ TEST_CASE("Fauna::TestHabitat", "") {
 
 TEST_CASE("Fauna::TestHabitatGroup","") {
 	// Make sure the group creates its habitats
+	TestHabitatGroup group(1.0,1.0); // lon,lat
+	group.reserve(5);
 	for (int i=1; i<5; i++) {
-		TestHabitatGroup group = TestHabitatGroup(
-				1.0,1.0, // lon,lat
-				i, // number of habitats
-				TestHabitatSettings());
-		CHECK( group.get_habitats().size() == i );
-		CHECK( group.get_habitat_references().size() == i );
-
-		// Make sure the references are pointing correctly to the objects
-		const std::vector<const Habitat*> refs = group.get_habitat_references();
-		const std::vector<TestHabitat> &objects = group.get_habitats();
-		for (int j=0; j<refs.size(); j++)
-			CHECK( refs[j] == &objects[j]);
+		// add a habitat
+		group.add(new DummyHabitat());
+		CHECK( group.size() == i );
+		CHECK( group.get_habitat_references().size() == i ); 
+	}
+	// Make sure the references are pointing correctly to the objects
+	const std::vector<const Habitat*> refs = group.get_habitat_references();
+	TestHabitatGroup::const_iterator itr = group.begin();
+	int j=0;
+	while (itr != group.end()){
+		CHECK( refs[j] == *itr );
+		j++;
+		itr++;
 	}
 }
 

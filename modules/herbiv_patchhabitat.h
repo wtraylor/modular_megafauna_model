@@ -17,6 +17,7 @@ class Pft;
 namespace Fauna {
 	// forward declarations
 	class Parameters;
+	class GetDigestibility;
 
 	/// Class with herbivore habitat functionality for an LPJ-GUESS \ref Patch.
 	/** 
@@ -24,69 +25,52 @@ namespace Fauna {
 	 * corresponding \ref Patch object which takes care of 
 	 * instantiating and releasing.
 	 *
+	 * @startuml "Dependencies of Fauna::PatchHabitat" 
+	 * Patch "1"                 <--> "1" Fauna.PatchHabitat
+	 * abstract Fauna.Habitat
+	 * Fauna.Habitat         <|-- Fauna.PatchHabitat
+	 * interface "Fauna.GetDigestibility"
+	 * Fauna.GetDigestibility <-- Fauna.PatchHabitat
+	 * Fauna.HftPopulationsMap --* Fauna.Habitat
+	 * interface Fauna.PopulationInterface
+	 * Fauna.HftPopulationsMap *-- "*" Fauna.PopulationInterface
+	 * @enduml
 	 * \note There are no unit tests for this class because the
 	 * class \ref Patch cannot reasonably be instantiated in a
 	 * unit test without the whole LPJ-GUESS framework.
 	 */
 	class PatchHabitat : public Habitat{
 	public:
+		/// Constructor
+		/**
+		 * \param populations The herbivore populations
+		 * \param patch The one-to-one relationship to the patch
+		 * \param digestibility_model Strategy object for
+		 * calculating the digestibility of forage (constructor
+		 * injection)
+		 * \see \ref sec_inversion_of_control
+		 */
+		PatchHabitat( std::auto_ptr<HftPopulationsMap> populations,
+				Patch& patch, 
+				const GetDigestibility& digestibility_model):
+			Habitat(populations), // parent constructor
+			patch(patch), 
+			get_digestibility(digestibility_model){}
+
 		/// Get currently available herbivore forage in the \ref Patch.
 		/** \return in kg/km² */
 		virtual HabitatForage get_available_forage() const;
+
 		/// Remove eaten forage from the \ref Patch.
 		/** \param eaten_forage in kg/m² */
 		virtual void remove_eaten_forage(const ForageMass& eaten_forage);
-		
-		/// Constructor.
-		PatchHabitat(Patch& patch):
-			patch(patch)
-		{}
+
+	protected:
+		const GetDigestibility& get_digestibility;
 	private:
 		/// Reference to the patch.
 		Patch& patch;
 
 	};
-
-	/// Herbivory-related parameters of a \ref Pft object.
-	struct PftParams{
-
-		/// Proportional carbon content in dry matter forage
-		/** 
-		 * Needed to convert \ref Individual::cmass_leaf  and \ref Individual::anpp 
-		 * to dry matter forage biomass.
-		 * Does not need to be defined if \ref forage_type is \ref Fauna::FT_INEDIBLE.
-		 */
-		double c_in_dm_forage;
-
-		/// Fractional digestibility of herbivore forage for ruminants
-		/** 
-		 * Does not need to be defined if \ref forage_type is \ref Fauna::FT_INEDIBLE.
-		 * \see sec_herbiv_digestibility
-		 */
-		double digestibility;
-
-		/// Forage type of this plant type.
-		/** Use \ref Fauna::FT_INEDIBLE to exclude it from being eaten.*/
-		Fauna::ForageType forage_type;
-
-		/// Whether the vegetation of this Pft is edible.
-		bool is_edible()const{ return forage_type != Fauna::FT_INEDIBLE; }
-
-		//------------------------------------------------------------
-		
-		/// Constructor
-		PftParams(const Pft& pft):pft(pft){}
-
-		/// Check if the parameters are valid
-		/**
-		 * \param[in] params Global parameters of the herbivory module.
-		 * \param[out] messages Warning and error messages.
-		 * \return true if everything is valid, false if not
-		 */
-		bool is_valid(const Parameters& params, std::string& messages)const;
-		private:
-			const Pft& pft;
-	};
-
 }
 #endif // HERBIV_PATCHHABITAT_H

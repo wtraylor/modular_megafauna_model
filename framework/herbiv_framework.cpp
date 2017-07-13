@@ -8,7 +8,7 @@
 
 #include "config.h"
 #include "herbiv_framework.h"
-#include "herbiv_digestibility.h" // for DigestibilityModel
+#include "herbiv_digestibility.h" // for GetDigestibility
 #include "herbiv_habitat.h"       // for Habitat and Population
 #include "herbiv_herbivore.h"     // for HerbivoreInterface
 #include "herbiv_hft.h"           // for Hft and HftList
@@ -44,41 +44,32 @@ Simulator::Simulator(const Parameters& params, const HftList& hftlist):
 	else
 		dprintf(all_msg.c_str()); // maybe warnings or notifications
 
-
-	// DIGESTIBILITY MODEL
-	// The global object instance is held in a static variable.
-
-	switch (params.dig_model) {
-		case DM_PFT_FIXED:
-			static PftDigestibility pft_dig; // global instance
-			DigestibilityModel::init_global(pft_dig);
-			break;
-			// add other models here ...
-		default:
-			// TODO: Use exceptions or assertions?
-			throw std::invalid_argument(
-					"DigestibilityModel::init_model(): "
-					"unknown enum type."); 
-			break;
-	}
-
 }
 
-HftPopulationsMap Simulator::create_populations(){
-	HftPopulationsMap map;
-	for (int i=0; i<=hftlist.size(); i++){
+std::auto_ptr<GetDigestibility> Simulator::create_digestibility_model()const{
+	switch (params.dig_model){
+		case DM_PFT_FIXED: 
+			return std::auto_ptr<GetDigestibility>(new PftDigestibility()); 
+		default: throw std::logic_error("Simulator::create_digestibility_model(): "
+								 "unknown digestibility model");
+	};
+}
+
+std::auto_ptr<HftPopulationsMap> Simulator::create_populations()const{
+	std::auto_ptr<HftPopulationsMap> pmap(new HftPopulationsMap());
+	for (int i=0; i<hftlist.size(); i++){
 		const Hft& hft = hftlist[i];
 		switch (params.herbivore_type){
 			case HT_COHORT:
 				static CohortFactory cohort_factory;
-				map.add(new CohortPopulation(
+				pmap->add(new CohortPopulation(
 							hft, 
 							cohort_factory,
 							params.dead_herbivore_threshold));
 				break;
 			case HT_INDIVIDUAL:
 				static IndividualFactory individual_factory;
-				map.add(new IndividualPopulation(
+				pmap->add(new IndividualPopulation(
 							hft, 
 							individual_factory));
 				break;
@@ -87,7 +78,7 @@ HftPopulationsMap Simulator::create_populations(){
 						"unknown herbivore type");
 		}
 	}
-	return map;
+	return pmap;
 }
 
 

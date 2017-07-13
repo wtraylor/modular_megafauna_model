@@ -10,7 +10,6 @@
 #include "herbiv_patchhabitat.h"
 #include "herbiv_digestibility.h"
 #include "guess.h"
-#include <sstream> // for is_valid() messages
 
 using namespace Fauna;
 
@@ -21,9 +20,6 @@ using namespace Fauna;
 HabitatForage PatchHabitat::get_available_forage() const {
 	/// Result object
 	HabitatForage forage; 
-
-	/// Reference to the digestibility model
-	const DigestibilityModel& dig_model = DigestibilityModel::get_model();
 
 	/// Sum of grass digestibility to build average
 	double gr_dig_sum_weight, gr_dig_sum = 0.0;
@@ -37,7 +33,7 @@ HabitatForage PatchHabitat::get_available_forage() const {
 		const Individual& indiv = patch.vegetation.getobj();
 
 		// Get common forage properties
-		const double indiv_dig  = dig_model.get_digestibility(indiv); // [frac]
+		const double indiv_dig  = get_digestibility(indiv); // [frac]
 		const double indiv_mass = indiv.get_forage_mass(); // [kg/m²]
 		assert(indiv_mass >= 0.0);
 
@@ -115,28 +111,3 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 		patch.vegetation.nextobj();
 	} 
 }
-
-//============================================================
-// PftParams
-//============================================================
-
-bool PftParams::is_valid(const Parameters& params, 
-		std::string& messages)const{
-
-	bool is_valid = true;
-	
-	// The message text is written into an output string stream
-	std::ostringstream stream;
-
-	if (forage_type == FT_GRASS && pft.lifeform != GRASS){
-		stream << "forage_type=\"grass\", but lifeform!=\"grass\""
-			<< std::endl;
-		is_valid = false;
-	}
-
-	// convert stream to string
-	messages = stream.str();
-
-	return is_valid;
-}
-

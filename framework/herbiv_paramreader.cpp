@@ -25,8 +25,8 @@ bool ParamReader::check_mandatory(const MandatoryParamList& list,
 	bool okay = true;
 	std::ostringstream msg_stream;
 
-	MandatoryParamList::const_iterator itr = mandatory_hft_params.begin();
-	while (itr != mandatory_hft_params.end()){
+	MandatoryParamList::const_iterator itr = list.begin();
+	while (itr != list.end()){
 
 		if (!itemparsed(itr->param.c_str())){
 			// create error message
@@ -38,6 +38,7 @@ bool ParamReader::check_mandatory(const MandatoryParamList& list,
 
 			okay = false;
 		} 
+		itr++;
 	}
 
 	if (!msg_stream.str().empty()){
@@ -66,6 +67,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 		if (params.ifherbivory) {
 			// compile and check mandatory parameters
+			MandatoryParamList mandatory_hft_params;
 
 			mandatory_hft_params.push_back(MandatoryParam("include",""));
 
@@ -115,6 +117,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					"It is disabled by default.\n");
 
 		if (params.ifherbivory) {
+			MandatoryParamList mandatory_global_params;
 
 			// Add mandatory parameters 
 			mandatory_global_params.push_back(MandatoryParam(
@@ -128,6 +131,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			mandatory_global_params.push_back(MandatoryParam(
 						"herbivore_type", ""));
 
+			// check the list
 			if (!check_mandatory(mandatory_global_params,
 						"Global herbivory settings"))
 				plibabort();
@@ -216,12 +220,17 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 		if (params.ifherbivory && pft.herbiv_params.is_edible()) {
 
+			MandatoryParamList mandatory_pft_params;
+
+			// add parameters to the list
+			
 			if (params.dig_model == DM_PFT_FIXED) {
 				mandatory_pft_params.push_back(MandatoryParam(
 							"digestibility",
 							"digestibility_model=PFT_FIXED"));
 			}
 
+			// check through the list
 			if (!check_mandatory(mandatory_pft_params,
 						"PFT \""+ std::string(pft.name) +"\""))
 				plibabort();

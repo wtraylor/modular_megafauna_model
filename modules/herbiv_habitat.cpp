@@ -7,12 +7,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 #include "config.h"
 #include "herbiv_habitat.h"
-#include "herbiv_foraging.h" // for HabitatForage and ForageMass
+#include "herbiv_forageclasses.h" // for HabitatForage and ForageMass
 
 #include "guess.h" // for Date and date
 // We need to use the global variable date, just 
 // because ndaymonth is not implemented as static.
-// We also need Date::MAX_YEAR_LENGTH.
 // The code is still independent of the global date and
 // anything else in guess.h
 
@@ -60,11 +59,6 @@ HabitatOutputData HabitatOutputData::merge(
 	result.is_valid = true;
 	return result;
 }
-
-Habitat::Habitat():
-	daily_output(Date::MAX_YEAR_LENGTH)
-{}
-
 
 void Habitat::init_todays_output(const int today){
 	// Set the state variable

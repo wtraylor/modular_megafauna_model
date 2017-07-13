@@ -26,11 +26,17 @@ void IndividualPopulation::create(const double density, const int age){
 std::vector<const HerbivoreInterface*> IndividualPopulation::get_list()const{
 	std::vector<const HerbivoreInterface*> result;
 	result.resize(list.size());
-	// TODO
+	for (List::const_iterator itr=list.begin(); itr != list.end(); itr++)
+		result.push_back(&*itr);
+	return result;
 }
 
 std::vector<HerbivoreInterface*> IndividualPopulation::get_list(){
-	// TODO
+	std::vector<HerbivoreInterface*> result;
+	result.resize(list.size());
+	for (List::iterator itr=list.begin(); itr != list.end(); itr++)
+		result.push_back(&*itr);
+	return result;
 }
 
 void IndividualPopulation::remove_dead(){
@@ -48,11 +54,17 @@ void CohortPopulation::create(const double density, const int age){
 std::vector<const HerbivoreInterface*> CohortPopulation::get_list()const{
 	std::vector<const HerbivoreInterface*> result;
 	result.resize(list.size());
-	// TODO
+	for (List::const_iterator itr=list.begin(); itr != list.end(); itr++)
+		result.push_back(&*itr);
+	return result;
 }
 
 std::vector<HerbivoreInterface*> CohortPopulation::get_list(){
-	// TODO
+	std::vector<HerbivoreInterface*> result;
+	result.resize(list.size());
+	for (List::iterator itr=list.begin(); itr != list.end(); itr++)
+		result.push_back(&*itr);
+	return result;
 }
 
 void CohortPopulation::remove_dead(){

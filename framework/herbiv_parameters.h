@@ -9,6 +9,7 @@
 #define HERBIV_PARAMETERS_H
 
 #include <stdexcept>
+#include "assert.h"
 
 // forward declarations
 class Pft;
@@ -16,21 +17,19 @@ class Pft;
 namespace Fauna {
 
 	
-	/// Type of digestibility model, corresponding to one class
+	/// Type of digestibility model, corresponding to one implementation of \ref Fauna::GetDigestibility
 	enum DigestibilityModelType{
-		/// \ref PftDigestibility : The fixed value \ref Pft::digestibility is taken.
+		/// \ref PftDigestibility : The fixed value \ref Fauna::PftParams::digestibility is taken.
 		DM_PFT_FIXED
 	};
 
-
 	/// Parameter for selecting algorithm for forage distribution among herbivores
 	enum ForageDistributionAlgorithm{
-		/// Equal forage distribution
-		/** \see \ref Simulator::distribute_forage_equally() */
+		/// Equal forage distribution: \ref Fauna::DistributeForageEqually
 		FD_EQUALLY
 	};
 
-	/// Parameter for selecting the class implementing \ref HerbivoreInterface.
+	/// Parameter for selecting the class implementing \ref Fauna::HerbivoreInterface.
 	// TODO document
 	enum HerbivoreType{
 		HT_COHORT,
@@ -42,8 +41,8 @@ namespace Fauna {
 			/// Minimum mass density [kg/km²] for a living herbivore object.
 			double dead_herbivore_threshold; 
 
-			/// Whether herbivory is enabled.
-			bool ifherbivory;
+			/// How the forage digestibility is calculated
+			DigestibilityModelType dig_model;
 
 			/// Algorithm for how to distribute available forage among herbivores
 			ForageDistributionAlgorithm forage_distribution; 
@@ -51,17 +50,23 @@ namespace Fauna {
 			/// Simulation years without herbivores (as part of spinup). 
 			int free_herbivory_years;
 
-			/// How the forage digestibility is calculated
-			DigestibilityModelType dig_model;
-
 			/// Which kind of herbivore class to use
 			HerbivoreType herbivore_type;
 
-			/// Constructor with default settings
+			/// Whether herbivory is enabled.
+			bool ifherbivory;
+
+			/// Constructor with default (valid!) settings
 			Parameters(): // alphabetical order
-				ifherbivory(false),
+				dead_herbivore_threshold(0.1),
 				forage_distribution(FD_EQUALLY),
-				free_herbivory_years(0){}
+				free_herbivory_years(0),
+				herbivore_type(HT_COHORT),
+				ifherbivory(false)
+		{
+			std::string msg;
+			assert(is_valid(msg)); 
+		}
 
 			/// Check if the parameters are valid
 			/**

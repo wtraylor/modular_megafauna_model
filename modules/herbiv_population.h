@@ -26,11 +26,12 @@ namespace Fauna{
 	 */
 	struct PopulationInterface{
 		/// Virtual destructor
+		/** Destructor must be virtual in an interface. */
 		virtual ~PopulationInterface(){}
 
-		/// Create new herbivores using the \ref HerbivoreFactory
+		/// Create new herbivores 
 		/** 
-		 * The new herbivores are owned by this \ref Population.
+		 * The new herbivores are owned by this population object.
 		 * \param density Total mass density of created herbivores
 		 * [kg/km²]
 		 * \param age Age of new herbivores in days
@@ -76,7 +77,8 @@ namespace Fauna{
 		private:
 			const Hft& hft;
 			const IndividualFactory& factory;
-			std::list<HerbivoreIndividual> list;
+			typedef std::list<HerbivoreIndividual> List;
+			List list;
 	};
 
 	/// A population of \ref HerbivoreCohort objects.
@@ -107,18 +109,26 @@ namespace Fauna{
 			const Hft& hft;
 			const CohortFactory& factory;
 			const double dead_herbivore_threshold;
-			std::list<HerbivoreCohort> list;
+			typedef std::list<HerbivoreCohort> List;
+			List list;
 	};
 	
-	/// Helper class managing \ref Population instances
+	/// Helper class managing object instances of \ref PopulationInterface
 	/**
-	 * There is one \ref Population object per \ref Hft.
+	 * There is one \ref PopulationInterface object per \ref Hft.
 	 *
-	 * \ref Population object instances passed to this class are
+	 * \ref PopulationInterface object instances passed to this class are
 	 * owned by this class and will be deleted in the destructor.
+	 * Because ownership is unique, copy constructor and copy
+	 * assignment operator are deleted (\ref sec_rule_of_three).
+	 * In order to pass an instance of \ref HftPopulationsMap 
+	 * between functions, std::auto_ptr can be used.
 	 */
 	class HftPopulationsMap{
 		public:
+			/// Constructor
+			HftPopulationsMap(){}
+
 			/// Destructor, delete all \ref PopulationInterface instances.
 			virtual ~HftPopulationsMap();
 			
@@ -127,32 +137,35 @@ namespace Fauna{
 			 * \param new_pop Pointer to a newly created object. The
 			 * object will be owned by this \ref HftPopulationsMap
 			 * and deleted in the destructor.
-			 * \throw std::logic_error if a population of that HFT alread
+			 * \throw std::logic_error if a population of that HFT already
 			 * exists
 			 * \throw std::invalid_argument if `new_pop==NULL`
 			 */
 			void add(PopulationInterface* new_pop);
-
-			//------------------------------------------------------------
-			/** @{ \name Wrapper around std::vector */
-			typedef std::vector<PopulationInterface*>::iterator iterator;
-			typedef std::vector<PopulationInterface*>::const_iterator const_iterator;
-
-			iterator begin(){return vec.begin();}
-			const_iterator begin()const{return vec.begin();}
-			iterator end(){return vec.end();}
-			const_iterator end()const{return vec.end();}
 
 			/// Access to a population
 			/** \param hft The herbivore functional type
 			 * \throw std::invalid_argument if `hft` not in the vector */
 			PopulationInterface& operator[](const Hft& hft);
 
-			/// Number of elements
-			int size() const {return vec.size();}
+			//------------------------------------------------------------
+			/** @{ \name Wrapper around std::vector 
+			 * Equivalents to methods in Standard Library Container std::vector.*/
+			typedef std::vector<PopulationInterface*>::iterator iterator;
+			typedef std::vector<PopulationInterface*>::const_iterator const_iterator;
+			iterator begin()            { return vec.begin(); }
+			const_iterator begin()const { return vec.begin(); }
+			iterator end()              { return vec.end();   }
+			const_iterator end()const   { return vec.end();   }
+			int size() const            { return vec.size();  }
 			/** @} */ // Container Functionality
 		private:
 			std::vector<PopulationInterface*> vec;
+			// Deleted copy constructor and copy assignment operator.
+			// If they were not deleted, the unique ownership of the
+			// PopulationInterface objects could be lost. 
+			HftPopulationsMap(const HftPopulationsMap& other);
+			HftPopulationsMap& operator=(const HftPopulationsMap& other);
 	};
 };
 

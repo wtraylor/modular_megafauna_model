@@ -10,6 +10,7 @@
 #include "herbiv_output.h"
 #include "guess.h"             // for Date and Gridcell
 #include "herbiv_hft.h"        // for Hft and HftList
+#include "herbiv_patchhabitat.h" // for Fauna::PatchHabitat
 #ifndef NO_GUESS_PARAMETERS
 #include "parameters.h"        // for declare_parameter()
 #endif // NO_GUESS_PARAMETERS
@@ -71,9 +72,12 @@ HerbivoryOutput& HerbivoryOutput::get_instance(){
 	return *global_instance;
 }
 
-
 void HerbivoryOutput::init() {
 	if (!isactive) return;
+
+	if (hftlist == NULL)
+		throw std::logic_error("GuessOutput::HerbivoryOutput::init(): "
+				"hftlist not declared. Call set_hftlist() before.");
 
 	if (interval_xtring == "annual")
 		interval = ANNUAL;
@@ -104,9 +108,7 @@ const ColumnDescriptors HerbivoryOutput::get_forage_columns()const {
 }
 
 const ColumnDescriptors HerbivoryOutput::get_hft_columns()const {
-	if (hftlist == NULL)
-		throw std::logic_error("GuessOutput::HerbivoryOutput::get_hft_columns(): "
-				"hftlist not declared. Call set_hftlist() before.");
+	assert(hftlist != NULL); // checked for in init() already
 
 	ColumnDescriptors hft_columns;
 	HftList::const_iterator itr = hftlist->begin();
@@ -127,7 +129,7 @@ void HerbivoryOutput::define_output_tables() {
 	const ColumnDescriptors forage_columns = get_forage_columns();
 	const ColumnDescriptors hft_columns = get_hft_columns();
 
-	// Create the columns for each output file
+	// Create the columns for each output table
 	create_output_table(out_forage_avail , file_forage_avail.c_str() , forage_columns);
 	assert( !out_forage_avail.invalid() );
 	create_output_table(out_forage_eaten , file_forage_eaten.c_str() , forage_columns);
@@ -139,6 +141,11 @@ void HerbivoryOutput::outannual(Gridcell& gridcell){
 
 	/// References to all Habitat objects in the gridcell.
 	std::vector<const Habitat*> habitats;
+
+	// reserve space in array: number of stands (gridcell.size())
+	// times number of patches in first stand object.
+	if (gridcell.size() > 0)
+		habitats.reserve(gridcell.size() * (*gridcell.begin()).nobj);
 
 	//Loop through Patches to gather all habitats
 	Gridcell::iterator gc_itr = gridcell.begin();

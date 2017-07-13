@@ -85,7 +85,11 @@ namespace Fauna {
 
 			/// Check with \ref itemparsed() through list of parameters
 			/** Prints error messages. 
+			 * \param list List of mantdatory parameters
 			 * \param prefix prefix for the error message.
+			 * \return true if every parameter was parsed, false if 
+			 * at least one was missing.
+			 * \see \ref itemparsed()
 			 */
 			bool check_mandatory(const MandatoryParamList& list,
 					const std::string& prefix);
@@ -94,9 +98,6 @@ namespace Fauna {
 			Hft current_hft;
 
 			HftList hftlist;
-			MandatoryParamList mandatory_global_params;
-			MandatoryParamList mandatory_hft_params;
-			MandatoryParamList mandatory_pft_params;
 			Parameters params;
 
 			/// Holds the currently parsed string parameter
@@ -106,7 +107,6 @@ namespace Fauna {
 			ParamReader(ParamReader const&);    // deleted copy constructor
 			void operator=(ParamReader const&); // deleted assignment constructor
 	};
-
 }
 
 #endif // HERBIV_PARAMREADER_H

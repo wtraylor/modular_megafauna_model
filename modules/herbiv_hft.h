@@ -34,7 +34,9 @@ namespace Fauna{
 			Hft();
 
 			/// Check if all variables are okay
-			/** \param[out] msg Warning or error messages for output.
+			/** 
+			 * \param[in] params The global simulation parameters.
+			 * \param[out] msg Warning or error messages for output.
 			 * \return true if the object has valid values */
 			bool is_valid(const Parameters& params, std::string& msg) const;
 

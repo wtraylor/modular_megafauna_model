@@ -13,9 +13,6 @@
 
 using namespace Fauna;
 
-// initialize static member
-DigestibilityModel* DigestibilityModel::global_model = NULL;
-
-double PftDigestibility::get_digestibility(const Individual& individual) const{
+double PftDigestibility::operator()(const Individual& individual) const{
 	return individual.pft.herbiv_params.digestibility;
 }

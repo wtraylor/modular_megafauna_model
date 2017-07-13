@@ -6,6 +6,7 @@ Large Herbivore Model {#page_herbiv_model}
 Large Herbivore Model {#sec_herbiv_model}
 ==========================================
 <!-- For doxygen, this is the *section* header -->
+\tableofcontents
 
 <!--TODO:
 - Limitations of the model design:
@@ -16,7 +17,7 @@ Large Herbivore Model {#sec_herbiv_model}
   UML diagram:
 	+ Habitat
 	+ HerbivoreInterface
-	+ DigestibilityModel (for PatchHabitat)
+	+ GetDigestibility (for PatchHabitat)
 -->
 
 Foraging {#sec_herbiv_foraging}

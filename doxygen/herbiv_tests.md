@@ -6,6 +6,7 @@ Unit Tests of the Herbivore Module {#page_herbiv_tests}
 Unit Tests of the Herbivore Module {#sec_herbiv_tests}
 ==================================
 <!-- For doxygen, this is the *section* header -->
+\tableofcontents
 
 
 Introduction

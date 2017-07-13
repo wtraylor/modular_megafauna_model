@@ -30,7 +30,7 @@ const xtring file_log = "herbivsim.log";
  */
 
 /// Run the test simulation with parameters read from instruction file
-/** \todo Print version */
+/** \todo Print version, print help */
 int main(int argc,char* argv[]) {
 	// Set a shell for dprintf() etc
 	set_shell(new CommandLineShell(file_log));
@@ -38,7 +38,7 @@ int main(int argc,char* argv[]) {
 	dprintf("This is the test simulator for the herbivory module "
 			"of LPJ-GUESS.\n");
 
-	/// The singleton instance of the simulator
+	// The singleton instance of the simulator
 	TestSimulator& simulator = TestSimulator::get_instance();
 
 	// Read ins file from command line parameters.
@@ -71,7 +71,12 @@ int main(int argc,char* argv[]) {
 	const HftList hftlist = ParamReader::get_instance().get_hftlist();
 
 	// Run the simulation with the global parameters
-	simulator.run(params, hftlist);
+	try {
+		simulator.run(params, hftlist);
+	} catch (std::exception& e){
+		dprintf("Exception caught:\n%s", e.what());
+		return EXIT_FAILURE;
+	}
 
 	dprintf("\nFinished\n");
 	return EXIT_SUCCESS;
@@ -189,33 +194,44 @@ void TestSimulator::run(const Fauna::Parameters& global_params,
 	output_channel = new FileOutputChannel(
 			params.outputdirectory.c_str(),
 			COORDINATES_PRECISION);
+	herbiv_out.set_hftlist(hftlist);
 	herbiv_out.init();
 
 
 	// PREPARE VARIABLES
 
-	/// The habitat groups in this run
-	std::vector<TestHabitatGroup> habitat_groups;
+	// The simulator for the habitats
+	// Pass the global parameters that were read from the 
+	// instruction file.
+	Simulator habitat_simulator(global_params, hftlist);
+
+
+	// The habitat groups in this run
+	// these are pointers (because TestHabitatGroup cannot be
+	// copied), which need to be deleted later
+	std::vector<TestHabitatGroup*> habitat_groups;
+	try {
 	for (int g=0; g<params.ngroups; g++){
 		// The x and y coordinates are just for labeling the
 		// lon/lat columns in the output.
 		const double x = (double) g;
 		const double y = (double) g;
 
-		// create a habitat group which in turn creates its habitats
-		habitat_groups.push_back( 
-				TestHabitatGroup(
-					x,y,
-					params.nhabitats_per_group, 
-					params.settings) 
-				);
+		// create a habitat group 
+		habitat_groups.push_back( new TestHabitatGroup(x,y) );
+		TestHabitatGroup& group = *habitat_groups.back();
+
+		// fill group with habitats
+		group.reserve( params.nhabitats_per_group );
+		for (int h=0; h<params.nhabitats_per_group; h++){
+			// At this point, any other Habitat object
+			// could be inserted too.
+			group.add(new TestHabitat(
+						habitat_simulator.create_populations(),
+						params.settings
+						));
+		}
 	}
-
-	/// The simulator for the habitats
-	// Pass the global parameters that were read from the 
-	// instruction file.
-	Simulator habitat_simulator(global_params, hftlist);
-
 
 	dprintf("Starting simulation.\n");
 
@@ -224,31 +240,54 @@ void TestSimulator::run(const Fauna::Parameters& global_params,
 
 			// loop through habitat groups
 			for (int g=0; g<habitat_groups.size(); g++) {
-				TestHabitatGroup& group = habitat_groups[g];
+				TestHabitatGroup& group = *habitat_groups[g];
 				//loop through habitat objects in this group
-				std::vector<TestHabitat>& group_habitats = group.get_habitats(); 
-				for (int h=0; h<group_habitats.size(); h++)
-				{
-					TestHabitat &habitat =  group_habitats[h];
+				TestHabitatGroup::iterator itr_habitat = group.begin();
+				while (itr_habitat != group.end()) {
+					Habitat& habitat = **itr_habitat;
 
 					// VEGATATION AND HERBIVORE SIMULATION
 					const bool do_herbivores = 
 						global_params.ifherbivory && 
 						(year >= global_params.free_herbivory_years);
 
-					habitat_simulator.simulate_day(day_of_year, habitat, do_herbivores); 
+					habitat_simulator.simulate_day(
+							day_of_year, 
+							habitat, 
+							do_herbivores); 
+
+					itr_habitat++;
 				}
 			} // end of habitat loop
 		}// end of year
-
 
 		// OUTPUT
 
 		// Write output for all habitat groups
 		for (int g=0; g<habitat_groups.size(); g++) {
-			TestHabitatGroup& group = habitat_groups[g];
+			TestHabitatGroup& group = *habitat_groups[g];
 			herbiv_out.outannual(group.get_lon(), group.get_lat(), 
 					year, group.get_habitat_references());
 		}
+
+
+		// PRINT PROGRESS
+		const int progress_interval = params.nyears / 10; // every 10%
+		if (year % progress_interval == 0
+			|| year == params.nyears-1)
+			dprintf("progress: %d%%\n", (100*year)/(params.nyears-1)); 
+	} // end of simulation
+
+	// release
+	} catch (...){
+		// release habitat_groups
+		std::vector<TestHabitatGroup*>::iterator itr = habitat_groups.begin();
+		while (itr != habitat_groups.end()) {
+			delete *itr;
+			habitat_groups.erase(itr);
+		}
+		throw; // Pass on the exception
 	}
+
 }
+

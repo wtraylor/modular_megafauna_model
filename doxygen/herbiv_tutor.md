@@ -7,11 +7,29 @@ code it to one’s needs.
 Tutor for the Large Herbivore Module {#sec_herbiv_tutor}
 =========================================================
 <!-- For doxygen, this is the *section* header -->
+\tableofcontents
 
 Herbivores Tutorials {#sec_herbiv_tutor_herbivores}
 ---------------------------------------------------
 
 ### How to add a new herbivore class {#sec_herbiv_new_herbivore_class}
+
+@startuml "Relationships for a new herbivore type"
+namespace Fauna{
+	hide members
+	hide methods
+	interface HerbivoreInterface
+	abstract HerbivoreBase
+	HerbivoreInterface  <|-- HerbivoreBase
+	HerbivoreBase       <|-- HerbivoreIndividual
+	HerbivoreBase       <|-- HerbivoreCohort
+	HerbivoreInterface  <|-- NewHerbivore
+	interface PopulationInterface
+	PopulationInterface <|-- NewPopulation
+	NewPopulation        ..> NewHerbivore : create & manage
+}
+@enduml
+
 The model design allows a complete substitution of the herbivore
 class.
 If you want to implement a completely new model behaviour, you
@@ -25,9 +43,8 @@ accessible to the instruction file parser by checking for your
 string identifier in \ref Fauna::ParamReader::callback() under
 `CB_HERBIVORE_TYPE`.
 
-Then, derive a new class from \ref Fauna::Population to construct
-your class.
-In \ref Fauna::Simulator::create_populations(), create your new
+Then, derive a new class from \ref Fauna::PopulationInterface to manage and construct your object instances.
+In \ref Fauna::Simulator::create_populations(), create that
 population class.
 
 Forage Tutorials {#sec_herbiv_tutor_forage}
@@ -35,41 +52,68 @@ Forage Tutorials {#sec_herbiv_tutor_forage}
 
 ### How to add a new forage type {#sec_herbiv_new_forage_type}
 
-- Create new enum entry in [ForageType](\ref Fauna::ForageType).
+@startuml "Relationships for a new forage type"
+namespace Fauna{
+	enum ForageType {
+		FT_GRASS,
+		FT_NEWFORAGE
+	}
+	ParamReader ..> ForageType : <<use>>
+	class ForageMass{
+		double grass
+		double new_forage
+		double sum()
+	}
+	abstract ForageBase
+	class NewForage{
+		your_custom_members
+	}
+	NewForage <|-- ForageBase
+	class HabitatForage{
+		get_total()
+		merge()
+	}
+	HabitatForage *--> NewForage
+	interface GetDigestibility
+	class PatchHabitat{
+		get_available_forage()
+		reduce_forage_mass()
+	}
+	PatchHabitat ..> HabitatForage : <<use>>
+	TestHabitat  ..> HabitatForage : <<use>>
+}
+class Individual{
+	get_forage_mass()
+}
+Fauna.PatchHabitat          ..> Individual       : <<use>>
+Fauna.GetDigestibility      ..> Individual       : <<use>>
+Individual                  ..> Fauna.ForageMass : <<use>>
+GuessOutput.HerbivoryOutput ..> Fauna.NewForage  : <<use>>
+@enduml
 
-- Increase [FORAGE_TYPE_COUNT](\ref Fauna::FORAGE_TYPE_COUNT).
+- Create new enum entry in \ref Fauna::ForageType.
 
-- Add a short name for it in [get_forage_type_name()](\ref Fauna::get_forage_type_name()).
+- Increase \ref Fauna::FORAGE_TYPE_COUNT.
+
+- Add a short name for it in \ref Fauna::get_forage_type_name().
 
 - Instruction file (\ref herbiv_parameters.cpp):
 	+ ParamReader::declare_parameters():
 	Add parameter description
 	+ ParamReader::callback():
-	Add forage type under [CB_FORAGE_TYPE](\ref Fauna::CB_FORAGE_TYPE).
+	Add forage type under \ref Fauna::CB_FORAGE_TYPE.
 
-- Create new member variable in [ForageMass](\ref Fauna::ForageMass) 
-and include it in the constructor, in 
-[ForageMass::sum()](\ref Fauna::ForageMass::sum()) and in all overloaded operators.
+- Create new member variable in \ref Fauna::ForageMass and include it in the constructor, in \ref Fauna::ForageMass::sum() and in all overloaded operators.
 
-- Derive new class from [ForageBase](\ref Fauna::ForageBase).
+- Derive new class from \ref Fauna::ForageBase;
 
-- Add a new member variable in 
-[HabitatForage](\ref Fauna::HabitatForage) 
-of that class and include it in 
-[HabitatForage::get_total().](\ref Fauna::HabitatForage::get_total().)
+- Add a new member variable in \ref Fauna::HabitatForage of that class and include it in \ref Fauna::HabitatForage::get_total().
 
-- Add it in 
-[HabitatForage::get_forage_type_name()](\ref Fauna::HabitatForage::get_forage_type_name()).
+- Implement average building in \ref Fauna::HabitatForage::merge().
 
-- Implement average building in [HabitatForage::merge()](\ref Fauna::HabitatForage::merge()).
+- Adjust \ref Individual::get_forage_mass() and \ref Individual::reduce_forage_mass().
 
-- Adjust 
-[Individual::get_forage_mass()](\ref Individual::get_forage_mass())  and
-[Individual::reduce_forage_mass()](\ref Individual::reduce_forage_mass()).
-
-- Adjust 
-[PatchHabitat::get_available_forage()](\ref Fauna::PatchHabitat::get_available_forage()) and 
-[Habitat::remove_eaten_forage()](\ref Fauna::Habitat::remove_eaten_forage()).
+- Adjust \ref Fauna::PatchHabitat::get_available_forage() and \ref Fauna::PatchHabitat::remove_eaten_forage().
 
 - Output:
 	+ Add a new column descriptor in \ref GuessOutput::HerbivoryOutput::get_forage_columns().
@@ -77,8 +121,9 @@ of that class and include it in
 	+ Declare output file parameters in \ref GuessOutput::HerbivoryOutput::HerbivoryOutput().
 	+ Define output tables in \ref GuessOutput::HerbivoryOutput::define_output_tables().
 
-- Perhaps adjust the digestibility in your chosen 
-[DigestibilityModel](\ref Fauna::DigestibilityModel).
+- Perhaps adjust the digestibility in your chosen \ref Fauna::GetDigestibility.
+
+\todo Add Herbivore feeding and test simulations
 
 ### How to add a new forage distribution algorithm {#sec_herbiv_new_forage_distribution}
 - Derive a new class from \ref Fauna::DistributeForage and
@@ -99,6 +144,23 @@ of that class and include it in
 Parameters Tutorials {#sec_herbiv_tutor_parameters}
 ---------------------------------------------------
 
+### How to add a new global parameter {#sec_herbiv_new_global_parameter}
+
+Global parameters of the herbivory module are declared and parsed by \ref Fauna::ParamReader, but initialized and checked in \ref Fauna::Parameters.
+
+- Declare your parameter as a member variable in \ref Fauna::Parameters.
+- Initialize it with a valid default value in \ref Fauna::Parameters::Parameters().
+- Write a validity check in \ref Fauna::Parameters::is_valid().
+- If the parameter needs to be parsed from a string, add your
+	own callback:
+	+ add a new enum item CB_* in \ref parameters.h.
+	+ add a new if statement in \ref Fauna::ParamReader::callback().
+- Call the plib function \ref declareitem() in 
+	\ref Fauna::ParamReader::declare_parameters()
+	(possibly with your own CB_* code).
+- If you wish, add it to `mandatory_global_params` in \ref Fauna::ParamReader::callback() so that it must not be omitted. 
+- Extend the example instruction file `data/ins/herbivores.ins`.
+
 ### How to add a new PFT parameter {#sec_herbiv_new_pft_parameter}
 
 Herbivory-related PFT parameters are declared and parsed by \ref Fauna::ParamReader, but initialized and checked in \ref Fauna::PftParams.
@@ -109,8 +171,8 @@ Herbivory-related PFT parameters are declared and parsed by \ref Fauna::ParamRea
 	+ add a new if statement in \ref Fauna::ParamReader::callback().
 - Declare the parameter in \ref Fauna::ParamReader::declare_parameters()
 	(possibly with your own CB_* code).
-- You can initialize it in \ref Fauna::ParamReader::init_pft().
-- Check if the parameter was *parsed* in \ref Fauna::ParamReader::callback().
+- You can initialize it in \ref Fauna::PftParams::PftParams().
+- Check if the parameter was *parsed* in \ref Fauna::ParamReader::callback(). There, add it to `mandatory_pft_params` to ensure it is not omitted. If it is *not* mandatory, make sure it is initialized with a valid value!
 - Check if the parameter is *valid* in \ref Fauna::PftParams::is_valid().
 - Extend the example instruction files in the directory `data/ins`.
 
@@ -119,7 +181,7 @@ Herbivory-related PFT parameters are declared and parsed by \ref Fauna::ParamRea
 
 - Declare your member variable in \ref Fauna::Hft 
   (observe alphabetical order, please)
-- Initialize it with a default value in \ref Fauna::Hft::Hft().
+- Initialize it with a (valid!) default value in \ref Fauna::Hft::Hft().
 - Write a validity check in \ref Fauna::Hft::is_valid().
 - If the parameter needs to be parsed from a string, add your
 	own callback:
@@ -128,7 +190,7 @@ Herbivory-related PFT parameters are declared and parsed by \ref Fauna::ParamRea
 - Call the plib function \ref declareitem() in 
 	\ref Fauna::ParamReader::declare_parameters()
 	(possibly with your own CB_* code).
-- If you wish, add it to \ref Fauna::ParamReader::mandatory_hft_params so that it must not be omitted. If your parameter is not mandatory, make sure it is initialized with a valid value in \ref Fauna::Hft::Hft().
+- If you wish, add it to `mandatory_hft_params` in \ref Fauna::ParamReader::callback() so that it must not be omitted. 
 - Extend the example instruction file `data/ins/herbivores.ins`.
 
 

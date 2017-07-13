@@ -91,7 +91,6 @@ namespace Fauna {
 			GrassForage forage;
 
 			TestHabitatSettings::Grass settings;
-
 	};
 
 	/// A herbivore habitat independent of the LPJ-GUESS framework for testing.
@@ -99,8 +98,14 @@ namespace Fauna {
 		public:
 
 			/// Constructor with simulation settings.
-			TestHabitat(const TestHabitatSettings settings):
-				grass(settings.grass){}
+			/**
+			 * \param populations Herbivore populations; see \ref Habitat::Habitat()
+			 * \param settings Simulation settings for the vegetation
+			 * model.
+			 */
+			TestHabitat(std::auto_ptr<HftPopulationsMap> populations,
+					const TestHabitatSettings settings):
+				Habitat(populations), grass(settings.grass){}
 
 			/// Update output and perform vegetation growth
 			/** \see \ref Fauna::Habitat::init_todays_output() */
@@ -127,9 +132,9 @@ namespace Fauna {
 			TestGrass grass;
 	};
 
-	/// A clustor of \ref TestHabitat objects with the same settings.
-	/** In the herbivore test simulations this corresponds to a 
-	 * \ref Gridcell with \ref Patch objects. */
+	/// A set of \ref Habitat objects.
+	/** In the herbivore test simulations this corresponds semantically
+	 * to a \ref Gridcell with \ref Patch objects. */
 	class TestHabitatGroup{
 		public:
 
@@ -137,33 +142,65 @@ namespace Fauna {
 			/** 
 			 * \param lon longitude (just for output labels)
 			 * \param lat latitude  (just for output labels)
-			 * \param nhabitats Number of habitats to create.
-			 * \param settings Parameters passed on to the test habitats.
 			 */
-			TestHabitatGroup(
-					const double lon, const double lat,
-					const int nhabitats,
-					const TestHabitatSettings settings);
+			TestHabitatGroup(const double lon, const double lat):
+		lon(lon), lat(lat){}
+
+			/// Destructor, deleting all \ref Habitat instances.
+			~TestHabitatGroup(){
+				iterator iter = begin();
+				while (iter != end()){
+					delete *iter;
+					vec.erase(iter);
+				}
+			}
 
 			/// Latitude as defined in the constructor.
 			double get_lon()const{return lon;}
 			/// Latitude as defined in the constructor.
 			double get_lat()const{return lat;}
 
-			/// Get a handle to the test-habitats vector.
-			std::vector<TestHabitat>& get_habitats(){return habitats;}
+			/// Add a newly created \ref Habitat object
+			/** The \ref Habitat instance will be owned by the group
+			 * and released on its destruction.
+			 * \param new_habitat Pointer to a newly created object
+			 * \throw std::invalid_argument if `new_habitat==NULL`
+			 */
+			void add(Habitat* new_habitat){
+				if (new_habitat == NULL)
+					throw std::invalid_argument("TestHabitatGroup::add(): "
+							"received NULL-Pointer as argument.");
+				vec.push_back(new_habitat);
+			}
 
 			/// Get list of readonly habitat references.
 			std::vector<const Habitat*> get_habitat_references()const{
 				std::vector<const Habitat*> result;
-				for (int i=0; i<habitats.size(); i++)
-					result.push_back(&(habitats[i]));
+				for (int i=0; i<vec.size(); i++)
+					result.push_back(vec[i]);
 				return result;
 			}
 
+			/** @{ \name Wrapper around std::vector 
+			 * Equivalents to methods in Standard Library Container std::vector.*/
+			typedef std::vector<Habitat*>::iterator iterator;
+			typedef std::vector<Habitat*>::const_iterator const_iterator;
+			iterator begin()            { return vec.begin(); }
+			const_iterator begin()const { return vec.begin(); }
+			iterator end()              { return vec.end();   }
+			const_iterator end()const   { return vec.end();   }
+			int size() const            { return vec.size();  }
+			void reserve(const int size){ vec.reserve(size);  } 
+			/** @} */ // Container functionality 
 		private:
-			std::vector<TestHabitat> habitats;
+			std::vector<Habitat*> vec;
 			double lon,lat;
+
+			// Deleted copy constructor and copy assignment operator.
+			// If they were not deleted, the unique ownership of the
+			// PopulationInterface objects could be lost. 
+			TestHabitatGroup(const TestHabitatGroup& other);
+			TestHabitatGroup& operator=(const TestHabitatGroup& other);
 	};
 
 }
