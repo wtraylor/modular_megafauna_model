@@ -59,14 +59,9 @@ namespace Fauna {
 			patch(patch), 
 			get_digestibility(digestibility_model){}
 
-		/// Get currently available herbivore forage in the \ref Patch.
-		/** \return in kg/km² */
+		// ----- Fauna::Habitat implementation -----
 		virtual HabitatForage get_available_forage() const;
-
-		/// Remove eaten forage from the \ref Patch.
-		/** \param eaten_forage in kg/m² */
 		virtual void remove_eaten_forage(const ForageMass& eaten_forage);
-
 	protected:
 		const GetDigestibility& get_digestibility;
 	private:

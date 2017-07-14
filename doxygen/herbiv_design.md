@@ -64,6 +64,50 @@ namespace Fauna{
 }
 @enduml
 
+Error Handling {#sec_herbiv_errorhandling}
+------------------------------------------
+
+### Exceptions ### {#sec_herbiv_exceptions}
+The herbivory module uses the C++ standard library (STL) exceptions defined in `<stdexcept>`.
+All exceptions are derived from `std::exception`:
+@startuml "Standard library exceptions used in the herbivory module."
+namespace std{
+	hide members
+	hide methods
+	exception <|-- logic_error
+	exception <|-- runtime_error
+	logic_error <|-- invalid_argument
+	logic_error <|-- out_of_range 
+}
+@enduml
+
+Any function that potentially *creates* an exception declares that in its doxygen description.
+Beware that any function—unless documented otherwise—will not catch exceptions from calls to other functions.
+Therefore, even if a function does not announce a potential exception throw in its documentation, it will pass on any exceptions from other functions which it calls.
+
+Exceptions are used…:
+- …to check if parameters in public methods are valid.
+- …to check the validity of variables coming from outside of the herbivory module where there are no contracts defined and ensured.
+
+Each class makes no assumptions about the simulation framework (e.g. that parameters have been checked), but solely relies on the class contracts in the code documentation.
+
+Exceptions are caught with `try{…}catch(…){…}` blocks in:
+- framework.cpp: function \ref framework()
+- herbiv_testsimulation.h: %main() function and \ref FaunaSim::Framework::run()
+
+\note No part of the herbivory module writes directly to the shell output (stdout/stderr), except for:
+- FaunaSim::Framework
+- Fauna::ParamReader
+
+### Assertions ### {#sec_herbiv_assertions}
+At appropriate places, `assert()` is called (defined in the STL header `assert.h`).
+`assert()` calls are only expanded by the compiler if compilation happens for DEBUG mode; in RELEASE, they are completely ignored.
+
+Assertions are used…: 
+- …within non-public methods to check within-class functionality.
+- …to verify the result of an algorithm within a function.
+- …in code regions that might be expanded later: An assert call serves as a reminder for the developer to implement all necessary dependencies.
+
 Herbivory Parameters {#sec_herbiv_parameters}
 ---------------------------------------------
 
@@ -77,6 +121,7 @@ the inflexible design of LPJ-GUESS parameter library. Some
 global constants (checkback and block codes) and global
 pointers from \ref parameters.h and \ref parameters.cpp are
 used in \ref herbiv_parameters.cpp.
+
 
 \see \ref sec_herbiv_new_pft_parameter
 
@@ -142,7 +187,6 @@ namespace Fauna {
 }
 FaunaSim.Framework ..> Fauna.ParamReader : <<use>>
 @enduml
-
 
 Object-oriented Design {#sec_object_orientation}
 ------------------------------------------------

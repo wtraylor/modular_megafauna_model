@@ -103,7 +103,7 @@ GuessOutput.HerbivoryOutput ..> Fauna.NewForage  : <<use>>
 	+ ParamReader::callback():
 	Add forage type under \ref Fauna::CB_FORAGE_TYPE.
 
-- Create new member variable in \ref Fauna::ForageMass and include it in the constructor, in \ref Fauna::ForageMass::sum() and in all overloaded operators.
+- Create new member variable with getter and setter methods in \ref Fauna::ForageMass and include it in the constructor, in \ref Fauna::ForageMass::sum() and in all overloaded operators.
 
 - Derive new class from \ref Fauna::ForageBase;
 

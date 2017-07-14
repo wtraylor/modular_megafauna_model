@@ -64,8 +64,9 @@ namespace Fauna {
 				herbivore_type(HT_COHORT),
 				ifherbivory(false)
 		{
-			std::string msg;
-			assert(is_valid(msg)); 
+			// Make sure that the default values are implemented
+			// correctly
+			assert(is_valid()); 
 		}
 
 			/// Check if the parameters are valid
@@ -74,6 +75,14 @@ namespace Fauna {
 			 * \return true if everything is valid, false if not
 			 */
 			bool is_valid(std::string& messages)const;
+
+			/// Check if the parameters are valid
+			/** \return true if everything is valid, false if not */
+			bool is_valid()const{
+				std::string dump;
+				return is_valid(dump);
+			}
+			/// @}
 	};
 
 }

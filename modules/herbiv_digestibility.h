@@ -8,8 +8,6 @@
 #ifndef HERBIV_DIGESTIBILITY_H
 #define HERBIV_DIGESTIBILITY_H
 
-#include "assert.h"
-
 // Forward declarations of LPJ-GUESS classes
 class Individual;
 

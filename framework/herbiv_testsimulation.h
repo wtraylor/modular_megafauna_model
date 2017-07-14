@@ -45,11 +45,14 @@ namespace FaunaSim{
 
 			/// Run a simulation
 			/** Call this only after ins file has been read.
+			 * At all critical points, exceptions are caught, but there
+			 * is no guarantee that no exception *slips through the cracks*.
 			 * \param global_params Instruction file parameters from
 			 * the herbivory module not specific to the test simulation.
 			 * \param hftlist List of HFTs
+			 * \return true on success, false on failure
 			 */
-			void run(const Fauna::Parameters& global_params, const Fauna::HftList& hftlist);
+			bool run(const Fauna::Parameters& global_params, const Fauna::HftList& hftlist);
 
 			/// Check if all mandatory parameters have been read, terminates on error.
 			/**

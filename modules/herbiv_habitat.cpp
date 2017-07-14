@@ -9,27 +9,35 @@
 #include "herbiv_habitat.h"
 #include "herbiv_forageclasses.h" // for HabitatForage and ForageMass
 
-#include "guess.h" // for Date and date
-// We need to use the global variable date, just 
-// because ndaymonth is not implemented as static.
-// The code is still independent of the global date and
-// anything else in guess.h
-
-
 using namespace Fauna;
+
+namespace {
+	/// Length of a year.
+	const int YEAR_LENGTH = 365;
+	/// Number of days in each month.
+	const int MONTH_DAYS[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+}
 
 HabitatOutputData HabitatOutputData::merge( 
 		const std::vector<HabitatOutputData> data,
 		const int first,
 		int last
 		){
+	if (last == -1)
+		last = data.size()-1;
 
-	assert (!data.empty());
-	if (last < 0)
-		last = data.size() -1;
-	assert (first <= last);
-	assert (first < data.size());
-	assert (last < data.size());
+	if (data.empty())
+		throw std::invalid_argument("Fauna::HabitatOutputData::merge() "
+				"Data vector is empty.");
+	if (last < first)
+		throw std::invalid_argument("Fauna::HabitatOutputData::merge() "
+				"invalid index range: last < first");
+	if (last >= data.size())
+		throw std::out_of_range("Fauna::HabitatOutputData::merge() "
+			"last >= data.size()");
+	if (first >= data.size())
+		throw std::out_of_range("Fauna::HabitatOutputData::merge() "
+			"first >= data.size()");
 
 	// Result object with the merged data
 	HabitatOutputData result;
@@ -61,6 +69,10 @@ HabitatOutputData HabitatOutputData::merge(
 }
 
 void Habitat::init_todays_output(const int today){
+	if (today>=365 || today<0)
+		throw std::invalid_argument("Fauna::Habitat::init_todays_output() "
+				"Parameter \"today\" out of range");
+
 	// Set the state variable
 	day_of_year = today;
 
@@ -87,16 +99,15 @@ const HabitatOutputData& Habitat::read_todays_output() {
 	// Reference to this day’s output
 	HabitatOutputData& todays_output = get_todays_output();
 
-	assert(todays_output.is_valid);
-
 	// Insert more values that are calculated at the end of the
 	// day here
 
+	assert(todays_output.is_valid);
 	return todays_output;
 }
 
 std::vector<HabitatOutputData> Habitat::get_monthly_output() const {
-	assert(daily_output.size() == Date::MAX_YEAR_LENGTH);
+	assert(daily_output.size() == YEAR_LENGTH);
 
 	std::vector<HabitatOutputData> monthly_output;
 	monthly_output.reserve(12); // reserve disk space for 12 entries without creating
@@ -104,11 +115,11 @@ std::vector<HabitatOutputData> Habitat::get_monthly_output() const {
 	int day_of_month = 0;       // First   = 0
 
 	// iterate through the whole year 
-	for (int i=0; i<Date::MAX_YEAR_LENGTH; i++){
+	for (int i=0; i<YEAR_LENGTH; i++){
 		assert(month < 12);
-		assert(day_of_month < date.ndaymonth[month]);
+		assert(day_of_month < MONTH_DAYS[month]);
 
-		if (day_of_month == date.ndaymonth[month] - 1){
+		if (day_of_month == MONTH_DAYS[month] - 1){
 			// We have reached the end of the month 
 
 			monthly_output.push_back(HabitatOutputData::merge(
@@ -125,14 +136,12 @@ std::vector<HabitatOutputData> Habitat::get_monthly_output() const {
 }
 
 HabitatOutputData Habitat::get_annual_output() const {
-	return HabitatOutputData::merge(daily_output);
+	HabitatOutputData result = HabitatOutputData::merge(daily_output);
+	return result;
 }
-
 
 void Habitat::remove_eaten_forage(const ForageMass& eaten_forage){
-	assert(eaten_forage.grass >= 0.0);
-    assert( eaten_forage.grass <= get_available_forage().grass.get_mass() );
-	// add assertions for other forage types here
-
 	get_todays_output().eaten_forage += eaten_forage;
+	// actual forage removal in derived classes
 }
+

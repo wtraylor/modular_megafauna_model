@@ -13,9 +13,7 @@
 #include "herbiv_herbivore.h"     // for HerbivoreInterface
 #include "herbiv_hft.h"           // for Hft and HftList
 #include "herbiv_parameters.h"    // for Fauna::Parameters
-#include "assert.h"
-#include "shell.h" // for dprintf()
-#include <stdexcept> // for std::logic_error, std::invalid_argument
+#include <stdexcept>              // for std::logic_error, std::invalid_argument
 
 using namespace Fauna;
 
@@ -40,10 +38,8 @@ Simulator::Simulator(const Parameters& params, const HftList& hftlist):
 	all_msg   += global_msg;
 
 	if (!all_valid)
-		throw std::runtime_error(all_msg);
-	else
-		dprintf(all_msg.c_str()); // maybe warnings or notifications
-
+		throw std::invalid_argument("Fauna::Simulator::Simulator() "
+				"Invalid parameters:\n"+all_msg);
 }
 
 std::auto_ptr<GetDigestibility> Simulator::create_digestibility_model()const{

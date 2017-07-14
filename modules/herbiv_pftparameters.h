@@ -45,6 +45,8 @@ namespace Fauna {
 		//------------------------------------------------------------
 		
 		/// Constructor with default parameters
+		/** It can not be guaranteed that the values are valid because
+		 * they might depend on global parameters. */
 		PftParams(const Pft& pft):pft(pft),
 		c_in_dm_forage(0.5),
 		digestibility(0.5),
@@ -57,6 +59,16 @@ namespace Fauna {
 		 * \return true if everything is valid, false if not
 		 */
 		bool is_valid(const Parameters& params, std::string& messages)const;
+
+		/// Check if the parameters are valid
+		/**
+		 * \param[in] params Global parameters of the herbivory module.
+		 * \return true if everything is valid, false if not
+		 */
+		bool is_valid(const Parameters& params)const{
+			std::string dump;
+			return is_valid(params, dump);
+		} 
 		private:
 			const Pft& pft;
 	};

@@ -33,49 +33,54 @@ const xtring file_log = "herbivsim.log";
 /// Run the test simulation with parameters read from instruction file
 /** \todo Print version, print help */
 int main(int argc,char* argv[]) {
-	// Set a shell for dprintf() etc
-	set_shell(new CommandLineShell(file_log));
-
-	dprintf("This is the test simulator for the herbivory module "
-			"of LPJ-GUESS.\n");
-
-	// The singleton instance of FaunaSim::Manager
-	Framework& simulator = Framework::get_instance();
-
-	// Read ins file from command line parameters.
-	// we expect one argument: the ins file name
-	if (argc == 2) {
-		if (std::string(argv[1]) == "-help")
-			plibhelp();
-		else {
-			// Read the instruction file to obtain simulation settings
-			const char* instruction_filename = argv[1];
-
-			if (!fileexists(instruction_filename))
-				fail("Could not open instruction file");
-
-			// let plib parse the instruction script
-			if (!plib(instruction_filename)) 
-				fail("Bad instruction file!");
-		}
-	}
-	else {
-		fprintf(stderr, 
-				"Exactly one parameter expected.\n"
-				"Usage: %s <instruction-script-filename> | -help\n",
-				argv[0]);
-		exit(EXIT_FAILURE);
-	}
-
-	// store the parameters
-	const Parameters params = ParamReader::get_instance().get_params();
-	const HftList hftlist = ParamReader::get_instance().get_hftlist();
-
-	// Run the simulation with the global parameters
 	try {
-		simulator.run(params, hftlist);
-	} catch (std::exception& e){
-		dprintf("Exception caught:\n%s", e.what());
+		// Set a shell for dprintf() etc
+		set_shell(new CommandLineShell(file_log));
+
+		dprintf("This is the test simulator for the herbivory module "
+				"of LPJ-GUESS.\n");
+
+		// The singleton instance of FaunaSim::Manager
+		Framework& framework = Framework::get_instance();
+
+		// Read ins file from command line parameters.
+		// we expect one argument: the ins file name
+		if (argc == 2) {
+			if (std::string(argv[1]) == "-help")
+				plibhelp();
+			else {
+				// Read the instruction file to obtain simulation settings
+				const char* instruction_filename = argv[1];
+
+				if (!fileexists(instruction_filename))
+					fail("Could not open instruction file");
+
+				// let plib parse the instruction script
+				if (!plib(instruction_filename)) 
+					fail("Bad instruction file!");
+			}
+		}
+		else {
+			fprintf(stderr, 
+					"Exactly one parameter expected.\n"
+					"Usage: %s <instruction-script-filename> | -help\n",
+					argv[0]);
+			exit(EXIT_FAILURE);
+		}
+
+		// store the parameters
+		const Parameters params = ParamReader::get_instance().get_params();
+		const HftList hftlist = ParamReader::get_instance().get_hftlist();
+
+		// Run the simulation with the global parameters
+		const bool success = framework.run(params, hftlist);
+		if (!success){
+			dprintf("Exiting simulation.");
+			return EXIT_FAILURE;
+		}
+
+	} catch (const std::exception& e) {
+		dprintf("Unhandled exception:\n%s", e.what());
 		return EXIT_FAILURE;
 	}
 
@@ -182,7 +187,7 @@ void Framework::plib_callback(int callback) {
 	}
 }
 
-void Framework::run(const Fauna::Parameters& global_params,
+bool Framework::run(const Fauna::Parameters& global_params,
 		const HftList& hftlist){
 
 	// PREPARE OUTPUT
@@ -192,11 +197,16 @@ void Framework::run(const Fauna::Parameters& global_params,
 	if (params.outputdirectory=="") 
 		fail("No output directory given in the .ins file!");
 
-	output_channel = new FileOutputChannel(
-			params.outputdirectory.c_str(),
-			COORDINATES_PRECISION);
-	herbiv_out.set_hftlist(hftlist);
-	herbiv_out.init();
+	try {
+		output_channel = new FileOutputChannel(
+				params.outputdirectory.c_str(),
+				COORDINATES_PRECISION);
+		herbiv_out.set_hftlist(hftlist);
+		herbiv_out.init();
+	} catch (const std::exception& e){
+		dprintf("Exception during output initialization:\n%s",
+				e.what());
+	}
 
 
 	// PREPARE VARIABLES
@@ -209,9 +219,9 @@ void Framework::run(const Fauna::Parameters& global_params,
 
 	// The habitat groups in this run
 	// these are pointers (because HabitatGroup cannot be
-	// copied), which need to be deleted later
-	std::vector<HabitatGroup*> habitat_groups;
-	try {
+	// copied) and need to be deleted later
+	HabitatGroupList habitat_groups;
+	habitat_groups.reserve(params.ngroups);
 	for (int g=0; g<params.ngroups; g++){
 		// The x and y coordinates are just for labeling the
 		// lon/lat columns in the output.
@@ -219,20 +229,30 @@ void Framework::run(const Fauna::Parameters& global_params,
 		const double y = (double) g;
 
 		// create a habitat group 
-		habitat_groups.push_back( new HabitatGroup(x,y) );
-		HabitatGroup& group = *habitat_groups.back();
+		HabitatGroup& group = habitat_groups.add( new HabitatGroup(x,y) );
 
 		// fill group with habitats
 		group.reserve( params.nhabitats_per_group );
 		for (int h=0; h<params.nhabitats_per_group; h++){
-			// At this point, any other Habitat object
-			// could be inserted too.
-			group.add(new SimpleHabitat(
-						habitat_simulator.create_populations(),
-						params.habitat
-						));
+			try {
+				// At this point, any other Habitat object
+				// could be inserted too.
+				group.add(new SimpleHabitat(
+							habitat_simulator.create_populations(),
+							params.habitat
+							));
+			} catch (const std::exception& e){
+				dprintf("Exception during habitat creation:\n"
+						"group number %d of %d\n"
+						"habitat number %d of %d\n"
+						"Exception message:\n\t%s",
+						g, params.ngroups,
+						h, params.nhabitats_per_group,
+						e.what());
+						return false;
+			}
 		}
-	}
+	} // end of habitat creation
 
 	dprintf("Starting simulation.\n");
 
@@ -240,8 +260,10 @@ void Framework::run(const Fauna::Parameters& global_params,
 		for (int day_of_year=0; day_of_year < 365; day_of_year++){
 
 			// loop through habitat groups
-			for (int g=0; g<habitat_groups.size(); g++) {
-				HabitatGroup& group = *habitat_groups[g];
+			for (HabitatGroupList::iterator itr_g=habitat_groups.begin();
+					itr_g != habitat_groups.end(); itr_g++) {
+				HabitatGroup& group = **itr_g;
+
 				//loop through habitat objects in this group
 				HabitatGroup::iterator itr_habitat = group.begin();
 				while (itr_habitat != group.end()) {
@@ -252,21 +274,30 @@ void Framework::run(const Fauna::Parameters& global_params,
 						global_params.ifherbivory && 
 						(year >= global_params.free_herbivory_years);
 
-					habitat_simulator.simulate_day(
-							day_of_year, 
-							habitat, 
-							do_herbivores); 
+					try {
+						habitat_simulator.simulate_day(
+								day_of_year, 
+								habitat, 
+								do_herbivores); 
+					} catch (const std::exception& e){
+						dprintf("Exception during herbivore simulation:\n\%s",
+								e.what());
+						return false;
+					}
 
 					itr_habitat++;
 				}
 			} // end of habitat loop
-		}// end of year
+		}// day loop: end of year
 
 		// OUTPUT
 
 		// Write output for all habitat groups
-		for (int g=0; g<habitat_groups.size(); g++) {
-			HabitatGroup& group = *habitat_groups[g];
+		// loop through habitat groups
+		for (HabitatGroupList::iterator itr_g=habitat_groups.begin();
+				itr_g != habitat_groups.end(); itr_g++) {
+			HabitatGroup& group = **itr_g;
+
 			herbiv_out.outannual(group.get_lon(), group.get_lat(), 
 					year, group.get_habitat_references());
 		}
@@ -275,20 +306,10 @@ void Framework::run(const Fauna::Parameters& global_params,
 		// PRINT PROGRESS
 		const int progress_interval = params.nyears / 10; // every 10%
 		if (year % progress_interval == 0
-			|| year == params.nyears-1)
+				|| year == params.nyears-1)
 			dprintf("progress: %d%%\n", (100*year)/(params.nyears-1)); 
-	} // end of simulation
+	} // year loop
 
-	// release
-	} catch (...){
-		// release habitat_groups
-		std::vector<HabitatGroup*>::iterator itr = habitat_groups.begin();
-		while (itr != habitat_groups.end()) {
-			delete *itr;
-			habitat_groups.erase(itr);
-		}
-		throw; // Pass on the exception
-	}
-
+	return true; // success!
 }
 

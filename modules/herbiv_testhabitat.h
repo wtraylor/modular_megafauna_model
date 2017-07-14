@@ -13,6 +13,11 @@
 
 using namespace Fauna;
 
+//forward declarations
+namespace Fauna {
+	class Parameters;
+}
+
 namespace FaunaSim {
 
 
@@ -57,21 +62,22 @@ namespace FaunaSim {
 				/// Constructor with arbitrary simple values that are valid
 				Parameters():decay(0.0), digestibility(0.1), fpc(0.1), growth(0.0),
 				init_mass(0.0), reserve(0.1), saturation(1.0){}
+
+				/// Check if parameters are valid
+				/** 
+				 * \param[out] msg Possible warnings and error messages.
+				 * \return true if values are valid, false if not.
+				 */
+				bool is_valid(std::string& msg)const;
 			};
 
 			/// Constructor
 			LogisticGrass(const LogisticGrass::Parameters& settings): 
 				settings(settings){
-					assert( settings.decay         >= 0.0 );
-					assert( settings.digestibility >  0.0 );
-					assert( settings.digestibility <= 1.0 );
-					assert( settings.fpc           >= 0.0 );
-					assert( settings.fpc           <= 1.0 );
-					assert( settings.growth        >= 0.0 );
-					assert( settings.init_mass     >= 0.0 );
-					assert( settings.reserve       >  0.0 );
-					assert( settings.saturation    >  0.0 );
-					assert( settings.init_mass     <= settings.saturation );
+					std::string msg;
+					if (!settings.is_valid(msg))
+						throw std::invalid_argument("FaunaSim::LogisticGrass::LogisticGrass() "
+								"Parameters are not valid: "+msg);
 					// initialize forage
 					forage.set_mass( settings.init_mass );
 					forage.set_digestibility( settings.digestibility );
@@ -79,7 +85,9 @@ namespace FaunaSim {
 				}
 
 			/// Perform grass growth and decay for one day.
-			/** \param day_of_year January 1st = 0 */
+			/** \param day_of_year January 1st = 0 
+			 * \throw std::invalid_argument if not `0<=day_of_year<=364`
+			 */
 			void grow_daily(const int day_of_year);
 
 			/// Get current grass forage
@@ -126,18 +134,13 @@ namespace FaunaSim {
 					const SimpleHabitat::Parameters settings):
 				Habitat(populations), grass(settings.grass){}
 
-			/// Update output and perform vegetation growth
-			/** \see \ref Fauna::Habitat::init_todays_output() */
-			virtual void init_todays_output(const int today);
-
-			/// Get dry-matter biomass [kg/m²] that is available to herbivores to eat.
+			// ------ Fauna::Habitat implementations ----
+			virtual void init_todays_output(const int today); 
 			virtual HabitatForage get_available_forage() const{
 				HabitatForage result;
 				result.grass = grass.get_forage();
 				return result;
 			}
-
-			/// Remove forage eaten by herbivores.
 			virtual void remove_eaten_forage(const ForageMass& eaten_forage);
 
 		protected:
@@ -226,11 +229,62 @@ namespace FaunaSim {
 
 			// Deleted copy constructor and copy assignment operator.
 			// If they were not deleted, the unique ownership of the
-			// PopulationInterface objects could be lost. 
-			HabitatGroup(const HabitatGroup& other);
-			HabitatGroup& operator=(const HabitatGroup& other);
+			// Habitat objects could be lost. 
+			HabitatGroup(const HabitatGroup&);
+			HabitatGroup& operator=(const HabitatGroup&);
 	};
 
+	/// A simple vector of pointers \ref HabitatGroup objects.
+	/** This is a helper class for \ref FaunaSim::Framework.
+	 * Pointers are owned by this list.*/
+	class HabitatGroupList{
+		public:
+			/// Constructor
+			HabitatGroupList(){}
+
+			/// Destructor
+			~HabitatGroupList(){
+				iterator iter = begin();
+				while (iter != end()){
+					delete *iter;
+					vec.erase(iter);
+				}
+			}
+
+			/// Add a new element
+			/** \param pnew newly constructed object, now owned by the list.
+			 * \return reference to `pnew` 
+			 * \throw std::logic_error if a habitat group with the same
+			 * longitute and latitude already exists.
+			 */
+			HabitatGroup& add( HabitatGroup* pnew){
+				for (const_iterator itr=begin(); itr!=end(); itr++)
+					if ((*itr)->get_lon() == pnew->get_lon() &&
+							(*itr)->get_lat() == pnew->get_lat())
+						throw std::logic_error("FaunaSim::HabitatGroup::add() "
+								"A HabitatGroup object with the same longitude and "
+								"latitude already exists in the list.");
+				vec.push_back(pnew);
+				return *pnew;
+			}
+
+			/** @{ \name Wrapper around std::vector 
+			 * Equivalents to methods in Standard Library Container std::vector.*/
+			typedef std::vector<HabitatGroup*>::iterator iterator;
+			typedef std::vector<HabitatGroup*>::const_iterator const_iterator;
+			iterator begin()            { return vec.begin(); }
+			const_iterator begin()const { return vec.begin(); }
+			iterator end()              { return vec.end();   }
+			const_iterator end()const   { return vec.end();   }
+			int size() const            { return vec.size();  }
+			void reserve(const int size){ vec.reserve(size);  } 
+			/** @} */ // Container functionality 
+		private:
+			std::vector<HabitatGroup*> vec;
+			// deleted copy constructor and copy assignment operator
+			HabitatGroupList(const HabitatGroupList&);
+			HabitatGroupList& operator=(const HabitatGroupList);
+	};
 }
 
 #endif // HERBIV_TESTHABITATS_H

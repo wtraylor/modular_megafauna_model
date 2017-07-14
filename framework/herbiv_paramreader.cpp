@@ -147,6 +147,9 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					"module will be active, but no herbivory simulation "
 					"will be done.\n");
 		}
+
+		// This is the very end of the plib checks
+		completed = true;
 	} 
 
 	if (callback == CB_DIG_MODEL) {
@@ -215,7 +218,9 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	}
 
 	if (callback == CB_PFT) {
-		assert (ppft != NULL);
+		if (ppft == NULL)
+			throw std::invalid_argument("Fauna::ParamReader::callback() "
+					"PFT pointer ppft is NULL. Error in parameters.h?");
 		const Pft& pft = *ppft;
 
 		if (params.ifherbivory && pft.herbiv_params.is_edible()) {
@@ -394,8 +399,9 @@ void ParamReader::declare_parameters(
 
 	if (id == BLOCK_PFT) {
 
-		if (!is_help)
-			assert(ppft != NULL);
+		if (!is_help && ppft==NULL)
+			throw std::invalid_argument("Fauna::ParamReader::declare_parameters() "
+					"PFT pointer ppft is NULL. Error in parameters.h?");
 
 		declareitem("c_in_dm_forage",
 				&ppft->herbiv_params.c_in_dm_forage,

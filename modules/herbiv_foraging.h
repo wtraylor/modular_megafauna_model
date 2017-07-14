@@ -8,7 +8,6 @@
 #ifndef HERBIV_FORAGING_H
 #define HERBIV_FORAGING_H
 
-#include <assert.h>
 #include <vector>
 #include <string> // for forage type names
 

@@ -8,7 +8,7 @@
 
 #include "config.h"
 #include "herbiv_forageclasses.h"
-#include <assert.h>
+#include "assert.h"
 
 using namespace Fauna;
 
@@ -20,8 +20,14 @@ std::string Fauna::get_forage_type_name(const ForageType ft) {
 	} 
 }
 
+//------------------------------------------------------------
+// HABITATFORAGE
+//------------------------------------------------------------
+
 HabitatForage HabitatForage::merge(const std::vector<const HabitatForage*> data){
-	assert (!data.empty());
+	if (data.empty())
+		throw std::invalid_argument("Fauna::HabitatForage::merge(): "
+				"parameter data is empty.");
 	HabitatForage result;
 
 	/// Sums of item values to build average later
@@ -47,7 +53,8 @@ HabitatForage HabitatForage::merge(const std::vector<const HabitatForage*> data)
 	// add other forage types here
 
 	// Build simple averages 
-	const double count = (double) data.size(); // count>0 because of prior assertion
+	const double count = (double) data.size(); // count>0 because of prior exception check
+	assert(count>0);
 	result.grass.set_mass( gr_mass_sum / count );
 	result.grass.set_fpc( gr_fpc_sum / count); 
 	if (gr_mass_sum <= 0.0)

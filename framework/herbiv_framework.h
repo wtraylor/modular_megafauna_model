@@ -49,6 +49,11 @@ namespace Fauna{
 	class Simulator{
 	public:
 		/// Constructor, initializing simulation settings.
+		/** 
+		 * \param params **valid** global simulation parameters
+		 * \param hftlist set of **valid** herbivore functional types
+		 * \throw std::invalid_argument if any parameter not valid.
+		 */
 		Simulator(const Parameters& params, const HftList& hftlist);
 
 		/// Construct a digestibility model object according to parameters

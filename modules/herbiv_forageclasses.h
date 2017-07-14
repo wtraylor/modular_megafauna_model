@@ -8,9 +8,10 @@
 #ifndef HERBIV_FORAGECLASSES_H
 #define HERBIV_FORAGECLASSES_H
 
-#include <assert.h>
-#include <vector>
+#include "assert.h"
+#include <stdexcept>
 #include <string> // for forage type names
+#include <vector>
 
 namespace Fauna{
 
@@ -28,31 +29,43 @@ namespace Fauna{
 	std::string get_forage_type_name(const ForageType ft);
 
 	/// Dry matter mass values [DMkg] for different forage types
-	/** This struct is so primitive that it does not contain getters and setters.  */
-	struct ForageMass {
-		/// Dry matter grass forage biomass [DMkg].
-		double grass;
+	class ForageMass {
+		public:
+			/** @{ */
+			/// Dry matter grass forage biomass [DMkg]. 
+			/** Number is always positive. */
+			double get_grass()const{return grass;}
+			/** \throw std::invalid_argument if `g<0.0` */
+			void set_grass(const double g){
+				if (!(g >= 0.0))
+					throw std::invalid_argument("Fauna::ForageMass::set_grass() "
+							"Received negative mass value.");
+				grass=g;
+			}
+			/** @} */
 
-		// add other forage types (e.g. browse) here
+			// add other forage types (e.g. browse) here
 
-		/// Constructor with zero values
-		ForageMass():grass(0.0){}
+			/// Constructor with zero values
+			ForageMass():grass(0.0){}
 
-		/// Sum up the values.
-		double sum() const { 
-			return grass; /* add other forage types */
-		}
+			/// Sum up the values.
+			double sum() const { 
+				return grass; /* add other forage types */
+			}
 
-		/** @{ \name Operator overload */
-		ForageMass& operator+=(const ForageMass& rhs) {
-			this->grass += rhs.grass;/* add other forage types */
-			return *this;
-		}
-		ForageMass& operator=(const ForageMass& rhs) {
-			this->grass = rhs.grass;/* add other forage types */
-			return *this;
-		}
-		/** @} */ // Operator overload
+			/** @{ \name Operator overload */
+			ForageMass& operator+=(const ForageMass& rhs) {
+				this->grass += rhs.grass;/* add other forage types */
+				return *this;
+			}
+			ForageMass& operator=(const ForageMass& rhs) {
+				this->grass = rhs.grass;/* add other forage types */
+				return *this;
+			}
+			/** @} */ // Operator overload
+		private:
+			double grass;
 	};
 
 	/// Abstract base class for herbivore forage of one type in a habitat.
@@ -70,9 +83,11 @@ namespace Fauna{
 			/// Fractional digestibility of the biomass for ruminants.
 			/** Digestibility as measured *in-vitro* with rumen liquor.  */
 			double get_digestibility() const{return digestibility;}
+			/** \throw std::invalid_argument if not `0.0<=d<=1.0`*/
 			void   set_digestibility(const double d){
-				assert( d <= 1.0 );
-				assert( d >= 0.0 );
+				if (d<0.0 || d>1.0)
+					throw std::invalid_argument("Fauna::ForageBase::set_digestibility(): "
+							"digestibility out of range");
 				digestibility = d;
 			}
 			//@}
@@ -80,8 +95,11 @@ namespace Fauna{
 			//@{
 			/// Dry matter forage biomass over the whole \ref Habitat area [kgDM/m²].
 			double get_mass()const{return dry_matter_mass;}
+			/** \throw std::invalid_argument if dm<0.0 */
 			void   set_mass(const double dm){
-				assert( dm >= 0.0);
+				if (dm<0.0)
+					throw std::invalid_argument("Fauna::ForageBase::set_mass(): "
+							"dry matter is smaller than zero");
 				dry_matter_mass = dm;
 			}
 			//@}
@@ -108,8 +126,11 @@ namespace Fauna{
 			//@{
 			/// Grass-covered area as a fraction of the habitat [fractional].
 			double get_fpc()const{return fpc;}
+			/** \throw std::invalid_argument if not `0.0<=f<=1.0`*/
 			void   set_fpc(const double f){
-				assert( f>=0.0 && f<=1.0);
+				if(!( f>=0.0 && f<=1.0))
+					throw std::invalid_argument("Fauna::GrassForage::set_fpc() "
+							"fpc out of valid range (0.0–1.0)");
 				fpc=f;
 			}
 			//@}
@@ -127,13 +148,6 @@ namespace Fauna{
 		/// The grass forage in the habitat.
 		GrassForage grass;
 
-		/// Get the forage of one type.
-		/** \todo Does anybody need this function? */
-		ForageBase& get_by_type(const ForageType ft){
-			assert(ft != FT_INEDIBLE);
-			return grass; // for new forage types create if or switch statement
-		}
-
 		/// Total forage in the habitat.
 		/** Digestibility is weighted average, forage mass is sum.*/
 		ForageBase get_total() const;
@@ -147,7 +161,9 @@ namespace Fauna{
 		 * Digestibility is a weighted average scaled by DM mass;
 		 * if total mass of the dataset is zero, the unweighted average
 		 * is taken.
-		 * \note This function assumes that the habitats have the same area! */
+		 * \note This function assumes that the habitats have the same area! 
+		 * \throw std::invalid_argument if `data.empty()`
+		 */
 		static HabitatForage merge(const std::vector<const HabitatForage*> data);
 
 	};

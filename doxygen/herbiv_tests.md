@@ -9,8 +9,8 @@ Unit Tests of the Herbivore Module {#sec_herbiv_tests}
 \tableofcontents
 
 
-Introduction
-------------
+Unit Tests {#sec_herbiv_unittests}
+----------------------------------
 
 Unit tests have been implemented as far as the design of LPJ-GUESS permits.
 New classes have been introduced with unit-testing and flexibility in mind.
@@ -44,10 +44,17 @@ framework.
 
 
 Herbivory Test Simulations {#sec_herbiv_testsimulations}
---------------------------
+--------------------------------------------------------
+
+### Overview ###
 
 In order to simulate herbivore dynamics in a controlled environment a testing framework has been implemented. 
 Since the herbivore model can be attached to any vegetation model that implements the \ref Fauna::Habitat interface, it is easy to perform herbivore simulations independent of LPJ-GUESS.
+
+When compiling the project, in addition to `guess` another 
+executable binary file is produced: `herbivsim`.
+It takes the instruction script as one command line parameter.
+The Windows GUI is not supported. Help output is also not supported.
 
 All classes that are not connected to the actual herbivory simulations but only serve the independent test simulations, are gathered in the namespace \ref FaunaSim.
 The central class running the simulations is \ref FaunaSim::Framework, which in turn employs \ref Fauna::Simulator.
@@ -78,17 +85,14 @@ FaunaSim.SimpleHabitat --|> Fauna.Habitat
 FaunaSim.Framework ..> Fauna.ParamReader              : <<use>>
 FaunaSim.Framework ..> .parameters                    : <<use>>
 FaunaSim.Framework ..> Fauna.Simulator                : <<create>>
-FaunaSim.Framework ..> .GuessOutput.HerbivoryOutput   : <<create>>
+FaunaSim.Framework *-> "1" .GuessOutput.HerbivoryOutput   
 FaunaSim.Framework ..> .GuessOutput.FileOutputChannel : <<create>>
 FaunaSim.Framework ..> "*" FaunaSim.HabitatGroup      : <<create>>
 annotation "main()" as main
 main ..> FaunaSim.Framework : <<call>>
 @enduml
 
-When compiling the project, in addition to `guess` another 
-executable binary file is produced: `herbivsim`.
-It takes the instruction script as one command line parameter.
-The Windows GUI is not supported. Help output is also not supported.
+### Parameters ###
 
 An example instruction file is provided in 
 `data/ins/herbiv_testsim.ins`.
@@ -107,6 +111,51 @@ It is only defined when the target `herbivsim` is being compiled.
 This solution promised the least amount of change of main LPJ-GUESS code.
 See \ref parameters.cpp for the affected code regions.
 
+### Simulation Sequence ###
+
+@startuml "Sequence diagram for test simulations of the herbivory module"
+participant "main()" as main
+participant "plib.h" as plib
+participant "FaunaSim::Framework" as Framework <<singleton>>
+participant "Fauna::ParamReader" as ParamReader <<singleton>>
+participant "Fauna::Simulator" as Simulator
+participant "GuessOutput::HerbivoryOutput" as HerbivoryOutput <<singleton>>
+== initialization ==
+main -> Framework : <<create>>
+activate Framework
+activate HerbivoryOutput
+Framework -> plib : declare parameters
+main -> plib : read instruction file
+plib -> ParamReader : call indirectly
+activate ParamReader
+plib -> Framework : plib_callback()
+main <-- ParamReader : Fauna::Parameters
+main <-- ParamReader : Fauna::HftList
+main -> Framework : run()
+Framework -> HerbivoryOutput : set_hftlist()
+Framework -> HerbivoryOutput : init()
+Framework -> Simulator : <<create>>
+activate Simulator
+note over Framework : create habitats
+== simulation ==
+loop YEARS: nyears
+	loop DAYS: 365
+		loop HABITAT GROUPS: nhabitat_groups
+			loop HABITATS: nhabitats_per_group
+	      Framework -> Simulator : simulate_day()
+		  end
+		end
+  end
+	loop HABITAT GROUPS: nhabitat_groups
+		Framework -> HerbivoryOutput : outannual()
+	end
+end
+== end of simulation ==
+deactivate Simulator
+Framework --> main
+deactivate HerbivoryOutput
+deactivate Framework
+@enduml
 ------------------------------------------------------------
 
 \author Wolfgang Pappa, Senckenberg BiK-F

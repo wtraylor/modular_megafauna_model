@@ -40,6 +40,15 @@ namespace Fauna{
 			 * \return true if the object has valid values */
 			bool is_valid(const Parameters& params, std::string& msg) const;
 
+			/// Check if all variables are okay
+			/** 
+			 * \param[in] params The global simulation parameters.
+			 * \return true if the object has valid values */
+			bool is_valid(const Parameters& params) const{
+				std::string dump;
+				return is_valid(params, dump);
+			}
+
 			/// Whether to include the HFT in the simulation.
 			bool is_included;
 

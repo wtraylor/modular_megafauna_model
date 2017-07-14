@@ -10,6 +10,7 @@
 #include "herbiv_patchhabitat.h"
 #include "herbiv_digestibility.h"
 #include "guess.h"
+#include "assert.h"
 
 using namespace Fauna;
 
@@ -35,8 +36,6 @@ HabitatForage PatchHabitat::get_available_forage() const {
 		// Get common forage properties
 		const double indiv_dig  = get_digestibility(indiv); // [frac]
 		const double indiv_mass = indiv.get_forage_mass(); // [kg/m²]
-		assert(indiv_mass >= 0.0);
-
 
 		// Sum up the grass forage
 		if (indiv.get_forage_type() == FT_GRASS){
@@ -76,7 +75,7 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	// Call the base class function
 	Habitat::remove_eaten_forage(eaten_forage);
 
-	/// sum of the current grass forage in the patch before eating [kg/m²]
+	// sum of the current grass forage in the patch before eating [kg/m²]
 	double old_grass = 0.0;
 
 	// Sum up the forage
@@ -91,11 +90,14 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 		patch.vegetation.nextobj();
 	}
 
-	/// sum of the new grass forage after eating [kg/m²]
-	const double new_grass = old_grass - eaten_forage.grass;
-	assert(new_grass >= 0.0);
+	// sum of the new grass forage after eating [kg/m²]
+	const double new_grass = old_grass - eaten_forage.get_grass();
+
+	// Assertions
 	assert(old_grass >= 0.0);
-	assert(new_grass <= old_grass);
+	if (new_grass > old_grass)
+		throw std::logic_error("Fauna::PatchHabitat::remove_eaten_forage() "
+				"Eaten grass exceeds available grass.");
 
 	// Reduce the forage of each plant individual
 	patch.vegetation.firstobj();

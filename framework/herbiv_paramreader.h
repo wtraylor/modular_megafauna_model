@@ -44,6 +44,7 @@ namespace Fauna {
 			 * \ref declareitem().
 			 * \param ppft The reference to the \ref Pft object that
 			 * is currently parsed. 
+			 * \throw std::invalid_argument if `ppft==NULL`
 			 */
 			void callback(const int callback, Pft* ppft);
 
@@ -56,6 +57,7 @@ namespace Fauna {
 			 * object if id=\ref BLOCK_PFT, NULL otherwise. 
 			 * \param is_help True if only help message is printed --> No
 			 * assignments and validity checks, only parameters declared.
+			 * \throw std::invalid_argument if `ppft==NULL`
 			 */
 			void declare_parameters(const int id, 
 					const std::string& setname, Pft* ppft, 
@@ -68,10 +70,31 @@ namespace Fauna {
 			}
 
 			/// Get the list of \ref Hft objects as read from instruction file
-			const HftList& get_hftlist()const{return hftlist;}
+			/** \return A set of **valid** \ref Hft objects
+			 * \throw std::logic_error if parsing is not completed */
+			const HftList& get_hftlist()const{
+				if (!parsing_completed())
+					throw std::logic_error("Fauna::ParamReader::get_hftlist() "
+							"Parsing of instruction files not completed yet.");
+				for (HftList::const_iterator itr=hftlist.begin();
+						itr!=hftlist.end(); itr++)
+					assert(itr->is_valid(get_params()));
+				return hftlist;
+			}
 
 			/// Get the parameters as read from instruction file.
-			const Parameters& get_params()const{return params;}
+			/** \return Valid parameters object.
+			 * \throw std::logic_error if parsing is not completed */
+			const Parameters& get_params()const{
+				if (!parsing_completed())
+					throw std::logic_error("Fauna::ParamReader::get_params() "
+							"Parsing of instruction files not completed yet.");
+				assert(params.is_valid());
+				return params;
+			}
+
+			/// Whether parsing of instruction file is completed.
+			bool parsing_completed()const{return completed;}
 		private:
 			/// A parameter that must not be omitted.
 			struct MandatoryParam{
@@ -99,11 +122,12 @@ namespace Fauna {
 
 			HftList hftlist;
 			Parameters params;
+			bool completed;
 
 			/// Holds the currently parsed string parameter
 			std::string strparam;
 
-			ParamReader(){}                     // hide constructor
+			ParamReader():completed(false) {}                     // hide constructor
 			ParamReader(ParamReader const&);    // deleted copy constructor
 			void operator=(ParamReader const&); // deleted assignment constructor
 	};

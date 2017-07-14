@@ -11,6 +11,7 @@
 #include "guess.h"             // for Date and Gridcell
 #include "herbiv_hft.h"        // for Hft and HftList
 #include "herbiv_patchhabitat.h" // for Fauna::PatchHabitat
+#include "assert.h"
 #ifndef NO_GUESS_PARAMETERS
 #include "parameters.h"        // for declare_parameter()
 #endif // NO_GUESS_PARAMETERS
@@ -191,7 +192,6 @@ void HerbivoryOutput::outannual(
 
 			// Add this habitat’s annual output to the vector
 			annual_habitat.push_back(habitat.get_annual_output());
-			assert( annual_habitat.back().is_valid );
 		}
 
 		// MERGE DATA
@@ -227,7 +227,6 @@ void HerbivoryOutput::outannual(
 			// data month by month to the big list.
 			const OutputVector habitats_monthly = habitat.get_monthly_output();
 			for (int i=0; i<12; i++){
-				assert( habitats_monthly[i].is_valid );
 				monthly_habitat[i].push_back(habitats_monthly[i]); 
 			}
 		}
@@ -311,6 +310,6 @@ void HerbivoryOutput::add_output_object(OutputRows out, const HabitatOutputData&
 	out.add_value(out_forage_avail, data.available_forage.get_total().get_mass());
 
 	// eaten forage
-	out.add_value(out_forage_eaten, data.eaten_forage.grass);
+	out.add_value(out_forage_eaten, data.eaten_forage.get_grass());
 	out.add_value(out_forage_eaten, data.eaten_forage.sum());
 }

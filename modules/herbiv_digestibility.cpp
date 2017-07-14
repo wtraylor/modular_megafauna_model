@@ -9,7 +9,7 @@
 #include "config.h"
 #include "herbiv_digestibility.h"
 
-#include "guess.h"
+#include "guess.h" // for Individual
 
 using namespace Fauna;
 

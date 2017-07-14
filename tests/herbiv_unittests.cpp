@@ -127,10 +127,23 @@ TEST_CASE("Fauna::ForageMass", "") {
 	// Initialization
 	REQUIRE( Approx(fm.sum()) == 0.0);
 
+	// exceptions
+	CHECK_THROWS( fm.set_grass(-1.0) );
+	CHECK_THROWS( fm.set_grass(NAN) );
+
 	SECTION( "adding grass" ){ 
-		fm.grass = 2.0;
-		REQUIRE( Approx(fm.sum()) == fm.grass );
+		fm.set_grass(2.0);
+		REQUIRE( Approx(fm.sum()) == fm.get_grass() );
 	}
+}
+
+TEST_CASE("Fauna::GrassForage", "") {
+	GrassForage grass;
+	CHECK_THROWS(grass.set_fpc(1.2));
+	CHECK_THROWS(grass.set_fpc(-0.2));
+	CHECK_THROWS(grass.set_mass(-0.2));
+	CHECK_THROWS(grass.set_digestibility(-0.2));
+	CHECK_THROWS(grass.set_digestibility(1.2));
 }
 
 TEST_CASE("Fauna::HabitatForage", "") {
@@ -210,6 +223,9 @@ TEST_CASE("Fauna::HabitatForage", "") {
 TEST_CASE("Fauna::HabitatOutputData","") {
 	HabitatOutputData h1,h2,h3;
 
+	const std::vector<HabitatOutputData> empty_vec;
+	CHECK_THROWS(HabitatOutputData::merge(empty_vec));
+
 	SECTION("Merge only valid objects") {
 		h1.is_valid = h2.is_valid = h3.is_valid = true;
 		std::vector<HabitatOutputData> vec;
@@ -218,6 +234,8 @@ TEST_CASE("Fauna::HabitatOutputData","") {
 		vec.push_back(h3);
 
 		CHECK( HabitatOutputData::merge(vec).is_valid == true );
+		CHECK_THROWS( HabitatOutputData::merge(vec, -1));
+		CHECK_THROWS( HabitatOutputData::merge(vec, 0, 20));
 	}
 
 	SECTION("Merge valid objects with an invalid object") {
@@ -397,6 +415,10 @@ TEST_CASE("FaunaSim::LogisticGrass", "") {
 				== Approx(grass_settings.digestibility));
 		CHECK( grass.get_forage().get_fpc()
 				== Approx(grass_settings.fpc));
+
+		// exceptions
+		CHECK_THROWS( grass.grow_daily(-1) );
+		CHECK_THROWS( grass.grow_daily(365) );
 	}
 	// Let the grass grow for one day and compare before and after 
 
@@ -536,3 +558,20 @@ TEST_CASE("FaunaSim::HabitatGroup","") {
 	}
 }
 
+TEST_CASE("FaunaSim::HabitatGroupList","") {
+	// Make sure the group creates its habitats
+	HabitatGroupList gl;
+	gl.reserve(5);
+
+	// add some habitat groups
+	for (int i=1; i<5; i++) {
+		HabitatGroup& group = gl.add(new HabitatGroup(i,i));
+		for (int j=1; j<4; j++) {
+			// add a habitat
+			group.add(new DummyHabitat());
+		}
+		CHECK(gl.size() == i);
+	}
+	// Don’t allow adding a group with same coordinates twice
+	CHECK_THROWS( gl.add(new HabitatGroup(1,1)) );
+}

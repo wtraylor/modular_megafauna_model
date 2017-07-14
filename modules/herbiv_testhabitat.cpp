@@ -8,6 +8,7 @@
 
 #include "config.h"
 #include "herbiv_testhabitat.h"
+#include <sstream> // for is_valid() messages
 
 using namespace Fauna;
 using namespace FaunaSim;
@@ -16,9 +17,69 @@ using namespace FaunaSim;
 // LogisticGrass
 //============================================================
 
+bool LogisticGrass::Parameters::is_valid(std::string& msg)const{
+	// The message text is written into an output string stream
+	std::ostringstream stream;
+	bool is_valid = true;
+
+	if (decay < 0.0){
+		stream << "decay < 0.0" << std::endl;
+		is_valid = false;
+	}
+
+	if (digestibility < 0.0){
+		stream << "digestibility < 0.0" << std::endl;
+		is_valid = false;
+	}
+
+	if (digestibility > 1.0){
+		stream << "digestibility > 1.0" << std::endl;
+		is_valid = false;
+	}
+
+	if (fpc < 0.0){
+		stream << "fpc < 0.0" << std::endl;
+		is_valid = false;
+	}
+
+	if (fpc > 1.0){
+		stream << "fpc > 1.0" << std::endl;
+		is_valid = false;
+	}
+
+	if (growth < 0.0){
+		stream << "growth < 0.0" << std::endl;
+		is_valid = false;
+	}
+
+	if (init_mass < 0.0){
+		stream << "init_mass < 0.0" << std::endl;
+		is_valid = false;
+	}
+
+	if (reserve <= 0.0){
+		stream << "reserve <= 0.0" << std::endl;
+		is_valid = false;
+	}
+
+	if (saturation < 0.0){
+		stream << "saturation < 0.0" << std::endl;
+		is_valid = false;
+	}
+
+	if (init_mass > saturation){
+		stream << "init_mass > saturation" << std::endl;
+		is_valid = false;
+	}
+
+	msg = stream.str();
+	return is_valid;
+}
+
 void LogisticGrass::grow_daily(const int day_of_year){
-	assert( day_of_year >= 0 );
-	assert( day_of_year < 365 );
+	if (day_of_year>=365 || day_of_year<0)
+		throw std::invalid_argument("FaunaSim::LogisticGrass::grow_daily() "
+				"day_of_year out of range");
 	forage.set_fpc(settings.fpc);
 	forage.set_digestibility(settings.digestibility);
 
@@ -51,8 +112,6 @@ void LogisticGrass::grow_daily(const int day_of_year){
 //============================================================
 
 void SimpleHabitat::init_todays_output(const int today){
-	assert( today >= 0 );
-	assert( today <= 365 );
 	// Call parent function
 	Habitat::init_todays_output(today);
 	grow_daily(today);
@@ -64,6 +123,9 @@ void SimpleHabitat::remove_eaten_forage(const ForageMass& eaten_forage){
 
 	// remove eaten grass from temporary object and assign it.
 	GrassForage new_grass = grass.get_forage();
-	new_grass.set_mass(new_grass.get_mass() - eaten_forage.grass);
+	if (new_grass.get_mass() < eaten_forage.get_grass())
+		throw std::logic_error("FaunaSim::SimpleHabitat::remove_eaten_forage() "
+				"eaten grass exceeds available grass");
+	new_grass.set_mass(new_grass.get_mass() - eaten_forage.get_grass());
 	grass.set_forage(new_grass);
 }
