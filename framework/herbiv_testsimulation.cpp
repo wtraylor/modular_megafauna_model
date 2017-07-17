@@ -201,7 +201,7 @@ bool Framework::run(const Fauna::Parameters& global_params,
 		output_channel = new FileOutputChannel(
 				params.outputdirectory.c_str(),
 				COORDINATES_PRECISION);
-		herbiv_out.set_hftlist(hftlist);
+		// herbiv_out.set_hftlist(hftlist); TODO
 		herbiv_out.init();
 	} catch (const std::exception& e){
 		dprintf("Exception during output initialization:\n%s",

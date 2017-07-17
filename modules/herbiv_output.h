@@ -10,40 +10,45 @@
 #define HERBIV_OUTPUT_MODULE_H
 
 #include "outputmodule.h"
-#include "gutil.h" // for xtring
-
+#include "gutil.h"           // for xtring
 #include "herbiv_foraging.h" // for Fauna::ForageType
+#include <memory>            // for std::auto_ptr
+#include <stdexcept>         // for std::invalid_argument
 
 // forward declarations of referenced classes
 class Date;
 namespace Fauna { 
 	class Habitat;
 	class HabitatOutputData;
-	class HftList;
+	// class HftList; TODO
 }
 
 namespace GuessOutput {
 
-	/// Abstract helper class to limit output to a specific time.
+	/// Abstract functor strategy class to limit herbivory output to a specific time.
 	/**
+	 * This base class includes everything.
 	 * \see \ref sec_herbiv_limit_output 
+	 * \see \ref sec_strategy
 	 */
-	struct OutputLimiter{
+	struct IncludeDate{
 		/// Check whether the date shall be included in the output.
 		/** 
 		 * \param day_of_year Day of year (0=Jan 1st).
 		 * \param year Simulation year (0=first year).
 		 * \return True if the given year/date shall be included.
-		 * \note This is equivalent to the check in \ref outlimit() in \ref commonoutput.cpp, 
-		 * but implemented as a class member function.
+		 * \note This is equivalent to the check in \ref outlimit() in 
+		 * \ref commonoutput.cpp, but implemented with the strategy
+		 * pattern.
 		 */
-		virtual bool include_date(const int year, 
-				const int day_of_year) const = 0; 
+		virtual bool operator()(
+				const int year, 
+				const int day_of_year) const {return true;}
 	};
 
 	/// Limits output to the time after \ref nyear_spinup.
-	struct NoSpinupLimiter: public OutputLimiter{
-		virtual bool include_date(const int year, 
+	struct IncludeNoSpinup: public IncludeDate{
+		virtual bool operator()(const int year, 
 				const int day_of_year) const;
 	};
 
@@ -106,14 +111,18 @@ namespace GuessOutput {
 			/// Disable any activity all together.
 			void deactivate(){ isactive = false; }
 
-			/// Set the list of HFTs for the output tables
-			void set_hftlist(const Fauna::HftList& _hftlist){hftlist = &_hftlist;}
+			// TODO
+			// /// Set the list of HFTs for the output tables
+			// void set_hftlist(const Fauna::HftList * _hftlist){hftlist = _hftlist;}
 
-			/// Set an object that limits the output to a time.
-			/** \param l Reference Limiter object. Make sure this object
-			 * is not released over the whole program run! 
-			 * Pass NULL in order to have no limits.*/
-			void set_limiter(OutputLimiter* l){ limiter = l; }
+			/// Set the strategy object that limits the output.
+			/** \throw std::invalid_argument if `ptr==NULL`*/
+			void set_include_date(std::auto_ptr<IncludeDate> ptr){ 
+				if (ptr.get()==NULL)
+					throw std::invalid_argument("GuessOutput::HerbivoryOutput::set_include_date() "
+							"Received NULL as parameter");
+				include_date = ptr; 
+			}
 		protected:
 			/// Temporal aggregation interval (monthly, yearly, ...)
 			enum Interval{
@@ -128,9 +137,10 @@ namespace GuessOutput {
 			/// Create a column descriptor for each forage type.
 			const ColumnDescriptors get_forage_columns() const;
 
-			/// Create a column descriptor for each \ref Fauna::Hft
-			/** \throw std::logic_error if \ref hftlist not defined. */
-			const ColumnDescriptors get_hft_columns() const;
+			// TODO
+			// /// Create a column descriptor for each \ref Fauna::Hft
+			// #<{(|* \throw std::logic_error if \ref hftlist not defined. |)}>#
+			// const ColumnDescriptors get_hft_columns() const;
 
 			/// Add one line to each output table
 			/**
@@ -141,15 +151,6 @@ namespace GuessOutput {
 			 */
 			void add_output_object(OutputRows out, const Fauna::HabitatOutputData& data) const;
 
-			/// Helper function to check if \ref limiter includes the day.
-			/** \see GuessOutput::OutputLimiter::include_date() */
-			bool include_date(const int day, const int year) const{
-				if (limiter != NULL) 
-					return limiter->include_date(day, year);
-				else
-					return true;
-			}
-
 			/// Width of one column in the output table.
 			static const int column_width = 8;
 
@@ -159,8 +160,10 @@ namespace GuessOutput {
 			/// Decimal precision for the values in the columns
 			double get_precision()const{return precision;}
 
+			/// The object limiting output. This is never NULL.
+			std::auto_ptr<IncludeDate> include_date;
 		private: 
-			Fauna::HftList const* hftlist;
+			// Fauna::HftList const* hftlist; TODO
 			static HerbivoryOutput* global_instance;
 
 			Interval interval;
@@ -168,7 +171,6 @@ namespace GuessOutput {
 			xtring interval_xtring;
 
 			bool isactive;
-			OutputLimiter* limiter;
 			int precision; 
 
 			/// Defines all output tables and their formats.

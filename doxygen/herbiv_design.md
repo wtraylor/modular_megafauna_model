@@ -371,7 +371,7 @@ OutputModuleContainer      --> FileOutputChannel : create
 activate FileOutputChannel
 OutputModuleContainer --> HerbivoryOutput : init()
 HerbivoryOutput --> FileOutputChannel : create tables
-framework --> HerbivoryOutput : set_limiter()
+framework --> HerbivoryOutput : set_include_date()
 == simulation ==
 framework --> OutputModuleContainer : outannual(gridcell)
 OutputModuleContainer --> HerbivoryOutput : outannual(gridcell)
@@ -402,7 +402,7 @@ to \ref GuessOutput::CommonOutput were made:
 - The inherited functions outannual() and outdaily() delegate
   to more generic functions, which are also used by
   \ref FaunaSim::Framework.
-- The class \ref GuessOutput::OutputLimiter has been introduced
+- The class \ref GuessOutput::IncludeDate has been introduced
   in order to observe the \ref sec_dependency_inversion and
   to avoid global variables.
   See also: \ref sec_herbiv_limit_output.

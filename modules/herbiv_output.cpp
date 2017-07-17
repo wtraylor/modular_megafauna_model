@@ -9,7 +9,6 @@
 #include "config.h"
 #include "herbiv_output.h"
 #include "guess.h"             // for Date and Gridcell
-#include "herbiv_hft.h"        // for Hft and HftList
 #include "herbiv_patchhabitat.h" // for Fauna::PatchHabitat
 #include "assert.h"
 #ifndef NO_GUESS_PARAMETERS
@@ -19,7 +18,7 @@
 using namespace GuessOutput;
 using namespace Fauna;
 
-bool NoSpinupLimiter::include_date(const int year, 
+bool IncludeNoSpinup::operator()(const int year, 
 		const int day_of_year) const{
 	return year >= nyear_spinup;
 }
@@ -33,7 +32,7 @@ HerbivoryOutput::HerbivoryOutput():
 	interval(ANNUAL),
 	isactive(true),
 	precision(4),
-	limiter(NULL)
+	include_date(new IncludeDate())
 {
 	// Check if someone is trying to create another instance
 	if (global_instance == NULL)
@@ -76,9 +75,10 @@ HerbivoryOutput& HerbivoryOutput::get_instance(){
 void HerbivoryOutput::init() {
 	if (!isactive) return;
 
-	if (hftlist == NULL)
-		throw std::logic_error("GuessOutput::HerbivoryOutput::init(): "
-				"hftlist not declared. Call set_hftlist() before.");
+	// TODO
+	// if (hftlist == NULL)
+	// 	throw std::logic_error("GuessOutput::HerbivoryOutput::init(): "
+	// 			"hftlist not declared. Call set_hftlist() before.");
 
 	if (interval_xtring == "annual")
 		interval = ANNUAL;
@@ -108,27 +108,26 @@ const ColumnDescriptors HerbivoryOutput::get_forage_columns()const {
 	return forage_columns;
 }
 
-const ColumnDescriptors HerbivoryOutput::get_hft_columns()const {
-	assert(hftlist != NULL); // checked for in init() already
-
-	ColumnDescriptors hft_columns;
-	HftList::const_iterator itr = hftlist->begin();
-	while (itr != hftlist->end()){
-		hft_columns += ColumnDescriptor(itr->name.c_str(),
-				column_width, precision);
-		itr++;
-	}
-	hft_columns += ColumnDescriptor("total", column_width, precision);
-	return hft_columns;
-}
-
+// TODO
+// const ColumnDescriptors HerbivoryOutput::get_hft_columns()const {
+// 	assert(hftlist != NULL); // checked for in init() already
+// 	ColumnDescriptors hft_columns;
+// 	HftList::const_iterator itr = hftlist->begin();
+// 	while (itr != hftlist->end()){
+// 		hft_columns += ColumnDescriptor(itr->name.c_str(),
+// 				column_width, precision);
+// 		itr++;
+// 	}
+// 	hft_columns += ColumnDescriptor("total", column_width, precision);
+// 	return hft_columns;
+// }
+//
 void HerbivoryOutput::define_output_tables() {
 	assert(column_width >= 1);
 	assert(precision    >= 0);
 
 	// Create commonly used columns
 	const ColumnDescriptors forage_columns = get_forage_columns();
-	const ColumnDescriptors hft_columns = get_hft_columns();
 
 	// Create the columns for each output table
 	create_output_table(out_forage_avail , file_forage_avail.c_str() , forage_columns);
@@ -173,13 +172,13 @@ void HerbivoryOutput::outannual(
 		const std::vector<const Fauna::Habitat*> habitats) const
 {
 	if (!isactive) return;
-
+	assert(include_date.get() != NULL);
 	
 	/// Vector of habitat output data objects.
 	typedef std::vector<HabitatOutputData> OutputVector;
 
 	// Abort already if there is no output for the whole year
-	if (interval == ANNUAL && include_date(0,year)) {
+	if (interval == ANNUAL && (*include_date)(0,year)) {
 
 		/// Vector holding the annual output for each habitat.
 		OutputVector annual_habitat;
@@ -248,7 +247,7 @@ void HerbivoryOutput::outannual(
 
 		for (int i=0; i<12; i++) {
 			// check if output is included
-			if (include_date(first_day_of_month, year)) {
+			if ((*include_date)(first_day_of_month, year)) {
 				add_output_object(
 						OutputRows(output_channel,
 							longitude, 
@@ -267,7 +266,7 @@ void HerbivoryOutput::outannual(
 		for (int d=0; d<Date::MAX_YEAR_LENGTH; d++) {
 
 			// Skip this day if it’s not included
-			if (!include_date(d, year))
+			if (!(*include_date)(d, year))
 				continue;
 
 			/// Vector holding this day’s data for each habitat

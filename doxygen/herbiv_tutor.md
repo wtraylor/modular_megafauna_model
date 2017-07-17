@@ -217,12 +217,8 @@ averaged value.
 
 ### How to limit output to a specific time period {#sec_herbiv_limit_output}
 
-Declare in any header file a class derived from 
-\ref GuessOutput::OutputLimiter and implement the inherited
-pure virtual method \ref GuessOutput::OutputLimiter::include_date().
-In the \ref framework() function call
-\ref GuessOutput::HerbivoryOutput::set_limiter() passing a 
-persistent instantiation of your class.
+Declare in any header file a class derived from \ref GuessOutput::IncludeDate and implement the virtual member function.
+In the \ref framework() function call \ref GuessOutput::HerbivoryOutput::set_include_date() passing a persistent instantiation of your class.
 
 
 \todo How to add a new test vegetation model.
