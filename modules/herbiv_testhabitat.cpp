@@ -83,23 +83,23 @@ void LogisticGrass::grow_daily(const int day_of_year){
 	forage.set_fpc(settings.fpc);
 	forage.set_digestibility(settings.digestibility);
 
-	/// available dry matter
+	// available dry matter
 	const double dm_avail   = forage.get_mass();
-	/// total dry matter
+	// total dry matter
 	const double dm_total   = dm_avail + settings.reserve;
-	/// proportional net increase of total dry matter
+	// proportional net increase of total dry matter
 	const double net_growth = settings.growth - settings.decay;
 
-	/// Total grass maximum dry matter
+	// Total grass maximum dry matter
 	const double total_saturation = settings.saturation + settings.reserve;
 
-	/// Absolute change in total dry matter
+	// Absolute change in total dry matter
 	const double dm_total_change 
 		= dm_total * net_growth * (1.0 - dm_total / total_saturation);
 
-	/// new total dry matter
+	// new total dry matter
 	const double dm_total_new = dm_total + dm_total_change;
-	/// new available dry matter
+	// new available dry matter
 	const double dm_avail_new = std::max( dm_total_new - settings.reserve, 0.0 );
 	// With negative net growth, the available dry matter can drop below zero.
 	// That’s why max() is used to here
@@ -121,11 +121,12 @@ void SimpleHabitat::remove_eaten_forage(const ForageMass& eaten_forage){
 	// call parent class implementation
 	Habitat::remove_eaten_forage(eaten_forage);
 
-	// remove eaten grass from temporary object and assign it.
+	// create temporary grass object. Remove eaten mass from it, and
+	// then assign it to the actual grass object.
 	GrassForage new_grass = grass.get_forage();
-	if (new_grass.get_mass() < eaten_forage.get_grass())
+	if (new_grass.get_mass() - eaten_forage.get_grass() < 0.0)
 		throw std::logic_error("FaunaSim::SimpleHabitat::remove_eaten_forage() "
-				"eaten grass exceeds available grass");
+				"Eaten grass exceeds available grass.");
 	new_grass.set_mass(new_grass.get_mass() - eaten_forage.get_grass());
 	grass.set_forage(new_grass);
 }

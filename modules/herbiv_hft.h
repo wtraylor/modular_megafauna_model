@@ -1,14 +1,14 @@
-///////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
 /// \file 
 /// \brief Herbivore Functional Type.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017
-///
-///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
 #ifndef HERBIV_HFT_H
 #define HERBIV_HFT_H
 
+#include <set> // for mortality_factors
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -18,7 +18,13 @@ namespace Fauna{
 	// forward declarations
 	class Parameters;
 
-	/// The different digestion types of the herbivores.
+	/// Model to define a herbivore’s diet in a multi-forage scenario.
+	enum DietComposer{
+		/// Eat exclusively grass, using \ref PureGrazerDiet.
+		DC_PURE_GRAZER
+	};
+
+	/// Digestion type of a herbivore.
 	enum DigestionType{
 		/// Hindgut fermenter (caecalid)
 		DT_HINDGUT, 
@@ -26,11 +32,53 @@ namespace Fauna{
 		DT_RUMINANT 
 	};
 
+	/// Algorithm to calculate a herbivore’s daily energy needs.
+	enum ExpenditureModel{
+		/// Formula for cattle, see \ref get_expenditure_taylor_1981.
+		EM_TAYLOR_1981
+	};
+
+	/// A factor limiting a herbivore’s daily forage intake.
+	enum ForagingLimit{
+		/// Foraging is limited by digestion, see \ref GetDigestiveLimitIllius1992
+		FL_DIGESTION_ILLIUS_1992
+	};
+
+	/// How forage net energy content is calculated.
+	enum NetEnergyModel{
+		/// Use \ref GetNetEnergyContentDefault
+		NE_DEFAULT
+	};
+
+	/// One way how a herbivore can die.
+	enum MortalityFactor{
+		/// Independent background mortality for juveniles and adults.
+		/** \see \ref Fauna::GetBackgroundMortality */
+		MF_BACKGROUND,
+		/// A herbivore dies if its age exceeds \ref Hft::lifespan.
+		/** \see \ref Fauna::GetSimpleLifespanMortality */
+		MF_LIFESPAN,
+		/// Starvation death following Illius & O’Connor (2000).
+		/** \see \ref Fauna::GetStarvationMortalityIllius2000 */
+		MF_STARVATION_ILLIUS2000,
+		/// Starvation death at a minimum bodyfat threshold.
+		MF_STARVATION_THRESHOLD
+	};
+
+	/// Algorithm to calculate herbivore reproduction time and success.
+	enum ReproductionModel{
+		/// Use class \ref ReproductionIllius2000 to calculate reproduction.
+		RM_ILLIUS_2000
+	};
+
 	/// One herbivore functional type (i.e. one species).
 	struct Hft{
 			/// Constructor initializing values
 			/** All values do not necessary need to be valid because
-			 * their validity potentially depends on external variables. */
+			 * their validity potentially depends on external variables. 
+			 * For the sake of easy unit-testing, arbitrary default
+			 * values are given that lie within the valid ranges.
+			 */
 			Hft();
 
 			/// Check if all variables are okay
@@ -58,32 +106,70 @@ namespace Fauna{
 			/// \name Simulation Parameters
 			/**@{*/ // open doxygen group
 
-			/// Body mass [kg] of an adult male individual.
-			int bodymass_male;
-			//
-			/// Body mass [kg] of an adult female individual.
+			/// Proportional fat mass at birth [kg/kg].
+			double bodyfat_birth; 
+
+			/// Maximum proportional fat mass [kg/kg].
+			double bodyfat_max;
+
+			/// Body mass [kg] at birth for both sexes.
+			int bodymass_birth; 
+
+			/// Body mass [kg] of an adult female individual (with full fat reserves).
 			int bodymass_female;
+
+			/// Body mass [kg] of an adult male individual (with full fat reserves).
+			int bodymass_male;
+
+			/// Length of parturition season in days.
+			int breeding_season_length;
+
+			/// First day of parturition season (0=Jan 1st).
+			int breeding_season_start;
+
+			/// Model defining the herbivore’s diet composition.
+			DietComposer diet_composer;
 
 			/// Type of digestion (ruminant or hindgut fermenter)
 			DigestionType digestion_type;
 
-			/// Habitat population mass density for initial establishment [kg/km²]
+			/// Habitat population density for initial establishment [ind/km²]
 			double establishment_density;
+
+			/// Energy expenditure model for herbivores.
+			ExpenditureModel expenditure_model;
+
+			/// Constraints for maximum daily forage intake.
+			std::set<ForagingLimit> foraging_limits;
 
 			/// Maximum age in years [1–∞).
 			int lifespan;
 
-			/// Age of physical and sexual (female) maturity in years.
-			int maturity;
+			/// @{ Age of physical maturity in years.
+			int maturity_age_phys_female;
+			int maturity_age_phys_male;
+			/// @}
+
+			/// Age of female sexual maturity in years.
+			int maturity_age_sex;
 
 			/// Annual mortality rate [0.0–1.0) after first year of life.
 			double mortality;
 
+			/// Ways how herbivores can die.
+			std::set<MortalityFactor> mortality_factors;
+
 			/// Annual mortality rate [0.0–1.0) in the first year of life.
 			double mortality_juvenile;
 
+			/// Algorithm for forage energy content.
+			NetEnergyModel net_energy_model; 
+
 			/// Maximum annual reproduction rate for females (0.0–∞)
 			double reproduction_max;
+
+			/// Algorithm to calculate herbivore reproduction.
+			ReproductionModel reproduction_model;
 
 			// add more parameters in alphabetical order
 
@@ -94,6 +180,7 @@ namespace Fauna{
 			 * comparison of the \ref name.
 			 */
 			bool operator==(const Hft& rhs)const{return name==rhs.name;}
+			bool operator!=(const Hft& rhs)const{return name!=rhs.name;}
 			bool operator<( const Hft& rhs)const{return name<rhs.name;}
 			/** @} */ // Comparison
 
@@ -114,8 +201,12 @@ namespace Fauna{
 
 			/// Get \ref Hft object by its number.
 			/** \param pos Position in the vector
-			 * \throw std::out_of_range if `!(pos < size())`*/
+			 * \throw std::out_of_range If not 0≤pos≤size()
+			 */
 			const Hft& operator[](const int pos) const{
+				if (pos>=size() || pos < 0)
+					throw std::out_of_range("Fauna::HftList::operator[]() "
+							"Parameter \"pos\" out of range.");
 				return vec.at(pos);
 			}
 

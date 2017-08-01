@@ -21,7 +21,7 @@ bool Parameters::is_valid(std::string& messages)const{
 	//------------------------------------------------------------
 	// add new checks in alphabetical order
 
-	if (dead_herbivore_threshold <= 0){
+	if (herbivore_type==HT_COHORT && dead_herbivore_threshold <= 0){
 		stream << "dead_herbivore_threshold must be >0" << std::endl;
 		is_valid = false;
 	}

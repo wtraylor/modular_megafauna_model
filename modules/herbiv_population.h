@@ -9,13 +9,19 @@
 #ifndef HERBIV_POPULATION_H
 #define HERBIV_POPULATION_H
 
-#include "herbiv_herbivore.h" // for IndividualFactory and CohortFactory
-#include <list>               // for Populatinos::list
-#include <vector>             // for HftPopulationsMap::get_all()
+#include "herbiv_createherbivores.h" // for CreateHerbivore*
+#include <list>                      
+#include <vector>
 
 namespace Fauna{
 	// forward declarations
+	class HerbivoreInterface;
 	class Hft;
+
+	/// A list of herbivore interface pointers.
+	typedef std::vector<HerbivoreInterface*> HerbivoreVector;
+	/// A list of read-only herbivore interface pointers.
+	typedef std::vector<const HerbivoreInterface*> ConstHerbivoreVector;
 
 	/// A container of herbivore objects.
 	/** 
@@ -29,87 +35,108 @@ namespace Fauna{
 		/** Destructor must be virtual in an interface. */
 		virtual ~PopulationInterface(){}
 
-		/// Create new herbivores 
+		/// Give birth to new herbivores
 		/** 
 		 * The new herbivores are owned by this population object.
-		 * \param density Total mass density of created herbivores
-		 * [kg/km²]
-		 * \param age Age of new herbivores in days
-		 * \throw std::invalid_argument if `density<=0.0`
-		 * \throw std::invalid_argument if `age<0` or `age` is 
-		 * greater than \ref Hft::lifespan
+		 * \param ind_per_km2 Offspring amount [ind/km²].
+		 * \throw std::invalid_argument if `offspring<0.0`
 		 */
-		virtual void create(const double density, const int age=0)=0;
+		virtual void create_offspring(const double ind_per_km2)=0;
+
+		/// Create a set of new herbivores to establish a population.
+		/**
+		 * - The new herbivores’ age must match
+		 *   \ref Hft::maturity_age_phys_female and
+		 *   \ref Hft::maturity_age_phys_male, respectively.
+		 * - The sex ratio is even.
+		 * - Initial density must match \ref Hft::establishment_density
+		 *   as close as possible, but with at least two individuals
+		 *   per habitat (if in individual mode and 
+		 *   \ref Hft::establishment_density > 0.0).
+		 * \throw std::logic_error If this population is not empty.
+		 */
+		virtual void establish()=0;
 
 		/// The herbivore functional type of this population
 		virtual const Hft& get_hft()const=0;
 
 		/// @{ 
-		/// Get pointers to the herbivores.
-		/** \warning The pointers are not guaranteed to stay valid
-		 * on changing the population in \ref create() or 
-		 * \ref remove_dead().
+		/// Get pointers to the (alive!) herbivores.
+		/** 
+		 * \warning The pointers are not guaranteed to stay valid
+		 * on changing the population in \ref create_offspring() or 
+		 * \ref establish().
+		 * \return Pointers to all living herbivores in the population.
+		 * Guaranteed no NULL pointers.
 		 */
-		virtual std::vector<const HerbivoreInterface*> get_list()const=0; 
-		virtual std::vector<HerbivoreInterface*> get_list()=0; 
+		virtual ConstHerbivoreVector get_list()const=0; 
+		virtual HerbivoreVector get_list()=0; 
 		/** @} */
-
-		/// Clean the list of any dead herbivore objects
-		virtual void remove_dead()=0;
 	};
 
 	/// A population of \ref HerbivoreIndividual objects.
 	class IndividualPopulation: public PopulationInterface{
+		public: // ------ PopulationInterface -------
+			virtual void create_offspring(const double ind_per_km2); 
+			virtual void establish();
+			virtual const Hft& get_hft()const{
+				return create_individual.get_hft();
+			}
+			virtual ConstHerbivoreVector get_list()const; 
+			virtual HerbivoreVector get_list(); 
 		public:
 			/// Constructor
-			IndividualPopulation(const Hft& hft, const IndividualFactory& factory):
-				hft(hft), factory(factory){}
-
-			/// Create new \ref HerbivoreIndividual objects using \ref IndividualFactory.
-			virtual void create(const double density, const int age);
-
-			virtual const Hft& get_hft()const{return hft;}
-
-			virtual std::vector<const HerbivoreInterface*> get_list()const; 
-			virtual std::vector<HerbivoreInterface*> get_list(); 
-			
-			virtual void remove_dead();
+			/**
+			 * \param create_individual Functor for creating new
+			 * herbivore individuals.
+			 */
+			IndividualPopulation(
+					const CreateHerbivoreIndividual create_individual);
 		private:
-			const Hft& hft;
-			const IndividualFactory& factory;
+			const CreateHerbivoreIndividual create_individual;
 			typedef std::list<HerbivoreIndividual> List;
 			List list;
 	};
 
 	/// A population of \ref HerbivoreCohort objects.
 	class CohortPopulation: public PopulationInterface{
+		public: // ------ PopulationInterface -------
+			virtual void create_offspring(const double ind_per_km2);
+			virtual void establish();
+			virtual const Hft& get_hft()const{
+				return create_cohort.get_hft();
+			}
+			virtual ConstHerbivoreVector get_list()const; 
+			virtual HerbivoreVector get_list(); 
 		public:
 			/// Constructor
 			/**
-			 * \param hft Herbivore Functional Type
-			 * \param factory Creates new objects
-			 * \param dead_herbivore_threshold Minimum mass density 
-			 * [kg/km²] for a herbivore cohort to be considered alive.
+			 * \param create_cohort Functor for creating new 
+			 * \ref HerbivoreCohort instances.
+			 * \param dead_herbivore_threshold Minimum individual density
+			 * [ind/km²] for a herbivore cohort to be considered alive.
+			 * \throw std::invalid_argument if any parameter is wrong.
 			 */
-			CohortPopulation(const Hft& hft, const CohortFactory& factory,
-					const double dead_herbivore_threshold):
-				hft(hft), factory(factory), 
-				dead_herbivore_threshold(dead_herbivore_threshold){}
+			CohortPopulation(
+					const CreateHerbivoreCohort create_cohort,
+					const double dead_herbivore_threshold);
 
-			/// Create new \ref HerbivoreCohort objects using \ref CohortFactory.
-			virtual void create(const double density, const int age);
-
-			virtual const Hft& get_hft()const{return hft;}
-
-			virtual std::vector<const HerbivoreInterface*> get_list()const; 
-			virtual std::vector<HerbivoreInterface*> get_list(); 
-			
-			virtual void remove_dead();
 		private:
-			const Hft& hft;
-			const CohortFactory& factory;
-			const double dead_herbivore_threshold;
 			typedef std::list<HerbivoreCohort> List;
+
+			/// Find a cohort in the list.
+			/**
+			 * \param age_years Age-class number (0=first year of life).
+			 * \param sex Male or female cohort?
+			 * \return If found: iterator pointing to the \ref
+			 * HerbivoreCohort object. If not found: end() iterator of
+			 * the cohort list.
+			 */
+			List::iterator find_cohort(const int age_years, 
+					const Sex sex);
+
+			const CreateHerbivoreCohort create_cohort;
+			const double dead_herbivore_threshold; // [ind/km²]
 			List list;
 	};
 	
@@ -141,7 +168,15 @@ namespace Fauna{
 			 * exists
 			 * \throw std::invalid_argument if `new_pop==NULL`
 			 */
-			void add(PopulationInterface* new_pop);
+			void add(std::auto_ptr<PopulationInterface> new_pop);
+
+			/// Get pointers to all (alive!) herbivores of all populations.
+			/** 
+			 * \see Warning in \ref PopulationInterface::get_list().
+			 * \return Pointers to all living herbivores in all 
+			 * populations. Guaranteed no NULL pointers.
+			 */
+			HerbivoreVector get_all_herbivores();
 
 			/// Access to a population
 			/** \param hft The herbivore functional type
@@ -157,6 +192,7 @@ namespace Fauna{
 			const_iterator begin()const { return vec.begin(); }
 			iterator end()              { return vec.end();   }
 			const_iterator end()const   { return vec.end();   }
+			bool empty() const          { return vec.empty(); }
 			int size() const            { return vec.size();  }
 			/** @} */ // Container Functionality
 		private:

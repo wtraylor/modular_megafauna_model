@@ -16,21 +16,15 @@ Overview {#sec_herbiv_designoverview}
 () "Fauna::ParamReader" as paramreader
 () "Fauna::PatchHabitat" as patchhabitat
 () "GuessOutput::HerbivoryOutput" as herbivoutput
-node "Output Files" as outputfiles
+node "Herbivory Output Files" as outputfiles
 [LPJ-GUESS] as guess
 node "Instruction Files" as insfiles
-database "Driving Data" as drivers
-
-guess        <..> patchhabitat
-patchhabitat <..> herbivory
-
-herbivory    <..  herbivoutput : read
+guess        <..  patchhabitat
+patchhabitat  --  herbivory
+herbivory     --  herbivoutput 
 herbivoutput  ..> outputfiles : write
-
-herbivory     ..> paramreader : get parameters
-paramreader   ..> insfiles : read
-
-drivers      <.. guess : read
+herbivory     --  paramreader 
+paramreader   ..> insfiles  : read
 \enduml
 
 
@@ -39,36 +33,178 @@ drivers      <.. guess : read
 hide members
 hide methods
 
-namespace guess {
-	class "framework()" as framework
-	Gridcell "1" *--> "*" Stand
-	Stand    "1" *--> "*" Patch
-	Pft      "1"  -left-> "*" Individual
-	Patch    "1" *--> "*" Individual
+annotation "framework()" as framework
+Gridcell "1" *--> "*" Stand
+Stand    "1" *--> "*" Patch
+Patch    "1" *--> "*" Individual
+class Individual{
+	Pft* pft
 }
+show Individual members
 
 namespace Fauna{
 	Simulator          ..> Habitat            : <<call>>
-	guess.framework    ..> Simulator          : <<create>>
-	Simulator          ..> HerbivoreInterface : <<call>>
-	PatchHabitat      <--* guess.Patch
-	note on link: plant–animal interactions
-	Hft           "1" <-- "*"  HerbivoreInterface
-	interface HerbivoreInterface
+	.framework          ..> Simulator          : <<create>>
+	PatchHabitat      <-right-* .Patch
+	PatchHabitat       ..> .Patch              : plant–animal interactions
+	Habitat           *..> HerbivoreInterface : contains>
+	interface HerbivoreInterface {
+		Hft* hft
+	}
+	show HerbivoreInterface members
 	abstract Habitat
-	abstract HerbivoreBase
-	Habitat            <|-- PatchHabitat
-	HerbivoreInterface <|-- HerbivoreBase
-	HerbivoreBase      <|-- HerbivoreIndividual
-	HerbivoreBase      <|-- HerbivoreCohort
+	Habitat            <|-left- PatchHabitat
 }
 @enduml
+
+@startuml "Construction of PatchHabitat"
+participant "framework()" as framework
+framework    -> "Fauna::Simulator" : <<create>>
+activate "Fauna::Simulator"
+framework    -> Gridcell : <<create>>
+activate Gridcell
+Gridcell     -> Patch : <<create>>
+activate Patch
+framework    -> "Fauna::Simulator" : create_populations()
+framework  <--  "Fauna::Simulator" : populations
+framework    -> "Fauna::Simulator" : create_digestibility_model()
+framework  <--  "Fauna::Simulator" : digestibility_model
+framework    -> "Fauna::PatchHabitat" : <<create>> (populations, digestibility_model)
+note right : constructor injection
+activate "Fauna::PatchHabitat"
+framework    -> Patch : set_habitat()
+note right : setter injection
+@enduml
+
+Forage Classes {#sec_herbiv_forageclasses}
+------------------------------------------
+
+\todo Explain why different forage classes
+\see \ref sec_herbiv_new_forage_type
+
+The Herbivore {#sec_herbiv_herbivoredesign}
+-------------------------------------------
+
+The simulation framework of the herbivory module can operate with any class that implements \ref Fauna::HerbivoreInterface (\ref sec_liskov_substitution).
+Which class to choose is defined by \ref Fauna::Parameters::herbivore_type.
+
+Currently, two classes, \ref Fauna::HerbivoreIndividual and \ref Fauna::HerbivoreCohort, are implemented.
+Their common model mechanics are defined in their abstract parent class, \ref Fauna::HerbivoreBase (see below).
+The herbivore model performs calculations generally *per area.*
+That’s why individual herbivores can only be simulated if an absolute habitat area size is defined.<!--TODO: Where is it defined-->
+
+@startuml "Herbivore class relationships"
+hide members
+hide methods
+interface HerbivoreInterface
+interface PopulationInterface
+class HerbivoreBase
+HerbivoreInterface  <|-- HerbivoreBase
+HerbivoreBase       <|-- HerbivoreIndividual
+HerbivoreBase       <|-- HerbivoreCohort
+PopulationInterface <|-up- IndividualPopulation
+PopulationInterface <|-up- CohortPopulation
+HerbivoreIndividual "*" <--* "1" IndividualPopulation
+HerbivoreCohort     "*" <--* "1" CohortPopulation
+HerbivoreIndividual  <..  IndividualPopulation : <<create>>
+(HerbivoreIndividual, IndividualPopulation) .. CreateHerbivoreIndividual
+HerbivoreCohort      <..  CohortPopulation     : <<create>>
+(HerbivoreCohort, CohortPopulation) .. CreateHerbivoreCohort
+@enduml
+
+### HerbivoreBase {#sec_herbiv_herbivorebase} ### 
+The herbivore class itself can be seen as a mere framework (compare \ref sec_inversion_of_control) that integrates various compartments:
+- The herbivore’s own **energy budget**: \ref Fauna::FatmassEnergyBudget.
+- Its **energy needs**, defined by \ref Fauna::Hft::expenditure_model.
+The herbivore is self-responsible to call the implementation of the given expenditure model.
+(A strategy pattern would not work here as different expenditure models need to know different variables.)
+- How much the herbivore **is able to forage** can be constrained by various factors which are defined as a set of \ref Fauna::Hft::foraging_limits.
+- The **diet composition** (i.e. feeding preferences in a scenario with multiple forage types) is controlled by a [strategy](\ref sec_strategy) object that implements \ref Fauna::ComposeDietInterface.
+HerbivoreBase instantiates the object itself according to \ref Fauna::Hft::diet_composer.
+- How much **net energy** the herbivore is able to gain from feeding on forage is calculated by an implementation of \ref Fauna::GetNetEnergyContentInterface 
+([constructor injection](\ref sec_inversion_of_control)).
+- **Death** of herbivores is controlled by a set of \ref Fauna::Hft::mortality_factors. 
+For a cohort that means that the density is proportionally reduced, for an individual, death is a stochastic event.
+The corresponding population objects will release dead herbivore objects automatically.
+
+@startuml "Model compartments around Fauna::HerbivoreBase"
+hide members
+hide methods
+namespace Fauna{
+class HerbivoreBase{
+	-Hft hft
+	-int age_days
+}
+show HerbivoreBase members
+class FatmassEnergyBudget{
+	+catabolize_fat()
+	+metabolize_energy()
+	-double energy_needs
+	-double fatmass
+	-double max_fatmass
+}
+show FatmassEnergyBudget members
+show FatmassEnergyBudget methods
+HerbivoreBase *-up-> "1" FatmassEnergyBudget
+package "Forage Energy" <<rectangle>> {
+	interface GetNetEnergyContentInterface <<strategy>>
+	GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
+}
+HerbivoreBase *-up-> "1" "Forage Energy"
+package "Reproduction" <<rectangle>> {
+	class ReproductionIllius2000
+}
+HerbivoreBase .up.> "1" "Reproduction"
+package "Diet" <<rectangle>> {
+	interface ComposeDietInterface <<strategy>>
+	ComposeDietInterface <|-- PureGrazerDiet
+}
+HerbivoreBase  .up.> "1" "Diet"
+package "Energy Expenditure" <<rectangle>>  {
+	annotation "get_expenditure_taylor_1981()"
+}
+HerbivoreBase  ..> "1" "Energy Expenditure"
+package "Foraging Limits" <<rectangle>>  {
+	class GetDigestiveLimitIllius1992 <<functor>>
+	class GetHalfMaxForagingLimit     <<functor>>
+} 
+HerbivoreBase  ..> "*" "Foraging Limits"
+package "Mortality" <<rectangle>> {
+	class GetBackgroundMortality           <<functor>>
+	class GetStarvationMortalityIllius2000 <<functor>>
+	class GetStarvationMortalityThreshold  <<functor>>
+	class GetSimpleLifespanMortality       <<functor>>
+}
+HerbivoreBase ..> "*" "Mortality"
+}
+@enduml
+
+### Populations {#sec_herbiv_populations} ### 
+Each herbivore class needs a specific population class, implementing \ref Fauna::PopulationInterface, which manages a list of class instances of the same HFT.
+Each [habitat](\ref Fauna::Habitat) has a \ref Fauna::HftPopulationsMap which manages a number of population instances, one for each HFT.
+
+@startuml "Herbivore population classes"
+hide members
+hide methods
+namespace Fauna{
+	interface PopulationInterface
+	PopulationInterface <|-- IndividualPopulation
+	PopulationInterface <|-- CohortPopulation
+	IndividualPopulation *-- "*" HerbivoreIndividual
+	CohortPopulation     *-- "*" HerbivoreCohort
+	abstract Habitat
+	Habitat *-- "*" PopulationInterface
+	(Habitat, PopulationInterface) .. HftPopulationsMap
+}
+@enduml
+
+
 
 Error Handling {#sec_herbiv_errorhandling}
 ------------------------------------------
 
 ### Exceptions ### {#sec_herbiv_exceptions}
-The herbivory module uses the C++ standard library (STL) exceptions defined in `<stdexcept>`.
+The herbivory module uses the C++ standard library exceptions defined in `<stdexcept>`.
 All exceptions are derived from `std::exception`:
 @startuml "Standard library exceptions used in the herbivory module."
 namespace std{
@@ -100,7 +236,7 @@ Exceptions are caught with `try{…}catch(…){…}` blocks in:
 - Fauna::ParamReader
 
 ### Assertions ### {#sec_herbiv_assertions}
-At appropriate places, `assert()` is called (defined in the STL header `assert.h`).
+At appropriate places, `assert()` is called (defined in the standard library header `<cassert>`/`assert.h`).
 `assert()` calls are only expanded by the compiler if compilation happens for DEBUG mode; in RELEASE, they are completely ignored.
 
 Assertions are used…: 
@@ -114,41 +250,10 @@ Herbivory Parameters {#sec_herbiv_parameters}
 The herbivory module uses the same instruction files and plib 
 (\ref plib.h) functionality as the vegetation model.
 In order to separate concerns, all herbivory-related parameters
-are declared and checked in the class \ref Fauna::Parameters.
+are declared and checked in the class \ref Fauna::Parameters, but parsed by the class \ref Fauna::ParamReader.
+ParamReader is the only one being directly dependent on \ref parameters.h and \ref plib.h (apart from \ref FaunaSim::Framework and \ref GuessOutput::HerbivoryOutput).
 
-Note that the implementation is rather a dirty fix around
-the inflexible design of LPJ-GUESS parameter library. Some
-global constants (checkback and block codes) and global
-pointers from \ref parameters.h and \ref parameters.cpp are
-used in \ref herbiv_parameters.cpp.
-
-
-\see \ref sec_herbiv_new_pft_parameter
-
-HFT parameters are declared and parsed by 
-\ref Fauna::Parameters, but checked for integrity by \ref Fauna::Hft
-itself.
-The same principle applies for \ref Fauna::Parameters and \ref Fauna::PftParams (each of the classes have a method `is_valid()`).
-
-
-An example instruction file is provided in 
-`data/ins/herbivores.ins`:
-\snippet herbivores.ins Example Herbivore
-\see \ref sec_herbiv_new_hft_parameter
-
-
-
-\bug When printing out the help with \ref plibhelp() 
-(by running `guess -help`), the global parameters declared in 
-\ref Fauna::ParamReader::declare_parameters() under 
-`BLOCK_GLOBAL` appear out of order in the output.
-
-
-
-\todo UML diagram with tiers:
-low-level and high-level classes
-\todo UML diagram of replacable modules: digestibility model, energy model etc.
-
+The principle that parameter member variables put in one class, which also knows to check their validity, but parsed in ParamReader, is also applied in \ref Fauna::Hft and \ref Fauna::PftParams.
 
 @startuml "Interactions of parameter-related classes in the herbivory module" 
 hide members
@@ -188,14 +293,54 @@ namespace Fauna {
 FaunaSim.Framework ..> Fauna.ParamReader : <<use>>
 @enduml
 
+\note The implementation can be called a rather dirty fix around the inflexible design of LPJ-GUESS parameter library. 
+Some global constants (checkback and block codes) and global pointers from \ref parameters.h and \ref parameters.cpp are used in \ref herbiv_parameters.cpp.
+
+An example instruction file is provided in 
+`data/ins/herbivores.ins`:
+\snippet herbivores.ins Example Herbivore
+\see \ref sec_herbiv_new_hft_parameter
+\see \ref sec_herbiv_new_pft_parameter
+\see \ref sec_herbiv_new_global_parameter
+
+Following the [Inversion of Control](\ref sec_inversion_of_control) principle, as few classes as possible have direct access to the classes that hold the parameters (\ref Fauna::Hft, \ref Fauna::Parameters, \ref Fauna::PftParams).
+These classes play the role of the “framework” by calling any client classes only with the very necessary parameters.
+The following diagram gives an overview:
+
+@startuml "Classes of the herbivory simulation which have direct access to parameter-holding classes."
+hide members
+hide methods
+namespace Fauna{
+	CreateHerbivoreIndividual ..> Parameters
+	CreateHerbivoreIndividual ..> Hft
+	CreateHerbivoreCohort     ..> Parameters
+	CreateHerbivoreCohort     ..> Hft
+	Simulator                 ..> Parameters
+	Simulator                 ..> Hft
+	PatchHabitat              ..> PftParams
+	CohortPopulation          .up.> Hft
+	IndividualPopulation      .up.> Hft
+	HerbivoreBase             .up.> Hft
+}
+namespace FaunaSim{
+	Framework                 ..> Fauna.Parameters
+	Framework                 ..> Fauna.Hft
+} 
+@enduml
+
+\bug When printing out the help with \ref plibhelp() 
+(by running `guess -help`), the global parameters declared in 
+\ref Fauna::ParamReader::declare_parameters() under 
+`BLOCK_GLOBAL` appear out of order in the output.
+
+
+
 Object-oriented Design {#sec_object_orientation}
 ------------------------------------------------
 
 In the Herbivore Module a couple of object-oriented design patterns
 were employed that are explained here along with general 
 concepts of object-oriented programming.
-
-\todo functors
 
 ### Good Programming Practice ### {#sec_good_practice}
 
@@ -206,7 +351,7 @@ If a class explicitely defines at least one of the following methods, it should 
 - Copy Constructor
 - Copy Assignment Operator
 
-\todo If moving to C++11, the **Rule of Five** becomes relevant
+\note If moving to C++11, the **Rule of Five** becomes relevant
 
 ### S-O-L-I-D Design principles ### {#sec_design_solid}
 
@@ -343,8 +488,6 @@ The class name should of course be capitalized.
 Strictly speaking, the strategy pattern aims to offer the possibility to substitute an algorithm during the lifetime of a client object.
 In the herbivory model that is usually not the case, but rather it is used as a means of [dependency injection](sec_dependency_inversion).
 
-#### Factory {#sec_factory}
-\todo Factory design pattern
 
 Herbivory Output {#sec_herbiv_output}
 -------------------------------------
@@ -436,13 +579,10 @@ namespace GuessOutput{
 }
 namespace Fauna{
 	abstract Habitat
-	Habitat o-- "365" HabitatOutputData
-	note on link: daily
+	Habitat o-- "365" HabitatOutputData : daily
 	GuessOutput.HerbivoryOutput ..> Fauna.HabitatOutputData : <<use>>
-	HabitatOutputData --> HabitatForage
-	note on link : available forage
-	HabitatOutputData --> ForageMass
-	note on link : eaten forage
+	HabitatOutputData --> HabitatForage : available forage
+	HabitatOutputData --> ForageMass : eaten forage
 	class HabitatOutputData
 	note right : various other values
 }

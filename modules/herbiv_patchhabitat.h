@@ -52,18 +52,16 @@ namespace Fauna {
 		 * injection)
 		 * \see \ref sec_inversion_of_control
 		 */
-		PatchHabitat( std::auto_ptr<HftPopulationsMap> populations,
+		PatchHabitat( 
+				std::auto_ptr<HftPopulationsMap> populations,
 				Patch& patch, 
-				const GetDigestibility& digestibility_model):
-			Habitat(populations), // parent constructor
-			patch(patch), 
-			get_digestibility(digestibility_model){}
+				std::auto_ptr<GetDigestibility> digestibility_model);
 
 		// ----- Fauna::Habitat implementation -----
 		virtual HabitatForage get_available_forage() const;
 		virtual void remove_eaten_forage(const ForageMass& eaten_forage);
 	protected:
-		const GetDigestibility& get_digestibility;
+		std::auto_ptr<GetDigestibility> get_digestibility;
 	private:
 		/// Reference to the patch.
 		Patch& patch;

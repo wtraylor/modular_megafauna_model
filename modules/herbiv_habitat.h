@@ -10,7 +10,7 @@
 
 #include "herbiv_forageclasses.h" // for ForageMass
 #include "herbiv_population.h"    // for HftPopulationsMap
-#include "assert.h"
+#include <cassert>                // for assert()
 #include <map>                    // for output data mapped to HFTs
 #include <memory>                 // for std::auto_ptr
 #include <stdexcept>              // for get_populations
@@ -44,9 +44,9 @@ namespace Fauna{
 		/** @{ \name Averaged values 
 		 * For these values, averages are built when merged.*/
 		/// Individual herbivore density [ind/km²].
-		std::map<const Hft*, double> ind_density;
+		std::map<const Hft*, double> density_ind;
 		/// Body mass herbivore density [kg/km²].
-		std::map<const Hft*, double> mass_density;
+		std::map<const Hft*, double> density_mass;
 		/** @} */ // Averaged values
 
 		/// Builds averages and sums for a range of data.
@@ -145,8 +145,7 @@ namespace Fauna{
 		 * \return Vector of size 12 with output objects.
 		 * If a month contained at least one invalid day, this
 		 * month’s object is invalid.
-		 * \todo Once moving to C++11, this should be of type 
-		 * std::array. */
+		 */
 		std::vector<HabitatOutputData> get_monthly_output() const;
 
 		/// Get output data averaged over the whole year.
@@ -164,10 +163,9 @@ namespace Fauna{
 		/**
 		 * \param populations object holding the herbivore populations
 		 * \see constructor injection: \ref sec_inversion_of_control
+		 * \throw std::invalid_argument If `populations` is NULL.
 		 */
-		Habitat(std::auto_ptr<HftPopulationsMap> populations):
-			populations(populations),
-			daily_output(365){}
+		Habitat(std::auto_ptr<HftPopulationsMap> populations);
 
 		/// The current day as set by \ref read_todays_output().
 		/** \see Date::day */
@@ -184,9 +182,7 @@ namespace Fauna{
 	private:
 		int day_of_year;
 
-		/// Vector with output for every day of the year.
-		/** \todo When switching to C++11 standard, this should be 
-		 * std::array so that the container size is fixed.*/ 
+		/// Vector (size=365) with output for every day of the year.
 		std::vector<HabitatOutputData> daily_output;
 
 		std::auto_ptr<HftPopulationsMap> populations;

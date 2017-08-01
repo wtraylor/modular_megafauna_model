@@ -12,6 +12,7 @@
 #include "outputmodule.h"
 #include "gutil.h"           // for xtring
 #include "herbiv_foraging.h" // for Fauna::ForageType
+#include <cassert>
 #include <memory>            // for std::auto_ptr
 #include <stdexcept>         // for std::invalid_argument
 
@@ -20,7 +21,7 @@ class Date;
 namespace Fauna { 
 	class Habitat;
 	class HabitatOutputData;
-	// class HftList; TODO
+	class HftList; //TODO
 }
 
 namespace GuessOutput {
@@ -112,8 +113,8 @@ namespace GuessOutput {
 			void deactivate(){ isactive = false; }
 
 			// TODO
-			// /// Set the list of HFTs for the output tables
-			// void set_hftlist(const Fauna::HftList * _hftlist){hftlist = _hftlist;}
+			/// Set the list of HFTs for the output tables
+			void set_hftlist(const Fauna::HftList * _hftlist){hftlist = _hftlist;}
 
 			/// Set the strategy object that limits the output.
 			/** \throw std::invalid_argument if `ptr==NULL`*/
@@ -138,9 +139,9 @@ namespace GuessOutput {
 			const ColumnDescriptors get_forage_columns() const;
 
 			// TODO
-			// /// Create a column descriptor for each \ref Fauna::Hft
-			// #<{(|* \throw std::logic_error if \ref hftlist not defined. |)}>#
-			// const ColumnDescriptors get_hft_columns() const;
+			/// Create a column descriptor for each \ref Fauna::Hft
+			/** \throw std::logic_error if \ref hftlist not defined. */
+			const ColumnDescriptors get_hft_columns() const;
 
 			/// Add one line to each output table
 			/**
@@ -154,6 +155,12 @@ namespace GuessOutput {
 			/// Width of one column in the output table.
 			static const int column_width = 8;
 
+			/// List of herbivore functional types.
+			const Fauna::HftList& get_hftlist()const{
+				assert (hftlist != NULL);
+				return *hftlist;
+			}
+
 			/// Temporal aggregation interval
 			Interval get_interval()const{return interval;}
 
@@ -163,7 +170,7 @@ namespace GuessOutput {
 			/// The object limiting output. This is never NULL.
 			std::auto_ptr<IncludeDate> include_date;
 		private: 
-			// Fauna::HftList const* hftlist; TODO
+			Fauna::HftList const* hftlist; // TODO
 			static HerbivoryOutput* global_instance;
 
 			Interval interval;
@@ -183,14 +190,18 @@ namespace GuessOutput {
 			void define_output_tables();
 
 			/**@{ \name Output file names */
-			/// forage output files
+			/// forage output files.
 			std::string file_forage_avail, file_forage_eaten, 
 				file_digestibility;
+			/// Herbivore output files.
+			std::string file_hft_dens_ind, file_hft_dens_mass;
 			/**@} */ //Output file names
 
 			/**@{ \name Output tables */
-			/// forage output tables
+			/// forage output tables.
 			Table out_forage_avail, out_forage_eaten, out_digestibility;
+			/// Herbivore output tables.
+			Table out_hft_dens_ind, out_hft_dens_mass;
 			/**@} */ // Output tables
 	};
 }

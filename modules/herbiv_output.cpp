@@ -8,9 +8,10 @@
 
 #include "config.h"
 #include "herbiv_output.h"
-#include "guess.h"             // for Date and Gridcell
+#include "guess.h"               // for Date and Gridcell
+#include "herbiv_hft.h"          // for Hft
 #include "herbiv_patchhabitat.h" // for Fauna::PatchHabitat
-#include "assert.h"
+#include <cassert>               // for assert()
 #ifndef NO_GUESS_PARAMETERS
 #include "parameters.h"        // for declare_parameter()
 #endif // NO_GUESS_PARAMETERS
@@ -63,6 +64,13 @@ HerbivoryOutput::HerbivoryOutput():
 	declare_parameter("file_forage_eaten", &file_forage_eaten, 300, 
 			"File for herbivory output: "
 			"Eaten forage [kgDM/m²]");
+
+	declare_parameter("file_hft_dens_ind", &file_hft_dens_ind, 300, 
+			"File for herbivory output: "
+			"Herbivore density [ind/km²]");
+	declare_parameter("file_hft_dens_mass", &file_hft_dens_mass, 300, 
+			"File for herbivory output: "
+			"Herbivore density [kg/km²]");
 }
 
 HerbivoryOutput& HerbivoryOutput::get_instance(){
@@ -76,9 +84,9 @@ void HerbivoryOutput::init() {
 	if (!isactive) return;
 
 	// TODO
-	// if (hftlist == NULL)
-	// 	throw std::logic_error("GuessOutput::HerbivoryOutput::init(): "
-	// 			"hftlist not declared. Call set_hftlist() before.");
+	if (hftlist == NULL)
+		throw std::logic_error("GuessOutput::HerbivoryOutput::init(): "
+				"hftlist not declared. Call set_hftlist() before.");
 
 	if (interval_xtring == "annual")
 		interval = ANNUAL;
@@ -108,38 +116,41 @@ const ColumnDescriptors HerbivoryOutput::get_forage_columns()const {
 	return forage_columns;
 }
 
-// TODO
-// const ColumnDescriptors HerbivoryOutput::get_hft_columns()const {
-// 	assert(hftlist != NULL); // checked for in init() already
-// 	ColumnDescriptors hft_columns;
-// 	HftList::const_iterator itr = hftlist->begin();
-// 	while (itr != hftlist->end()){
-// 		hft_columns += ColumnDescriptor(itr->name.c_str(),
-// 				column_width, precision);
-// 		itr++;
-// 	}
-// 	hft_columns += ColumnDescriptor("total", column_width, precision);
-// 	return hft_columns;
-// }
-//
+const ColumnDescriptors HerbivoryOutput::get_hft_columns()const {
+	assert(hftlist != NULL); // checked for in init() already
+	ColumnDescriptors hft_columns;
+	HftList::const_iterator itr = get_hftlist().begin();
+	while (itr != get_hftlist().end()){
+		hft_columns += ColumnDescriptor(itr->name.c_str(),
+				column_width, precision);
+		itr++;
+	}
+	hft_columns += ColumnDescriptor("total", column_width, precision);
+	return hft_columns;
+}
+
 void HerbivoryOutput::define_output_tables() {
 	assert(column_width >= 1);
 	assert(precision    >= 0);
 
 	// Create commonly used columns
 	const ColumnDescriptors forage_columns = get_forage_columns();
+	const ColumnDescriptors hft_columns = get_hft_columns();
 
 	// Create the columns for each output table
 	create_output_table(out_forage_avail , file_forage_avail.c_str() , forage_columns);
 	assert( !out_forage_avail.invalid() );
 	create_output_table(out_forage_eaten , file_forage_eaten.c_str() , forage_columns);
 	create_output_table(out_digestibility, file_digestibility.c_str(), forage_columns);
+
+	create_output_table(out_hft_dens_ind, file_hft_dens_ind.c_str(), hft_columns);
+	create_output_table(out_hft_dens_mass, file_hft_dens_mass.c_str(), hft_columns);
 }
 
 void HerbivoryOutput::outannual(Gridcell& gridcell){
 	if (!isactive) return;
 
-	/// References to all Habitat objects in the gridcell.
+	// References to all Habitat objects in the gridcell.
 	std::vector<const Habitat*> habitats;
 
 	// reserve space in array: number of stands (gridcell.size())
@@ -165,7 +176,6 @@ void HerbivoryOutput::outannual(Gridcell& gridcell){
 			date.year, habitats);
 }	
 
-
 void HerbivoryOutput::outannual(
 		const double longitude, const double latitude,
 		const int year,
@@ -174,13 +184,13 @@ void HerbivoryOutput::outannual(
 	if (!isactive) return;
 	assert(include_date.get() != NULL);
 	
-	/// Vector of habitat output data objects.
+	// Vector of habitat output data objects.
 	typedef std::vector<HabitatOutputData> OutputVector;
 
 	// Abort already if there is no output for the whole year
 	if (interval == ANNUAL && (*include_date)(0,year)) {
 
-		/// Vector holding the annual output for each habitat.
+		// Vector holding the annual output for each habitat.
 		OutputVector annual_habitat;
 		// reserve space in the vector (without filling it yet).
 		annual_habitat.reserve(habitats.size());
@@ -195,7 +205,7 @@ void HerbivoryOutput::outannual(
 
 		// MERGE DATA
 
-		/// Annual output from all habitats in this gridcell merged in one object.
+		// Annual output from all habitats in this gridcell merged in one object.
 		const HabitatOutputData merged_annual = 
 			HabitatOutputData::merge(annual_habitat);
 
@@ -210,7 +220,7 @@ void HerbivoryOutput::outannual(
 
 	} else if (interval == MONTHLY) {
 
-		/// Array of 12 vectors, each of which holds one month’s output of all patches.
+		// Array of 12 vectors, each of which holds one month’s output of all patches.
 		OutputVector monthly_habitat[12];
 
 		// reserve space for the patches
@@ -232,7 +242,7 @@ void HerbivoryOutput::outannual(
 
 		// MERGE DATA
 		
-		/// Monthly output from all habitats in one object per month.
+		// Monthly output from all habitats in one object per month.
 		HabitatOutputData merged_monthly[12]; 
 
 		// merge vector of data for each month and add it
@@ -242,7 +252,7 @@ void HerbivoryOutput::outannual(
 
 		// WRITE DATA
 
-		/// Day of the year at the beginning of the month
+		// Day of the year at the beginning of the month
 		int first_day_of_month = 0;
 
 		for (int i=0; i<12; i++) {
@@ -269,7 +279,7 @@ void HerbivoryOutput::outannual(
 			if (!(*include_date)(d, year))
 				continue;
 
-			/// Vector holding this day’s data for each habitat
+			// Vector holding this day’s data for each habitat
 			OutputVector days_habitat_data = OutputVector();
 			days_habitat_data.reserve(habitats.size());
 			
@@ -294,7 +304,6 @@ void HerbivoryOutput::outannual(
 	}
 }
 
-
 void HerbivoryOutput::add_output_object(OutputRows out, const HabitatOutputData& data) const{
 
 	// AWARENESS: Be sure to add the forage types in the same order as the columns
@@ -311,4 +320,40 @@ void HerbivoryOutput::add_output_object(OutputRows out, const HabitatOutputData&
 	// eaten forage
 	out.add_value(out_forage_eaten, data.eaten_forage.get_grass());
 	out.add_value(out_forage_eaten, data.eaten_forage.sum());
+
+	// HFTs
+	double total_dens_ind, total_dens_mass = 0.0;
+	// iterate throug hftlist, assuming the order has not changed.
+	// TODO: Have custom vector of HFT pointers to be sure order
+	// does not change.
+	for (HftList::const_iterator itr = get_hftlist().begin();
+			itr != get_hftlist().end(); itr++) {
+		const Hft& hft = *itr;
+
+		// TODO Replace this dirty fix with a good output collector
+		// individual density
+		{ 
+			std::map<const Hft*, double>::const_iterator find 
+				= data.density_ind.find(&hft);
+			if ( find != data.density_ind.end() ){
+				out.add_value(out_hft_dens_ind, find->second);
+				total_dens_ind += find->second;
+			} else
+				out.add_value(out_hft_dens_ind, 0.0);
+		}
+
+		// mass density
+		{ 
+			std::map<const Hft*, double>::const_iterator find 
+				= data.density_mass.find(&hft);
+			if ( find!= data.density_mass.end() ){
+				out.add_value(out_hft_dens_mass, find->second);
+				total_dens_mass += find->second;
+			} else
+				out.add_value(out_hft_dens_mass, 0.0);
+		}
+	}
+	// print totals
+	out.add_value(out_hft_dens_ind, total_dens_ind);
+	out.add_value(out_hft_dens_mass, total_dens_mass);
 }

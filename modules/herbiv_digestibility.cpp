@@ -14,5 +14,7 @@
 using namespace Fauna;
 
 double PftDigestibility::operator()(const Individual& individual) const{
-	return individual.pft.herbiv_params.digestibility;
+	const double result = individual.pft.herbiv_params.digestibility;
+	assert( result > 0.0 && result <= 1.0 );
+	return result;
 }

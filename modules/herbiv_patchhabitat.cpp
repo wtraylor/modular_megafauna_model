@@ -18,42 +18,60 @@ using namespace Fauna;
 // PatchHabitat
 //============================================================
 
+PatchHabitat::PatchHabitat(
+				std::auto_ptr<HftPopulationsMap> populations,
+				Patch& patch, 
+				std::auto_ptr<GetDigestibility> digestibility_model):
+	Habitat(populations), // parent constructor
+	patch(patch), 
+	get_digestibility(digestibility_model)
+{
+	if (this->get_digestibility.get() == NULL)
+		throw std::invalid_argument("Fauna::PatchHabitat::PatchHabitat() "
+				"Parameter \"digestibility_model\" is NULL.");
+}
+
 HabitatForage PatchHabitat::get_available_forage() const {
-	/// Result object
+	// Result object
 	HabitatForage forage; 
 
-	/// Sum of grass digestibility to build average
+	// Sum of grass digestibility to build average
 	double gr_dig_sum_weight, gr_dig_sum = 0.0;
 
-	/// Number of grass individuals
-	double gr_count; // double for floating point division later
+	// Number of grass individuals
+	int gr_count = 0; 
 
 	// Loop through all vegetation individuals in this patch
 	patch.vegetation.firstobj();
 	while (patch.vegetation.isobj) {
 		const Individual& indiv = patch.vegetation.getobj();
 
-		// Get common forage properties
-		const double indiv_dig  = get_digestibility(indiv); // [frac]
-		const double indiv_mass = indiv.get_forage_mass(); // [kg/m²]
+		// get digestibility
+		assert( get_digestibility.get() != NULL );
+		const double indiv_dig  = (*get_digestibility)(indiv); // [frac]
+		assert( indiv_dig >= 0.0 );
+		assert( indiv_dig <= 1.0 );
+
+		// get forage mass
+		double indiv_mass = indiv.get_forage_mass(); // [kg/m²]
+		// avoid precision errors in extremely  low values.
+		if (negligible(indiv_mass))
+			indiv_mass = 0.0; 
+		assert( indiv_mass >= 0.0 );
 
 		// Sum up the grass forage
 		if (indiv.get_forage_type() == FT_GRASS){
-			gr_count += 1.0;
+			gr_count += 1;
 
 			// Sum up digestibility to build (weighted) average later
 			gr_dig_sum_weight += indiv_dig * indiv_mass;
 			gr_dig_sum        += indiv_dig;
 
 			// Simply sum up the mass for the whole habitat [kg/m²]
-			forage.grass.set_mass(
-					forage.grass.get_mass()
-					+ indiv_mass);
+			forage.grass.set_mass( forage.grass.get_mass() + indiv_mass );
 
 			// Build sum of FPCs
-			forage.grass.set_fpc(
-					forage.grass.get_fpc()
-					+ indiv.fpc);
+			forage.grass.set_fpc( forage.grass.get_fpc() + indiv.fpc );
 		}
 
 		// ADD OTHER FORAGE (BROWSE) HERE ...
@@ -61,12 +79,17 @@ HabitatForage PatchHabitat::get_available_forage() const {
 		patch.vegetation.nextobj();
 	}
 
-	// calculate digestibility average: weighted if there is mass,
-	// otherwise simple average
-	if (forage.grass.get_mass() > 0.0) 
-		forage.grass.set_digestibility( gr_dig_sum_weight / forage.grass.get_mass());
-	else
-		forage.grass.set_digestibility( gr_dig_sum / gr_count );
+	if (gr_count > 0) {
+		// calculate digestibility average: weighted if there is mass,
+		// otherwise simple average
+		if (forage.grass.get_mass() > 0.0) {
+			assert( gr_dig_sum_weight <= forage.grass.get_mass() );
+			// weighted average:
+			forage.grass.set_digestibility( 
+					gr_dig_sum_weight / forage.grass.get_mass());
+		} else
+			forage.grass.set_digestibility( gr_dig_sum / (double)gr_count );
+	}
 
 	return forage;
 }

@@ -8,7 +8,7 @@
 #ifndef HERBIV_PFTPARAMETERS_H
 #define HERBIV_PFTPARAMETERS_H
 
-#include "herbiv_habitat.h"
+#include "herbiv_forageclasses.h"
 
 // forward declarations
 class Pft;

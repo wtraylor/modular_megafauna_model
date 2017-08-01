@@ -8,7 +8,7 @@
 
 #include "config.h"
 #include "herbiv_forageclasses.h"
-#include "assert.h"
+#include <cassert> // for assert()
 
 using namespace Fauna;
 
@@ -24,13 +24,43 @@ std::string Fauna::get_forage_type_name(const ForageType ft) {
 // HABITATFORAGE
 //------------------------------------------------------------
 
+ForageMass HabitatForage::get_mass()const{
+	ForageMass result;
+	result.set_grass(grass.get_mass());
+	// add more forage types here
+	return result;
+}
+
+ForageBase HabitatForage::get_total() const{
+	// Return object
+	ForageBase result;
+	// Sum of digestibility of all forage types (scaled by mass)
+	double dig_sum_weight, dig_sum;
+
+	// add other forage types here
+	
+	// Dry matter
+	result.set_mass( grass.get_mass() );
+
+	// Digestibility
+	dig_sum_weight = grass.get_digestibility() * grass.get_mass();
+	dig_sum = grass.get_digestibility();
+
+	// build weighted average only if total mass is greater zero
+	if (result.get_mass() > 0.0)
+		result.set_digestibility( dig_sum_weight / result.get_mass() );
+	else
+		result.set_digestibility( dig_sum / (double) FORAGE_TYPE_COUNT );
+	return result;
+}
+
 HabitatForage HabitatForage::merge(const std::vector<const HabitatForage*> data){
 	if (data.empty())
 		throw std::invalid_argument("Fauna::HabitatForage::merge(): "
 				"parameter data is empty.");
 	HabitatForage result;
 
-	/// Sums of item values to build average later
+	// Sums of item values to build average later
 	double gr_mass_sum, gr_fpc_sum, gr_dig_sum,  gr_dig_sum_weight = 0.0;
 
 	// Iterate over all data entries and accumulate the values in order to build
@@ -64,25 +94,3 @@ HabitatForage HabitatForage::merge(const std::vector<const HabitatForage*> data)
 	return result;
 }
 
-ForageBase HabitatForage::get_total() const{
-	/// Return object
-	ForageBase result;
-	/// Sum of digestibility of all forage types (scaled by mass)
-	double dig_sum_weight, dig_sum;
-
-	// add other forage types here
-	
-	// Dry matter
-	result.set_mass( grass.get_mass() );
-
-	// Digestibility
-	dig_sum_weight = grass.get_digestibility() * grass.get_mass();
-	dig_sum = grass.get_digestibility();
-
-	// build weighted average only if total mass is greater zero
-	if (result.get_mass() > 0.0)
-		result.set_digestibility( dig_sum_weight / result.get_mass() );
-	else
-		result.set_digestibility( dig_sum / (double) FORAGE_TYPE_COUNT );
-	return result;
-}

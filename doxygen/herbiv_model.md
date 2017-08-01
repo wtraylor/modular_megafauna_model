@@ -10,15 +10,27 @@ Large Herbivore Model {#sec_herbiv_model}
 
 <!--TODO:
 - Limitations of the model design:
-	+ 
+	+ year length of 365 assumed
 	+ After offspring is created no connection to parents 
     -> no lactation, bonding, herding, etc.
-- Overview on the replacable model components in a nice
-  UML diagram:
-	+ Habitat
-	+ HerbivoreInterface
-	+ GetDigestibility (for PatchHabitat)
 -->
+
+A herbivore is defined by these state variables:
+- Age
+- Sex
+- Current energy need
+- Fat mass
+
+Energetics {#sec_herbiv_energetics}
+-----------------------------------
+
+Taylor et al 1981
+
+
+Energy Content of Forage {#sec_herbiv_energycontent}
+----------------------------------------------------
+
+\todo explain gross, digestible, metabolizable and net energy
 
 Foraging {#sec_herbiv_foraging}
 -------------------------------
@@ -46,6 +58,11 @@ A solution for that is yet to be found.
 
 Reproduction {#sec_herbiv_reproduction}
 ---------------------------------------
+
+Life History {#sec_herbiv_life_history}
+---------------------------------------
+
+growth linear: \ref Fauna::HerbivoreBase::get_bodymass()
 
 Mortality {#sec_herbiv_mortality}
 ---------------------------------

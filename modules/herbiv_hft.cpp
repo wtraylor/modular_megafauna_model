@@ -15,11 +15,31 @@
 using namespace Fauna;
 
 Hft::Hft():
-	name(""), // not valid
-	is_included(false) 
+	name("hft"), 
+	is_included(false), 
 	// SIMULATION PARAMETERS:
 	// add more initializiations in alphabetical order
-{}
+	bodyfat_birth(0.1),
+	bodyfat_max(0.3),
+	bodymass_birth(5.0),
+	bodymass_male(60.0),
+	bodymass_female(50.0),
+	breeding_season_length(60),
+	breeding_season_start(120),
+	establishment_density(10.0),
+	digestion_type(DT_RUMINANT),
+	expenditure_model(EM_TAYLOR_1981),
+	lifespan(10),
+	maturity_age_phys_female(3),
+	maturity_age_phys_male(3),
+	maturity_age_sex(2),
+	mortality(0.05),
+	mortality_juvenile(0.3),
+	net_energy_model(NE_DEFAULT),
+	reproduction_max(0.7),
+	reproduction_model(RM_ILLIUS_2000) 
+{
+}
 
 bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 	bool is_valid = true;
@@ -35,6 +55,36 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 	//------------------------------------------------------------
 	if (params.herbivore_type == HT_COHORT || 
 			params.herbivore_type == HT_INDIVIDUAL ){
+
+		if (bodyfat_birth <= 0.0) {
+			stream << "bodyfat_birth must be >0.0 ("<<bodyfat_birth<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (bodyfat_birth > bodyfat_max) {
+			stream << "bodyfat_birth must not exceed bodyfat_max ("
+				<<bodyfat_birth<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (bodyfat_max <= 0.0 || bodyfat_max >= 1.0) {
+			stream << "bodyfat_max must be between 0.0 and 1.0"
+				<<bodyfat_max<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (bodymass_birth <= 0.0) {
+			stream << "bodymass_birth must be > 0.0 ("
+				<<bodyfat_birth<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (bodymass_birth >= bodymass_male || bodymass_birth >= bodymass_female) {
+			stream << "bodymass_birth must not be greater than either "
+				<<"bodymass_male or bodymass_female ("
+				<<bodyfat_birth<<")"<<std::endl;
+			is_valid = false;
+		}
 
 		if (bodymass_female < 1) {
 			stream << "bodymass_female must be >=1 ("<<bodymass_female<<")"<<std::endl;
@@ -52,38 +102,92 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-		if (lifespan < 1) {
-			stream << "lifespan must be >=1 ("<<lifespan<<")"<<std::endl;
+		if (foraging_limits.empty()) {
+			stream << "Warning: No foraging limits defined."<<std::endl;
+			// still valid (for testing purpose)
+		}
+
+		if (maturity_age_phys_female < 1) {
+			stream << "maturity_age_phys_female must be >=1"
+				<<" ("<<maturity_age_phys_female<<")"<<std::endl;
 			is_valid = false;
 		}
 
-		if (maturity < 1) {
-			stream << "maturity must be >=1 ("<<maturity<<")"<<std::endl;
+		if (maturity_age_phys_male < 1) {
+			stream << "maturity_age_phys_male must be >=1"
+				<<" ("<<maturity_age_phys_male<<")"<<std::endl;
 			is_valid = false;
 		}
 
-		if (lifespan <= maturity) {
-			stream << "lifespan ("<<lifespan<<") should be greater than "
-				<< "maturity ("<<maturity<<")"<<std::endl;
+		if (maturity_age_sex < 1) {
+			stream << "maturity_age_sex must be >=1"
+				<<" ("<<maturity_age_sex<<")"<<std::endl;
 			is_valid = false;
 		}
 
-		if (mortality < 0.0 || mortality >= 1.0) {
-			stream << "mortality must be between >=0.0 and <1.0 "
-				"("<<mortality<<")"<<std::endl;
-			is_valid = false;
+		if (mortality_factors.empty()) {
+			stream << "Warning: No mortality factors defined."<<std::endl;
+			// it is still valid (mainly for testing purposes)
 		}
 
-		if (mortality_juvenile < 0.0 || mortality_juvenile >= 1.0) {
-			stream << "mortality_juvenile must be between >=0.0 and <1.0 "
-				"("<<mortality_juvenile<<")"<<std::endl;
-			is_valid = false;
+		if (mortality_factors.count(MF_BACKGROUND)) {
+			if (mortality < 0.0 || mortality >= 1.0) {
+				stream << "mortality must be between >=0.0 and <1.0 "
+					"("<<mortality<<")"<<std::endl;
+				is_valid = false;
+			}
+
+			if (mortality_juvenile < 0.0 || mortality_juvenile >= 1.0) {
+				stream << "mortality_juvenile must be between >=0.0 and <1.0 "
+					"("<<mortality_juvenile<<")"<<std::endl;
+				is_valid = false;
+			}
 		}
 
-		if (reproduction_max <= 0.0) {
-			stream << "reproduction_max must be >0.0 ("
-				<<reproduction_max<<")"<<std::endl;
-			is_valid = false; 
+		if (mortality_factors.count(MF_LIFESPAN)) {
+			if (lifespan < 1) {
+				stream << "lifespan must be >=1 ("<<lifespan<<")"<<std::endl;
+				is_valid = false;
+			}
+
+			if (maturity_age_phys_female >= lifespan) {
+				stream << "maturity_age_phys_female must not exceed lifespan"
+					<<" ("<<maturity_age_phys_female<<")"<<std::endl;
+				is_valid = false;
+			}
+
+			if (maturity_age_phys_male >= lifespan) {
+				stream << "maturity_age_phys_male must not exceed lifespan"
+					<<" ("<<maturity_age_phys_male<<")"<<std::endl;
+				is_valid = false;
+			}
+
+			if (maturity_age_sex >= lifespan) {
+				stream << "maturity_age_sex must not exceed lifespan"
+					<<" ("<<maturity_age_sex<<")"<<std::endl;
+				is_valid = false;
+			}
+
+		}
+
+		if (reproduction_model == RM_ILLIUS_2000){
+			if (reproduction_max <= 0.0) {
+				stream << "reproduction_max must be >0.0 ("
+					<<reproduction_max<<")"<<std::endl;
+				is_valid = false; 
+			}
+			
+			if (breeding_season_length < 0 || breeding_season_length > 365) {
+				stream << "breeding_season_length must be in [0,365]"
+					<<" ("<<breeding_season_length<<")"<<std::endl;
+				is_valid = false; 
+			}
+			
+			if (breeding_season_start < 0 || breeding_season_start >= 365) {
+				stream << "breeding_season_start must be in [0,364]"
+					<<" ("<<breeding_season_start<<")"<<std::endl;
+				is_valid = false; 
+			}
 		}
 		// add more checks in alphabetical order
 	}

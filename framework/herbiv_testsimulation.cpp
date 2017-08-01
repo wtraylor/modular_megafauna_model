@@ -201,10 +201,10 @@ bool Framework::run(const Fauna::Parameters& global_params,
 		output_channel = new FileOutputChannel(
 				params.outputdirectory.c_str(),
 				COORDINATES_PRECISION);
-		// herbiv_out.set_hftlist(hftlist); TODO
+		herbiv_out.set_hftlist(&hftlist); 
 		herbiv_out.init();
 	} catch (const std::exception& e){
-		dprintf("Exception during output initialization:\n%s",
+		dprintf("Exception during output initialization:\n%s\n",
 				e.what());
 	}
 
@@ -237,10 +237,10 @@ bool Framework::run(const Fauna::Parameters& global_params,
 			try {
 				// At this point, any other Habitat object
 				// could be inserted too.
-				group.add(new SimpleHabitat(
+				group.add(std::auto_ptr<Habitat>(new SimpleHabitat(
 							habitat_simulator.create_populations(),
 							params.habitat
-							));
+							)));
 			} catch (const std::exception& e){
 				dprintf("Exception during habitat creation:\n"
 						"group number %d of %d\n"

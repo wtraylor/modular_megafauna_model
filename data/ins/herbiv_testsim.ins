@@ -14,7 +14,7 @@
 outputdirectory "./"
 
 import "herbiv_output.ins"
-import "herbivores.ins"
+import "/home/living/promotion/pleistocene_herbivores.ins"
 
 ifherbivory 1
 
@@ -41,7 +41,7 @@ grass_fpc 0.8
 
 ! Proportional daily grass growth rate. [0,∞)
 ! A value of 0.1 means an increase of 10% every day.
-grass_growth 0.01
+grass_growth 0.1
 
 ! Initial grass biomass [kgDM/m²]. [0,∞) and <grass_saturation
 grass_init_mass 0.0

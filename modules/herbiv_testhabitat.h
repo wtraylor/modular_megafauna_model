@@ -178,11 +178,9 @@ namespace FaunaSim {
 
 			/// Destructor, deleting all \ref Fauna::Habitat instances.
 			~HabitatGroup(){
-				iterator iter = begin();
-				while (iter != end()){
-					delete *iter;
-					vec.erase(iter);
-				}
+				for (iterator itr=begin(); itr!=end(); itr++)
+					delete *itr;
+				vec.clear();
 			}
 
 			/// Latitude as defined in the constructor.
@@ -195,13 +193,14 @@ namespace FaunaSim {
 			 * and released on its destruction.
 			 * \param new_habitat Pointer to a newly created object
 			 * \throw std::invalid_argument if `new_habitat==NULL`
-			 * \todo use std::auto_ptr for parameter, to make it safer
 			 */
-			void add(Habitat* new_habitat){
-				if (new_habitat == NULL)
+			void add(std::auto_ptr<Habitat> new_habitat){
+				if (new_habitat.get() == NULL)
 					throw std::invalid_argument("HabitatGroup::add(): "
 							"received NULL-Pointer as argument.");
-				vec.push_back(new_habitat);
+				Habitat* bare_pointer = new_habitat.get();
+				new_habitat.release(); // release ownership of auto_ptr
+				vec.push_back(bare_pointer);
 			}
 
 			/// Get list of readonly habitat references.
@@ -244,11 +243,9 @@ namespace FaunaSim {
 
 			/// Destructor
 			~HabitatGroupList(){
-				iterator iter = begin();
-				while (iter != end()){
-					delete *iter;
-					vec.erase(iter);
-				}
+				for (iterator itr=begin(); itr!=end(); itr++)
+					delete *itr;
+				vec.clear();
 			}
 
 			/// Add a new element

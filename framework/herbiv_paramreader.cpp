@@ -9,16 +9,34 @@
 #include "config.h"
 #include "herbiv_paramreader.h"
 #include "guess.h"      // for Pft
+#include "guessstring.h" // for trim() and to_upper()
 #include "parameters.h" // read instruction file
 #include "plib.h"       // read instruction file
 #include "shell.h"      // for dprintf()
 #include <algorithm>    // for std::transform
 #include <cfloat>       // for DBL_MAX, DBL_MIN
 #include <climits>      // for INT_MAX
-#include <sstream>       // for ostringstream
+#include <sstream>      // for ostringstream and istringstream
 
 
 using namespace Fauna;
+
+std::list<std::string> Fauna::parse_comma_separated_param(
+			const std::string& strparam){
+	std::list<std::string> result;
+
+	std::istringstream stream(strparam);
+	while (stream.good()){
+		std::string token; // one of the comma-separated items
+		std::getline(stream, token, ','); // read until comma
+		token = trim(token); // remove whitespaces
+		if (token == "")
+			continue; // skip empty tokens
+		result.push_back(token);
+	}
+	return result;
+}
+
 bool ParamReader::check_mandatory(const MandatoryParamList& list,
 		const std::string& prefix){
 	// Check all parameters marked as mandatory
@@ -58,8 +76,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 	// Turn the string parameter to upper case to make
 	// comparison case-insensitive.
-	std::transform(strparam.begin(), strparam.end(), 
-			strparam.begin(), ::toupper);
+	strparam = to_upper(strparam);
 
 	// add checkback codes in alphabetical order
 	
@@ -73,33 +90,59 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 			if (params.herbivore_type == HT_INDIVIDUAL ||
 					params.herbivore_type == HT_COHORT) {
+				// string message why parameter is required
+				const std::string req_str = "herbivore_type=(cohort|individual)";
 				mandatory_hft_params.push_back(MandatoryParam(
-							"bodymass_female",
-							"herbivore_type=(cohort|individual)"));
+							"bodyfat_birth", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
-							"bodymass_male",
-							"herbivore_type=(cohort|individual)"));
+							"bodyfat_max", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
-							"digestion_type",
-							"herbivore_type=(cohort|individual)"));
+							"bodymass_birth", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
-							"establishment_density",
-							"herbivore_type=(cohort|individual)"));
+							"bodymass_female", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
-							"lifespan",
-							"herbivore_type=(cohort|individual)"));
+							"bodymass_male", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
-							"maturity",
-							"herbivore_type=(cohort|individual)"));
+							"diet_composer", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
-							"mortality",
-							"herbivore_type=(cohort|individual)"));
+							"digestion_type", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
-							"mortality_juvenile",
-							"herbivore_type=(cohort|individual)"));
+							"establishment_density", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
-							"reproduction_max",
-							"herbivore_type=(cohort|individual)"));
+							"expenditure_model", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"net_energy_model", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"maturity_age_phys_female", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"maturity_age_phys_male", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"maturity_age_sex", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"reproduction_model", req_str));
+				if (current_hft.mortality_factors.count(MF_LIFESPAN))
+					mandatory_hft_params.push_back(MandatoryParam(
+								"lifespan", req_str +
+								" and lifespan in mortality_factors"));
+				if (current_hft.mortality_factors.count(MF_BACKGROUND)){
+					mandatory_hft_params.push_back(MandatoryParam(
+								"mortality", req_str +
+								" and \"background\" in mortality_factors"));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"mortality_juvenile", req_str +
+								" and \"background\" in mortality_factors"));
+				}
+				if (current_hft.reproduction_model == RM_ILLIUS_2000){
+					mandatory_hft_params.push_back(MandatoryParam(
+								"breeding_season_length", req_str +
+								" and reproduction_model=illius_2000"));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"breeding_season_start", req_str +
+								" and reproduction_model=illius_2000"));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"reproduction_max", req_str +
+								" and reproduction_model=illius_2000"));
+				}
 			}
 
 			if (!check_mandatory(mandatory_hft_params,
@@ -121,8 +164,6 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 			// Add mandatory parameters 
 			mandatory_global_params.push_back(MandatoryParam(
-						"dead_herbivore_threshold", ""));
-			mandatory_global_params.push_back(MandatoryParam(
 						"digestibility_model", ""));
 			mandatory_global_params.push_back(MandatoryParam(
 						"forage_distribution", ""));
@@ -130,6 +171,10 @@ void ParamReader::callback(const int callback, Pft* ppft){
 						"free_herbivory_years", ""));
 			mandatory_global_params.push_back(MandatoryParam(
 						"herbivore_type", ""));
+
+			if (params.herbivore_type == HT_COHORT) 
+				mandatory_global_params.push_back(MandatoryParam(
+							"dead_herbivore_threshold", ""));
 
 			// check the list
 			if (!check_mandatory(mandatory_global_params,
@@ -154,7 +199,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 	if (callback == CB_DIG_MODEL) {
 		if (strparam == "PFT_FIXED")
-			params.dig_model = DM_PFT_FIXED;
+			params.digestibility_model = DM_PFT_FIXED;
 		// add other digestibility models here
 		else {
 			sendmessage("Error",
@@ -163,6 +208,18 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			plibabort();
 		}
 	} 
+
+	if (callback == CB_DIET_COMPOSER) {
+		if (strparam == "PURE_GRAZER")
+			current_hft.diet_composer = DC_PURE_GRAZER;
+		else {
+			sendmessage("Error", std::string(
+					"Unknown value for parameter \"diet_composer\" "
+					"in HFT \""+current_hft.name+"\"; valid types: "
+					"\"pure_grazer\"").c_str());
+			plibabort();
+		} 
+	}
 
 	if (callback == CB_DIGESTION_TYPE) {
 		if (strparam == "RUMINANT")
@@ -178,6 +235,19 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		} 
 	}
 
+	if (callback == CB_EXPENDITURE_MODEL) {
+		if (strparam == "TAYLOR_1981")
+			current_hft.expenditure_model = EM_TAYLOR_1981;
+		// add other models here
+		else {
+			sendmessage("Error", std::string(
+					"Unknown expenditure model"
+					"in HFT \""+current_hft.name+"\"; valid types: "
+					"\"taylor_1981\"").c_str()); // add more here
+			plibabort();
+		}
+	} 
+
 	if (callback == CB_FORAGE_DISTRIBUTION) {
 		if (strparam == "EQUALLY")
 			params.forage_distribution = FD_EQUALLY;
@@ -190,12 +260,31 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		}
 	}
 
+	if (callback == CB_FORAGING_LIMITS) {
+		const std::list<std::string> token_list = 
+			parse_comma_separated_param(strparam);
+				
+		std::list<std::string>::const_iterator itr;
+		for (itr = token_list.begin(); itr != token_list.end(); itr++){
+			if (*itr == "DIGESTION_ILLIUS_1992") 
+				current_hft.foraging_limits.insert(FL_DIGESTION_ILLIUS_1992);
+			// add new foraging limits here
+			else {
+				sendmessage("Error", std::string(
+							"Unknown foraging limit: \""
+							+*itr+"\". "
+							"Valid types: "
+							"\"digestion_illius_1992\"").c_str());
+				plibabort();
+			} 
+		}
+	}
+
 	if (callback == CB_FORAGE_TYPE) {
-		// TODO use get_forage_type_name()
-		if (strparam == "INEDIBLE") 
-			ppft->herbiv_params.forage_type = Fauna::FT_INEDIBLE;
-		else if (strparam == "GRASS") 
-			ppft->herbiv_params.forage_type = Fauna::FT_GRASS;
+		if (strparam == to_upper(get_forage_type_name(FT_INEDIBLE)))
+			ppft->herbiv_params.forage_type = FT_INEDIBLE;
+		else if (strparam == to_upper(get_forage_type_name(FT_GRASS))) 
+			ppft->herbiv_params.forage_type = FT_GRASS;
 		else {
 			sendmessage("Error",
 					"Unknown forage type; valid types: "
@@ -217,6 +306,47 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		}
 	}
 
+	if (callback == CB_MORTALITY_FACTORS) {
+		const std::list<std::string> token_list = 
+			parse_comma_separated_param(strparam);
+				
+		std::list<std::string>::const_iterator itr;
+		for (itr = token_list.begin(); itr != token_list.end(); itr++){
+			if (*itr == "BACKGROUND") 
+				current_hft.mortality_factors.insert(MF_BACKGROUND);
+			else if (*itr == "LIFESPAN") 
+				current_hft.mortality_factors.insert(MF_LIFESPAN);
+			else if (*itr == "STARVATION_ILLIUS2000") 
+				current_hft.mortality_factors.insert(MF_STARVATION_ILLIUS2000);
+			else if (*itr == "STARVATION_THRESHOLD") 
+				current_hft.mortality_factors.insert(MF_STARVATION_THRESHOLD);
+			// add new mortality factors here
+			else {
+				sendmessage("Error", std::string(
+							"Unknown mortality factor: \""
+							+*itr+"\". "
+							"Valid types: "
+							"\"background\", "
+							"\"lifespan\", "
+							"\"starvation_illius2000\", "
+							"\"starvation_threshold\"").c_str());
+				plibabort();
+			} 
+		}
+	}
+
+	if (callback == CB_NET_ENERGY_MODEL) {
+		if (strparam == "DEFAULT")
+			current_hft.net_energy_model = NE_DEFAULT;
+		else {
+			sendmessage("Error", std::string(
+					"Unknown value for net_energy_model "
+					"in HFT \""+current_hft.name+"\"; valid types: "
+					"\"default\"").c_str());
+			plibabort();
+		}
+	}
+
 	if (callback == CB_PFT) {
 		if (ppft == NULL)
 			throw std::invalid_argument("Fauna::ParamReader::callback() "
@@ -229,7 +359,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 			// add parameters to the list
 			
-			if (params.dig_model == DM_PFT_FIXED) {
+			if (params.digestibility_model == DM_PFT_FIXED) {
 				mandatory_pft_params.push_back(MandatoryParam(
 							"digestibility",
 							"digestibility_model=PFT_FIXED"));
@@ -243,6 +373,17 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		}
 	}
 
+	if (callback == CB_REPRODUCTION_MODEL) {
+		if (strparam == "ILLIUS_2000")
+			current_hft.reproduction_model = RM_ILLIUS_2000;
+		else {
+			sendmessage("Error", std::string(
+					"Unknown value for reproduction_model "
+					"in HFT \""+current_hft.name+"\"; valid types: "
+					"\"illius_2000\"").c_str());
+			plibabort();
+		}
+	}
 }
 
 void ParamReader::declare_parameters(
@@ -264,7 +405,7 @@ void ParamReader::declare_parameters(
 				0.0, DBL_MAX, // min, max
 				1,          // number of parameters
 				CB_NONE,
-				"Minimum mass density [kg/km²] for a living herbivore object.");
+				"Minimum density [ind/km²] for a living herbivore cohort.");
 
 		declareitem("digestibility_model",
 				&strparam,
@@ -328,8 +469,30 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Include HFT in simulation.");
 
-		// ------------------------
+		// ------------------------ 
+		// alphabetical order now
 		
+		declareitem("bodyfat_birth",
+				&current_hft.bodyfat_max,
+				DBL_MIN, DBL_MAX, // min, max
+				1,                // number of parameters
+				CB_NONE,
+				"Body mass [kg] at birth for both sexes.");
+
+		declareitem("bodyfat_max",
+				&current_hft.bodyfat_max,
+				DBL_MIN, DBL_MAX, // min, max
+				1,                // number of parameters
+				CB_NONE,
+				"Maximum proportional fat mass [kg/kg].");
+
+		declareitem("bodymass_birth",
+				&current_hft.bodymass_birth,
+				1, INT_MAX, // min, max
+				1,          // number of parameters
+				CB_NONE,
+				"Body mass [kg] at birth for both sexes.");
+
 		declareitem("bodymass_female",
 				&current_hft.bodymass_female,
 				1, INT_MAX, // min, max
@@ -344,6 +507,26 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Body mass [kg] of an adult male individual.");
 
+		declareitem("breeding_season_length",
+				&current_hft.breeding_season_length,
+				0, 365, // min, max
+				1,      // number of parameters
+				CB_NONE,
+				"Length of breeding season in days.");
+
+		declareitem("breeding_season_start",
+				&current_hft.breeding_season_start,
+				0, 364, // min, max
+				1,      // number of parameters
+				CB_NONE,
+				"First day of breeding season (0=Jan 1st).");
+
+		declareitem("diet_composer",
+				&strparam,
+				64,
+				CB_DIET_COMPOSER,
+				"Herbivore diet: \"pure_grazer\"");
+
 		declareitem("digestion_type",
 				&strparam,
 				64,
@@ -355,7 +538,24 @@ void ParamReader::declare_parameters(
 				DBL_MIN, DBL_MAX, // min, max
 				1,                // number of parameters
 				CB_NONE,
-				"Habitat population mass density for initial establishment [kg/km²].");
+				"Habitat population density for initial establishment [ind/km²].");
+
+		declareitem("expenditure_model",
+				&strparam,
+				128, // max length of string
+				CB_EXPENDITURE_MODEL,
+				"Energy expenditure model for herbivores."
+				"Possible values: "
+				"\"taylor_1981\", "
+				"\"\""); // TODO
+
+		declareitem("foraging_limits",
+				&strparam,
+				256, // max length of string
+				CB_FORAGING_LIMITS,
+				"Comma-separated list of constraints of herbivore forage intake. "
+				"Possible values: "
+				"\"digestion_illius_1992\"");
 
 		declareitem("lifespan",
 				&current_hft.lifespan,
@@ -364,12 +564,26 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Maximum age in years [1–∞).");
 
-		declareitem("maturity",
-				&current_hft.maturity,
+		declareitem("maturity_age_phys_female",
+				&current_hft.maturity_age_phys_female,
 				1, INT_MAX, // min, max
 				1,          // number of parameters
 				CB_NONE,
-				"Age of physical and sexual (female) maturity in years.");
+				"Age of physical maturity [years] of females.");
+
+		declareitem("maturity_age_phys_male",
+				&current_hft.maturity_age_phys_male,
+				1, INT_MAX, // min, max
+				1,          // number of parameters
+				CB_NONE,
+				"Age of physical maturity [years] of males.");
+
+		declareitem("maturity_age_sex",
+				&current_hft.maturity_age_sex,
+				1, INT_MAX, // min, max
+				1,          // number of parameters
+				CB_NONE,
+				"Age of female sexual maturity in years.");
 
 		declareitem("mortality",
 				&current_hft.mortality,
@@ -378,12 +592,31 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Annual mortality rate [0.0–1.0) after first year of life.");
 
+		declareitem("mortality_factors",
+				&strparam,
+				256, // max length of string
+				CB_MORTALITY_FACTORS,
+				"Comma-separated list of death causes for herbivores. "
+				"Possible values: "
+				"\"background\", "
+				"\"lifespan\", "
+				"\"starvation_threshold\", "
+				"\"starvation_illius2000\" (only for cohorts)");  
+
 		declareitem("mortality_juvenile",
 				&current_hft.mortality_juvenile,
 				0.0, 1.0-DBL_MIN, // min, max
 				1,                // number of parameters
 				CB_NONE,
 				"Annual mortality rate [0.0–1.0) in the first year of life.");
+
+		declareitem("net_energy_model",
+				&strparam,
+				128, // max length of string
+				CB_NET_ENERGY_MODEL,
+				"Model to calculate net energy content of herbivore forage. "
+				"Possible values: "
+				"\"defualt\"");
 
 		declareitem("reproduction_max",
 				&current_hft.reproduction_max,
@@ -392,6 +625,13 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Average number of offspring per year produced by one "
 				"female individual under optimal nutritional conditions.");
+
+		declareitem("reproduction_model",
+				&strparam,
+				256, // max length of string
+				CB_REPRODUCTION_MODEL,
+				"Reproduction model for the HFT."
+				"Possible values: \"illius_2000\"");  
 
 		// let plib call function plib_callback() with given code
 		callwhendone(CB_CHECKHFT);

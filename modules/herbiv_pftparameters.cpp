@@ -9,7 +9,8 @@
 #include "config.h"
 #include "guess.h"
 #include "herbiv_pftparameters.h"
-#include <sstream> // for is_valid() messages
+#include "herbiv_parameters.h" // for Parameters
+#include <sstream>             // for is_valid() messages
 
 using namespace Fauna;
 //
@@ -29,6 +30,19 @@ bool PftParams::is_valid(const Parameters& params,
 		stream << "forage_type=\"grass\", but lifeform!=\"grass\""
 			<< std::endl;
 		is_valid = false;
+	}
+
+	if (params.digestibility_model == DM_PFT_FIXED &&
+			forage_type != FT_INEDIBLE) {
+		if (digestibility <= 0.0){
+			stream << "digestibility <= 0.0" << std::endl;
+			is_valid = false;
+		}
+		if (digestibility > 1.0){
+			stream << "digestibility > 1.0" << std::endl;
+			is_valid = false;
+		}
+
 	}
 
 	// convert stream to string

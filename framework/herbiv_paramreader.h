@@ -16,7 +16,16 @@
 namespace Fauna {
 	// forward declarations
 	class Hft;
-	
+
+	/// Helper function to extract comma-separated substrings.
+	/**
+	 * \param strparam String of comma-separated substrings.
+	 * \return List of substrings, leading and trailing whitespaces
+	 * removed.
+	 */
+	std::list<std::string> parse_comma_separated_param(
+			const std::string& strparam);
+
 	/// Reads \ref Parameters from the instruction file using plib library.
 	/**
 	 * Implemented as \ref sec_singleton.
