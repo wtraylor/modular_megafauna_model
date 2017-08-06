@@ -1,0 +1,363 @@
+/' PlantUML diagrams for the herbivory module.
+ ' author: Wolfgang Pappa, Senckenberg BiK-F
+ ' date: August 2017
+ ' 
+ ' PlantUML is free software under the GPL license.
+ ' See http://plantuml.com 
+ '/
+
+@startuml (id=basic_components)
+	[Herbivory Module] as herbivory
+	() "Fauna::ParamReader" as paramreader
+	() "Fauna::PatchHabitat" as patchhabitat
+	() "GuessOutput::HerbivoryOutput" as herbivoutput
+	node "Herbivory Output Files" as outputfiles
+	[LPJ-GUESS] as guess
+	node "Instruction Files" as insfiles
+	guess        <..  patchhabitat
+	patchhabitat  --  herbivory
+	herbivory     --  herbivoutput 
+	herbivoutput  ..> outputfiles : write
+	herbivory     --  paramreader 
+	paramreader   ..> insfiles  : read
+@enduml
+
+@startuml (id=exception_classes)
+	namespace std{
+		hide members
+		hide methods
+		exception <|-- logic_error
+		exception <|-- runtime_error
+		logic_error <|-- invalid_argument
+		logic_error <|-- out_of_range 
+	}
+@enduml
+
+@startuml (id=herbivore_classes)
+	hide members
+	hide methods
+	interface HerbivoreInterface
+	interface PopulationInterface
+	class HerbivoreBase
+	HerbivoreInterface  <|-- HerbivoreBase
+	HerbivoreBase       <|-- HerbivoreIndividual
+	HerbivoreBase       <|-- HerbivoreCohort
+	PopulationInterface <|-up- IndividualPopulation
+	PopulationInterface <|-up- CohortPopulation
+	HerbivoreIndividual "*" <--* "1" IndividualPopulation
+	HerbivoreCohort     "*" <--* "1" CohortPopulation
+	HerbivoreIndividual  <..  IndividualPopulation : <<create>>
+	(HerbivoreIndividual, IndividualPopulation) .. CreateHerbivoreIndividual
+	HerbivoreCohort      <..  CohortPopulation     : <<create>>
+	(HerbivoreCohort, CohortPopulation) .. CreateHerbivoreCohort
+@enduml
+
+@startuml (id=herbivorebase_compartments)
+	hide members
+	hide methods
+	namespace Fauna{
+	class HerbivoreBase{
+		-Hft hft
+		-int age_days
+	}
+	show HerbivoreBase members
+	class FatmassEnergyBudget{
+		|catabolize_fat()
+		|metabolize_energy()
+		-double energy_needs
+		-double fatmass
+		-double max_fatmass
+	}
+	show FatmassEnergyBudget members
+	show FatmassEnergyBudget methods
+	HerbivoreBase *-up-> "1" FatmassEnergyBudget
+	package "Forage Energy" <<rectangle>> {
+		interface GetNetEnergyContentInterface <<strategy>>
+		GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
+	}
+	HerbivoreBase *-up-> "1" "Forage Energy"
+	package "Reproduction" <<rectangle>> {
+		class ReproductionIllius2000
+	}
+	HerbivoreBase .up.> "1" "Reproduction"
+	package "Diet" <<rectangle>> {
+		interface ComposeDietInterface <<strategy>>
+		ComposeDietInterface <|-- PureGrazerDiet
+	}
+	HerbivoreBase  .up.> "1" "Diet"
+	package "Energy Expenditure" <<rectangle>>  {
+		annotation "get_expenditure_taylor_1981()"
+	}
+	HerbivoreBase  ..> "1" "Energy Expenditure"
+	package "Foraging Limits" <<rectangle>>  {
+		class GetDigestiveLimitIllius1992 <<functor>>
+		class GetHalfMaxForagingLimit     <<functor>>
+	} 
+	HerbivoreBase  ..> "*" "Foraging Limits"
+	package "Mortality" <<rectangle>> {
+		class GetBackgroundMortality           <<functor>>
+		class GetStarvationMortalityIllius2000 <<functor>>
+		class GetStarvationMortalityThreshold  <<functor>>
+		class GetSimpleLifespanMortality       <<functor>>
+	}
+	HerbivoreBase ..> "*" "Mortality"
+	}
+@enduml
+
+@startuml (id=important_classes)
+	hide members
+	hide methods
+
+	annotation "framework()" as framework
+	Gridcell "1" *--> "*" Stand
+	Stand    "1" *--> "*" Patch
+	Patch    "1" *--> "*" Individual
+	class Individual{
+		Pft* pft
+	}
+	show Individual members
+
+	namespace Fauna{
+		Simulator          ..> Habitat            : <<call>>
+		.framework          ..> Simulator          : <<create>>
+		PatchHabitat      <-right-* .Patch
+		PatchHabitat       ..> .Patch              : plant–animal interactions
+		Habitat           *..> HerbivoreInterface : contains>
+		interface HerbivoreInterface {
+			Hft* hft
+		}
+		show HerbivoreInterface members
+		abstract Habitat
+		Habitat            <|-left- PatchHabitat
+	}
+@enduml
+
+@startuml (id=outputmodule_class)
+	hide members 
+	annotation "Output Directory" as outputdirectory 
+	namespace GuessOutput{
+		HerbivoryOutput     --> OutputChannel : <<use>> >
+		abstract OutputModule
+		OutputModule      <|--  HerbivoryOutput
+		OutputChannel     <|--  FileOutputChannel
+		FileOutputChannel   --> .outputdirectory : write >
+		enum interval {
+			DAILY
+			MONTHLY
+			ANNUAL
+			DECADAL
+		}
+		show interval members
+		HerbivoryOutput *-- interval
+		note on link : nested
+	}
+@enduml
+
+@startuml (id=outputmodule_initialization)
+	skinparam sequenceParticipant underline
+	participant "framework()" as framework
+	participant ":OutputModuleModuleRegistry" as OutputModuleModuleRegistry
+	participant ":OutputModuleContainer" as OutputModuleContainer
+	participant ":HerbivoryOutput" as HerbivoryOutput <<Singleton>>
+	participant ":FileOutputChannel" as FileOutputChannel
+	activate OutputModuleModuleRegistry
+	[--> OutputModuleModuleRegistry : register_output_module("herbivory")
+	[--> framework : start guess
+	== initialization ==
+	framework --> OutputModuleContainer : create
+	activate OutputModuleContainer
+	framework --> OutputModuleModuleRegistry : create_all_modules()
+	OutputModuleModuleRegistry --> HerbivoryOutput : create
+	activate HerbivoryOutput
+	note over HerbivoryOutput : declare parameters
+	note over framework : read parameters
+	framework --> OutputModuleContainer : init()
+	OutputModuleContainer      --> FileOutputChannel : create
+	activate FileOutputChannel
+	OutputModuleContainer --> HerbivoryOutput : init()
+	framework --> HerbivoryOutput : set_include_date()
+	== simulation ==
+	loop "simulation days"
+		framework --> OutputModuleContainer : outdaily(gridcell)
+		OutputModuleContainer --> HerbivoryOutput : outdaily(gridcell)
+		loop "table column"
+			HerbivoryOutput --> FileOutputChannel : add_value()
+		end loop
+	end loop
+@enduml
+
+@startuml (id=patchhabitat_construction)
+	participant "framework()" as framework
+	framework    -> "Fauna::Simulator" : <<create>>
+	activate "Fauna::Simulator"
+	framework    -> Gridcell : <<create>>
+	activate Gridcell
+	Gridcell     -> Patch : <<create>>
+	activate Patch
+	framework    -> "Fauna::Simulator" : create_populations()
+	framework  <--  "Fauna::Simulator" : populations
+	framework    -> "Fauna::Simulator" : create_digestibility_model()
+	framework  <--  "Fauna::Simulator" : digestibility_model
+	framework    -> "Fauna::PatchHabitat" : <<create>> (populations, digestibility_model)
+	note right : constructor injection
+	activate "Fauna::PatchHabitat"
+	framework    -> Patch : set_habitat()
+	note right : setter injection
+@enduml
+
+@startuml (id=parameters_access)
+	hide members
+	hide methods
+	namespace Fauna{
+		CreateHerbivoreIndividual ..> Parameters
+		CreateHerbivoreIndividual ..> Hft
+		CreateHerbivoreCohort     ..> Parameters
+		CreateHerbivoreCohort     ..> Hft
+		Simulator                 ..> Parameters
+		Simulator                 ..> Hft
+		PatchHabitat              ..> PftParams
+		CohortPopulation          .up.> Hft
+		IndividualPopulation      .up.> Hft
+		HerbivoreBase             .up.> Hft
+	}
+	namespace FaunaSim{
+		Framework                 ..> Fauna.Parameters
+		Framework                 ..> Fauna.Hft
+	} 
+@enduml
+
+@startuml (id=parameters_classes)
+	hide members
+	hide methods
+	annotation "framework()"       as framework
+	annotation "Instruction Files" as insfiles
+	annotation "plib.h"            as plib
+	annotation "parameters.h"      as parameters
+	class "FaunaSim.Framework" <<singleton>>
+	class "Fauna.ParamReader"   <<singleton>>
+	Pft                "1" *-- "1" Fauna.PftParams
+	framework           ..> Fauna.ParamReader : <<use>>
+	parameters          ..> Pft               : <<use>>
+	GuessOutput.HerbivoryOutput     ..> parameters        : <<use>>
+	parameters          ..> plib              : <<use>>
+	plib                ..> insfiles          : <<read>>
+	framework           ..> parameters        : <<use>>
+	namespace Fauna {
+		ParamReader  <..> .parameters : <<call>>
+		ParamReader   ..> .plib       : <<call>>
+		ParamReader   ..> Hft         : <<create>>
+		ParamReader   ..> PftParams   : <<call>>
+		ParamReader   ..> Parameters  : <<create>>
+		class Hft {
+			|is_valid()
+		}
+		show Hft methods
+		class Parameters {
+			|is_valid()
+		}
+		show Parameters methods
+		class PftParams {
+			|is_valid()
+		}
+		show PftParams methods
+	}
+	FaunaSim.Framework ..> Fauna.ParamReader : <<use>>
+@enduml
+
+@startuml (id=patchhabitat)
+	hide members
+	hide methods
+	Patch "1"                 <--> "1" Fauna.PatchHabitat
+	abstract Fauna.Habitat
+	Fauna.Habitat         <|-- Fauna.PatchHabitat
+	interface "Fauna.GetDigestibility"
+	Fauna.GetDigestibility <-- Fauna.PatchHabitat
+	Fauna.HftPopulationsMap --* Fauna.Habitat
+	interface Fauna.PopulationInterface
+	Fauna.HftPopulationsMap *-- "*" Fauna.PopulationInterface
+@enduml
+
+@startuml (id=population_classes)
+	hide members
+	hide methods
+	namespace Fauna{
+		interface PopulationInterface
+		PopulationInterface <|-- IndividualPopulation
+		PopulationInterface <|-- CohortPopulation
+		IndividualPopulation *-- "*" HerbivoreIndividual
+		CohortPopulation     *-- "*" HerbivoreCohort
+		abstract Habitat
+		Habitat *-- "*" PopulationInterface
+		(Habitat, PopulationInterface) .. HftPopulationsMap
+	}
+@enduml
+
+@startuml (id=testsim_classes)
+	hide members
+	hide methods 
+	annotation "parameters.h" as parameters 
+	namespace FaunaSim {
+		class "Framework" <<singleton>>
+		class HabitatGroup
+		class SimpleHabitat
+		HabitatGroup "1" *-- "*" SimpleHabitat
+	}
+	namespace Fauna {
+		class "ParamReader"   <<singleton>>
+		interface Habitat 
+		Simulator     ..> Habitat                        : <<call>>
+	}
+	FaunaSim.SimpleHabitat --|> Fauna.Habitat
+	FaunaSim.Framework ..> Fauna.ParamReader              : <<use>>
+	FaunaSim.Framework ..> .parameters                    : <<use>>
+	FaunaSim.Framework ..> Fauna.Simulator                : <<create>>
+	FaunaSim.Framework *-> "1" .GuessOutput.HerbivoryOutput   
+	FaunaSim.Framework ..> .GuessOutput.FileOutputChannel : <<create>>
+	FaunaSim.Framework ..> "*" FaunaSim.HabitatGroup      : <<create>>
+	annotation "main()" as main
+	main ..> FaunaSim.Framework : <<call>>
+@enduml
+
+@startuml (id=testsim_sequence)
+	participant "main()" as main
+	participant "plib.h" as plib
+	participant "FaunaSim::Framework" as Framework <<singleton>>
+	participant "Fauna::ParamReader" as ParamReader <<singleton>>
+	participant "Fauna::Simulator" as Simulator
+	participant "GuessOutput::HerbivoryOutput" as HerbivoryOutput <<singleton>>
+	== initialization ==
+	main -> Framework : <<create>>
+	activate Framework
+	activate HerbivoryOutput
+	Framework -> plib : declare parameters
+	main -> plib : read instruction file
+	plib -> ParamReader : call indirectly
+	activate ParamReader
+	plib -> Framework : plib_callback()
+	main <-- ParamReader : Fauna::Parameters
+	main <-- ParamReader : Fauna::HftList
+	main -> Framework : run()
+	Framework -> HerbivoryOutput : set_hftlist()
+	Framework -> HerbivoryOutput : init()
+	Framework -> Simulator : <<create>>
+	activate Simulator
+	note over Framework : create habitats
+	== simulation ==
+	loop YEARS: nyears
+		loop DAYS: 365
+			loop HABITAT GROUPS: nhabitat_groups
+				loop HABITATS: nhabitats_per_group
+					Framework -> Simulator : simulate_day()
+				end
+			end
+		end
+		loop HABITAT GROUPS: nhabitat_groups
+			Framework -> HerbivoryOutput : outannual()
+		end
+	end
+	== end of simulation ==
+	deactivate Simulator
+	Framework --> main
+	deactivate HerbivoryOutput
+	deactivate Framework
+@enduml

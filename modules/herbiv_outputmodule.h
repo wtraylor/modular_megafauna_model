@@ -1,27 +1,25 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 /// \file 
-/// \brief Output module for the herbivory module.
+/// \brief Output module for herbivory.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017
 ///////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef HERBIV_OUTPUT_MODULE_H
-#define HERBIV_OUTPUT_MODULE_H
+#ifndef HERBIV_OUTPUTMODULE_H
+#define HERBIV_OUTPUTMODULE_H
 
 #include "outputmodule.h"
 #include "gutil.h"           // for xtring
-#include "herbiv_foraging.h" // for Fauna::ForageType
 #include <cassert>
 #include <memory>            // for std::auto_ptr
 #include <stdexcept>         // for std::invalid_argument
 
 // forward declarations of referenced classes
 class Date;
-namespace Fauna { 
+namespace Fauna{
 	class Habitat;
-	class HabitatOutputData;
-	class HftList; //TODO
+	class HftList;
 }
 
 namespace GuessOutput {
@@ -76,51 +74,60 @@ namespace GuessOutput {
 			/// Returns the one global instance of this class
 			/**
 			 * \throw std::logic_error If no global instance has been
-			 * created yet.
+			 * created yet (because it gets created by 
+			 * \ref OutputModuleRegistry).
 			 */
 			static HerbivoryOutput& get_instance(); 
 
-			/// Initialize, defines output tables.
-			void init();
+			/// Parse string parameters.
+			/** \note Tables are created on first output call. */
+			virtual void init();
 
-			/// Write output of one year for a gridcell.
-			/** \see \ref OutputModule::outannual() 
-			 * \see \ref outannual() */
-			void outannual(Gridcell& gridcell);
+			/// Inherited function that is not used.
+			virtual void outannual(Gridcell& gridcell){}
 
 			/// Write output of one year for a number of habitats.
 			/** 
 			 * Depending on \ref interval, for each day, each month,
-			 * or the one year one output row is written.
+			 * etc., one row if data is added to the output tables.
 			 * \note This function is independent of any global LPJ-GUESS
 			 * variables (except for \ref Date::ndaymonth).
 			 * \param longitude Value for the longitude column.
 			 * \param latitude  Value for the latitude column.
+			 * \param day Day of the year (0=Jan 1st).
 			 * \param year Simulation year (starting with 0).
-			 * \param habitats A vector of pointers to habitats whose
-			 * output will be merged.
+			 * \param habitats The group of habitats whose output is
+			 * merged to one data point.
+			 * \throw std::invalid_argument If not `day` in [0,364] or
+			 * `year<0`
 			 */
-			void outannual( const double longitude, const double latitude,
-					const int year,
-					const std::vector<const Fauna::Habitat*> habitats) const;
+			void outdaily(const double longitude, const double latitude,
+					const int day, const int year,
+					const std::vector<Fauna::Habitat*>& habitats);
 
-			/// Write daily output for gridcell (not used).
-			/** Also daily output is done in \ref outannual().
-			 * \see \ref OutputModule::outdaily() */
-			void outdaily(Gridcell& gridcell){}
+			/// Write output for a \ref Gridcell.
+			/** This will write daily, monthly, etc. according to
+			 * interval. 
+			 * All \ref Fauna::Habitat objects are read into a pointer 
+			 * list and past to the other outdaily function.
+			 */
+			virtual void outdaily(Gridcell& gridcell);
 
 			/// Disable any activity all together.
 			void deactivate(){ isactive = false; }
 
-			// TODO
-			/// Set the list of HFTs for the output tables
-			void set_hftlist(const Fauna::HftList * _hftlist){hftlist = _hftlist;}
+			/// Set the list of HFTs for creating tables.
+			/**
+			 * \throw std::invalid_argument If pointer is NULL•
+			 */
+			void set_hftlist(const Fauna::HftList*);
 
 			/// Set the strategy object that limits the output.
 			/** \throw std::invalid_argument if `ptr==NULL`*/
 			void set_include_date(std::auto_ptr<IncludeDate> ptr){ 
 				if (ptr.get()==NULL)
-					throw std::invalid_argument("GuessOutput::HerbivoryOutput::set_include_date() "
+					throw std::invalid_argument(
+							"GuessOutput::HerbivoryOutput::set_include_date() "
 							"Received NULL as parameter");
 				include_date = ptr; 
 			}
@@ -131,35 +138,15 @@ namespace GuessOutput {
 				DAILY,
 				/// Monthly output
 				MONTHLY,
-				/// Annual output
-				ANNUAL
+				/// Output every year
+				ANNUAL,
+				/// Output every 10 years 
+				//TODO
+				DECADAL
 			};
-
-			/// Create a column descriptor for each forage type.
-			const ColumnDescriptors get_forage_columns() const;
-
-			// TODO
-			/// Create a column descriptor for each \ref Fauna::Hft
-			/** \throw std::logic_error if \ref hftlist not defined. */
-			const ColumnDescriptors get_hft_columns() const;
-
-			/// Add one line to each output table
-			/**
-			 * \param out The Outputrows object manages the next row of output for 
-			 * each output table. Create a new one for each function call with
-			 * the right lon/lat and time info.
-			 * \param data The aggregated output data for the whole gridcell.
-			 */
-			void add_output_object(OutputRows out, const Fauna::HabitatOutputData& data) const;
 
 			/// Width of one column in the output table.
 			static const int column_width = 8;
-
-			/// List of herbivore functional types.
-			const Fauna::HftList& get_hftlist()const{
-				assert (hftlist != NULL);
-				return *hftlist;
-			}
 
 			/// Temporal aggregation interval
 			Interval get_interval()const{return interval;}
@@ -170,7 +157,6 @@ namespace GuessOutput {
 			/// The object limiting output. This is never NULL.
 			std::auto_ptr<IncludeDate> include_date;
 		private: 
-			Fauna::HftList const* hftlist; // TODO
 			static HerbivoryOutput* global_instance;
 
 			Interval interval;
@@ -179,31 +165,15 @@ namespace GuessOutput {
 
 			bool isactive;
 			int precision; 
-
-			/// Defines all output tables and their formats.
-			/** This function specifies all columns in all output tables, their names,
-			 *  column widths and precision.
-			 *
-			 *  For each table a TableDescriptor object is created which is then sent to
-			 *  the output channel to create the table.
-			 */
-			void define_output_tables();
-
-			/**@{ \name Output file names */
-			/// forage output files.
-			std::string file_forage_avail, file_forage_eaten, 
-				file_digestibility;
-			/// Herbivore output files.
-			std::string file_hft_dens_ind, file_hft_dens_mass;
-			/**@} */ //Output file names
-
-			/**@{ \name Output tables */
-			/// forage output tables.
-			Table out_forage_avail, out_forage_eaten, out_digestibility;
-			/// Herbivore output tables.
-			Table out_hft_dens_ind, out_hft_dens_mass;
-			/**@} */ // Output tables
 	};
+
+	/// Helper function to see if a day is the first of a month.
+	/**
+	 * \param day Day of year (0=Jan 1st).
+	 * \return True if `day` (0–364) is first day of a month.
+	 * \throw std::invalid_argument If `day` not in [0,364].
+	 */
+	bool is_first_day_of_month(int day);
 }
 
-#endif // HERBIV_OUTPUT_MODULE_H
+#endif // HERBIV_OUTPUTMODULE_H

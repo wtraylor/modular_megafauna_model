@@ -11,8 +11,6 @@
 #include <memory>                 // for std::auto_ptr
 #include "herbiv_forageclasses.h" // for ForageMass
 
-// TODO: Structural mass
-
 namespace Fauna{
 
 	// Forward declaration of classes in the same namespace
@@ -70,7 +68,7 @@ namespace Fauna{
 		virtual double get_ind_per_km2()const = 0;
 
 		/// Get herbivore biomass density [kg/km²]
-		virtual double get_kg_per_km2() const = 0; // TODO rename kg_per_km2
+		virtual double get_kg_per_km2() const = 0; 
 
 		/// Simulate daily events.
 		/** 

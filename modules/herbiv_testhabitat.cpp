@@ -111,9 +111,9 @@ void LogisticGrass::grow_daily(const int day_of_year){
 // SimpleHabitat
 //============================================================
 
-void SimpleHabitat::init_todays_output(const int today){
+void SimpleHabitat::init_day(const int today){
 	// Call parent function
-	Habitat::init_todays_output(today);
+	Habitat::init_day(today);
 	grow_daily(today);
 }
 

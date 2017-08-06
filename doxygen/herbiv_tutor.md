@@ -141,10 +141,7 @@ Forage Tutorials {#sec_herbiv_tutor_forage}
 - Adjust \ref Fauna::PatchHabitat::get_available_forage() and \ref Fauna::PatchHabitat::remove_eaten_forage().
 
 - Output:
-	+ Add a new column descriptor in \ref GuessOutput::HerbivoryOutput::get_forage_columns().
-	+ Add output file names and tables as member variables in \ref GuessOutput::HerbivoryOutput.
-	+ Declare output file parameters in \ref GuessOutput::HerbivoryOutput::HerbivoryOutput().
-	+ Define output tables in \ref GuessOutput::HerbivoryOutput::define_output_tables().
+<!-- TODO-->
 
 - Perhaps adjust the digestibility in your chosen \ref Fauna::GetDigestibility implementation.
 
@@ -301,20 +298,7 @@ Output Tutorials {#sec_herbiv_output_tutor}
 -------------------------------------------
 
 ### How to add a new output variable {#sec_herbiv_new_output}
-
-
-- Add a new variable in \ref Fauna::HabitatOutputData, either as an accumulated or
-averaged value.
-	+ Initialize it for each day in \ref Fauna::Habitat::init_todays_output().
-	+ Fill it with data somehow.
-	+ Add it in the merge function: \ref Fauna::HabitatOutputData::merge().
-- In class \ref GuessOutput::HerbivoryOutput :
-	+ Add new member variables for a file name and a \ref GuessOutput::Table object.
-	+ Call \ref declare_parameter() in \ref GuessOutput::HerbivoryOutput::HerbivoryOutput()
-	for your new output file.
-	+ Create the \ref GuessOutput::Table object in \ref GuessOutput::HerbivoryOutput::define_output_tables().
-	+ Write the data of one row in \ref GuessOutput::HerbivoryOutput::add_output_object().
-- Add the file name in your instruction script.
+<!-- TODO -->
 
 ### How to limit output to a specific time period {#sec_herbiv_limit_output}
 

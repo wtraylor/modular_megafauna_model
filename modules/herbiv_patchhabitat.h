@@ -26,16 +26,7 @@ namespace Fauna {
 	 * instantiating and releasing.
 	 *
 	 * @startuml "Dependencies of Fauna::PatchHabitat" 
-	 * hide members
-	 * hide methods
-	 * Patch "1"                 <--> "1" Fauna.PatchHabitat
-	 * abstract Fauna.Habitat
-	 * Fauna.Habitat         <|-- Fauna.PatchHabitat
-	 * interface "Fauna.GetDigestibility"
-	 * Fauna.GetDigestibility <-- Fauna.PatchHabitat
-	 * Fauna.HftPopulationsMap --* Fauna.Habitat
-	 * interface Fauna.PopulationInterface
-	 * Fauna.HftPopulationsMap *-- "*" Fauna.PopulationInterface
+	 * !include herbiv_diagrams!patchhabitat
 	 * @enduml
 	 * \note There are no unit tests for this class because the
 	 * class \ref Patch cannot reasonably be instantiated in a

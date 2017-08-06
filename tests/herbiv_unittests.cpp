@@ -15,6 +15,7 @@
 #include "herbiv_herbivore.h"
 #include "herbiv_hft.h"
 #include "herbiv_mortality.h"
+#include "herbiv_outputclasses.h"
 #include "herbiv_parameters.h"
 #include "herbiv_paramreader.h"
 #include "herbiv_reproduction.h"
@@ -22,6 +23,7 @@
 #include <memory> // for std::auto_ptr
 
 using namespace Fauna;
+using namespace FaunaOut;
 using namespace FaunaSim;
 
 namespace {
@@ -181,6 +183,7 @@ namespace {
 		HerbivoreVector modifiable = pop.get_list();
 		return modifiable.size() == readonly.size();
 	}
+
 } // anonymous namespace 
 
 
@@ -757,37 +760,6 @@ TEST_CASE("Fauna::HabitatForage", "") {
 					/ (hf1.grass.get_fpc() + hf2.grass.get_fpc()) );
 		}
 	}
-}
-
-TEST_CASE("Fauna::HabitatOutputData","") {
-	HabitatOutputData h1,h2,h3;
-
-	const std::vector<HabitatOutputData> empty_vec;
-	CHECK_THROWS(HabitatOutputData::merge(empty_vec));
-
-	SECTION("Merge only valid objects") {
-		h1.is_valid = h2.is_valid = h3.is_valid = true;
-		std::vector<HabitatOutputData> vec;
-		vec.push_back(h1);
-		vec.push_back(h2);
-		vec.push_back(h3);
-
-		CHECK( HabitatOutputData::merge(vec).is_valid == true );
-		CHECK_THROWS( HabitatOutputData::merge(vec, -1));
-		CHECK_THROWS( HabitatOutputData::merge(vec, 0, 20));
-	}
-
-	SECTION("Merge valid objects with an invalid object") {
-		h1.is_valid = h2.is_valid = true;
-		h3.is_valid = false;
-		std::vector<HabitatOutputData> vec;
-		vec.push_back(h1);
-		vec.push_back(h2);
-		vec.push_back(h3);
-		
-		CHECK( HabitatOutputData::merge(vec).is_valid == false );
-	}
-
 }
 
 TEST_CASE("Fauna::HerbivoreBase", "") {
@@ -1585,34 +1557,6 @@ TEST_CASE("FaunaSim::SimpleHabitat", "") {
 			== Approx(settings.grass.init_mass) );
 		CHECK( habitat.get_available_forage().grass.get_digestibility()
 			== Approx(settings.grass.digestibility) );
-
-		// output should be invalid
-		CHECK( !habitat.get_annual_output().is_valid );
-		const std::vector<HabitatOutputData> monthly_output
-			= habitat.get_monthly_output();
-		for (int i=0; i<monthly_output.size(); i++)
-			CHECK( !monthly_output[i].is_valid );
-	}
-
-	SECTION("Annual output with no growth") {
-		for (int d=0; d<365; d++)
-			habitat.init_todays_output(d);
-
-		const HabitatOutputData annual_output = habitat.get_annual_output();
-		const std::vector<HabitatOutputData> monthly_output
-			= habitat.get_monthly_output();
-		// output should all be valid now by the end of the year
-		REQUIRE( annual_output.is_valid );
-		for (int i=0; i<monthly_output.size(); i++)
-			REQUIRE( monthly_output[i].is_valid );
-
-		// because there was no growth and decay, the forage stayed the same
-		CHECK( annual_output.available_forage.grass.get_mass() == 
-				Approx(settings.grass.init_mass) );
-		CHECK( annual_output.available_forage.grass.get_fpc() == 
-				Approx(settings.grass.fpc) );
-		CHECK( annual_output.available_forage.grass.get_digestibility() == 
-				Approx(settings.grass.digestibility) );
 	}
 
 	SECTION("Remove forage"){
@@ -1643,6 +1587,7 @@ TEST_CASE("FaunaSim::SimpleHabitat", "") {
 		}
 	}
 
+	// TODO output?
 }
 
 TEST_CASE("FaunaSim::HabitatGroup","") {
@@ -1656,7 +1601,7 @@ TEST_CASE("FaunaSim::HabitatGroup","") {
 		CHECK( group.get_habitat_references().size() == i ); 
 	}
 	// Make sure the references are pointing correctly to the objects
-	const std::vector<const Habitat*> refs = group.get_habitat_references();
+	const std::vector<Habitat*> refs = group.get_habitat_references();
 	HabitatGroup::const_iterator itr = group.begin();
 	int j=0;
 	while (itr != group.end()){
@@ -1683,3 +1628,23 @@ TEST_CASE("FaunaSim::HabitatGroupList","") {
 	// Don’t allow adding a group with same coordinates twice
 	CHECK_THROWS( gl.add(new HabitatGroup(1,1)) );
 }
+
+// TEST_CASE("Fauna::is_first_day_of_month()", ""){
+// 	CHECK_THROWS( is_first_day_of_month(-1) );
+// 	CHECK_THROWS( is_first_day_of_month(365) );
+// 	CHECK( is_first_day_of_month(0) );
+// 	CHECK_FALSE( is_first_day_of_month(1) );
+// 	CHECK_FALSE( is_first_day_of_month(44) );
+// 	CHECK( is_first_day_of_month(-1+31) );
+// 	CHECK( is_first_day_of_month(-1+31+28) );
+// 	CHECK( is_first_day_of_month(-1+31+28+31) );
+// 	CHECK( is_first_day_of_month(-1+31+28+31+30) );
+// 	CHECK( is_first_day_of_month(-1+31+28+31+30+31) );
+// 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30) );
+// 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30+31) );
+// 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30+31+31) );
+// 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30+31+31+30) );
+// 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30+31+31+30+31) );
+// 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30+31+31+30+31+30) );
+// 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30+31+31+30+31+30+31) );
+// }

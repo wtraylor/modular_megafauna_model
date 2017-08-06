@@ -61,7 +61,8 @@ namespace Fauna{
 			 * used by \ref GuessOutput::HerbivoryOutput.
 			 * \param day_of_year Current day of year (0 = Jan 1st)
 			 * \param habitat The Habitat to simulate
-			 * \param do_herbivores Whether to perform herbivore simulations.
+			 * \param do_herbivores Whether to perform herbivore 
+			 * simulations.
 			 * If false, only the output data of the habitats are updated.
 			 * \throw std::invalid_argument if day_of_year not in [0,364]
 			 */

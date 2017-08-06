@@ -67,29 +67,7 @@ So far, only this one kind of vegetation model is implemented.
 The class \ref FaunaSim::HabitatGroup holds a list of objects which implement \ref Fauna::Habitat and thus corresponds to a \ref Gridcell.
 
 @startuml "Class interactions of the Herbivory Test Simulations"
-hide members
-hide methods 
-annotation "parameters.h" as parameters 
-namespace FaunaSim {
-	class "Framework" <<singleton>>
-	class HabitatGroup
-	class SimpleHabitat
-	HabitatGroup "1" *-- "*" SimpleHabitat
-}
-namespace Fauna {
-	class "ParamReader"   <<singleton>>
-	interface Habitat 
-	Simulator     ..> Habitat                        : <<call>>
-}
-FaunaSim.SimpleHabitat --|> Fauna.Habitat
-FaunaSim.Framework ..> Fauna.ParamReader              : <<use>>
-FaunaSim.Framework ..> .parameters                    : <<use>>
-FaunaSim.Framework ..> Fauna.Simulator                : <<create>>
-FaunaSim.Framework *-> "1" .GuessOutput.HerbivoryOutput   
-FaunaSim.Framework ..> .GuessOutput.FileOutputChannel : <<create>>
-FaunaSim.Framework ..> "*" FaunaSim.HabitatGroup      : <<create>>
-annotation "main()" as main
-main ..> FaunaSim.Framework : <<call>>
+	!include herbiv_diagrams.iuml!testsim_classes
 @enduml
 
 ### Parameters ###
@@ -114,48 +92,9 @@ See \ref parameters.cpp for the affected code regions.
 ### Simulation Sequence ###
 
 @startuml "Sequence diagram for test simulations of the herbivory module"
-participant "main()" as main
-participant "plib.h" as plib
-participant "FaunaSim::Framework" as Framework <<singleton>>
-participant "Fauna::ParamReader" as ParamReader <<singleton>>
-participant "Fauna::Simulator" as Simulator
-participant "GuessOutput::HerbivoryOutput" as HerbivoryOutput <<singleton>>
-== initialization ==
-main -> Framework : <<create>>
-activate Framework
-activate HerbivoryOutput
-Framework -> plib : declare parameters
-main -> plib : read instruction file
-plib -> ParamReader : call indirectly
-activate ParamReader
-plib -> Framework : plib_callback()
-main <-- ParamReader : Fauna::Parameters
-main <-- ParamReader : Fauna::HftList
-main -> Framework : run()
-Framework -> HerbivoryOutput : set_hftlist()
-Framework -> HerbivoryOutput : init()
-Framework -> Simulator : <<create>>
-activate Simulator
-note over Framework : create habitats
-== simulation ==
-loop YEARS: nyears
-	loop DAYS: 365
-		loop HABITAT GROUPS: nhabitat_groups
-			loop HABITATS: nhabitats_per_group
-	      Framework -> Simulator : simulate_day()
-		  end
-		end
-  end
-	loop HABITAT GROUPS: nhabitat_groups
-		Framework -> HerbivoryOutput : outannual()
-	end
-end
-== end of simulation ==
-deactivate Simulator
-Framework --> main
-deactivate HerbivoryOutput
-deactivate Framework
+	!include herbiv_diagrams!testsim_sequence
 @enduml
+
 ------------------------------------------------------------
 
 \author Wolfgang Pappa, Senckenberg BiK-F

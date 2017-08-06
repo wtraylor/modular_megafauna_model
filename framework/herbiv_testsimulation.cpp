@@ -12,7 +12,6 @@
 #include "parameters.h" // for declare_parameter()
 #include "herbiv_testsimulation.h"
 #include "herbiv_framework.h"
-#include "herbiv_output.h"
 #include "herbiv_paramreader.h"
 #include <climits> // for INT_MAX
 #include <cfloat> // for DBL_MAX
@@ -191,9 +190,9 @@ bool Framework::run(const Fauna::Parameters& global_params,
 		const HftList& hftlist){
 
 	// PREPARE OUTPUT
-	// Since we only use HerbivoryOutput here, we don’t use the output
-	// module registry. Instead, the relevant functions are called
-	// directly.
+	// Since we only use HerbivoryOutput here, we don’t use the
+	// output module registry. 
+	// Instead, the relevant functions are called directly.
 	if (params.outputdirectory=="") 
 		fail("No output directory given in the .ins file!");
 
@@ -287,21 +286,13 @@ bool Framework::run(const Fauna::Parameters& global_params,
 
 					itr_habitat++;
 				}
-			} // end of habitat loop
+
+				// Write output
+				herbiv_out.outdaily(group.get_lon(), group.get_lat(), 
+						day_of_year, year, group.get_habitat_references());
+			} // end of habitat group loop
+
 		}// day loop: end of year
-
-		// OUTPUT
-
-		// Write output for all habitat groups
-		// loop through habitat groups
-		for (HabitatGroupList::iterator itr_g=habitat_groups.begin();
-				itr_g != habitat_groups.end(); itr_g++) {
-			HabitatGroup& group = **itr_g;
-
-			herbiv_out.outannual(group.get_lon(), group.get_lat(), 
-					year, group.get_habitat_references());
-		}
-
 
 		// PRINT PROGRESS
 		const int progress_interval = params.nyears / 10; // every 10%

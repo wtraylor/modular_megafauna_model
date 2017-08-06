@@ -26,5 +26,14 @@
  * \brief Namespace for the test simulation framework independent of LPJ-GUESS vegetation.
  * \see \ref sec_herbiv_testsimulations
  * \author Wolfgang Pappa, Senckenberg BiK-F
- * \date July 2017
+ * \date June 2017
+ */
+
+/**
+ * \ingroup group_herbivory
+ * \namespace FaunaOut
+ * \brief Output classes of the herbivory module.
+ * \see \ref sec_herbiv_output
+ * \author Wolfgang Pappa, Senckenberg BiK-F
+ * \date August 2017
  */

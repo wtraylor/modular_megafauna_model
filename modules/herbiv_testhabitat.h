@@ -135,7 +135,7 @@ namespace FaunaSim {
 				Habitat(populations), grass(settings.grass){}
 
 			// ------ Fauna::Habitat implementations ----
-			virtual void init_todays_output(const int today); 
+			virtual void init_day(const int today); 
 			virtual HabitatForage get_available_forage() const{
 				HabitatForage result;
 				result.grass = grass.get_forage();
@@ -204,8 +204,8 @@ namespace FaunaSim {
 			}
 
 			/// Get list of readonly habitat references.
-			std::vector<const Habitat*> get_habitat_references()const{
-				std::vector<const Habitat*> result;
+			std::vector<Habitat*> get_habitat_references(){
+				std::vector<Habitat*> result;
 				for (int i=0; i<vec.size(); i++)
 					result.push_back(vec[i]);
 				return result;

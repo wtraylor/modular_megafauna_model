@@ -95,7 +95,7 @@ void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
 				"argument day_of_year out of range");
 
 	// pass the current date into the herbivore module
-	habitat.init_todays_output(day_of_year);
+	habitat.init_day(day_of_year);
 
 	if (do_herbivores && hftlist.size()>0) {
 

@@ -11,7 +11,7 @@
 
 #include <vector>
 #include "herbiv_testhabitat.h" // for SimpleHabitat::Parameters
-#include "herbiv_output.h"      // for HerbivoryOutput
+#include "herbiv_outputmodule.h"      // for HerbivoryOutput
 
 namespace Fauna{
 	// forward declaration

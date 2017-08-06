@@ -11,69 +11,17 @@ Software Design of the Herbivory Module {#sec_herbiv_design}
 Overview {#sec_herbiv_designoverview}
 -------------------------------------
 
-\startuml "Basic interactions of the herbivory module"
-[Herbivory Module] as herbivory
-() "Fauna::ParamReader" as paramreader
-() "Fauna::PatchHabitat" as patchhabitat
-() "GuessOutput::HerbivoryOutput" as herbivoutput
-node "Herbivory Output Files" as outputfiles
-[LPJ-GUESS] as guess
-node "Instruction Files" as insfiles
-guess        <..  patchhabitat
-patchhabitat  --  herbivory
-herbivory     --  herbivoutput 
-herbivoutput  ..> outputfiles : write
-herbivory     --  paramreader 
-paramreader   ..> insfiles  : read
-\enduml
+@startuml "Component diagram of the basic interactions of the herbivory module"
+	!include herbiv_diagrams.iuml!basic_components
+@enduml
 
 
-@startuml "Basic simulation classes in the Herbivory Module and their connection to LPJ-GUESS"
-
-hide members
-hide methods
-
-annotation "framework()" as framework
-Gridcell "1" *--> "*" Stand
-Stand    "1" *--> "*" Patch
-Patch    "1" *--> "*" Individual
-class Individual{
-	Pft* pft
-}
-show Individual members
-
-namespace Fauna{
-	Simulator          ..> Habitat            : <<call>>
-	.framework          ..> Simulator          : <<create>>
-	PatchHabitat      <-right-* .Patch
-	PatchHabitat       ..> .Patch              : plant–animal interactions
-	Habitat           *..> HerbivoreInterface : contains>
-	interface HerbivoreInterface {
-		Hft* hft
-	}
-	show HerbivoreInterface members
-	abstract Habitat
-	Habitat            <|-left- PatchHabitat
-}
+@startuml "Most important simulation classes in the Herbivory Module and their connection to LPJ-GUESS"
+	!include herbiv_diagrams.iuml!important_classes
 @enduml
 
 @startuml "Construction of PatchHabitat"
-participant "framework()" as framework
-framework    -> "Fauna::Simulator" : <<create>>
-activate "Fauna::Simulator"
-framework    -> Gridcell : <<create>>
-activate Gridcell
-Gridcell     -> Patch : <<create>>
-activate Patch
-framework    -> "Fauna::Simulator" : create_populations()
-framework  <--  "Fauna::Simulator" : populations
-framework    -> "Fauna::Simulator" : create_digestibility_model()
-framework  <--  "Fauna::Simulator" : digestibility_model
-framework    -> "Fauna::PatchHabitat" : <<create>> (populations, digestibility_model)
-note right : constructor injection
-activate "Fauna::PatchHabitat"
-framework    -> Patch : set_habitat()
-note right : setter injection
+	!include herbiv_diagrams.iuml!patchhabitat_construction
 @enduml
 
 Forage Classes {#sec_herbiv_forageclasses}
@@ -93,23 +41,8 @@ Their common model mechanics are defined in their abstract parent class, \ref Fa
 The herbivore model performs calculations generally *per area.*
 That’s why individual herbivores can only be simulated if an absolute habitat area size is defined.<!--TODO: Where is it defined-->
 
-@startuml "Herbivore class relationships"
-hide members
-hide methods
-interface HerbivoreInterface
-interface PopulationInterface
-class HerbivoreBase
-HerbivoreInterface  <|-- HerbivoreBase
-HerbivoreBase       <|-- HerbivoreIndividual
-HerbivoreBase       <|-- HerbivoreCohort
-PopulationInterface <|-up- IndividualPopulation
-PopulationInterface <|-up- CohortPopulation
-HerbivoreIndividual "*" <--* "1" IndividualPopulation
-HerbivoreCohort     "*" <--* "1" CohortPopulation
-HerbivoreIndividual  <..  IndividualPopulation : <<create>>
-(HerbivoreIndividual, IndividualPopulation) .. CreateHerbivoreIndividual
-HerbivoreCohort      <..  CohortPopulation     : <<create>>
-(HerbivoreCohort, CohortPopulation) .. CreateHerbivoreCohort
+@startuml "Herbivore classes"
+	!include herbiv_diagrams.iuml!herbivore_classes
 @enduml
 
 ### HerbivoreBase {#sec_herbiv_herbivorebase} ### 
@@ -128,55 +61,7 @@ For a cohort that means that the density is proportionally reduced, for an indiv
 The corresponding population objects will release dead herbivore objects automatically.
 
 @startuml "Model compartments around Fauna::HerbivoreBase"
-hide members
-hide methods
-namespace Fauna{
-class HerbivoreBase{
-	-Hft hft
-	-int age_days
-}
-show HerbivoreBase members
-class FatmassEnergyBudget{
-	+catabolize_fat()
-	+metabolize_energy()
-	-double energy_needs
-	-double fatmass
-	-double max_fatmass
-}
-show FatmassEnergyBudget members
-show FatmassEnergyBudget methods
-HerbivoreBase *-up-> "1" FatmassEnergyBudget
-package "Forage Energy" <<rectangle>> {
-	interface GetNetEnergyContentInterface <<strategy>>
-	GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
-}
-HerbivoreBase *-up-> "1" "Forage Energy"
-package "Reproduction" <<rectangle>> {
-	class ReproductionIllius2000
-}
-HerbivoreBase .up.> "1" "Reproduction"
-package "Diet" <<rectangle>> {
-	interface ComposeDietInterface <<strategy>>
-	ComposeDietInterface <|-- PureGrazerDiet
-}
-HerbivoreBase  .up.> "1" "Diet"
-package "Energy Expenditure" <<rectangle>>  {
-	annotation "get_expenditure_taylor_1981()"
-}
-HerbivoreBase  ..> "1" "Energy Expenditure"
-package "Foraging Limits" <<rectangle>>  {
-	class GetDigestiveLimitIllius1992 <<functor>>
-	class GetHalfMaxForagingLimit     <<functor>>
-} 
-HerbivoreBase  ..> "*" "Foraging Limits"
-package "Mortality" <<rectangle>> {
-	class GetBackgroundMortality           <<functor>>
-	class GetStarvationMortalityIllius2000 <<functor>>
-	class GetStarvationMortalityThreshold  <<functor>>
-	class GetSimpleLifespanMortality       <<functor>>
-}
-HerbivoreBase ..> "*" "Mortality"
-}
+	!include herbiv_diagrams.iuml!herbivorebase_compartments
 @enduml
 
 ### Populations {#sec_herbiv_populations} ### 
@@ -184,18 +69,7 @@ Each herbivore class needs a specific population class, implementing \ref Fauna:
 Each [habitat](\ref Fauna::Habitat) has a \ref Fauna::HftPopulationsMap which manages a number of population instances, one for each HFT.
 
 @startuml "Herbivore population classes"
-hide members
-hide methods
-namespace Fauna{
-	interface PopulationInterface
-	PopulationInterface <|-- IndividualPopulation
-	PopulationInterface <|-- CohortPopulation
-	IndividualPopulation *-- "*" HerbivoreIndividual
-	CohortPopulation     *-- "*" HerbivoreCohort
-	abstract Habitat
-	Habitat *-- "*" PopulationInterface
-	(Habitat, PopulationInterface) .. HftPopulationsMap
-}
+	!include herbiv_diagrams.iuml!population_classes
 @enduml
 
 
@@ -204,17 +78,10 @@ Error Handling {#sec_herbiv_errorhandling}
 ------------------------------------------
 
 ### Exceptions ### {#sec_herbiv_exceptions}
-The herbivory module uses the C++ standard library exceptions defined in `<stdexcept>`.
+The herbivory module uses the C|| standard library exceptions defined in `<stdexcept>`.
 All exceptions are derived from `std::exception`:
 @startuml "Standard library exceptions used in the herbivory module."
-namespace std{
-	hide members
-	hide methods
-	exception <|-- logic_error
-	exception <|-- runtime_error
-	logic_error <|-- invalid_argument
-	logic_error <|-- out_of_range 
-}
+	!include herbiv_diagrams.iuml!exception_classes
 @enduml
 
 Any function that potentially *creates* an exception declares that in its doxygen description.
@@ -256,41 +123,7 @@ ParamReader is the only one being directly dependent on \ref parameters.h and \r
 The principle that parameter member variables put in one class, which also knows to check their validity, but parsed in ParamReader, is also applied in \ref Fauna::Hft and \ref Fauna::PftParams.
 
 @startuml "Interactions of parameter-related classes in the herbivory module" 
-hide members
-hide methods
-annotation "framework()"       as framework
-annotation "Instruction Files" as insfiles
-annotation "plib.h"            as plib
-annotation "parameters.h"      as parameters
-class "FaunaSim.Framework" <<singleton>>
-class "Fauna.ParamReader"   <<singleton>>
-Pft                "1" *-- "1" Fauna.PftParams
-framework           ..> Fauna.ParamReader : <<use>>
-parameters          ..> Pft               : <<use>>
-GuessOutput.HerbivoryOutput     ..> parameters        : <<use>>
-parameters          ..> plib              : <<use>>
-plib                ..> insfiles          : <<read>>
-framework           ..> parameters        : <<use>>
-namespace Fauna {
-	ParamReader  <..> .parameters : <<call>>
-	ParamReader   ..> .plib       : <<call>>
-	ParamReader   ..> Hft         : <<create>>
-	ParamReader   ..> PftParams   : <<call>>
-	ParamReader   ..> Parameters  : <<create>>
-	class Hft {
-		+is_valid()
-	}
-	show Hft methods
-	class Parameters {
-		+is_valid()
-	}
-	show Parameters methods
-	class PftParams {
-		+is_valid()
-	}
-	show PftParams methods
-}
-FaunaSim.Framework ..> Fauna.ParamReader : <<use>>
+	!include herbiv_diagrams.iuml!parameters_classes
 @enduml
 
 \note The implementation can be called a rather dirty fix around the inflexible design of LPJ-GUESS parameter library. 
@@ -308,24 +141,7 @@ These classes play the role of the “framework” by calling any client classes
 The following diagram gives an overview:
 
 @startuml "Classes of the herbivory simulation which have direct access to parameter-holding classes."
-hide members
-hide methods
-namespace Fauna{
-	CreateHerbivoreIndividual ..> Parameters
-	CreateHerbivoreIndividual ..> Hft
-	CreateHerbivoreCohort     ..> Parameters
-	CreateHerbivoreCohort     ..> Hft
-	Simulator                 ..> Parameters
-	Simulator                 ..> Hft
-	PatchHabitat              ..> PftParams
-	CohortPopulation          .up.> Hft
-	IndividualPopulation      .up.> Hft
-	HerbivoreBase             .up.> Hft
-}
-namespace FaunaSim{
-	Framework                 ..> Fauna.Parameters
-	Framework                 ..> Fauna.Hft
-} 
+	!include herbiv_diagrams.iuml!parameters_access
 @enduml
 
 \bug When printing out the help with \ref plibhelp() 
@@ -351,7 +167,7 @@ If a class explicitely defines at least one of the following methods, it should 
 - Copy Constructor
 - Copy Assignment Operator
 
-\note If moving to C++11, the **Rule of Five** becomes relevant
+\note If moving to C||11, the **Rule of Five** becomes relevant
 
 ### S-O-L-I-D Design principles ### {#sec_design_solid}
 
@@ -385,10 +201,10 @@ An architecture following that principle is built around a generic framework whi
 This approach makes the system more modular and extensible.
 
 @startuml
-hide members
-hide methods
-Framework ..> Client1 : <<create & call>>
-Framework ..> Client2 : <<create & call>
+	hide members
+	hide methods
+	Framework ..> Client1 : <<create & call>>
+	Framework ..> Client2 : <<create & call>
 @enduml
 
 Inversion of control is related to the
@@ -446,7 +262,7 @@ The principle of a global single class shows also up in
 
 #### Strategy {#sec_strategy}
 The strategy design pattern defines a set of interchangable algorithms, each of which are encapsulated in a class that is derived from one abstract interface parent class.
-Thanks to C++ polymorphism, the used algorithm can change during runtime.
+Thanks to C|| polymorphism, the used algorithm can change during runtime.
 Here is a basic implementation:
 
     struct Strategy {
@@ -462,12 +278,12 @@ Here is a basic implementation:
     };
 
 @startuml
-hide members
-hide methods
-interface Strategy
-Strategy <|-- StrategyOne
-Strategy <|-- StrategyTwo
-Client --> Strategy : <<use>>
+	hide members
+	hide methods
+	interface Strategy
+	Strategy <|-- StrategyOne
+	Strategy <|-- StrategyTwo
+	Client --> Strategy : <<use>>
 @enduml
 
 \anchor sec_functors
@@ -492,102 +308,43 @@ In the herbivory model that is usually not the case, but rather it is used as a 
 Herbivory Output {#sec_herbiv_output}
 -------------------------------------
 
+### Output Module {#sec_herbiv_outputmodule}
+
 The new output module \ref GuessOutput::HerbivoryOutput is 
 derived from the abstract class \ref GuessOutput::OutputModule.
-The following sequence diagram shows the creation process:
-
-@startuml "Output initialization in LPJ-GUESS"
-participant "framework()" as framework
-activate OutputModuleModuleRegistry
-[--> OutputModuleModuleRegistry : register_output_module("herbivory")
-[--> framework : start guess
-== initialization ==
-framework --> OutputModuleContainer : create
-activate OutputModuleContainer
-framework --> OutputModuleModuleRegistry : create_all_modules()
-OutputModuleModuleRegistry --> HerbivoryOutput : create
-activate HerbivoryOutput
-note over HerbivoryOutput : declare parameters
-note over framework : read parameters
-framework --> OutputModuleContainer : init()
-OutputModuleContainer      --> FileOutputChannel : create
-activate FileOutputChannel
-OutputModuleContainer --> HerbivoryOutput : init()
-HerbivoryOutput --> FileOutputChannel : create tables
-framework --> HerbivoryOutput : set_include_date()
-== simulation ==
-framework --> OutputModuleContainer : outannual(gridcell)
-OutputModuleContainer --> HerbivoryOutput : outannual(gridcell)
-HerbivoryOutput --> FileOutputChannel : add values
+The following diagram show 
+<!--TODO: diagram-->
+@startuml "Class diagram of the connections around class GuessOutput::HerbivoryOutput"
+	!include herbiv_diagrams.iuml!outputmodule_class
 @enduml
 
-The output module \ref GuessOutput::HerbivoryOutput is used both in the 
-standard LPJ-GUESS framework and in the test simulations
+
+The following sequence diagram shows the creation process of \ref GuessOutput::HerbivoryOutput :
+
+@startuml "Output initialization in LPJ-GUESS. All participating classes have only one instantiation, but only HerbivoryOutput implements formally the Singleton design pattern."
+	!include herbiv_diagrams.iuml!outputmodule_initialization
+@enduml
+
+
+The output module \ref GuessOutput::HerbivoryOutput is used both in the standard LPJ-GUESS framework and in the test simulations
 (\ref page_herbiv_tests).
-If the parameter `ifherbivory` is 0, the whole class is
-deactivated and won’t produce any output or create files.
+If the parameter `ifherbivory` is 0, the whole class is deactivated and won’t produce any output or create files.
 
-This is necessary because some herbivore module parameters,
-like `digestibility_model`, are not checked when reading
-the instruction file.
+This is necessary because some herbivore module parameters, like `digestibility_model`, are not checked when reading the instruction file.
 
-While the class \ref GuessOutput::HerbivoryOutput complies with the output
-module framework of LPJ-GUESS, a few technical improvements
+While the class \ref GuessOutput::HerbivoryOutput complies with the output module framework of LPJ-GUESS, a few technical improvements
 to \ref GuessOutput::CommonOutput were made:
-- Output interval can be chosen freely with one variable
-  instead of different output files. The table structure
-  stays always the same (no month columns).
+- Output interval can be chosen freely with one variable instead of different output files. 
+The table structure stays always the same (no month columns).
 - The functions are smaller and better maintainable.
-- The preprocessing of the data (building averages etc.) is
-  done in \ref Fauna::HabitatOutputData and other data-holding
-  classes (e.g. \ref Fauna::HabitatForage). This approach
-  honours the \ref sec_single_responsibility.
-- The inherited functions outannual() and outdaily() delegate
-  to more generic functions, which are also used by
-  \ref FaunaSim::Framework.
-- The class \ref GuessOutput::IncludeDate has been introduced
-  in order to observe the \ref sec_dependency_inversion and
-  to avoid global variables.
+- The preprocessing of the data (building averages etc.) is done in the data-holding classes. 
+This approach honours the \ref sec_single_responsibility.
+- The inherited functions delegate to more generic functions, which are also used by \ref FaunaSim::Framework.
+- The class \ref GuessOutput::IncludeDate has been introduced in order to observe the \ref sec_dependency_inversion and to avoid global variables.
   See also: \ref sec_herbiv_limit_output.
-- The \ref GuessOutput::OutputModuleRegistry instantiates the
-  class. There is only one global instance, but there is no direct
-	way to access that global instance like in the
-	[Singleton design pattern](\ref sec_singleton).
-	To circumvent this restriction (instead of working with a lot
-	of `static` members) the function
-	[get_instance()](\ref GuessOutput::HerbivoryOutput::get_instance())
-	has been introduced.
-	To assert that no other instance can be created, the constructor
-	throws an exception on second call. 
-
-@startuml "Output classes of the herbivory module"
-hide members 
-annotation "Output Directory" as outputdirectory 
-namespace GuessOutput{
-	HerbivoryOutput     --> OutputChannel : <<use>>
-	OutputModule      <|--  HerbivoryOutput
-	OutputChannel     <|--  FileOutputChannel
-	FileOutputChannel   --> .outputdirectory : write
-	enum interval {
-		DAILY
-		MONTHLY
-		ANNUAL
-	}
-	show interval members
-	HerbivoryOutput *-- interval
-	note on link : nested
-}
-namespace Fauna{
-	abstract Habitat
-	Habitat o-- "365" HabitatOutputData : daily
-	GuessOutput.HerbivoryOutput ..> Fauna.HabitatOutputData : <<use>>
-	HabitatOutputData --> HabitatForage : available forage
-	HabitatOutputData --> ForageMass : eaten forage
-	class HabitatOutputData
-	note right : various other values
-}
-@enduml
-
+- The \ref GuessOutput::OutputModuleRegistry instantiates the class. There is only one global instance, but there is no direct way to access that global instance like in the [Singleton design pattern](\ref sec_singleton).
+	To circumvent this restriction (instead of working with a lot of `static` members) the function [get_instance()](\ref GuessOutput::HerbivoryOutput::get_instance()) has been introduced.
+	To assert that no other instance can be created, the constructor throws an exception on second call. 
 
 ------------------------------------------------------------
 
