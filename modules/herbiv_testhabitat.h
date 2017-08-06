@@ -41,17 +41,19 @@ namespace FaunaSim {
 				/// Proportional digestibility of the grass [frac].
 				double digestibility;
 
-				/// Percentage of habitat covered with grass (Foliar Percentage Cover) [frac]
+				/// \brief Percentage of habitat covered with grass 
+				///        (Foliar Percentage Cover) [frac]
 				double fpc;
 
 				/// Proportional daily grass growth rate
 				double growth;
 
-				/// Initial available forage [kgDM/m²]
+				/// Initial available forage [kgDM/km²]
 				/** This should be smaller than \ref saturation */
 				double init_mass;
 
-				/// Ungrazable grass biomass reserve, inaccessable to herbivores [kgDM/m²]
+				/// \brief Ungrazable grass biomass reserve, inaccessable 
+				///        to herbivores [kgDM/km²]
 				/** Owen-Smith (2002) gives value of 20 g/m²*/
 				double reserve;
 

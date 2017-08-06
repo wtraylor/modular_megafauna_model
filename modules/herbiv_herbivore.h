@@ -37,14 +37,14 @@ namespace Fauna{
 		/// Feed the herbivore dry matter forage.
 		/**
 		 * \param forage_type Type of forage.
-		 * \param kg_per_m2 Dry matter forage mass [kgDM/m²].
+		 * \param kg_per_km2 Dry matter forage mass [kgDM/km²].
 		 * \param digestibility Proportional forage digestibility.
 		 * \throw std::invalid_argument If `forage` exceeds
 		 * forage intake constraints.
 		 */
 		virtual void eat(
 				const ForageType forage_type,
-				const double kg_per_m2,
+				const double kg_per_km2,
 				const double digestibility) = 0;
 
 		/// Body mass of one individual [kg/ind].
@@ -54,9 +54,9 @@ namespace Fauna{
 		/**
 		 * Call this after \ref simulate_day().
 		 * \param available_forage Available forage in the habitat
-		 * [kgDM/m²].
+		 * [kgDM/km²].
 		 * \return Dry matter forage *per m²* that the herbivore 
-		 * would eat without any food competition [kgDM/m²].
+		 * would eat without any food competition [kgDM/km²].
 		 */
 		virtual ForageMass get_forage_demands(
 				const HabitatForage& available_forage)const=0;
@@ -95,7 +95,7 @@ namespace Fauna{
 			// -------- HerbivoreInterface ----------
 			virtual void eat(				
 					const ForageType forage_type,
-					const double kg_per_m2,
+					const double kg_per_km2,
 					const double digestibility);
 			virtual double get_bodymass() const; 
 			virtual ForageMass get_forage_demands(
@@ -121,9 +121,6 @@ namespace Fauna{
 
 			/// Current fat mass [kg/ind].
 			double get_fatmass()const;
-
-			/// Individuals per m².
-			double get_ind_per_m2()const{return get_ind_per_km2() / 10000.0;}
 
 			/// Get fat-free body mass [kg/ind].
 			/**

@@ -155,9 +155,9 @@ ComposeDietInterface& HerbivoreBase::compose_diet()const{
 }
 
 void HerbivoreBase::eat(const ForageType forage_type,
-		const double kg_per_m2, const double digestibility){
-	// convert forage from *per m²* to *per individual*
-	const double kg = kg_per_m2 / get_ind_per_m2();
+		const double kg_per_km2, const double digestibility){
+	// convert forage from *per km²* to *per individual*
+	const double kg = kg_per_km2 / get_ind_per_km2();
 
 	// net energy in the forage [MJ]
 	const double net_energy = kg * 
@@ -290,8 +290,8 @@ ForageMass HerbivoreBase::get_forage_demands(
 	}
 
 	// Finally: Convert the demand per individual [kg/ind]
-	// to demand per area [kg/m²]
-	return diet_mass * get_ind_per_m2();
+	// to demand per area [kg/km²]
+	return diet_mass * get_ind_per_km2();
 }
 
 double HerbivoreBase::get_kg_per_km2() const{

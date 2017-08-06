@@ -53,7 +53,7 @@ HabitatForage PatchHabitat::get_available_forage() const {
 		assert( indiv_dig <= 1.0 );
 
 		// get forage mass
-		double indiv_mass = indiv.get_forage_mass(); // [kg/m²]
+		double indiv_mass = indiv.get_forage_mass(); // [kg/km²]
 		// avoid precision errors in extremely  low values.
 		if (negligible(indiv_mass))
 			indiv_mass = 0.0; 
@@ -67,7 +67,7 @@ HabitatForage PatchHabitat::get_available_forage() const {
 			gr_dig_sum_weight += indiv_dig * indiv_mass;
 			gr_dig_sum        += indiv_dig;
 
-			// Simply sum up the mass for the whole habitat [kg/m²]
+			// Simply sum up the mass for the whole habitat [kg/km²]
 			forage.grass.set_mass( forage.grass.get_mass() + indiv_mass );
 
 			// Build sum of FPCs
@@ -98,7 +98,7 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	// Call the base class function
 	Habitat::remove_eaten_forage(eaten_forage);
 
-	// sum of the current grass forage in the patch before eating [kg/m²]
+	// sum of the current grass forage in the patch before eating [kg/km²]
 	double old_grass = 0.0;
 
 	// Sum up the forage
@@ -113,7 +113,7 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 		patch.vegetation.nextobj();
 	}
 
-	// sum of the new grass forage after eating [kg/m²]
+	// sum of the new grass forage after eating [kg/km²]
 	const double new_grass = old_grass - eaten_forage.get_grass();
 
 	// Assertions

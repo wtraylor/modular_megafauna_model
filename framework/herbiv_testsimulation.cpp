@@ -153,19 +153,19 @@ void Framework::declare_parameters(){
 		declare_parameter("grass_init_mass",
 				&params.habitat.grass.init_mass,
 				0.0, DBL_MAX, // min, max
-				"Initial grass biomass [kgDM/m²]");
+				"Initial grass biomass [kgDM/km²]");
 		mandatory_parameters.push_back("grass_init_mass");
 
 		declare_parameter("grass_reserve",
 				&params.habitat.grass.reserve,
 				0.0, DBL_MAX, // min, max
-				"Ungrazable grass reserve [kgDM/m²]");
+				"Ungrazable grass reserve [kgDM/km²]");
 		mandatory_parameters.push_back("grass_reserve");
 
 		declare_parameter("grass_saturation",
 				&params.habitat.grass.saturation,
 				0.0, DBL_MAX, // min, max
-				"Saturation grass biomass [kgDM/m²]");
+				"Saturation grass biomass [kgDM/km²]");
 		mandatory_parameters.push_back("grass_saturation");
 
 		parameters_declared = true;

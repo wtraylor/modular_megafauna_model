@@ -37,14 +37,14 @@ Foraging {#sec_herbiv_foraging}
 
 \note **Units**<br>All forage values (e.g. available grass biomass,
 consumed forage) are *dry matter mass* in kilograms (`DMkg`).
-Any forage per area (e.g. forage in a habitat) is `DMkg/m²`.
+Any forage per area (e.g. forage in a habitat) is `kgDM/km²`.
 Herbivore-related mass values (e.g. body mass, fat mass) are also
 `kg`, but live mass.
 Population densities of herbivores are either in `kg/km²` or `ind/km²` (ind=individuals).
 
 ### Feeding on Plants in a Patch ### {#sec_herbiv_foraging_patch}
 
-Each \ref Individual offers an amount of forage (kgDM/m²) that is available
+Each \ref Individual offers an amount of forage (kgDM/km²) that is available
 to herbivores (\ref Individual.get_forage_mass()).
 
 \todo Growth happens only once per year (\ref growth()) for natural vegetation.

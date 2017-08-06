@@ -97,7 +97,7 @@ namespace Fauna{
 			 * forage of each herbivore 
 			 * (see \ref HerbivoreInterface::get_forage_demands()).
 			 * As output: Forage portion for each herbivore.
-			 * Unit is kgDM/m².
+			 * Unit is kgDM/km².
 			 * The sum of all portions must not exceed the available
 			 * forage!
 			 */

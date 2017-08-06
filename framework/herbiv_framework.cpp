@@ -131,10 +131,10 @@ void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
 			// All herbivores in the habitat
 			HerbivoreVector herbivores = populations.get_all_herbivores();
 
-			// demanded forage per herbivore [kgDM/m²]
+			// demanded forage per herbivore [kgDM/km²]
 			ForageDistribution forage_demand; 
 
-			// available forage in the habitat [kgDM/m²]
+			// available forage in the habitat [kgDM/km²]
 			const HabitatForage available_forage = habitat.get_available_forage();
 
 			// loop through all herbivores: simulate and get forage demands
@@ -173,11 +173,11 @@ void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
 			ForageDistribution& forage_portions = forage_demand;
 
 			// let the herbivores eat
-			ForageMass eaten_forage; // [kgDM/m²]
+			ForageMass eaten_forage; // [kgDM/km²]
 			for (ForageDistribution::iterator iter=forage_portions.begin();
 					iter != forage_portions.end(); iter++)
 			{
-				const ForageMass& portion = iter->second; // [kgDM/m²]
+				const ForageMass& portion = iter->second; // [kgDM/km²]
 
 				// TODO make this generic for all forage types
 				iter->first->eat(FT_GRASS, 

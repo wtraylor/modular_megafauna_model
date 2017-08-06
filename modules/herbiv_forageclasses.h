@@ -69,11 +69,11 @@ namespace Fauna{
 			MapType map;
 	};
 
-	/// Dry matter mass values [kgDM or kgDM/m²] for different forage types.
+	/// Dry matter mass values [kgDM or kgDM/km²] for different forage types.
 	class ForageMass {
 		public:
 			/** @{ */
-			/// Dry matter grass forage biomass [kgDM or kgDM/m²]. 
+			/// Dry matter grass forage biomass [kgDM or kgDM/km²]. 
 			/** Number is always positive. */
 			double get_grass()const{return grass;}
 			/** \throw std::invalid_argument if `g<0.0` */
@@ -98,7 +98,7 @@ namespace Fauna{
 			/// Constructor with zero values.
 			ForageMass():grass(0.0){}
 
-			/// Sum up the values [kgDM or kgDM/m²].
+			/// Sum up the values [kgDM or kgDM/km²].
 			double sum() const { 
 				return grass; /* add other forage types */
 			}
@@ -169,7 +169,7 @@ namespace Fauna{
 			double grass;
 	};
 
-	/// Map defining which herbivore gets what to eat [kgDM/m²].
+	/// Map defining which herbivore gets what to eat [kgDM/km²].
 	typedef std::map<HerbivoreInterface*, ForageMass> ForageDistribution;
 
 	/// Base class for herbivore forage in a habitat.
@@ -195,7 +195,7 @@ namespace Fauna{
 
 			//@{
 			/// \brief Dry matter forage biomass over the whole 
-			/// area [kgDM/m²].
+			/// area [kgDM/km²].
 			double get_mass()const{return dry_matter_mass;}
 			/** \throw std::invalid_argument if dm<0.0 */
 			void   set_mass(const double dm){
@@ -215,7 +215,7 @@ namespace Fauna{
 			/// Constructor with zero values
 			GrassForage():ForageBase(), fpc(0.0){}
 
-			/// Dry matter forage in the area covered by grass [kgDM/m²].
+			/// Dry matter forage in the area covered by grass [kgDM/km²].
 			/** Note that this is always greater or equal than \ref dry_matter_mass */
 			double get_sward_density()const{
 				if (get_fpc() == 0)
@@ -250,7 +250,7 @@ namespace Fauna{
 		/// The grass forage in the habitat.
 		GrassForage grass;
 
-		/// Get dry matter mass [kgDM/m²] for all forage types.
+		/// Get dry matter mass [kgDM/km²] for all forage types.
 		ForageMass get_mass()const;
 
 		/// Total forage in the habitat.

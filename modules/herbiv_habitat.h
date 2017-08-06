@@ -33,7 +33,7 @@ namespace Fauna{
 		/** Destructor must be virtual in an interface. */
 		virtual ~Habitat(){}
 
-		/// Get dry-matter biomass [kg/m²] that is available to herbivores to eat.
+		/// Get dry-matter biomass [kgDM/km²] that is available to herbivores to eat.
 		virtual HabitatForage get_available_forage() const = 0;
 
 		/// Get the herbivore populations in the habitat.
@@ -54,7 +54,7 @@ namespace Fauna{
 		 * The base class implements only adding the eaten forage
 		 * to the output. Any derived class should call this (the parent‘s)
 		 * function and do forage removal afterwards.
-		 * \param eaten_forage Dry matter leaf forage [kg/m²],
+		 * \param eaten_forage Dry matter leaf forage [kgDM/km²],
 		 * must not exceed available forage.
 		 * \throw std::logic_error if `eaten_forage` exceeds
 		 * available forage (**to be implemented in derived classes**).

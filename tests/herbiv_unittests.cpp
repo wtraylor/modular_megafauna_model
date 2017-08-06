@@ -45,7 +45,7 @@ namespace {
 				hft(hft), ind_per_km2(ind_per_km2), bodymass(bodymass){}
 			
 			virtual void eat(const ForageType forage_type,
-					const double kg_per_m2,
+					const double kg_per_km2,
 					const double digestibility){}
 
 			virtual double get_bodymass() const{return 1.0;}
@@ -330,7 +330,7 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 
 	// PREPARE AVAILABLE FORAGE
 	HabitatForage available;
-	const double MASS_GRASS = 1.0; // [kg/m²]
+	const double MASS_GRASS = 1.0; // [kg/km²]
 	available.grass.set_mass(MASS_GRASS);
 	// add new forage types here
 
