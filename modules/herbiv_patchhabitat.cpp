@@ -114,7 +114,7 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	}
 
 	// sum of the new grass forage after eating [kg/km²]
-	const double new_grass = old_grass - eaten_forage.get_grass();
+	const double new_grass = old_grass - eaten_forage[FT_GRASS];
 
 	// Assertions
 	assert(old_grass >= 0.0);

@@ -13,6 +13,7 @@
 #include "herbiv_herbivore.h"     // for HerbivoreInterface
 #include "herbiv_hft.h"           // for Hft and HftList
 #include "herbiv_parameters.h"    // for Fauna::Parameters
+#include "herbiv_population.h"   // for HftPopulationsMap and PopulationInterface
 #include <stdexcept>              // for std::logic_error, std::invalid_argument
 
 using namespace Fauna;
@@ -136,6 +137,7 @@ void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
 
 			// available forage in the habitat [kgDM/km²]
 			const HabitatForage available_forage = habitat.get_available_forage();
+			const Digestibility digestibility = available_forage.get_digestibility();
 
 			// loop through all herbivores: simulate and get forage demands
 			for (HerbivoreVector::iterator itr_h=herbivores.begin();
@@ -173,18 +175,20 @@ void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
 			ForageDistribution& forage_portions = forage_demand;
 
 			// let the herbivores eat
-			ForageMass eaten_forage; // [kgDM/km²]
+			ForageMass eaten_forage; // sum of eaten forage [kgDM/km²]
 			for (ForageDistribution::iterator iter=forage_portions.begin();
 					iter != forage_portions.end(); iter++)
 			{
 				const ForageMass& portion = iter->second; // [kgDM/km²]
+				HerbivoreInterface& herbivore = *(iter->first);
 
-				// TODO make this generic for all forage types
-				iter->first->eat(FT_GRASS, 
-						portion.get_grass(),
-						available_forage.grass.get_digestibility());
+				if (herbivore.get_ind_per_km2() > 0.0) {
+					// feed this herbivore
+					herbivore.eat(portion, digestibility);
 
-				eaten_forage += portion;
+					// increment the sum of eaten forage
+					eaten_forage += portion;
+				} 
 			}
 
 			// Finally: remove the eaten forage
@@ -254,8 +258,13 @@ void DistributeForageEqually::operator()(
 		ForageMass&      portion = itr->second; // output
 
 		// calculate the right portion for each forage type
-		if (demand_sum.get_grass() != 0.0)
-			portion.set_grass( avail_mass.get_grass() * 
-					demand.get_grass() / demand_sum.get_grass());
+		for (ForageMass::const_iterator itr_ft = demand.begin();
+				itr_ft != demand.end(); itr_ft++){
+			const ForageType ft = itr_ft->first;
+
+			if (demand_sum[ft] != 0.0)
+				portion.set(ft,  avail_mass[ft] * 
+						demand[ft] / demand_sum[ft]);
+		}
 	}
 }

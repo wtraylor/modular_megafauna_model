@@ -17,10 +17,10 @@ const double GetNetEnergyContentDefault::ME_COEFFICIENT_GRASS
 const double GetNetEnergyContentDefault::DIGESTION_EFFICIENCY_HINDGUTS
 = 0.93;
 
-double GetNetEnergyContentDefault::operator()(
+double GetNetEnergyContentDefault::get_per_forage_type(
 		const ForageType forage_type, const double digestibility)const{
 	if (!(digestibility>=0.0 && digestibility <= 1.0))
-		throw std::invalid_argument("Fauna::GetNetEnergyContentDefault::operator()() "
+		throw std::invalid_argument("Fauna::GetNetEnergyContentDefault() "
 				"Digestibility out of range");
 
 	// PREPARE VARIABLES
@@ -31,9 +31,9 @@ double GetNetEnergyContentDefault::operator()(
 		return 0.0; 
 	else if (forage_type == FT_GRASS) {
 		ME = digestibility * ME_COEFFICIENT_GRASS;
-	// Add new forage types here
+	// ADD NEW FORAGE TYPES HERE
 	} else
-		throw std::logic_error("Fauna::GetNetEnergyContentDefault::operator()() "
+		throw std::logic_error("Fauna::GetNetEnergyContentDefault() "
 				"Forage type is not implemented");
 
 	const double e = digestion_efficiency;

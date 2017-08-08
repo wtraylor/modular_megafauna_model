@@ -33,6 +33,38 @@
 	}
 @enduml
 
+@startuml (id=forage_classes)
+	hide members
+	hide methods
+	namespace Fauna{
+		class ForageBase{
+			digestibility
+			mass
+		}
+		show ForageBase members
+		class GrassForage{
+			fpc
+			sward_density
+		}
+		show GrassForage members
+		ForageBase <|-- GrassForage
+		class HabitatForage
+		HabitatForage *->GrassForage
+		enum ForageValueType{
+			POSITIVE_AND_ZERO
+			ZERO_TO_ONE
+		}
+		show ForageValueType members
+		class ForageValues< ForageValueType >
+		ForageValueType -- ForageValues
+		enum ForageType{
+			FT_GRASS,
+			FT_INEDIBLE
+		}
+		show ForageType members
+	}
+@enduml
+
 @startuml (id=herbivore_classes)
 	hide members
 	hide methods
@@ -129,6 +161,70 @@
 		show HerbivoreInterface members
 		abstract Habitat
 		Habitat            <|-left- PatchHabitat
+	}
+@enduml
+
+@startuml (id=new_forage_type)
+	namespace Fauna{
+		enum ForageType {
+			FT_GRASS,
+			FT_NEWFORAGE
+		}
+		ParamReader   ..> ForageType : <<use>>
+		abstract ForageBase
+		class NewForage{
+			your_custom_members
+		}
+		NewForage <|-- ForageBase
+		class HabitatForage{
+			get_total()
+			merge()
+		}
+		HabitatForage *--> NewForage
+		HerbivoreBase ..> HabitatForage : <<use>>
+		interface GetDigestibility
+		class PatchHabitat{
+			get_available_forage()
+			reduce_forage_mass()
+		}
+		PatchHabitat ..> HabitatForage : <<use>>
+	}
+	FaunaSim.SimpleHabitat  ..> Fauna.HabitatForage : <<use>>
+	class Individual{
+		get_forage_mass()
+	}
+	Fauna.PatchHabitat          ..> Individual       : <<use>>
+	Fauna.GetDigestibility      ..> Individual       : <<use>>
+	GuessOutput.HerbivoryOutput ..> Fauna.NewForage  : <<use>>
+@enduml
+
+@startuml (id=new_herbivore_type)
+	namespace Fauna{
+		hide members
+		hide methods
+		interface HerbivoreInterface
+		class HerbivoreBase
+		HerbivoreInterface  <|-- HerbivoreBase
+		HerbivoreBase       <|-- HerbivoreIndividual
+		HerbivoreBase       <|-- HerbivoreCohort
+		HerbivoreInterface  <|-- NewHerbivore
+		interface PopulationInterface
+		PopulationInterface <|-- NewPopulation
+		NewPopulation        ..> NewHerbivore : create & manage
+	}
+@enduml
+
+@startuml (id=net_energy_content)
+	hide members
+	hide methods
+	namespace Fauna{
+		enum NetEnergyModel{
+			NM_DEFAULT
+		}
+		Hft *--> NetEnergyModel
+		interface GetNetEnergyContentInterface <<strategy>>
+		GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
+		HerbivoreBase ..> GetNetEnergyContentInterface : <<create>>
 	}
 @enduml
 

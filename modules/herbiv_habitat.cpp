@@ -23,6 +23,7 @@ void Habitat::init_day(const int today){
 	if (today<0 || today >= 365)
 		throw std::invalid_argument( "Fauna::Habitat::init_day() "
 				"Parameter \"today\" is out of range.");
+	day_of_year = today;
 	// TODO
 }
 

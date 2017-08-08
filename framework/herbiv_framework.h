@@ -80,9 +80,6 @@ namespace Fauna{
 			DistributeForage& distribute_forage();
 	};
 
-	/// Map defining which herbivore gets what to eat.
-	typedef std::map<HerbivoreInterface*, ForageMass> ForageDistribution;
-
 	/// Interface for a forage distribution algorithm
 	/** \see \ref sec_strategy */
 	class DistributeForage{

@@ -22,15 +22,17 @@ namespace Fauna {
 
 		/// Proportional carbon content in dry matter forage
 		/** 
-		 * Needed to convert \ref Individual::cmass_leaf  and \ref Individual::anpp 
-		 * to dry matter forage biomass.
-		 * Does not need to be defined if \ref forage_type is \ref Fauna::FT_INEDIBLE.
+		 * Needed to convert \ref Individual::cmass_leaf  and 
+		 * \ref Individual::anpp to dry matter forage biomass.
+		 * Does not need to be defined if \ref forage_type is 
+		 * \ref Fauna::FT_INEDIBLE.
 		 */
 		double c_in_dm_forage;
 
 		/// Fractional digestibility of herbivore forage for ruminants
 		/** 
-		 * Does not need to be defined if \ref forage_type is \ref Fauna::FT_INEDIBLE.
+		 * Does not need to be defined if \ref forage_type is 
+		 * \ref Fauna::FT_INEDIBLE.
 		 * \see sec_herbiv_digestibility
 		 */
 		double digestibility;

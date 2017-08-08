@@ -12,8 +12,9 @@
 using namespace Fauna;
 
 
-const double GetDigestiveLimitIllius1992::operator()(
+const ForageEnergy GetDigestiveLimitIllius1992::operator()(
 		const double bodymass,
-		const double digestibility)const{
+		const Digestibility& digestibility)const{
 	// TODO
+	return ForageEnergy();
 }

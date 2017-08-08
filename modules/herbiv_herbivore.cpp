@@ -135,7 +135,7 @@ void HerbivoreBase::apply_mortality_factors_today(){
 
 	}
 	// make sure that mortality does not exceed 1.0
-	mortality_sum = min(1.0, mortality_sum);
+	mortality_sum = fmin(1.0, mortality_sum);
 
 	// Call pure virtual function, which is implemented by derived
 	// classes
@@ -154,20 +154,29 @@ ComposeDietInterface& HerbivoreBase::compose_diet()const{
 	}
 }
 
-void HerbivoreBase::eat(const ForageType forage_type,
-		const double kg_per_km2, const double digestibility){
+void HerbivoreBase::eat(				
+		const ForageMass& kg_per_km2,
+		const Digestibility& digestibility){
+	if (get_ind_per_km2() == 0.0 && kg_per_km2 == 0.0)
+		throw std::logic_error("Fauna::HerbivoreBase::eat() "
+				"This herbivore has no individuals and cannot be fed.");
+
 	// convert forage from *per km²* to *per individual*
-	const double kg = kg_per_km2 / get_ind_per_km2();
+	assert( get_ind_per_km2() != 0.0 );
+	const ForageMass kg = kg_per_km2 / get_ind_per_km2();
 
 	// net energy in the forage [MJ]
-	const double net_energy = kg * 
-		get_net_energy_content()(forage_type, digestibility);
+	// Divide mass by energy content and set any forage with zero
+	// energy content to zero mass.
+	const ForageEnergy net_energy = 
+		kg.divide_safely(get_net_energy_content()( digestibility ), 0.0);
 
-	get_energy_budget().metabolize_energy(net_energy);
+	// send energy to energy model
+	get_energy_budget().metabolize_energy(net_energy.sum());
 }
 
 double HerbivoreBase::get_bodyfat()const{
-	return get_energy_budget().get_fatmass()/get_bodymass();
+	return get_energy_budget().get_fatmass() / get_bodymass();
 }
 
 double HerbivoreBase::get_bodymass() const{
@@ -192,36 +201,40 @@ double HerbivoreBase::get_lean_bodymass()const{
 ForageMass HerbivoreBase::get_max_foraging(
 		const HabitatForage& available_forage)const{
 
-	ForageMass result; // [kgDM/ind/day]
+
+	const Digestibility digestibility = available_forage.get_digestibility();
 
 	// set the maximum, and then let the foraging limit algorithms
 	// reduce the maximum by using fmin()
-	result = DBL_MAX;
+	ForageMass result(DBL_MAX); // [kgDM/ind/day]
 
 	// Go through all forage intake limits
 	std::set<ForagingLimit>::const_iterator itr;
 	for (itr=get_hft().foraging_limits.begin(); 
 			itr!=get_hft().foraging_limits.end(); itr++) {
+
 		if (*itr == FL_DIGESTION_ILLIUS_1992) {
+			// static function object
 			static GetDigestiveLimitIllius1992 get_digestive_limit(
 					get_bodymass_adult(), get_hft().digestion_type);
-			// this algorithm doesn’t differentiate between forage types
-			// energy (MJ) needs to be converted to mass (kg) by using
-			// get_net_energy_content
 
-			// GRASS
-			const double grass_energy = get_digestive_limit(
-					get_bodymass(),
-					available_forage.grass.get_digestibility());
-			const double grass_mass = grass_energy / 
-				get_net_energy_content()(
-						FT_GRASS,
-						available_forage.grass.get_digestibility());
-			result.set_grass(fmin(result.get_grass(), grass_mass));
+			// calculate the digestive limit
+			const ForageEnergy limit_MJ = 
+				get_digestive_limit( get_bodymass(), digestibility);
 
-			// more forage types here for illius1992
+			// Convert from energy to mass
+			const ForageEnergyContent energy_content = 
+				get_net_energy_content()( digestibility);
+			// kg * MJ/kg = kg; where zero values remain zero values even
+			// on division by zero.
+			const ForageMass limit_kg = 
+				limit_MJ.divide_safely(energy_content, 0.0);
+
+			// Set the maximum foraging limit
+			result.min(limit_kg);
+
 		} else
-			// add more limits here in new if-statements
+			// ADD MORE LIMITS HERE IN NEW IF-STATEMENTS
 			throw std::logic_error("Fauna::HerbivoreBase::get_forage_demands_ind() "
 					"One of the selected foraging limits is not implemented.");
 	}
@@ -233,15 +246,10 @@ ForageMass HerbivoreBase::get_forage_demands(
 
 	// ----------------- PREPARE VARIABLES ------------------------
 
-	ForageTypeMap energy_content; // [MJ/kg]
-	// iterate through forage types and calculate energy content
-	for (ForageTypeMap::iterator itr = energy_content.begin();
-			itr != energy_content.end(); itr++){
-		const ForageType ft = itr->first;
-		itr->second = get_net_energy_content()(
-				ft, 
-				available_forage[ft].get_digestibility());
-	}
+	const Digestibility digestibility = available_forage.get_digestibility();
+
+	const ForageEnergyContent energy_content = 
+		get_net_energy_content()(digestibility); // [MJ/kg]
 
 	// ----------------- HOW MUCH CAN BE FORAGED? -----------------
 
@@ -251,15 +259,7 @@ ForageMass HerbivoreBase::get_forage_demands(
 		HerbivoreBase::get_max_foraging(available_forage);
 
 	// energy equivalent to foragable_mass [MJ/ind]
-	ForageTypeMap foragable_energy; 
-
-	// iterate through forage types and convert mass to energy
-	for (ForageTypeMap::iterator itr = foragable_energy.begin();
-			itr != foragable_energy.end(); itr++) {
-		const ForageType ft = itr->first;
-		// convert kg to MJ
-		itr->second = foragable_mass[ft] * energy_content[ft];
-	}
+	const ForageEnergy foragable_energy = foragable_mass * energy_content; 
 
 	// ----------------- COMPOSE DIET -----------------------------
 
@@ -269,25 +269,14 @@ ForageMass HerbivoreBase::get_forage_demands(
 		+ get_energy_budget().get_max_anabolism_per_day();
 
 	// compose the diet according to preferences
-	const ForageTypeMap diet_energy = compose_diet()(
+	const ForageEnergy diet_energy = compose_diet()(
 			foragable_energy,
 			total_energy_demands);
 
 	// now convert energy back to mass
-
-	ForageMass diet_mass; // [kg/ind]
-
-	for (ForageTypeMap::const_iterator itr = diet_energy.begin();
-			itr != diet_energy.end(); itr++) {
-		const ForageType ft = itr->first;
-		const double energy = itr->second; // [MJ/ind]
-		// convert MJ to kg
-		if (energy_content[ft] != 0.0)
-			diet_mass.set(ft, energy / energy_content[ft]);
-		else
-			diet_mass.set(ft, 0.0);
-		assert(diet_mass[ft] >= 0.0);
-	}
+	// Any forage type with zero energy content will get zero mass.
+	const	ForageMass diet_mass = 
+		diet_energy.divide_safely(energy_content, 0.0); // [kg/ind]
 
 	// Finally: Convert the demand per individual [kg/ind]
 	// to demand per area [kg/km²]
@@ -337,7 +326,7 @@ double HerbivoreBase::get_potential_bodymass()const{
 			birth_leanmass / (1.0 - get_hft().bodyfat_max);
 
 		// age fraction from birth to physical maturity
-		assert(maturity_age >= 0.0);
+		assert(maturity_age > 0.0);
 		const double fraction = 
 			(double) get_age_days() / (maturity_age*365.0);
 

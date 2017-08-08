@@ -18,6 +18,7 @@
 #include "herbiv_outputclasses.h"
 #include "herbiv_parameters.h"
 #include "herbiv_paramreader.h"
+#include "herbiv_population.h"
 #include "herbiv_reproduction.h"
 #include "herbiv_testhabitat.h" 
 #include <memory> // for std::auto_ptr
@@ -44,9 +45,9 @@ namespace {
 					const double bodymass=30.0):
 				hft(hft), ind_per_km2(ind_per_km2), bodymass(bodymass){}
 			
-			virtual void eat(const ForageType forage_type,
-					const double kg_per_km2,
-					const double digestibility){}
+			virtual void eat(
+					const ForageMass& kg_per_km2,
+					const Digestibility& digestibility){}
 
 			virtual double get_bodymass() const{return 1.0;}
 
@@ -330,17 +331,17 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 
 	// PREPARE AVAILABLE FORAGE
 	HabitatForage available;
-	const double MASS_GRASS = 1.0; // [kg/km²]
-	available.grass.set_mass(MASS_GRASS);
-	// add new forage types here
+	const double AVAIL = 1.0; // [kg/km²]
+	for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+			ft != FORAGE_TYPES.end(); ft++)
+		available[*ft].set_mass(AVAIL);
 
 	// our distrubition functor
 	DistributeForageEqually distribute;
 
 	SECTION("less demanded than available"){
 		// SET DEMANDS
-		ForageMass IND_DEMAND;
-		IND_DEMAND.set_grass(MASS_GRASS/(IND_TOTAL+1));
+		const ForageMass IND_DEMAND(AVAIL/(IND_TOTAL+1));
 		// add new forage types here
 		for (ForageDistribution::iterator itr = demands.begin();
 				itr != demands.end(); itr++) {
@@ -373,8 +374,7 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 			DummyHerbivore* pherbivore = (DummyHerbivore*) itr->first;
 			// define a demand that is in total somewhat higher than
 			// what’s available and varies among the herbivores
-			ForageMass ind_demand;
-			ind_demand.set_grass(MASS_GRASS / IND_TOTAL 
+			ForageMass ind_demand(AVAIL / IND_TOTAL 
 					* (1.0 + (i%5)/5)); // just arbitrary
 			pherbivore->set_demand(ind_demand);
 			itr->second = ind_demand;
@@ -389,24 +389,31 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 		// each herbivore must have approximatly its equal share
 		ForageMass sum;
 		for (ForageDistribution::iterator itr = demands.begin();
-				itr != demands.end(); itr++) {
+				itr != demands.end(); itr++) 
+		{
 			DummyHerbivore* pherbivore = (DummyHerbivore*) itr->first;
 			CHECK( itr->second != pherbivore->get_demand() );
 			sum += itr->second;
 			// check each forage type individually because Approx()
 			// is not defined for ForageMass
-			{ // GRASS
-				const double ind_portion = itr->second.get_grass();
-				const double ind_demand = pherbivore->get_demand().get_grass();
-				const double tot_portion = available.grass.get_mass();
-				const double tot_demand = total_demand.get_grass();
+			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+					ft != FORAGE_TYPES.end(); ft++) {
+				const double ind_portion = itr->second[*ft];
+				const double ind_demand  = pherbivore->get_demand()[*ft];
+				const double tot_portion = available.get_mass()[*ft];
+				const double tot_demand  = total_demand[*ft];
+				REQUIRE( tot_portion != 0.0 );
+				REQUIRE( tot_demand  != 0.0 );
 				CHECK( ind_portion/tot_portion 
 						== Approx(ind_demand/tot_demand).epsilon(0.05) );
 			}
-			// add more forage types here
 		}
 		// The sum may never exceed available forage
-		CHECK( sum.get_grass() <= available.grass.get_mass() );
+		for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++) 
+		{ 
+			CHECK( sum[*ft] <= available.get_mass()[*ft] );
+		}
 		CHECK( sum <= available.get_mass() );
 	}
 }
@@ -506,55 +513,82 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 	}
 }
 
-TEST_CASE("Fauna::ForageMass", "") {
-	ForageMass fm;
+TEST_CASE("Fauna::ForageValues", "") {
+	// Not all functions are tested here, only the
+	// exceptions for invalid values, the constructors, and
+	// get, set, and sum.
+	SECTION("positive and zero"){
+		CHECK_THROWS( ForageValues<POSITIVE_AND_ZERO>(-1.0) );
+		CHECK_THROWS( ForageValues<POSITIVE_AND_ZERO>(NAN) );
+		CHECK_THROWS( ForageValues<POSITIVE_AND_ZERO>(INFINITY) );
 
-	// Initialization
-	REQUIRE( Approx(fm.sum()) == 0.0);
+		// zero initialization
+		ForageValues<POSITIVE_AND_ZERO> fv;
+		CHECK(fv.sum()         == Approx(0.0));
+		CHECK( fv[FT_GRASS]    == 0.0 );
 
-	// exceptions
-	CHECK_THROWS( fm.set_grass(-1.0) );
-	CHECK_THROWS( fm.set_grass(NAN) );
+		// exceptions
+		CHECK_THROWS( fv.get(FT_INEDIBLE) );
+		CHECK_THROWS( fv[ FT_INEDIBLE ] );
+		CHECK_THROWS( fv.set(FT_GRASS, -1.0) );
+		CHECK_THROWS( fv.set(FT_GRASS, NAN) );
+		CHECK_THROWS( fv.set(FT_GRASS, INFINITY) );
+		CHECK_THROWS( fv / 0.0 );
+		CHECK_THROWS( fv /= 0.0 );
 
-	// test other forage types here, too
+		const double G = 2.0;
+		fv.set(FT_GRASS, G);
+		CHECK( fv.get(FT_GRASS) == G );
+		CHECK( fv[FT_GRASS]     == G );
+		CHECK( fv.sum()         == G ); // because only grass changed
 
+		// assignment
+		ForageValues<POSITIVE_AND_ZERO> fv2 = fv;
+		CHECK( fv2           == fv );
+		CHECK( fv2[FT_GRASS] == fv[FT_GRASS] );
+		CHECK( fv2.sum()     == fv.sum() );
 
-	const double GRASS = 2.0;
-	fm.set_grass(GRASS);
-	REQUIRE( Approx(fm.sum()) == fm.get_grass() );
+		// value initialization
+		const double V = 3.0;
+		ForageValues<POSITIVE_AND_ZERO> fv3(V);
+		CHECK( fv3[FT_GRASS]     == V );
+		CHECK( fv3.sum()         == FORAGE_TYPES.size() * V );
 
-	SECTION( "assignment" ){
-		fm = 2.0;
-		CHECK(fm.get_grass() == 2.0);
+		// Sums
+		CHECK( (fv+fv).sum()  == Approx(fv.sum()+fv.sum()) );
+		CHECK( (fv2+fv).sum() == Approx(fv2.sum()+fv.sum()) );
+		CHECK( (fv3+fv).sum() == Approx(fv3.sum()+fv.sum()) );
 	}
-	SECTION( "addition" ){
-		const double A = 12.0;
-		ForageMass fm2;
-		fm2 = A;
 
-		CHECK((fm+fm2).get_grass() == GRASS+A); 
+	SECTION("Comparison"){
+		ForageValues<POSITIVE_AND_ZERO> fv1(0.0);
+		ForageValues<POSITIVE_AND_ZERO> fv2(1.0);
+		ForageValues<POSITIVE_AND_ZERO> fv3(fv2);
 
-		fm += fm2;
-		CHECK(fm.get_grass() == GRASS+A);
+		CHECK( fv1 < fv2 );
+		CHECK( fv1 <= fv2 );
+		CHECK( fv2 >= fv1 );
+		CHECK( fv2 > fv1 );
+
+		CHECK( fv2 == fv3 );
+		CHECK( fv2 <= fv3 );
+		CHECK( fv2 >= fv3 );
 	}
-	SECTION( "multiplication" ){
-		const double F = 1.5;
 
-		CHECK((fm*F).get_grass() == GRASS*F);
-
-		fm *= F;
-		CHECK(fm.get_grass() == GRASS*F);
+	// Minimums
+	SECTION("Minimums") {
+		ForageValues<POSITIVE_AND_ZERO> a(1.0);
+		ForageValues<POSITIVE_AND_ZERO> b(2.0);
+		CHECK( a.min(a) == a );
+		CHECK( a.min(b) == b.min(a) );
+		CHECK( a.min(b) == a );
 	}
-	SECTION( "division" ){
-		CHECK_THROWS(fm/0.0);
-		CHECK_THROWS(fm/=0.0);
 
-		const double D = 1.5;
-
-		CHECK((fm/D).get_grass() == GRASS/D);
-
-		fm /= D;
-		CHECK(fm.get_grass() == GRASS/D);
+	SECTION("zero to one"){
+		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(-1.0) );
+		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(1.1) );
+		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(NAN) );
+		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(INFINITY) );
 	}
 }
 
@@ -593,18 +627,15 @@ TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {
 	GetNetEnergyContentDefault ne_ruminant(DT_RUMINANT);
 	GetNetEnergyContentDefault ne_hindgut(DT_HINDGUT);
 
-	// exceptions
-	CHECK_THROWS(ne_ruminant(FT_GRASS, -1.0));
-	CHECK_THROWS(ne_ruminant(FT_GRASS, 2.0));
-
-	CHECK(ne_ruminant(FT_INEDIBLE, 0.5) == 0.0);
+	const Digestibility DIG1(0.5);
+	const Digestibility DIG2(0.3);
 
 	// higher digestibility ==> more energy
-	CHECK(ne_ruminant(FT_GRASS, 0.5) > ne_ruminant(FT_GRASS, 0.3));
-	CHECK(ne_hindgut(FT_GRASS, 0.5) > ne_hindgut(FT_GRASS, 0.3));
+	CHECK( ne_ruminant(DIG1) > ne_ruminant(DIG2) );
+	CHECK( ne_hindgut(DIG1) > ne_hindgut(DIG2) );
 
 	// hindguts have lower efficiency
-	CHECK(ne_hindgut(FT_GRASS, 0.5) < ne_ruminant(FT_GRASS, 0.5));
+	CHECK( ne_ruminant(DIG1) > ne_hindgut(DIG2) );
 }
 
 TEST_CASE("Fauna::get_random_fraction", "") {
@@ -696,69 +727,77 @@ TEST_CASE("Fauna::HabitatForage", "") {
 	REQUIRE( hf1.get_total().get_digestibility()   == Approx(0.0) );
 
 	SECTION( "adding forage" ) {
-		hf1.grass.set_mass(10.0);
+		const double GRASSMASS = 10.0;
+		hf1.grass.set_mass(GRASSMASS);
 		hf1.grass.set_digestibility(0.5);
 		hf1.grass.set_fpc(0.3);
 
-		REQUIRE( hf1.get_total().get_mass() == 10.0 );
+		// Check value access
+		REQUIRE( hf1.grass.get_mass() == GRASSMASS );
+		CHECK(   hf1.grass.get_mass() == hf1.get_mass()[FT_GRASS] );
+		REQUIRE( hf1.get_total().get_mass() == GRASSMASS );
+		CHECK( hf1.get_total().get_mass() 
+				== Approx(hf1.get_mass().sum()) );
 		REQUIRE( hf1.get_total().get_digestibility()   == 0.5 );
 
+		// Is sward density calculated correctly?
 		REQUIRE( Approx( hf1.grass.get_sward_density() )
 				== hf1.grass.get_mass() / hf1.grass.get_fpc());
 
 		std::vector<const HabitatForage*> hf_vector;
 		hf_vector.push_back(&hf1);
 
-		SECTION( "merging 2 similar forage objects" ) { 
-			HabitatForage hf2 = hf1;
-			hf_vector.push_back(&hf2); 
-			const HabitatForage m = HabitatForage::merge(hf_vector);
-
-			// There should be no change in the average 
-
-			// dry matter
-			CHECK( Approx(m.grass.get_mass())       
-					== hf1.grass.get_mass() );
-			CHECK( Approx(m.get_total().get_mass()) 
-					== hf1.get_total().get_mass() );
-
-			// digestibility
-			CHECK( Approx(m.grass.get_digestibility())         
-					== hf1.grass.get_digestibility() );
-			CHECK( Approx(m.get_total().get_digestibility())   
-					== hf1.get_total().get_digestibility() );
-
-			// For FPC-specific values the same:
-			CHECK( Approx(m.grass.get_fpc())           
-					== hf1.grass.get_fpc() );
-			CHECK( Approx(m.grass.get_sward_density()) 
-					== hf1.grass.get_sward_density() );
-		}
-
-		SECTION( "merging 2 forage objects with different mass and fpc" ) {
-			HabitatForage hf2 = hf1;
-			hf2.grass.set_mass(20.0);
-			hf2.grass.set_fpc(0.6);
-
-			hf_vector.push_back(&hf2);
-
-			const HabitatForage m = HabitatForage::merge(hf_vector);
-
-			CHECK( Approx(m.grass.get_mass()) 
-					== (hf1.grass.get_mass() + hf2.grass.get_mass()) / 2.0);
-			CHECK( Approx(m.grass.get_fpc()) 
-					== (hf1.grass.get_fpc() + hf2.grass.get_fpc()) / 2.0);
-
-			CHECK( Approx(m.grass.get_digestibility())
-					== (hf1.grass.get_digestibility() * hf1.grass.get_mass()
-						+ hf2.grass.get_digestibility() * hf2.grass.get_mass())
-					/ (hf1.grass.get_mass() + hf2.grass.get_mass() ));
-
-			CHECK( Approx(m.grass.get_sward_density())
-					== (hf1.grass.get_sward_density() * hf1.grass.get_fpc()
-						+ hf2.grass.get_sward_density() * hf2.grass.get_fpc())
-					/ (hf1.grass.get_fpc() + hf2.grass.get_fpc()) );
-		}
+		// TODO: Is merge() still in use: test it!
+		// SECTION( "merging 2 similar forage objects" ) { 
+		// 	HabitatForage hf2 = hf1;
+		// 	hf_vector.push_back(&hf2); 
+		// 	const HabitatForage m = HabitatForage::merge(hf_vector);
+    //
+		// 	// There should be no change in the average 
+    //
+		// 	// dry matter
+		// 	CHECK( Approx(m.grass.get_mass())       
+		// 			== hf1.grass.get_mass() );
+		// 	CHECK( Approx(m.get_total().get_mass()) 
+		// 			== hf1.get_total().get_mass() );
+    //
+		// 	// digestibility
+		// 	CHECK( Approx(m.grass.get_digestibility())         
+		// 			== hf1.grass.get_digestibility() );
+		// 	CHECK( Approx(m.get_total().get_digestibility())   
+		// 			== hf1.get_total().get_digestibility() );
+    //
+		// 	// For FPC-specific values the same:
+		// 	CHECK( Approx(m.grass.get_fpc())           
+		// 			== hf1.grass.get_fpc() );
+		// 	CHECK( Approx(m.grass.get_sward_density()) 
+		// 			== hf1.grass.get_sward_density() );
+		// }
+    //
+		// SECTION( "merging 2 forage objects with different mass and fpc" ) {
+		// 	HabitatForage hf2 = hf1;
+		// 	hf2.grass.set_mass(20.0);
+		// 	hf2.grass.set_fpc(0.6);
+    //
+		// 	hf_vector.push_back(&hf2);
+    //
+		// 	const HabitatForage m = HabitatForage::merge(hf_vector);
+    //
+		// 	CHECK( Approx(m.grass.get_mass()) 
+		// 			== (hf1.grass.get_mass() + hf2.grass.get_mass()) / 2.0);
+		// 	CHECK( Approx(m.grass.get_fpc()) 
+		// 			== (hf1.grass.get_fpc() + hf2.grass.get_fpc()) / 2.0);
+    //
+		// 	CHECK( Approx(m.grass.get_digestibility())
+		// 			== (hf1.grass.get_digestibility() * hf1.grass.get_mass()
+		// 				+ hf2.grass.get_digestibility() * hf2.grass.get_mass())
+		// 			/ (hf1.grass.get_mass() + hf2.grass.get_mass() ));
+    //
+		// 	CHECK( Approx(m.grass.get_sward_density())
+		// 			== (hf1.grass.get_sward_density() * hf1.grass.get_fpc()
+		// 				+ hf2.grass.get_sward_density() * hf2.grass.get_fpc())
+		// 			/ (hf1.grass.get_fpc() + hf2.grass.get_fpc()) );
+		// }
 	}
 }
 
@@ -1563,27 +1602,27 @@ TEST_CASE("FaunaSim::SimpleHabitat", "") {
 		const HabitatForage avail = habitat.get_available_forage();
 
 		SECTION("Remove some forage"){
-			ForageMass eaten;
-			eaten.set_grass(avail.grass.get_mass() * 0.5);
+			const ForageMass eaten = avail.get_mass() * 0.5;
 			habitat.remove_eaten_forage(eaten);
-			CHECK( habitat.get_available_forage().grass.get_mass()
-					== Approx(avail.grass.get_mass() - eaten.get_grass()) );
-			// more forage types here
+			// check each forage type with Approx()
+			for (ForageMass::const_iterator i=eaten.begin();
+					i != eaten.end(); i++)
+				CHECK( habitat.get_available_forage().get_mass()[i->first]
+						== Approx(avail.get_mass()[i->first] - i->second));
 		}
 
 		SECTION("Remove all forage"){
-			ForageMass eaten;
-			eaten.set_grass(avail.grass.get_mass());
+			const ForageMass eaten = avail.get_mass();
 			habitat.remove_eaten_forage(eaten);
-			CHECK( habitat.get_available_forage().grass.get_mass() == 0.0);
-			// more forage types here
+			for (ForageMass::const_iterator i=eaten.begin();
+					i != eaten.end(); i++)
+				CHECK( habitat.get_available_forage().get_mass()[i->first]
+						== Approx(0.0));
 		}
 
 		SECTION("Remove more forage than is available"){
-			ForageMass too_much;
-			too_much.set_grass(avail.grass.get_mass() * 1.1);
+			const ForageMass too_much = avail.get_mass() * 1.1;
 			CHECK_THROWS( habitat.remove_eaten_forage(too_much) );
-			// more forage types here
 		}
 	}
 

@@ -13,7 +13,7 @@
 #include <stdexcept>
 
 namespace Fauna{
-	/// Get a random number in the interval [0.0,1.0]
+	/// Get a random number in the interval [0,1]
 	/**
 	 * For stochastic mortality.
 	 *
@@ -24,7 +24,7 @@ namespace Fauna{
 		// initialize random seed
 		srand (time(NULL));
 		return (double) rand() / RAND_MAX;
-}
+	}
 
 
 

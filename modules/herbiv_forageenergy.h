@@ -16,20 +16,39 @@ namespace Fauna {
 
 	/// Interface for strategy to get net energy content of forage.
 	/** \see \ref sec_strategy */
-	struct GetNetEnergyContentInterface{
-		/// Get net energy content of the forage [MJ/kgDM]
-		/**
-		 * \param forage_type The type of forage.
-		 * \param digestibility Proportional digestibility.
-		 * \return Net energy content [MJ/kgDM]. Zero if
-		 * `forage_type==FT_INEDIBLE`.
-		 * \throw std::invalid_argument If digestbility out of
-		 * range.
-		 * \throw std::logic_error If `forage_type` not implemented.
-		 */
-		virtual double operator()(
-				const ForageType forage_type,
-				const double digestibility)const = 0;
+	class GetNetEnergyContentInterface{
+		public:
+			/// Get net energy content of the forage [MJ/kgDM]
+			/**
+			 * \param digestibility Proportional digestibility.
+			 * \return Net energy content [MJ/kgDM]. 
+			 */
+			virtual ForageEnergyContent operator()(
+					const Digestibility& digestibility)const{
+				ForageEnergyContent result;
+				// loop through all forage types and call abstract method.
+				for(Digestibility::const_iterator itr = digestibility.begin();
+						itr != digestibility.end(); itr++)
+				{
+					const double NE = get_per_forage_type(
+							itr->first, itr->second);
+					result.set(itr->first, NE);
+				}
+				return result;
+			}
+
+		protected:
+			/// Get net energy content for one forage type [MJ/kgDM]
+			/**
+			 * \param forage_type The type of forage, guaranteed to be
+			 * not \ref FT_INEDIBLE.
+			 * \param digestibility Proportional digestibility,
+			 * guaranteed to be in [0,1].
+			 * \return Net energy content [MJ/kgDM]. 
+			 */
+			virtual double get_per_forage_type(
+					const ForageType forage_type,
+					const double digestibility)const = 0;
 			
 	};
 
@@ -57,20 +76,6 @@ namespace Fauna {
 				digestion_efficiency( digestion_type==DT_RUMINANT ? 1.0 : DIGESTION_EFFICIENCY_HINDGUTS )
 						{}
 
-			/// Get net energy content of the forage [MJ/kgDM]
-			/**
-			 * \param forage_type The type of forage.
-			 * \param digestibility Proportional digestibility.
-			 * \return Net energy content [MJ/kgDM]. Zero if
-			 * `forage_type==FT_INEDIBLE`.
-			 * \throw std::invalid_argument If digestbility out of
-			 * range.
-			 * \throw std::logic_error If `forage_type` not implemented.
-			 */
-			double operator()(
-					const ForageType forage_type,
-					const double digestibility)const;
-			
 			/// Metabolizable energy coefficient of grass [MJ/kgDM]
 			/** 
 			 * Givens et al. (1989, p. 39)\cite givens_digestibility_1989 :
@@ -107,6 +112,13 @@ namespace Fauna {
 			 * Here, the last figure is used.
 			 */
 			static const double DIGESTION_EFFICIENCY_HINDGUTS;
+
+		protected:
+			// Interface implementation.
+			double get_per_forage_type(
+					const ForageType forage_type,
+					const double digestibility)const;
+			
 		private:
 			const double digestion_efficiency;
 	};

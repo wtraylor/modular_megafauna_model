@@ -9,10 +9,12 @@
 #define HERBIV_FORAGING_H
 
 #include <vector>
-#include <string>       // for forage type names
-#include "herbiv_hft.h" // for DigestionType
+#include <string>                 // for forage type names
+#include "herbiv_hft.h"           // for DigestionType
+#include "herbiv_forageclasses.h" // for ForageEnergy
 
 namespace Fauna{
+
 	// TODO
 	class GetHalfMaxForagingLimit{
 		public:
@@ -70,9 +72,9 @@ namespace Fauna{
 			 * forage
 			 * \return maximum energy intake [MJ/day/ind]
 			 */
-			const double operator()(
+			const ForageEnergy operator()(
 					const double bodymass,
-					const double digestibility)const;
+					const Digestibility& digestibility)const;
 		private:
 			double bodymass_adult;        // constant
 			DigestionType digestion_type; // constant

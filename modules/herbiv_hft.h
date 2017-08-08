@@ -53,7 +53,7 @@ namespace Fauna{
 	/// One way how a herbivore can die.
 	enum MortalityFactor{
 		/// Independent background mortality for juveniles and adults.
-		/** \see \ref Fauna::GetBackgroundMortality */
+		/** \see \ref GetBackgroundMortality */
 		MF_BACKGROUND,
 		/// A herbivore dies if its age exceeds \ref Hft::lifespan.
 		/** \see \ref Fauna::GetSimpleLifespanMortality */

@@ -9,11 +9,9 @@
 #define HERBIV_HABITAT_H
 
 #include "herbiv_forageclasses.h" // for ForageMass
-#include "herbiv_population.h"    // for HftPopulationsMap
 #include <cassert>                // for assert()
+#include <list>                   // for HabitatList
 #include <memory>                 // for std::auto_ptr
-#include <stdexcept>              // for get_populations
-#include <vector>                 // for merging data vectors
 
 
 namespace Fauna{
@@ -21,6 +19,7 @@ namespace Fauna{
 	// Forward declaration of classes in the same namespace
 	class HerbivoreInterface; 
 	class Hft;
+    class HftPopulationsMap;
 
 	/// Abstract class of a spatial unit populated by herbivores
 	/** 
@@ -37,7 +36,10 @@ namespace Fauna{
 		virtual HabitatForage get_available_forage() const = 0;
 
 		/// Get the herbivore populations in the habitat.
-		HftPopulationsMap& get_populations(){ return *populations; }
+		HftPopulationsMap& get_populations(){ 
+            assert( populations.get() != NULL );
+            return *populations; 
+        }
 		
 		/// Update at the start of the day.
 		/** 

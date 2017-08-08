@@ -27,7 +27,30 @@ Overview {#sec_herbiv_designoverview}
 Forage Classes {#sec_herbiv_forageclasses}
 ------------------------------------------
 
-\todo Explain why different forage classes
+The model is designed to make implementation of multiple types of forage (like grass, browse, moss, etc.) easy.
+Each forage type is listed in \ref Fauna::ForageType.
+The global constant \ref Fauna::FORAGE_TYPES holds all entries of this enum.
+
+The template class \ref Fauna::ForageValues serves as a multi-purpose container for any forage-specific values.
+Many arithmetic operators are defined to perform calculations over all forage types at once.
+For any specific use of the class, a typedef is defined, e.g. \ref Fauna::ForageMass or \ref Fauna::Digestibility.
+This helps to directly see in the code what a variable contains.
+
+Forage types need to have specific model properties.
+Grass, for instance, has the property *sward density,* which would not make sense for leaves of trees.
+Therefore, a second set of forage classes is defined with one class for each forage type.
+All these classes inherit from \ref Fauna::ForageBase.
+
+Any type-specific properties are defined by \ref Fauna::Habitat::get_available_forage().
+They can be used for example in algorithms of 
+[forage distribution](\ref Fauna::DistributeForage),
+[diet composition](\ref Fauna::ComposeDietInterface), or
+[foraging limits](\ref herbiv_foraging.h).
+
+@startuml "Forage classes in the herbivory module."
+	!include herbiv_diagrams.iuml!forage_classes
+@enduml
+
 \see \ref sec_herbiv_new_forage_type
 
 The Herbivore {#sec_herbiv_herbivoredesign}
