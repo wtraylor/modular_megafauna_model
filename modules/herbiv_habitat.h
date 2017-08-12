@@ -9,22 +9,27 @@
 #define HERBIV_HABITAT_H
 
 #include "herbiv_forageclasses.h" // for ForageMass
+#include "herbiv_outputclasses.h" // for FaunaOut::HabitatOutput
 #include <cassert>                // for assert()
 #include <list>                   // for HabitatList
 #include <memory>                 // for std::auto_ptr
 
+namespace FaunaOut{
+	class HabitatData;
+}
 
 namespace Fauna{
 
 	// Forward declaration of classes in the same namespace
 	class HerbivoreInterface; 
 	class Hft;
-    class HftPopulationsMap;
+	class HftPopulationsMap;
 
 	/// Abstract class of a spatial unit populated by herbivores
 	/** 
-	 * \note While this base class implements the output functions,
-	 * any derived class is responsible to add its own output.
+	 * \note While this base class implements the basic output 
+	 * functions, any derived class is responsible to add its 
+	 * own output.
 	 */
 	class Habitat{
 	public: 
@@ -61,11 +66,18 @@ namespace Fauna{
 		 * \throw std::logic_error if `eaten_forage` exceeds
 		 * available forage (**to be implemented in derived classes**).
 		 */
-		virtual void remove_eaten_forage(const ForageMass& eaten_forage);
+		virtual void remove_eaten_forage(const ForageMass& eaten_forage){
+			todays_output().eaten_forage += eaten_forage;
+		}
 
-		//-----------------------------------------------
-		/** @{ \name Output routines. */
-		/** @} */ // Output routines
+		/// Get output data that has been aggregated since the last call.
+		/**
+		 * Each day, the output data is aggregated over time.
+		 * When this function is called, it will return the aggregated
+		 * data and reset its internal state to blank.
+		 * \return Aggregated output data. 
+		 */
+		FaunaOut::HabitatData retrieve_output();
 
 		/// The current day as set by \ref init_day().
 		/** \see Date::day */
@@ -79,7 +91,17 @@ namespace Fauna{
 		 * \throw std::invalid_argument If `populations` is NULL.
 		 */
 		Habitat(std::auto_ptr<HftPopulationsMap> populations);
+
+		/// Add output for each day into this object.
+		FaunaOut::HabitatData& todays_output(){
+			return current_output;
+		}
 	private:
+		/// Add \ref current_output to \ref aggregated_output.
+		void aggregate_todays_output();
+
+		FaunaOut::HabitatData aggregated_output;
+		FaunaOut::HabitatData current_output;
 		int day_of_year; 
 		std::auto_ptr<HftPopulationsMap> populations;
 	};

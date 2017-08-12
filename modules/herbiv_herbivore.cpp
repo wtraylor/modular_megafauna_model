@@ -98,6 +98,12 @@ HerbivoreBase& HerbivoreBase::operator=(const HerbivoreBase& other){
 	return *this; 
 }
 
+void HerbivoreBase::aggregate_todays_output(){
+	if (todays_output().datapoint_count > 0)
+		aggregated_output.merge(todays_output());
+	todays_output().reset();
+}
+
 void HerbivoreBase::apply_mortality_factors_today(){
 	// Sum of death proportions today. Because different mortality
 	// factors are thought to be mutually exclusive (i.e. each death
@@ -110,27 +116,39 @@ void HerbivoreBase::apply_mortality_factors_today(){
 			itr != get_hft().mortality_factors.end(); itr++){
 
 		if (*itr == MF_BACKGROUND) {
-			static const GetBackgroundMortality background(
+			const GetBackgroundMortality background(
 					get_hft().mortality_juvenile,
 					get_hft().mortality);
-			mortality_sum += background(get_age_days());
+			const double mortality = background(get_age_days());
+			mortality_sum += mortality;
+			// output:
+			todays_output().mortality[MF_BACKGROUND] = mortality;
 		}
 
 		if (*itr == MF_LIFESPAN) {
-			static const GetSimpleLifespanMortality lifespan(
+			const GetSimpleLifespanMortality lifespan(
 					get_hft().lifespan);
-			mortality_sum += lifespan(get_age_days());
+			const double mortality = lifespan(get_age_days());
+			mortality_sum += mortality;
+			// output:
+			todays_output().mortality[MF_LIFESPAN] = mortality;
 		}
 
 		if (*itr == MF_STARVATION_ILLIUS2000) {
 			static const GetStarvationMortalityIllius2000 starv_illius;
 			const double body_condition = get_fatmass()/get_max_fatmass();
-			mortality_sum += starv_illius(body_condition);
+			const double mortality = starv_illius(body_condition);
+			mortality_sum += mortality;
+			// output:
+			todays_output().mortality[MF_STARVATION_ILLIUS2000] = mortality;
 		}
 
 		if (*itr == MF_STARVATION_THRESHOLD) {
 			static const GetStarvationMortalityThreshold starv_thresh;
-			mortality_sum += starv_thresh(get_bodyfat());
+			const double mortality = starv_thresh(get_bodyfat());
+			mortality_sum += mortality;
+			// output:
+			todays_output().mortality[MF_STARVATION_THRESHOLD] = mortality;
 		}
 
 	}
@@ -163,16 +181,19 @@ void HerbivoreBase::eat(
 
 	// convert forage from *per km²* to *per individual*
 	assert( get_ind_per_km2() != 0.0 );
-	const ForageMass kg = kg_per_km2 / get_ind_per_km2();
+	const ForageMass kg_per_ind = kg_per_km2 / get_ind_per_km2();
 
 	// net energy in the forage [MJ]
 	// Divide mass by energy content and set any forage with zero
 	// energy content to zero mass.
 	const ForageEnergy net_energy = 
-		kg.divide_safely(get_net_energy_content()( digestibility ), 0.0);
+		kg_per_ind.divide_safely(get_net_energy_content( digestibility ), 0.0);
 
 	// send energy to energy model
 	get_energy_budget().metabolize_energy(net_energy.sum());
+
+	// Add to output
+	todays_output().eaten_forage += kg_per_ind;
 }
 
 double HerbivoreBase::get_bodyfat()const{
@@ -214,8 +235,8 @@ ForageMass HerbivoreBase::get_max_foraging(
 			itr!=get_hft().foraging_limits.end(); itr++) {
 
 		if (*itr == FL_DIGESTION_ILLIUS_1992) {
-			// static function object
-			static GetDigestiveLimitIllius1992 get_digestive_limit(
+			// function object
+			GetDigestiveLimitIllius1992 get_digestive_limit(
 					get_bodymass_adult(), get_hft().digestion_type);
 
 			// calculate the digestive limit
@@ -224,7 +245,7 @@ ForageMass HerbivoreBase::get_max_foraging(
 
 			// Convert from energy to mass
 			const ForageEnergyContent energy_content = 
-				get_net_energy_content()( digestibility);
+				get_net_energy_content( digestibility);
 			// kg * MJ/kg = kg; where zero values remain zero values even
 			// on division by zero.
 			const ForageMass limit_kg = 
@@ -249,7 +270,7 @@ ForageMass HerbivoreBase::get_forage_demands(
 	const Digestibility digestibility = available_forage.get_digestibility();
 
 	const ForageEnergyContent energy_content = 
-		get_net_energy_content()(digestibility); // [MJ/kg]
+		get_net_energy_content(digestibility); // [MJ/kg]
 
 	// ----------------- HOW MUCH CAN BE FORAGED? -----------------
 
@@ -291,22 +312,26 @@ double HerbivoreBase::get_max_fatmass() const{
 	return get_potential_bodymass() * get_hft().bodyfat_max;
 }
 
-GetNetEnergyContentInterface& HerbivoreBase::get_net_energy_content()const{
-	switch(get_hft().net_energy_model){
-		case NE_DEFAULT:
-			static GetNetEnergyContentDefault get_default(
-					get_hft().digestion_type);
-			return get_default;
-			// add new net energy models here
-		default: throw std::logic_error(
-								 "Fauna::HerbivoreBase::get_net_energy_content() "
-								 "Selected net energy model not implemented.");
-	}
+ForageEnergyContent HerbivoreBase::get_net_energy_content(					
+		const Digestibility& digestibility)const{
+
+	if (get_hft().net_energy_model == NE_DEFAULT){
+		const GetNetEnergyContentDefault get_default(
+				get_hft().digestion_type);
+		return get_default(digestibility);
+
+		// ADD NEW NET ENERGY MODELS HERE
+		// in new if statements
+	}else
+		throw std::logic_error(
+				"Fauna::HerbivoreBase::get_net_energy_content() "
+				"Selected net energy model not implemented.");
+
 }
 
 double HerbivoreBase::get_potential_bodymass()const{
 	// age of physical maturity in years
-	static const double maturity_age =
+	const double maturity_age =
 			((get_sex()==SEX_MALE) ? 
 			get_hft().maturity_age_phys_male
 			: get_hft().maturity_age_phys_female);
@@ -317,12 +342,12 @@ double HerbivoreBase::get_potential_bodymass()const{
 		// CALCULATE BODY MASS FOR PRE-ADULTS
 
 		// lean weight at birth
-		static const double birth_leanmass = 
+		const double birth_leanmass = 
 			get_hft().bodymass_birth * (1.0-get_hft().bodyfat_birth);
 
 		// potential full mass at birth
 		assert( 1.0-get_hft().bodyfat_max > 0.0 );
-		static const double birth_potmass =
+		const double birth_potmass =
 			birth_leanmass / (1.0 - get_hft().bodyfat_max);
 
 		// age fraction from birth to physical maturity
@@ -331,7 +356,7 @@ double HerbivoreBase::get_potential_bodymass()const{
 			(double) get_age_days() / (maturity_age*365.0);
 
 		// difference from birth to adult
-		static const double difference = 
+		const double difference = 
 			get_bodymass_adult() - birth_potmass;
 
 		return birth_potmass + fraction * difference;
@@ -355,22 +380,33 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 	if (get_sex() == SEX_MALE ||
 			get_age_years() >= get_hft().maturity_age_sex) 
 		return 0.0;
+
 	// choose the model
-	switch (get_hft().reproduction_model) {
-		case RM_ILLIUS_2000:
-			static const ReproductionIllius2000 illius_2000(
-					get_hft().breeding_season_start,
-					get_hft().breeding_season_length,
-					get_hft().reproduction_max);
-			return illius_2000.get_offspring_density(
-					get_today(), 
-					get_energy_budget().get_fatmass()/get_max_fatmass());
-		default:
+	if (get_hft().reproduction_model == RM_ILLIUS_2000){
+		const ReproductionIllius2000 illius_2000(
+				get_hft().breeding_season_start,
+				get_hft().breeding_season_length,
+				get_hft().reproduction_max);
+		return illius_2000.get_offspring_density(
+				get_today(), 
+				get_energy_budget().get_fatmass()/get_max_fatmass());
+		// ADD NEW MODELS HERE
+		// in new if statements
+	} else
 			throw std::logic_error(
 					"Fauna::HerbivoreBase::get_todays_offspring_proportion() "
 					"Reproduction model not implemented.");
 
-	}
+}
+
+FaunaOut::HerbivoreData HerbivoreBase::retrieve_output(){
+	// Add current output to aggregation
+	aggregate_todays_output(); 
+	// Call copy constructor
+	FaunaOut::HerbivoreData result(aggregated_output);
+	// reset aggregated output
+	aggregated_output.reset();
+	return result;
 }
 
 void HerbivoreBase::simulate_day(const int day, double& offspring){
@@ -387,11 +423,23 @@ void HerbivoreBase::simulate_day(const int day, double& offspring){
 	/// - Update maximum fat mass in \ref Fauna::FatmassEnergyBudget.
 	get_energy_budget().set_max_fatmass(get_max_fatmass());
 
+	/// - Aggregate old output.
+	aggregate_todays_output();
+
+	/// - Add new output.
+	todays_output().datapoint_count = 1; // one single day’s data
+	todays_output().inddens         = get_ind_per_km2();
+	todays_output().age_years       = get_age_years();
+	todays_output().massdens        = get_kg_per_km2();
+	todays_output().bodyfat         = get_bodyfat();
+
 	/// - Catabolize fat to compensate unmet energy needs.
 	get_energy_budget().catabolize_fat();
 	
 	/// - Add energy needs for today.
-	get_energy_budget().add_energy_needs(get_todays_expenditure());
+	const double todays_expenditure = get_todays_expenditure();
+	get_energy_budget().add_energy_needs(todays_expenditure);
+	todays_output().expenditure = todays_expenditure;
 
 	/// - Calculate offspring.
 	offspring = get_todays_offspring_proportion()*get_ind_per_km2();

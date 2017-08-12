@@ -26,7 +26,7 @@ namespace Fauna {
 	 * instantiating and releasing.
 	 *
 	 * @startuml "Dependencies of Fauna::PatchHabitat" 
-	 * !include herbiv_diagrams!patchhabitat
+	 * !include herbiv_diagrams.iuml!patchhabitat
 	 * @enduml
 	 * \note There are no unit tests for this class because the
 	 * class \ref Patch cannot reasonably be instantiated in a

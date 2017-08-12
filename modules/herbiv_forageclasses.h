@@ -14,7 +14,6 @@
 #include <set>       // for FORAGE_TYPES
 #include <stdexcept>
 #include <string>    // for forage type names
-#include <vector>    // for HabitatForage::merge()
 
 namespace Fauna{
 	class HerbivoreInterface; // for ForageDistribution
@@ -26,6 +25,33 @@ namespace Fauna{
 		/// Plants that are not edible for herbivores.
 		FT_INEDIBLE 
 	};
+
+	/// Build weighted average of two numbers.
+	/**
+	 * \throw std::invalid_argument If one weight is smaller than
+	 * zero.
+	 * \throw std::invalid_argument If the sum of weights is zero.
+	 * \throw std::invalid_argument If one weight is NAN or INFINITY.
+	 * \note `NAN` is checked by `weight_a != weight_a`, but this
+	 * might not work if compiled with `g++` with the option
+	 * `-fastmath`.
+	 */
+	inline double average(const double a, const double b,
+			const double weight_a=1.0, const double weight_b=1.0){
+		if (weight_a < 0.0 || weight_b < 0.0)
+			throw std::invalid_argument("Fauna::average() "
+					"Weight must be >=0.0");
+		if (weight_a != weight_a || weight_b != weight_b)
+			throw std::invalid_argument("Fauna::average() "
+					"Weight is NAN");
+		if (weight_a == INFINITY || weight_b == INFINITY)
+			throw std::invalid_argument("Fauna::average() "
+					"Weight is INFINITY");
+		if (weight_a + weight_b == 0.0)
+			throw std::invalid_argument("Fauna::average() "
+					"Sum of weights is zero.");
+		return (a*weight_a + b*weight_b) / (weight_a + weight_b);
+	}
 
 	/// Set with all enum entries of \ref ForageType.
 	/**
@@ -42,8 +68,15 @@ namespace Fauna{
 	 */
 	extern const std::set<ForageType> FORAGE_TYPES;
 
-	/// Get a short, lowercase identifier for a forage type.
-	std::string get_forage_type_name(const ForageType ft);
+	/// Get a short, lowercase string identifier for a forage type.
+	/** The names are 
+	 * - unique,
+	 * - lowercase, 
+	 * - without blank spaces or tabs, newlines etc.,
+	 * - without the output column header separation character 
+	 *   \ref GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR.
+	 */
+	const std::string& get_forage_type_name(const ForageType);
 
 	/// Describes which values are allowed in \ref Fauna::ForageValues.
 	enum ForageValueTag{
@@ -132,10 +165,27 @@ namespace Fauna{
 							"Forage type not implemented or invalid.");
 			}
 
+			/// Merge this object with another one by building (weighted) means.
+			/**
+			 * \param other Other object to merge into this one.
+			 * \param this_weight Weight of this object’s values.
+			 * \param other_weight Weight of the other object’s values.
+			 * \return This object. 
+			 * \throw std::invalid_argument The same as \ref average().
+			 * \see \ref Fauna::average().
+			 */
+			ForageValues<tag>& merge(const ForageValues<tag>& other,
+					const double this_weight=1.0, const double other_weight=1.0){
+				for (const_iterator i=other.begin(); i!=other.end(); i++)
+					set(i->first, 
+							average((*this)[i->first], i->second,
+								this_weight, other_weight));
+			}
+
 			/// For each forage type, take the minimum value.
 			/** \param other The object to compare this object with. 
 			 * \return This object. */
-			const ForageValues<tag>& min(const ForageValues<tag>& other){
+			ForageValues<tag>& min(const ForageValues<tag>& other){
 				if (&other == this) return *this;
 				for (const_iterator i=other.begin(); i!=other.end(); i++)
 					set(i->first, fmin(get(i->first), i->second));
@@ -359,31 +409,35 @@ namespace Fauna{
 			/// Constructor with zero values
 			ForageBase():digestibility(0.0), dry_matter_mass(0.0){}
 
-			//@{
 			/// Fractional digestibility of the biomass for ruminants.
-			/** Digestibility as measured *in-vitro* with rumen liquor.  */
+			/** Digestibility as measured *in-vitro* with rumen liquor. */
 			double get_digestibility() const{return digestibility;}
-			/** \throw std::invalid_argument if not `0.0<=d<=1.0`*/
+
+			/// Dry matter forage biomass over the whole area [kgDM/km²].
+			double get_mass()const{return dry_matter_mass;}
+
+			/** \copydoc get_digestibility() 
+			 * \throw std::invalid_argument if not `0.0<=d<=1.0`*/
 			void   set_digestibility(const double d){
 				if (d<0.0 || d>1.0)
 					throw std::invalid_argument("Fauna::ForageBase::set_digestibility(): "
 							"digestibility out of range");
 				digestibility = d;
 			}
-			//@}
 
-			//@{
-			/// \brief Dry matter forage biomass over the whole 
-			/// area [kgDM/km²].
-			double get_mass()const{return dry_matter_mass;}
-			/** \throw std::invalid_argument if dm<0.0 */
+			/** \copydoc get_mass()
+			 * \throw std::invalid_argument if dm<0.0 */
 			void   set_mass(const double dm){
 				if (dm<0.0)
 					throw std::invalid_argument("Fauna::ForageBase::set_mass(): "
 							"dry matter is smaller than zero");
 				dry_matter_mass = dm;
 			}
-			//@}
+
+		protected:
+			/** \copydoc ForageValues::merge() */
+			ForageBase& merge_base(const ForageBase& other,
+					const double this_weight, const double other_weight);
 	};
 
 	/// Grass forage in a habitat.
@@ -404,17 +458,21 @@ namespace Fauna{
 				return sd;
 			}
 
-			//@{
 			/// Grass-covered area as a fraction of the habitat [fractional].
 			double get_fpc()const{return fpc;}
-			/** \throw std::invalid_argument if not `0.0<=f<=1.0`*/
-			void   set_fpc(const double f){
+
+			/// \copydoc ForageValues::merge()
+			GrassForage& merge(const GrassForage& other,
+					const double this_weight, const double other_weight);
+
+			/** \copydoc get_fpc()
+			 * \throw std::invalid_argument if not `0.0<=f<=1.0`*/
+			void set_fpc(const double f){
 				if(!( f>=0.0 && f<=1.0))
 					throw std::invalid_argument("Fauna::GrassForage::set_fpc() "
 							"fpc out of valid range (0.0–1.0)");
 				fpc=f;
 			}
-			//@}
 	};
 
 	/// All values for large herbivore forage in a \ref Habitat.
@@ -424,6 +482,8 @@ namespace Fauna{
 
 		/// The grass forage in the habitat.
 		GrassForage grass;
+
+		// ADD NEW FORAGE TYPES (E.G. BROWSE) HERE.
 
 		/// Get digestibility [fractional] for all edible forage types.
 		Digestibility get_digestibility()const;
@@ -436,21 +496,11 @@ namespace Fauna{
 		 * If mass is zero, digestibility is also zero.*/
 		ForageBase get_total() const;
 
-		// Add other forage types (e.g. browse) here.
+		/// \copydoc ForageValues::merge()
+		HabitatForage& merge(const HabitatForage& other,
+				const double this_weight, const double other_weight);
 
-		/// Build averages for the forage over a dataset in space or time.
-		/** 
-		 * The data is implemented as a vector of pointers to avoid
-		 * unnecessary copying.
-		 * Digestibility is a weighted average scaled by DM mass;
-		 * if total mass of the dataset is zero, the unweighted average
-		 * is taken.
-		 * \note This function assumes that the habitats have the same area! 
-		 * \throw std::invalid_argument if `data.empty()`
-		 */
-		static HabitatForage merge(const std::vector<const HabitatForage*> data);
-
-		/// @{ \brief Reference to forage object by forage type.
+		/// Reference to forage object by forage type.
 		/** 
 		 * \param ft Forage type.
 		 * \return Polymorphic reference to forage class object.
@@ -463,10 +513,13 @@ namespace Fauna{
 				case FT_INEDIBLE: 
 											 static ForageBase empty;
 											 return empty;
-				default: throw std::logic_error("Fauna::HabitatForage::operator[]() "
+				default: throw std::logic_error(
+										 "Fauna::HabitatForage::operator[]()const "
 										 "Forage Type is not implemented.");
 			}
 		}
+
+		/** \copydoc operator[]() */
 		ForageBase& operator[](const ForageType ft){
 			switch (ft){
 				case FT_GRASS: return grass;
@@ -478,7 +531,6 @@ namespace Fauna{
 										 "Forage Type is not implemented.");
 			}
 		}
-		/** @} */ // operator[]()
 	};
 }
 #endif //HERBIV_FORAGECLASSES_H

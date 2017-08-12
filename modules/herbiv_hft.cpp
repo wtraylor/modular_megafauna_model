@@ -9,6 +9,7 @@
 
 #include "config.h"
 #include "herbiv_hft.h"
+#include "herbiv_outputmodule.h" // for GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR
 #include "herbiv_parameters.h"
 #include <sstream> // for is_valid() messages
 
@@ -48,7 +49,18 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 	std::ostringstream stream;
 
 	if (name=="") {
-		stream << "name is empty" << std::endl;
+		stream << "name is empty." << std::endl;
+		is_valid = false;
+	}
+	if (name.find(' ') != std::string::npos ||
+			name.find(',') != std::string::npos ||
+			name.find(GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR)
+			!= std::string::npos)
+	{
+		stream << "name contains a forbidden character. " << 
+			"(' ', ',', or '"<<
+			GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR<<"')" 
+			<< std::endl;
 		is_valid = false;
 	}
 

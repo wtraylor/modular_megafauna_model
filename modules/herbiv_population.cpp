@@ -31,8 +31,6 @@ void IndividualPopulation::create_offspring(const double ind_per_km2){
 		throw std::invalid_argument( "Fauna::IndividualPopulation::create() "
 				"ind_per_km2 < 0.0");
 
-	
-
 	// convert double to discrete integer
 	const int ind_count = round(
 			ind_per_km2 * create_individual.get_area_km2());
@@ -256,10 +254,9 @@ HerbivoreVector HftPopulationsMap::get_all_herbivores(){
 	// In order to reserve adequate space for the vector and thus
 	// avoid memory reallocation, we remember the vector size of the
 	// last call and use it as an estimate for this call.
-	static int last_size = 0;
 
 	HerbivoreVector result;
-	result.reserve( last_size*1.2 ); // reserve last size + some etra
+	result.reserve( last_all_herbivores_count*1.1 ); // reserve last size + some etra
 
 	for (iterator itr_pop = begin(); itr_pop != end(); itr_pop++){
 		// get herbivore vector from one population
@@ -268,7 +265,7 @@ HerbivoreVector HftPopulationsMap::get_all_herbivores(){
 		result.reserve( vec.size() + result.size() );
 		result.insert( result.end(), vec.begin(), vec.end() );
 	}
-	last_size = result.size();
+	last_all_herbivores_count = result.size();
 	return result;
 }
 

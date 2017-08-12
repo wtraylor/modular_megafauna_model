@@ -11,7 +11,6 @@
 
 #include "outputmodule.h"
 #include "gutil.h"           // for xtring
-#include <cassert>
 #include <memory>            // for std::auto_ptr
 #include <stdexcept>         // for std::invalid_argument
 
@@ -20,6 +19,9 @@ class Date;
 namespace Fauna{
 	class Habitat;
 	class HftList;
+}
+namespace FaunaOut{
+	class CombinedData;
 }
 
 namespace GuessOutput {
@@ -55,7 +57,7 @@ namespace GuessOutput {
 	/** 
 	 * If \ref deactivate() is called, all public methods will not
 	 * do anything anymore.
-	 * \see \ref sec_herbiv_output
+	 * \see \ref sec_herbiv_output (in particular \ref sec_herbiv_outputmodule)
 	 * \see \ref sec_herbiv_new_output
 	 * \see \ref sec_herbiv_limit_output
 	 */
@@ -70,6 +72,9 @@ namespace GuessOutput {
 			 * a second time.
 			 */
 			HerbivoryOutput();
+
+			/// Disable any activity all together.
+			void deactivate(){ isactive = false; }
 
 			/// Returns the one global instance of this class
 			/**
@@ -113,14 +118,17 @@ namespace GuessOutput {
 			 */
 			virtual void outdaily(Gridcell& gridcell);
 
-			/// Disable any activity all together.
-			void deactivate(){ isactive = false; }
-
 			/// Set the list of HFTs for creating tables.
 			/**
-			 * \throw std::invalid_argument If pointer is NULL•
+			 * The given \ref Fauna::HftList object is **copied** in order
+			 * to make sure that it stays the same. If a pointer to an
+			 * external HftList would be stored, that list could 
+			 * potentially change after the tables were defined, and that
+			 * would mess up the output.
+			 * \throw std::logic_error If the HFT list has already been
+			 * set.
 			 */
-			void set_hftlist(const Fauna::HftList*);
+			void set_hftlist(const Fauna::HftList&);
 
 			/// Set the strategy object that limits the output.
 			/** \throw std::invalid_argument if `ptr==NULL`*/
@@ -131,7 +139,18 @@ namespace GuessOutput {
 							"Received NULL as parameter");
 				include_date = ptr; 
 			}
-		protected:
+
+			/// How to connect different variables in column caption.
+			/** For example: “hft1“ and “grass” --> “hft1_grass” */
+			static const char CAPTION_SEPARATOR = '_';
+
+		private:
+			/// Width of one column in the output table.
+			static const int COLUMN_WIDTH = 12;
+
+			/// Value to insert for missing data.
+			static const double NA_VALUE;
+
 			/// Temporal aggregation interval (monthly, yearly, ...)
 			enum Interval{
 				/// Daily output
@@ -141,30 +160,84 @@ namespace GuessOutput {
 				/// Output every year
 				ANNUAL,
 				/// Output every 10 years 
-				//TODO
 				DECADAL
 			};
+			Interval interval; 
+			/// Interval parameter string as read from instruction file.
+			xtring interval_xtring; 
 
-			/// Width of one column in the output table.
-			static const int column_width = 8;
-
-			/// Temporal aggregation interval
-			Interval get_interval()const{return interval;}
-
-			/// Decimal precision for the values in the columns
-			double get_precision()const{return precision;}
-
+			static HerbivoryOutput* global_instance; 
+			std::auto_ptr<Fauna::HftList> hftlist;
 			/// The object limiting output. This is never NULL.
 			std::auto_ptr<IncludeDate> include_date;
-		private: 
-			static HerbivoryOutput* global_instance;
-
-			Interval interval;
-			/// Interval parameter string as read from instruction file.
-			xtring interval_xtring;
-
 			bool isactive;
 			int precision; 
+
+			/// Write one row into each table.
+			void write_datapoint( 
+					const double longitude, const double latitude,
+					const int day, const int year,
+					const FaunaOut::CombinedData& datapoint);
+		private: // tables
+			/// Selector for a set of columns in a table.
+			enum ColumnSelector{
+				CS_FORAGE,
+				CS_HABITAT,
+				CS_HFT,
+				CS_HFT_FORAGE
+			};
+			ColumnDescriptors get_columns(const ColumnSelector);
+
+			/// File and table descriptor for one output variable.
+			struct TableFile{
+				TableFile(
+						const char* paramname, 
+						const std::string& description,
+						const std::string& unit,
+						const ColumnSelector column_selector):
+					column_selector(column_selector),
+					paramname(paramname),
+					description(description),
+					unit(unit){}
+
+				ColumnSelector column_selector;
+				std::string description; // help text
+				std::string filename; // read as parameter
+				Table table;
+				std::string unit; // help text
+				const char* paramname; // for instruction file parameter
+				// NOTE: declare_parameter() in parameters.h takes
+				// a const char* as parameter name. To use std::string
+				// here and then convert it to char* with std::string::c_str()
+				// caused plib.h to not recognize the parameter. Therefore,
+				// the parameter name needs to be defined directly as
+				// const char*.
+			};
+			/// List of all \ref TableFile objects.
+			const std::vector<TableFile*> init_tablefiles();
+			const std::vector<TableFile*> TABLEFILES;
+
+			/** @{ \name Habitat output tables. */
+			// more to come, e.g. snow depth
+			/** */
+
+			/** @{ \name Forage output tables. */
+			TableFile TBL_AVAILABLE_FORAGE;
+			TableFile TBL_DIGESTIBILITY;
+			TableFile TBL_EATEN_FORAGE;
+			/** @} */
+
+			/** @{ \name HFT output tables.*/
+			TableFile TBL_BODYFAT;
+			TableFile TBL_EXPENDITURE;
+			TableFile TBL_INDDENS;
+			TableFile TBL_MASSDENS;
+			TableFile TBL_STARVATION;
+			/** @} */ 
+
+			/** @{ \name HFT–Forage output tables.*/
+			TableFile TBL_EATEN_IND;
+			/** @} */ 
 	};
 
 	/// Helper function to see if a day is the first of a month.

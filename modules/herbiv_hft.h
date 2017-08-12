@@ -103,8 +103,7 @@ namespace Fauna{
 			/// Unique name of the herbivore type.
 			std::string name;
 
-			/// \name Simulation Parameters
-			/**@{*/ // open doxygen group
+			/** @{ \name Simulation Parameters */
 
 			/// Proportional fat mass at birth [kg/kg].
 			double bodyfat_birth; 
@@ -145,10 +144,11 @@ namespace Fauna{
 			/// Maximum age in years [1–∞).
 			int lifespan;
 
-			/// @{ Age of physical maturity in years.
+			/// Age of physical maturity in years for females.
 			int maturity_age_phys_female;
+
+			/// Age of physical maturity in years for males.
 			int maturity_age_phys_male;
-			/// @}
 
 			/// Age of female sexual maturity in years.
 			int maturity_age_sex;

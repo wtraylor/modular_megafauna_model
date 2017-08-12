@@ -40,17 +40,25 @@ namespace Fauna{
 	 * time.
 	 *
 	 * \f[
-	 * I_{dig[MJ/day]} = i * e^{jd} * M_{ad}^(ke^d+0.73)_{[kg]} * u_g
+	 * I_{dig[MJ/day]} = i * e^{jd} * M_{ad}^{(ke^d+0.73)}_{[kg]} * u_g
 	 * \f]
 	 * - e: Euler number
 	 * - d: proportional digestibility
 	 * - \f$M_{ad}\f$: Adult body mass in kg
-	 * - \f$u_g = (M/M_{ad})^0.75\f$ is a scaling factor for
+	 * - \f$u_g = (M/M_{ad})^{0.75}\f$ is a scaling factor for
 	 *   gut capacity, introduced by Illius & Gordon (1999)
 	 *   \cite illius_scaling_1999
-	 * - Parameters i, j, and k are derived from regression analysis 
-	 * with 12 mammalian herbivores (0.05--547 kg) and are specific
-	 * to hindguts and ruminants.
+	 * - %Parameters i, j, and k are derived from regression analysis 
+	 *   with 12 mammalian herbivores (0.05--547 kg) and are specific
+	 *   to hindguts and ruminants (Shipley et al. 1999)
+	 *   \cite shipley_predicting_1999.
+	 *
+	 * Grass forage:
+	 * |     | Hindgut | Ruminant |
+	 * |-----|---------|----------|
+	 * | i   | 0.108   | 0.034    |
+	 * | j   | 3.284   | 3.565    |
+	 * | k   | 0.080   | 0.077    |
 	 */
 	class GetDigestiveLimitIllius1992{
 		public:
@@ -58,12 +66,11 @@ namespace Fauna{
 			/**
 			 * \param bodymass_adult Body mass [kg] at physical maturity.
 			 * \param digestion_type The herbivore’s digestion type.
+			 * \throw std::invalid_argument If `bodymass_adult<=0.0`.
 			 */
 			GetDigestiveLimitIllius1992( 
 					const double bodymass_adult,
-					const DigestionType digestion_type):
-				bodymass_adult(bodymass_adult),
-				digestion_type(digestion_type){}
+					const DigestionType digestion_type);
 
 			/// Get digestion-limited daily net energy intake [MJ/day/ind]
 			/**
@@ -71,6 +78,11 @@ namespace Fauna{
 			 * \param digestibility proportional digestibility of the
 			 * forage
 			 * \return maximum energy intake [MJ/day/ind]
+			 * \throw std::invalid_argument If `bodymass<=0.0`
+			 * \throw std::logic_error If `bodymass > bodymass_adult`.
+			 * \throw std::logic_error If `digestion_type` not implemented.
+			 * \throw std::logic_error If not all forage types are
+			 * implemented.
 			 */
 			const ForageEnergy operator()(
 					const double bodymass,

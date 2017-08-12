@@ -63,6 +63,10 @@ namespace {
 				return bodymass*ind_per_km2;
 			}
 
+			virtual FaunaOut::HerbivoreData retrieve_output(){
+				return FaunaOut::HerbivoreData();
+			}
+
 			virtual void simulate_day(const int day,
 					double& offspring){offspring=0.0;}
 		public:
@@ -189,6 +193,19 @@ namespace {
 
 
 // test cases in alphabetical order, please
+
+TEST_CASE("Fauna::average()", ""){
+	CHECK_THROWS( average(1.0,2.0, -1.0, 1.0) );
+	CHECK_THROWS( average(1.0,2.0, 1.0, -1.0) );
+	CHECK_THROWS( average(1.0,2.0, 0.0, 0.0) );
+	CHECK_THROWS( average(1.0,2.0, NAN, 1.0) );
+	CHECK_THROWS( average(1.0,2.0, 1.0, NAN) );
+	CHECK_THROWS( average(1.0,2.0, INFINITY, 1.0) );
+	CHECK_THROWS( average(1.0,2.0, 1.0, INFINITY) );
+	CHECK( average(1.0, 3.0) == Approx(2.0) );
+	CHECK( average(1.0, 1.0) == Approx(1.0) );
+	CHECK( average(-1.0, 1.0) == Approx(0.0) );
+}
 
 TEST_CASE("Fauna::CohortPopulation", "") {
 	// prepare parameters
@@ -525,7 +542,9 @@ TEST_CASE("Fauna::ForageValues", "") {
 		// zero initialization
 		ForageValues<POSITIVE_AND_ZERO> fv;
 		CHECK(fv.sum()         == Approx(0.0));
-		CHECK( fv[FT_GRASS]    == 0.0 );
+		for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			CHECK( fv[*ft] == 0.0 );
 
 		// exceptions
 		CHECK_THROWS( fv.get(FT_INEDIBLE) );
@@ -560,6 +579,13 @@ TEST_CASE("Fauna::ForageValues", "") {
 		CHECK( (fv3+fv).sum() == Approx(fv3.sum()+fv.sum()) );
 	}
 
+	SECTION("zero to one"){
+		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(-1.0) );
+		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(1.1) );
+		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(NAN) );
+		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(INFINITY) );
+	}
+
 	SECTION("Comparison"){
 		ForageValues<POSITIVE_AND_ZERO> fv1(0.0);
 		ForageValues<POSITIVE_AND_ZERO> fv2(1.0);
@@ -575,20 +601,38 @@ TEST_CASE("Fauna::ForageValues", "") {
 		CHECK( fv2 >= fv3 );
 	}
 
-	// Minimums
+	SECTION("Merging: positive and zero"){
+		const double V1 = 3.0;
+		const double V2 = 19.0;
+		ForageValues<POSITIVE_AND_ZERO> a(V1);
+		const ForageValues<POSITIVE_AND_ZERO> b(V2);
+		const double W1 = 12.0;
+		const double W2 = 23.0;
+		a.merge(b, W1, W2);
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			CHECK( a[*ft] == Approx((V1*W1+V2*W2)/(W2+W1)) );
+	}
+
+	SECTION("Merging: zero to one"){
+		const double V1 = 0.1;
+		const double V2 = 0.8;
+		ForageValues<POSITIVE_AND_ZERO> a(V1);
+		const ForageValues<POSITIVE_AND_ZERO> b(V2);
+		const double W1 = 12.0;
+		const double W2 = 23.0;
+		a.merge(b, W1, W2);
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			CHECK( a[*ft] == Approx((V1*W1+V2*W2)/(W2+W1)) );
+	}
+
 	SECTION("Minimums") {
 		ForageValues<POSITIVE_AND_ZERO> a(1.0);
 		ForageValues<POSITIVE_AND_ZERO> b(2.0);
 		CHECK( a.min(a) == a );
 		CHECK( a.min(b) == b.min(a) );
 		CHECK( a.min(b) == a );
-	}
-
-	SECTION("zero to one"){
-		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(-1.0) );
-		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(1.1) );
-		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(NAN) );
-		CHECK_THROWS( ForageValues<ZERO_TO_ONE>(INFINITY) );
 	}
 }
 
@@ -621,6 +665,77 @@ TEST_CASE("Fauna::GetBackgroundMortality", "") {
 	for (int d=365; d<2*365; d++)
 		surviving_adults *= (1.0 - get_mort(d));
 	CHECK( surviving_adults == Approx(1.0-ADULT) );
+}
+
+TEST_CASE("Fauna::GetDigestiveLimitIllius1992", "") {
+	CHECK_THROWS( GetDigestiveLimitIllius1992(-1.0, DT_RUMINANT) );
+	CHECK_THROWS( GetDigestiveLimitIllius1992(0.0, DT_RUMINANT) );
+
+	const Digestibility digestibility(0.5);
+
+	SECTION("exceptions"){
+		const Digestibility digestibility(0.5);
+		const double AD = 100.0;
+		GetDigestiveLimitIllius1992 rum(AD, DT_RUMINANT);
+		CHECK_THROWS( rum(AD+1, digestibility) );
+		CHECK_THROWS( rum(0.0, digestibility) );
+		CHECK_THROWS( rum(-1.0, digestibility) );
+	}
+
+	SECTION("pre-adult has less capacity"){
+		const double ADULT = 100.0;
+		GetDigestiveLimitIllius1992 rum(ADULT, DT_RUMINANT);
+		CHECK( rum(ADULT/2, digestibility) < rum(ADULT, digestibility) );
+		GetDigestiveLimitIllius1992 hind(ADULT, DT_HINDGUT);
+		CHECK( hind(ADULT/2, digestibility) < hind(ADULT, digestibility) );
+	}
+
+	SECTION("bigger animals have more capacity"){
+		const double AD1 = 100.0;
+		const double AD2 = AD1 * 1.4;
+		const Digestibility DIG(.5);
+		CHECK( GetDigestiveLimitIllius1992(AD1, DT_HINDGUT)(AD1, DIG)
+				<  GetDigestiveLimitIllius1992(AD2, DT_HINDGUT)(AD2, DIG));
+		CHECK( GetDigestiveLimitIllius1992(AD1, DT_RUMINANT)(AD1, DIG)
+				<  GetDigestiveLimitIllius1992(AD2, DT_RUMINANT)(AD2, DIG));
+	}
+
+	SECTION("higher digestibility brings higher capacity"){
+		const double ADULT = 100.0;
+		const Digestibility DIG1(.8);
+		const Digestibility DIG2(.9);
+		{ // RUMINANT
+			const GetDigestiveLimitIllius1992 rumi(ADULT, DT_RUMINANT);
+
+			INFO("Ruminant, digestibility="<<DIG1[FT_GRASS]);
+			INFO("grass: "<<rumi(ADULT,DIG1)[FT_GRASS]);
+
+			INFO("Ruminant, digestibility="<<DIG2[FT_GRASS]);
+			INFO("grass: "<<rumi(ADULT,DIG2)[FT_GRASS]);
+
+			CHECK( rumi(ADULT, DIG1) < rumi(ADULT, DIG2) );
+		}
+		{ // HINDGUT
+			const GetDigestiveLimitIllius1992 hind(ADULT, DT_HINDGUT);
+
+			INFO("Hindgut, digestibility="<<DIG1[FT_GRASS]);
+			INFO("grass: "<<hind(ADULT,DIG1)[FT_GRASS]);
+
+			INFO("Hindgut, digestibility="<<DIG2[FT_GRASS]);
+			INFO("grass: "<<hind(ADULT,DIG2)[FT_GRASS]);
+
+			CHECK( hind(ADULT, DIG1) < hind(ADULT, DIG2) );
+		}
+	}
+
+	SECTION("zero digestibility => zero energy"){
+		const double ADULT = 100.0;
+		const Digestibility ZERO(0.0);
+		CHECK( GetDigestiveLimitIllius1992(ADULT, DT_HINDGUT)(ADULT, ZERO)
+				== 0.0 );
+		CHECK( GetDigestiveLimitIllius1992(ADULT, DT_RUMINANT)(ADULT, ZERO)
+				== 0.0 );
+	}
 }
 
 TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {
@@ -711,12 +826,100 @@ TEST_CASE("Fauna::GetStarvationMortalityThreshold", "") {
 }
 
 TEST_CASE("Fauna::GrassForage", "") {
-	GrassForage grass;
-	CHECK_THROWS(grass.set_fpc(1.2));
-	CHECK_THROWS(grass.set_fpc(-0.2));
-	CHECK_THROWS(grass.set_mass(-0.2));
-	CHECK_THROWS(grass.set_digestibility(-0.2));
-	CHECK_THROWS(grass.set_digestibility(1.2));
+	// exceptions
+	CHECK_THROWS(GrassForage().set_fpc(1.2));
+	CHECK_THROWS(GrassForage().set_fpc(-0.2));
+	CHECK_THROWS(GrassForage().set_mass(-0.2));
+	CHECK_THROWS(GrassForage().set_digestibility(-0.2));
+	CHECK_THROWS(GrassForage().set_digestibility(1.2));
+
+	// initialization
+	CHECK( GrassForage().get_mass()          == 0.0 );
+	CHECK( GrassForage().get_digestibility() == 0.0 );
+	CHECK( GrassForage().get_fpc()           == 0.0 );
+
+	SECTION("sward density") {
+		CHECK( GrassForage().get_sward_density() == 0.0 );
+
+		GrassForage g;
+		const double FPC = .234;
+		const double MASS = 1256;
+		g.set_fpc(FPC);
+		g.set_mass(MASS);
+		CHECK( g.get_sward_density() == Approx(MASS / FPC) );
+	}
+
+	SECTION("merge"){
+		// merge some arbitrary numbers
+		GrassForage g1,g2;
+		const double W1 = 956;
+		const double W2 = 123;
+		const double M1 = 23;
+		const double M2 = 54;
+		const double D1 = 0.342;
+		const double D2 = 0.56;
+		const double F1 = 0.76;
+		const double F2 = 0.123;
+		g1.set_mass(M1);
+		g2.set_mass(M2);
+		g1.set_digestibility(D1);
+		g2.set_digestibility(D2);
+		g1.set_fpc(F1);
+		g2.set_fpc(F2);
+
+		g1.merge(g2, W1, W2);
+		CHECK( g1.get_mass()          == Approx(average(M1,M2,W1,W2)) );
+		CHECK( g1.get_digestibility() == Approx(average(D1,D2,W1,W2)) );
+		CHECK( g1.get_fpc()           == Approx(average(F1,F2,W1,W2)) );
+	}
+}
+
+TEST_CASE("Fauna::Habitat", "") {
+	// Since Habitat is an abstract class, we use the simple
+	// class DummyHabitat for testing the base class functionality.
+	
+	DummyHabitat habitat;
+
+	SECTION("init_day()") {
+		// init_day()
+		CHECK_THROWS( habitat.init_day(-1) );
+		CHECK_THROWS( habitat.init_day(365) );
+		const int DAY = 34;
+		habitat.init_day( DAY );
+		CHECK( habitat.get_day_public() == DAY );
+	}
+
+	SECTION("output") {
+		// initialized with zero output.
+		REQUIRE( habitat.retrieve_output().datapoint_count == 0 );
+
+		const int COUNT = 22; // day count (even number!)
+		const ForageMass EATEN_AVG(54); // eaten total per day
+		for (int i=0; i<COUNT; i++){
+			habitat.init_day(i);
+
+			// mix up the daily eaten forage, but keep the average the
+			// same
+			ForageMass eaten_today;
+			if (i%2 == 0) // on even days
+				eaten_today = EATEN_AVG * 0.5;
+			else // on odd days
+				eaten_today = EATEN_AVG * 1.5;
+
+			// remove twice in the same day
+			habitat.remove_eaten_forage(eaten_today*0.4);
+			habitat.remove_eaten_forage(eaten_today*0.6);
+		}
+
+		const HabitatData out = habitat.retrieve_output();
+		CHECK( out.datapoint_count == COUNT );
+		// Check eaten forage per day as a sample.
+		CHECK( out.eaten_forage[FT_GRASS] 
+				== Approx(EATEN_AVG[FT_GRASS]) );
+
+		// Now the output should be reset
+		CHECK( habitat.retrieve_output().datapoint_count == 0 );
+	}
 }
 
 TEST_CASE("Fauna::HabitatForage", "") {
@@ -739,66 +942,11 @@ TEST_CASE("Fauna::HabitatForage", "") {
 		CHECK( hf1.get_total().get_mass() 
 				== Approx(hf1.get_mass().sum()) );
 		REQUIRE( hf1.get_total().get_digestibility()   == 0.5 );
-
-		// Is sward density calculated correctly?
-		REQUIRE( Approx( hf1.grass.get_sward_density() )
-				== hf1.grass.get_mass() / hf1.grass.get_fpc());
-
-		std::vector<const HabitatForage*> hf_vector;
-		hf_vector.push_back(&hf1);
-
-		// TODO: Is merge() still in use: test it!
-		// SECTION( "merging 2 similar forage objects" ) { 
-		// 	HabitatForage hf2 = hf1;
-		// 	hf_vector.push_back(&hf2); 
-		// 	const HabitatForage m = HabitatForage::merge(hf_vector);
-    //
-		// 	// There should be no change in the average 
-    //
-		// 	// dry matter
-		// 	CHECK( Approx(m.grass.get_mass())       
-		// 			== hf1.grass.get_mass() );
-		// 	CHECK( Approx(m.get_total().get_mass()) 
-		// 			== hf1.get_total().get_mass() );
-    //
-		// 	// digestibility
-		// 	CHECK( Approx(m.grass.get_digestibility())         
-		// 			== hf1.grass.get_digestibility() );
-		// 	CHECK( Approx(m.get_total().get_digestibility())   
-		// 			== hf1.get_total().get_digestibility() );
-    //
-		// 	// For FPC-specific values the same:
-		// 	CHECK( Approx(m.grass.get_fpc())           
-		// 			== hf1.grass.get_fpc() );
-		// 	CHECK( Approx(m.grass.get_sward_density()) 
-		// 			== hf1.grass.get_sward_density() );
-		// }
-    //
-		// SECTION( "merging 2 forage objects with different mass and fpc" ) {
-		// 	HabitatForage hf2 = hf1;
-		// 	hf2.grass.set_mass(20.0);
-		// 	hf2.grass.set_fpc(0.6);
-    //
-		// 	hf_vector.push_back(&hf2);
-    //
-		// 	const HabitatForage m = HabitatForage::merge(hf_vector);
-    //
-		// 	CHECK( Approx(m.grass.get_mass()) 
-		// 			== (hf1.grass.get_mass() + hf2.grass.get_mass()) / 2.0);
-		// 	CHECK( Approx(m.grass.get_fpc()) 
-		// 			== (hf1.grass.get_fpc() + hf2.grass.get_fpc()) / 2.0);
-    //
-		// 	CHECK( Approx(m.grass.get_digestibility())
-		// 			== (hf1.grass.get_digestibility() * hf1.grass.get_mass()
-		// 				+ hf2.grass.get_digestibility() * hf2.grass.get_mass())
-		// 			/ (hf1.grass.get_mass() + hf2.grass.get_mass() ));
-    //
-		// 	CHECK( Approx(m.grass.get_sward_density())
-		// 			== (hf1.grass.get_sward_density() * hf1.grass.get_fpc()
-		// 				+ hf2.grass.get_sward_density() * hf2.grass.get_fpc())
-		// 			/ (hf1.grass.get_fpc() + hf2.grass.get_fpc()) );
-		// }
 	}
+
+	// The member function `merge()` is not tested here
+	// because it is a nothing more than simple wrapper around 
+	// the merge functions of ForageBase and its child classes.
 }
 
 TEST_CASE("Fauna::HerbivoreBase", "") {
@@ -1490,6 +1638,136 @@ TEST_CASE("Fauna::Simulator", "") {
 	}
 }
 
+TEST_CASE("FaunaOut::Aggregator", ""){
+	SECTION("Initialization"){
+		CHECK( Aggregator().reset().hft_data.empty() );
+		CHECK( Aggregator().reset().habitat_data.datapoint_count == 0 );
+	}
+	const HftList hfts = create_hfts(3, Parameters());
+	SECTION("Adding data"){
+		Aggregator a;
+
+		HabitatData hab1;
+		hab1.eaten_forage.set(FT_GRASS, 234); // just a random sample
+		hab1.datapoint_count = 1;
+		a.add(hab1);
+
+		HerbivoreData herb1;
+		herb1.expenditure = 234; // sample
+		herb1.datapoint_count = 3;
+		a.add(hfts[0], herb1);
+
+		HerbivoreData herb2;
+		herb2.datapoint_count = 4;
+		a.add(hfts[1], herb2);
+
+		SECTION("Single add"){
+			CombinedData c = a.reset();
+
+			// only check samples, not every variable
+			CHECK( c.habitat_data.eaten_forage == hab1.eaten_forage );
+			CHECK( c.habitat_data.datapoint_count
+					== hab1.datapoint_count );
+
+			REQUIRE( c.hft_data.size() == 2 );
+			CHECK( c.hft_data[&hfts[0]].datapoint_count
+					== herb1.datapoint_count );
+			CHECK( c.hft_data[&hfts[0]].expenditure
+					== herb1.expenditure );
+			CHECK( c.hft_data[&hfts[1]].datapoint_count 
+					== herb2.datapoint_count );
+
+			// Has it been reset properly?
+			c = a.reset();
+			CHECK( c.habitat_data.datapoint_count == 0 );
+			CHECK( c.hft_data.empty() );
+		}
+
+		SECTION("Merging data"){
+			HabitatData hab2;
+			hab2.datapoint_count = 2;
+			a.add(hab2);
+
+			HerbivoreData herb3;
+			herb3.datapoint_count = 5;
+			a.add(hfts[0], herb3);
+
+			HerbivoreData herb4;
+			herb4.datapoint_count = 7;
+			a.add(hfts[1], herb4);
+
+			CombinedData c = a.reset();
+
+			// we check only the data points count, not every single
+			// variable
+			CHECK( c.habitat_data.datapoint_count 
+					== hab1.datapoint_count + hab2.datapoint_count );
+			CHECK( c.habitat_data.eaten_forage[FT_GRASS]
+					== Approx(average(
+							hab1.eaten_forage[FT_GRASS],
+							hab2.eaten_forage[FT_GRASS],
+							hab1.datapoint_count,
+							hab2.datapoint_count)) );
+
+			REQUIRE( c.hft_data.size() == 2 ); // only 2 HFTs
+			CHECK( c.hft_data[&hfts[0]].datapoint_count 
+					== herb1.datapoint_count + herb3.datapoint_count );
+			CHECK( c.hft_data[&hfts[0]].expenditure
+					== Approx(average(herb1.expenditure, herb3.expenditure,
+							herb1.datapoint_count, herb3.datapoint_count)) );
+			CHECK( c.hft_data[&hfts[1]].datapoint_count 
+					== herb2.datapoint_count + herb4.datapoint_count );
+		}
+	}
+}
+
+TEST_CASE("FaunaOut::HabitatData", ""){
+	// initialization
+	CHECK(HabitatData().datapoint_count == 0);
+
+	SECTION("Exceptions"){
+		HabitatData d1,d2;
+		// weight of sums is zero
+		CHECK_THROWS( d1.merge(d2) );
+	}
+
+	SECTION("Merge and reset"){
+		// The values of the merge are not checked here because
+		// they are given by Fauna::ForageValues<>::merge()
+		// and Fauna::average().
+		HabitatData d1,d2;
+		d1.datapoint_count = 1;
+		d2.datapoint_count = 3;
+		CHECK( d1.merge(d2).datapoint_count == 4 );
+
+		d1.reset();
+		CHECK( d1.datapoint_count == 0 );
+	}
+}
+
+TEST_CASE("FaunaOut::HerbivoreData", ""){
+	CHECK(HerbivoreData().datapoint_count == 0);
+
+	SECTION("Exceptions"){
+		HerbivoreData d1,d2;
+		// weight of sums is zero
+		CHECK_THROWS( d1.merge(d2) );
+	}
+
+	SECTION("Merge and reset"){
+		// The values of the merge are not checked here because
+		// they are given by Fauna::ForageValues<>::merge()
+		// and Fauna::average().
+		HerbivoreData d1,d2;
+		d1.datapoint_count = 1;
+		d2.datapoint_count = 3;
+		CHECK( d1.merge(d2).datapoint_count == 4 );
+
+		d1.reset();
+		CHECK( d1.datapoint_count == 0 );
+	}
+}
+
 TEST_CASE("FaunaSim::LogisticGrass", "") {
 	LogisticGrass::Parameters grass_settings;
 	grass_settings.reserve   = 2.0; // just an arbitrary positive number
@@ -1625,8 +1903,6 @@ TEST_CASE("FaunaSim::SimpleHabitat", "") {
 			CHECK_THROWS( habitat.remove_eaten_forage(too_much) );
 		}
 	}
-
-	// TODO output?
 }
 
 TEST_CASE("FaunaSim::HabitatGroup","") {

@@ -52,6 +52,9 @@ namespace Fauna {
 		/// Simulation years without herbivores (as part of spinup). 
 		int free_herbivory_years;
 
+		/// Days between establishment check for herbivores.
+		int herbivore_establish_interval;
+
 		/// Which kind of herbivore class to use
 		HerbivoreType herbivore_type;
 
@@ -63,6 +66,7 @@ namespace Fauna {
 			dead_herbivore_threshold(0.1),
 			forage_distribution(FD_EQUALLY),
 			free_herbivory_years(0),
+			herbivore_establish_interval(30),
 			herbivore_type(HT_COHORT),
 			ifherbivory(false)
 		{

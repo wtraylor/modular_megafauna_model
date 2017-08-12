@@ -108,16 +108,6 @@ namespace FaunaSim {
 	};
 
 	/// A herbivore habitat independent of the LPJ-GUESS framework for testing.
-	/**
-	 * \startuml
-	 * namespace FaunaSim{
-	 * hide members
-	 * hide methods
-	 * SimpleHabitat --|> .Fauna.Habitat
-	 * LogisticGrass "1" <--* "1" SimpleHabitat
-	 * }
-	 * \enduml
-	 */
 	class SimpleHabitat: public Habitat{
 		public:
 			/// Simulation parameters for a \ref SimpleHabitat object.

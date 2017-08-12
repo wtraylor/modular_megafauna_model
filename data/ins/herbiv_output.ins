@@ -3,9 +3,39 @@
 !////////////////////////////////////////////////////////////
 
 ! Interval of herbivory output. Allowed values: 
-! DAILY, MONTHLY, ANNUAL
-herbiv_output_interval "monthly"
+! DAILY, MONTHLY, ANNUAL, DECADAL
+herbiv_output_interval "daily"
 
 ! Decimal precision of values in herbivory output
 herbiv_output_precision 4
 
+
+
+!!!!!!!!!!! FORAGE TABLES !!!!!!!!!!!!!!!!!
+
+! Available forage in the habitats [kgDM/km²].
+file_herbiv_available_forage "h_available_forage.out"
+! Forage digestibility [fractional].
+file_herbiv_digestibility "h_digestibility.out"
+! Forage eaten by herbivores per day [kgDM/km²/day].
+file_herbiv_eaten_forage "h_eaten_forage.out"
+
+
+!!!!!!!!!!! HFT TABLES !!!!!!!!!!!!!!!!!!!!
+
+! Herbivore body fat [kg/kg].
+file_herbiv_bodyfat "h_bodyfat.out"
+! Herbivore daily energy expenditure [MJ/ind/day].
+file_herbiv_expenditure "h_expenditure.out" 
+! Individual herbivore density [ind/km²].
+file_herbiv_inddens "h_inddens.out"
+! Herbivore mass density [kg/km²].
+file_herbiv_massdens "h_massdens.out" 
+! Daily herbivore mortality through starvation [ind/ind/day].
+file_herbiv_starvation "h_starvation.out"
+
+
+!!!!!!!!!!! HFT–FORAGE TABLES !!!!!!!!!!!!!
+
+! Forage eaten by herbivores per day [kgDM/ind/day].
+file_herbiv_eaten_ind "h_eaten_ind.out"

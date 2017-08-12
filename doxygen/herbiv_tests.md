@@ -92,7 +92,7 @@ See \ref parameters.cpp for the affected code regions.
 ### Simulation Sequence ###
 
 @startuml "Sequence diagram for test simulations of the herbivory module"
-	!include herbiv_diagrams!testsim_sequence
+	!include herbiv_diagrams.iuml!testsim_sequence
 @enduml
 
 ------------------------------------------------------------

@@ -170,6 +170,8 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			mandatory_global_params.push_back(MandatoryParam(
 						"free_herbivory_years", ""));
 			mandatory_global_params.push_back(MandatoryParam(
+						"herbivore_establish_interval", ""));
+			mandatory_global_params.push_back(MandatoryParam(
 						"herbivore_type", ""));
 
 			if (params.herbivore_type == HT_COHORT) 
@@ -430,6 +432,13 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Number of years without herbivory, as part of vegetation spinup.");
 
+		declareitem("herbivore_establish_interval",
+				&(params.herbivore_establish_interval),
+				1, INT_MAX, // min, max
+				1,          // number of parameters
+				CB_NONE,
+				"Number of days between herbivore establishment.");
+
 		declareitem("herbivore_type",
 				&strparam,
 				128, // max length of string
@@ -546,8 +555,7 @@ void ParamReader::declare_parameters(
 				CB_EXPENDITURE_MODEL,
 				"Energy expenditure model for herbivores."
 				"Possible values: "
-				"\"taylor_1981\", "
-				"\"\""); // TODO
+				"\"taylor_1981\", "); 
 
 		declareitem("foraging_limits",
 				&strparam,

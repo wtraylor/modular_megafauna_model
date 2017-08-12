@@ -19,7 +19,8 @@
 using namespace Fauna;
 
 Simulator::Simulator(const Parameters& params, const HftList& hftlist):
-	hftlist(hftlist), params(params)
+	hftlist(hftlist), params(params),
+	days_since_last_establishment(params.herbivore_establish_interval)
 {
 	// CHECK PARAMETERS OF HFTS AND GLOBALLY
 
@@ -98,6 +99,8 @@ void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
 	// pass the current date into the herbivore module
 	habitat.init_day(day_of_year);
 
+	days_since_last_establishment++;
+
 	if (do_herbivores && hftlist.size()>0) {
 
 		// all populations in the habitat (one for each HFT)
@@ -105,15 +108,20 @@ void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
 
 		// ---------------------------------------------------------
 		// ESTABLISHMENT
-		// iterate through HFT populations
-		for (HftPopulationsMap::iterator itr_p = populations.begin();
-				itr_p != populations.end(); itr_p++){
-			PopulationInterface& pop = **itr_p; // one population
-			const Hft& hft = pop.get_hft();
+		if (days_since_last_establishment > params.herbivore_establish_interval)
+		{
+			// iterate through HFT populations
+			for (HftPopulationsMap::iterator itr_p = populations.begin();
+					itr_p != populations.end(); itr_p++)
+			{
+				PopulationInterface& pop = **itr_p; // one population
+				const Hft& hft = pop.get_hft();
 
-			// ESTABLISHMENT
-			if (pop.get_list().empty())
-				pop.establish();
+				// Let the population handle the establishment
+				if (pop.get_list().empty())
+					pop.establish();
+			}
+			days_since_last_establishment = 0;
 		}
 
 		// ---------------------------------------------------------

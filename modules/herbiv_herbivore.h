@@ -10,6 +10,7 @@
 
 #include <memory>                 // for std::auto_ptr
 #include "herbiv_forageclasses.h" // for ForageMass
+#include "herbiv_outputclasses.h" // for FaunaOut::HerbivoreData
 
 namespace Fauna{
 
@@ -70,6 +71,9 @@ namespace Fauna{
 		/// Get herbivore biomass density [kg/km²]
 		virtual double get_kg_per_km2() const = 0; 
 
+		/** \copydoc Fauna::Habitat::retrieve_output() */
+		virtual FaunaOut::HerbivoreData retrieve_output() = 0;
+
 		/// Simulate daily events.
 		/** 
 		 * Call this before \ref get_forage_demands().
@@ -104,6 +108,7 @@ namespace Fauna{
 				return *hft;
 			}
 			virtual double get_kg_per_km2() const;
+			virtual FaunaOut::HerbivoreData retrieve_output();
 			virtual void simulate_day(const int day, double& offspring);
 		public:
 			/// Current age in days.
@@ -201,7 +206,15 @@ namespace Fauna{
 			}
 			/**@}*/
 
+			/// Current output data.
+			FaunaOut::HerbivoreData& todays_output(){
+				return current_output;
+			}
+
 		private: 
+			/// Add \ref current_output to \ref aggregated_output.
+			void aggregate_todays_output();
+
 			/// Calculate mortality according to \ref Hft::mortality_factors.
 			/** Calls \ref apply_mortality(), which is implemented by 
 			 * child classes.*/
@@ -230,10 +243,14 @@ namespace Fauna{
 			ForageMass get_max_foraging(
 					const HabitatForage& available_forage)const;
 
-			/// Returns the function object selected by \ref Hft::net_energy_model.
-			/** \throw std::logic_error If the selected model is not
+			/// Forage net energy content given by the selected algorithm \ref Hft::net_energy_model.
+			/** 
+			 * \param digestibility Proportional digestibility.
+			 * \return Net energy content [MJ/kgDM]. 
+			 * \throw std::logic_error If the selected model is not
 			 * implemented. */
-			GetNetEnergyContentInterface& get_net_energy_content()const;
+			ForageEnergyContent get_net_energy_content(
+					const Digestibility& digestibility)const;
 
 			/// Calculate energy expenditure with given expenditure model.
 			/** \return Today’s energy needs [MJ/ind]*/
@@ -257,9 +274,15 @@ namespace Fauna{
 			int today;
 			/** @} */ // state variables
 
+			/// @{ \name Output Variables
+			FaunaOut::HerbivoreData aggregated_output;
+			FaunaOut::HerbivoreData current_output;
+			/** @} */ // Output Variables
+
 			/// @{ \name Constants
 			const Hft* hft;
 			Sex sex;
+			std::auto_ptr<GetNetEnergyContentInterface> net_energy_content;
 			/** @} */ // constants
 	};
 

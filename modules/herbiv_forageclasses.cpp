@@ -25,14 +25,50 @@ namespace Fauna {
 	const std::set<ForageType> FORAGE_TYPES = get_all_forage_types();
 }
 
-std::string Fauna::get_forage_type_name(const ForageType ft) {
+const std::string& Fauna::get_forage_type_name(const ForageType ft) {
 	switch (ft){
-		case FT_GRASS   : return "grass"; break;
-		case FT_INEDIBLE: return "inedible";
-		default         : throw std::logic_error(
-													"Fauna::get_forage_type_name() "
-													"Forage type is not implemented.");
+		case FT_GRASS   : 
+			static const std::string grass("grass");
+			return grass;
+		case FT_INEDIBLE: 
+			static const std::string inedible("inedible");
+			return inedible;
+		default  : throw std::logic_error(
+									 "Fauna::get_forage_type_name() "
+									 "Forage type is not implemented.");
 	} 
+}
+
+//------------------------------------------------------------
+// FORAGEBASE
+//------------------------------------------------------------
+
+ForageBase& ForageBase::merge_base(const ForageBase& other,
+		const double this_weight, const double other_weight){
+	if (this == &other) return *this;
+	set_digestibility(average(
+			this->get_digestibility(), other.get_digestibility(),
+			this_weight, other_weight));
+	set_mass(average(
+			this->get_mass(), other.get_mass(),
+			this_weight, other_weight));
+	return *this;
+}
+
+//------------------------------------------------------------
+// GRASSFORAGE
+//------------------------------------------------------------
+
+GrassForage& GrassForage::merge(const GrassForage& other,
+		const double this_weight, const double other_weight){
+	if (this == &other) return *this;
+	// merge generic properties
+	merge_base(other, this_weight, other_weight);
+	// merge grass-specific properties
+	set_fpc(average(
+				this->get_fpc(), other.get_fpc(),
+				this_weight, other_weight));
+	return *this;
 }
 
 //------------------------------------------------------------
@@ -83,37 +119,12 @@ ForageBase HabitatForage::get_total() const{
 	return result;
 }
 
-HabitatForage HabitatForage::merge(const std::vector<const HabitatForage*> data){
-	if (data.empty())
-		throw std::invalid_argument("Fauna::HabitatForage::merge(): "
-				"parameter data is empty.");
-	HabitatForage result;
+HabitatForage& HabitatForage::merge(const HabitatForage& other,
+		const double this_weight, const double other_weight){
+	if (this == &other) return *this;
 
-	ForageMass mass_sum;
-	ForageValues<POSITIVE_AND_ZERO> dig_sum_weight;
-
-
-	// Iterate over all data entries and accumulate the values in order
-	// to build averages later.
-	// Each value is weighted properly.
-	for (int i=0; i<data.size(); i++)
-	{
-		const HabitatForage& item = *data[i];
-
-		mass_sum += item.get_mass();
-		const Digestibility digestibility = item.get_digestibility();
-
-		// Loop through all edible forage types.
-		for (Digestibility::const_iterator itr_ft = digestibility.begin();
-				itr_ft != digestibility.end(); itr_ft++)
-		{
-			const ForageType ft = itr_ft->first;
-			dig_sum_weight += itr_ft->second;
-		}
-	}
-
-	// TODO
-
-	return result;
+	grass.merge(other.grass, this_weight, other_weight);
+	// ADD NEW FORAGE TYPES HERE
+	return *this;
 }
 

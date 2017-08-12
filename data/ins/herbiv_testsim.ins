@@ -25,10 +25,10 @@ ifherbivory 1
 nyears 100
 
 ! Number of habitat groups.
-nhabitat_groups 2
+nhabitat_groups 1
 
 ! Number of habitats per group.
-nhabitats_per_group 5
+nhabitats_per_group 1
 
 ! Proportional daily grass decay rate. (0,∞)
 grass_decay 0.0
@@ -44,13 +44,13 @@ grass_fpc 0.8
 grass_growth 0.1
 
 ! Initial grass biomass [kgDM/km²]. [0,∞) and <grass_saturation
-grass_init_mass 0.0
+grass_init_mass 20000
 
 ! Ungrazable grass reserve [kgDM/km²]. [0,∞)
 ! Not available to grazers but necessary for regrowth
-grass_reserve 0.02
+grass_reserve 2000
 
 ! Saturation grass biomass [kgDM/km²]. (0,∞) and >grass_init_mass
-grass_saturation 0.2
+grass_saturation 200000 ! = 200 g/m²
 
 ! /// [Simulation Parameters] 

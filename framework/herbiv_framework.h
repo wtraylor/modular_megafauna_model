@@ -71,6 +71,7 @@ namespace Fauna{
 		private:
 			const HftList& hftlist;
 			const Parameters& params;
+			int days_since_last_establishment;
 
 			/// Get the forage distribution algorithm class chosen in parameters
 			/**\return a function object (see \ref sec_functors) that can

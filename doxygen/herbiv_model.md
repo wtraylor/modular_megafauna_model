@@ -11,6 +11,7 @@ Large Herbivore Model {#sec_herbiv_model}
 <!--TODO:
 - Limitations of the model design:
 	+ year length of 365 assumed
+	+ habitats equal size
 	+ After offspring is created no connection to parents 
     -> no lactation, bonding, herding, etc.
 -->

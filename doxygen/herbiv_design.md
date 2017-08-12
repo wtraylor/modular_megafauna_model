@@ -101,7 +101,7 @@ Error Handling {#sec_herbiv_errorhandling}
 ------------------------------------------
 
 ### Exceptions ### {#sec_herbiv_exceptions}
-The herbivory module uses the C|| standard library exceptions defined in `<stdexcept>`.
+The herbivory module uses the C++ standard library exceptions defined in `<stdexcept>`.
 All exceptions are derived from `std::exception`:
 @startuml "Standard library exceptions used in the herbivory module."
 	!include herbiv_diagrams.iuml!exception_classes
@@ -124,6 +124,10 @@ Exceptions are caught with `try{…}catch(…){…}` blocks in:
 \note No part of the herbivory module writes directly to the shell output (stdout/stderr), except for:
 - FaunaSim::Framework
 - Fauna::ParamReader
+
+\remark
+If you debug with [`gdb`](https://www.gnu.org/software/gdb) and want to backtrace an exception, use the command `catch throw`.
+That forces gdb to stop at an exception, and then you can use the command `backtrace` to see the function stack.
 
 ### Assertions ### {#sec_herbiv_assertions}
 At appropriate places, `assert()` is called (defined in the standard library header `<cassert>`/`assert.h`).
@@ -177,6 +181,51 @@ The following diagram gives an overview:
 Herbivory Output {#sec_herbiv_output}
 -------------------------------------
 
+The herbivory module uses the existing LPJ-GUESS API for output.
+This brings some limitations:
+1. The output module needs to be singleton.
+2. The columns of the tables need to be defined in advance.
+That demands a globally defined HFT list.
+3. The tables allow only `double` values, no strings.
+That means that for each “measured” output variable (e.g. `individual density`) *one* table needs be created; the “fixed” variable (in this case `HFT`) has its values in the column. 
+“Tidy data” output (*sensu* Wickham, 2014\cite wickham_tidy_2014), with variables in columns and observations in rows, is therefore not possible.
+4. That means that combining multiple fixed variables (e.g. `ForageType` and `HFT`) leads to bulky column names (“grass_hft1”, “grass_hft2”, “browse_hft1”, etc.), which need to be separated in post-processing software.
+
+### Output Classes {#sec_herbiv_outputclasses}
+
+Output classes within the herbivory module are collected in the namespace \ref FaunaOut.
+- The two structs \ref FaunaOut::HabitatData and \ref FaunaOut::HerbivoreData are simple data *containers* with the ability to merge with other objects of the same type (**aggregation**).
+- The class \ref FaunaOut::Aggregator in turn aggregates all output data from herbivores and habitats into the container \ref FaunaOut::CombinedData.
+
+@startuml "Output classes of the herbivory module"
+	!include herbiv_diagrams.iuml!outputclasses
+@enduml
+
+Both \ref Fauna::Habitat and \ref Fauna::HerbivoreInterface objects aggregate their output data each day automatically.
+Following the [Inversion of Control Principle](\ref sec_inversion_of_control), both classes  deliver their aggregated output data when another object (\ref GuessOutput::HerbivoryOutput) calls the public method `retrieve_output()`.
+
+Be aware that all time-dependent values are always **per day.**
+For example, there is no such thing like *forage eaten in one year.*
+This way, all variables can be aggregated using the same algorithm, whether they are time-independent (like *individual density*) or represent a time-dependent rate (like *mortality* or *eaten forage*).
+
+
+#### Pros and Cons of the Output Design {#sec_herbiv_output_prosandcons}
+
+The pros of this design:
+- Simplicity: Only few, easy-to-understand classes.
+- Separation of concerns: Each class (herbivores and habitats) is self-responsible for managing its own output, and the output data containers are self-responsible for aggregating of their data.
+- Diversity of data structures: There is no restriction in regards to data type for new member variables in the output containers (as long as they can be merged).
+
+The cons of this design:
+- Strong coupling: The output module is highly dependent on the data structure of the output containers.
+- Multiple responsibilities: \ref GuessOutput::HerbivoryOutput is a monolithic class, violating the [Single Responsibility Principle](\ref sec_single_responsibility).
+- Rigidity of data containers: Ideally, the containers should be oblivious to the details of the data they hold.
+- Lack of modularity: A submodule of, e.g. HerbivoreBase cannot easiliy deliver its own output variable.
+- Cumbersome extensibility: New output variables need to be introduced in various places (see \ref sec_herbiv_new_output).
+That is a violation of the [Open/Closed Principle](\ref sec_open_closed).
+- Any variable that is specific to a submodule or interface implementation (e.g. `bodyfat` is specific to HerbivoreBase) will have produce undefined values, and the user is responsible to interpret them as invalid or disable their output.
+So far, there is no check of congruency between [parameters](\ref Fauna::Parameters)/[HFT settings](\ref Fauna::Hft) and the selection of output variables in the output module.
+
 ### Output Module {#sec_herbiv_outputmodule}
 
 The new output module \ref GuessOutput::HerbivoryOutput is 
@@ -207,7 +256,7 @@ to \ref GuessOutput::CommonOutput were made:
 The table structure stays always the same (no month columns).
 - The functions are smaller and better maintainable.
 - The preprocessing of the data (building averages etc.) is done in the data-holding classes. 
-This approach honours the \ref sec_single_responsibility.
+This approach honours the \ref sec_single_responsibility to some degree.
 - The inherited functions delegate to more generic functions, which are also used by \ref FaunaSim::Framework.
 - The class \ref GuessOutput::IncludeDate has been introduced in order to observe the \ref sec_dependency_inversion and to avoid global variables.
   See also: \ref sec_herbiv_limit_output.

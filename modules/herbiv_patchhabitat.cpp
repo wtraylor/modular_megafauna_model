@@ -35,6 +35,8 @@ HabitatForage PatchHabitat::get_available_forage() const {
 	// Result object
 	HabitatForage forage; 
 
+	// TODO: Refactor this function with generic ForageValues.
+
 	// Sum of grass digestibility to build average
 	double gr_dig_sum_weight, gr_dig_sum = 0.0;
 

@@ -60,7 +60,6 @@ namespace Fauna{
 		/// The herbivore functional type of this population
 		virtual const Hft& get_hft()const=0;
 
-		/// @{ 
 		/// Get pointers to the (alive!) herbivores.
 		/** 
 		 * \warning The pointers are not guaranteed to stay valid
@@ -70,8 +69,9 @@ namespace Fauna{
 		 * Guaranteed no NULL pointers.
 		 */
 		virtual ConstHerbivoreVector get_list()const=0; 
+
+		/** \copydoc get_list()const */
 		virtual HerbivoreVector get_list()=0; 
-		/** @} */
 	};
 
 	/// A population of \ref HerbivoreIndividual objects.
@@ -154,7 +154,7 @@ namespace Fauna{
 	class HftPopulationsMap{
 		public:
 			/// Constructor
-			HftPopulationsMap(){}
+			HftPopulationsMap(): last_all_herbivores_count(0){}
 
 			/// Destructor, delete all \ref PopulationInterface instances.
 			virtual ~HftPopulationsMap();
@@ -178,10 +178,11 @@ namespace Fauna{
 			 */
 			HerbivoreVector get_all_herbivores();
 
-			/// Access to a population
-			/** \param hft The herbivore functional type
+			/// Access to a population by HFT.
+			/** 
+			 * Uses \ref Hft::operator==() for comparison.
 			 * \throw std::invalid_argument if `hft` not in the vector */
-			PopulationInterface& operator[](const Hft& hft);
+			PopulationInterface& operator[](const Hft&);
 
 			//------------------------------------------------------------
 			/** @{ \name Wrapper around std::vector 
@@ -197,6 +198,10 @@ namespace Fauna{
 			/** @} */ // Container Functionality
 		private:
 			std::vector<PopulationInterface*> vec;
+
+			// see comment in get_all_herbivores()
+			int last_all_herbivores_count;
+
 			// Deleted copy constructor and copy assignment operator.
 			// If they were not deleted, the unique ownership of the
 			// PopulationInterface objects could be lost. 
