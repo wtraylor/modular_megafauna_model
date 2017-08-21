@@ -40,7 +40,7 @@ namespace Fauna{
 	 * time.
 	 *
 	 * \f[
-	 * I_{dig[MJ/day]} = i * e^{jd} * M_{ad}^{(ke^d+0.73)}_{[kg]} * u_g
+	 * I_{dig[MJ/day]} = i * e^{jd} * M_{ad_{[kg]}}^{(ke^d+0.73)} * u_g
 	 * \f]
 	 * - e: Euler number
 	 * - d: proportional digestibility

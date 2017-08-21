@@ -32,108 +32,115 @@ PatchHabitat::PatchHabitat(
 }
 
 HabitatForage PatchHabitat::get_available_forage() const {
-	// Result object
-	HabitatForage forage; 
+	// Result object (initialized with zero values)
+	HabitatForage result; 
 
-	// TODO: Refactor this function with generic ForageValues.
-
-	// Sum of grass digestibility to build average
-	double gr_dig_sum_weight, gr_dig_sum = 0.0;
-
-	// Number of grass individuals
-	int gr_count = 0; 
+	// sum of grass FPC (foliar percentage cover)
+	double grass_fpc = 0.0;
 
 	// Loop through all vegetation individuals in this patch
 	patch.vegetation.firstobj();
 	while (patch.vegetation.isobj) {
 		const Individual& indiv = patch.vegetation.getobj();
+		const ForageType ft = indiv.get_forage_type();
 
-		// get digestibility
-		assert( get_digestibility.get() != NULL );
-		const double indiv_dig  = (*get_digestibility)(indiv); // [frac]
-		assert( indiv_dig >= 0.0 );
-		assert( indiv_dig <= 1.0 );
+		if (ft != FT_INEDIBLE){
+			//------------------------------------------------------------
+			// GENERIC BEHAVIOUR FOR ALL FORAGE TYPES
 
-		// get forage mass
-		double indiv_mass = indiv.get_forage_mass(); // [kg/km²]
-		// avoid precision errors in extremely  low values.
-		if (negligible(indiv_mass))
-			indiv_mass = 0.0; 
-		assert( indiv_mass >= 0.0 );
+			// get digestibility
+			assert( get_digestibility.get() != NULL );
+			const double indiv_dig  = (*get_digestibility)(indiv); // [frac]
+			assert( indiv_dig >= 0.0 );
+			assert( indiv_dig <= 1.0 );
 
-		// Sum up the grass forage
-		if (indiv.get_forage_type() == FT_GRASS){
-			gr_count += 1;
-
-			// Sum up digestibility to build (weighted) average later
-			gr_dig_sum_weight += indiv_dig * indiv_mass;
-			gr_dig_sum        += indiv_dig;
+			// get forage mass
+			double indiv_mass = indiv.get_forage_mass(); // [kg/km²]
+			// avoid precision errors in extremely  low values.
+			if (negligible(indiv_mass))
+				indiv_mass = 0.0; 
+			assert( indiv_mass >= 0.0 );
+			// Digestibility: Build average, weighted by mass.
+			if (indiv_mass + result[ft].get_mass() > 0.0)
+				result[ft].set_digestibility(Fauna::average(
+							result[ft].get_digestibility(), indiv_dig,
+							result[ft].get_mass(), indiv_mass));
 
 			// Simply sum up the mass for the whole habitat [kg/km²]
-			forage.grass.set_mass( forage.grass.get_mass() + indiv_mass );
+			result[ft].set_mass( result[ft].get_mass() + indiv_mass );
 
-			// Build sum of FPCs
-			forage.grass.set_fpc( forage.grass.get_fpc() + indiv.fpc );
+			//------------------------------------------------------------
+			// GRASS SPECIFIC
+			if (ft == FT_GRASS){
+				if (indiv_mass > 0.0) {
+					// Build sum of FPCs
+					// We assume there is never any overlap of grass PFTs.
+					grass_fpc += indiv.fpc;
+					result.grass.set_fpc( grass_fpc );
+				}
+			}
+
+			//------------------------------------------------------------
+			// ADD OTHER FORAGE-SPECIFIC PROPERTIES HERE
+
 		}
-
-		// ADD OTHER FORAGE (BROWSE) HERE ...
-
 		patch.vegetation.nextobj();
 	}
 
-	if (gr_count > 0) {
-		// calculate digestibility average: weighted if there is mass,
-		// otherwise simple average
-		if (forage.grass.get_mass() > 0.0) {
-			assert( gr_dig_sum_weight <= forage.grass.get_mass() );
-			// weighted average:
-			forage.grass.set_digestibility( 
-					gr_dig_sum_weight / forage.grass.get_mass());
-		} else
-			forage.grass.set_digestibility( gr_dig_sum / (double)gr_count );
-	}
-
-	return forage;
+	return result;
 }
 
 void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	// Call the base class function
 	Habitat::remove_eaten_forage(eaten_forage);
 
-	// sum of the current grass forage in the patch before eating [kg/km²]
-	double old_grass = 0.0;
+	// sum of the current forage in the patch before eating [kg/km²]
+	ForageMass old_forage;
 
-	// Sum up the forage
+	// Sum up the old forage
 	patch.vegetation.firstobj();
 	while (patch.vegetation.isobj) {
 		const Individual& indiv = patch.vegetation.getobj();
+		const ForageType ft = indiv.get_forage_type();
 
-		if (indiv.get_forage_type() == FT_GRASS){
-			old_grass += indiv.get_forage_mass();
+		if (ft != FT_INEDIBLE){
+			old_forage.set(ft, 
+					old_forage.get(ft) + indiv.get_forage_mass());
 		}
-		// ADD OTHER FORAGE (BROWSE) HERE ... 
 		patch.vegetation.nextobj();
 	}
 
-	// sum of the new grass forage after eating [kg/km²]
-	const double new_grass = old_grass - eaten_forage[FT_GRASS];
+	// The fraction of forage that is left after eating.
+	ForageFraction fraction_left;
 
-	// Assertions
-	assert(old_grass >= 0.0);
-	if (new_grass > old_grass)
-		throw std::logic_error("Fauna::PatchHabitat::remove_eaten_forage() "
-				"Eaten grass exceeds available grass.");
+	// iterate over all forage types
+	for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+			ft != FORAGE_TYPES.end(); ft++)
+	{
+		// Check if eaten forage exceeds what is available.
+		if (old_forage[*ft] - eaten_forage[*ft] < 0.0)
+			throw std::logic_error((std::string)
+					"Fauna::PatchHabitat::remove_eaten_forage() "
+					"Eaten forage exceeds available forage ("+
+					get_forage_type_name(*ft)+").");
+
+		if (old_forage[*ft] == 0.0)
+			continue;
+
+		// build fraction
+		assert( old_forage[*ft] != 0.0 );
+		fraction_left.set(*ft, eaten_forage[*ft] / old_forage[*ft]);
+	}
 
 	// Reduce the forage of each plant individual
 	patch.vegetation.firstobj();
 	while (patch.vegetation.isobj) {
 		Individual& indiv = patch.vegetation.getobj();
+		const ForageType ft = indiv.get_forage_type();
 
 		// Reduce the forage of each individual proportionally
-		if (indiv.get_forage_type() == FT_GRASS){
-			indiv.reduce_forage_mass(new_grass/old_grass);
-		} 
-		// ADD OTHER FORAGE (BROWSE) HERE ... 
+		if (ft != FT_INEDIBLE)
+			indiv.reduce_forage_mass(fraction_left[ft]);
 
 		patch.vegetation.nextobj();
 	} 

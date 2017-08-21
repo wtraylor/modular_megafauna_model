@@ -122,7 +122,8 @@ Forage Tutorials {#sec_herbiv_tutor_forage}
 
 - Adjust \ref Individual::get_forage_mass() and \ref Individual::reduce_forage_mass().
 
-- Adjust \ref Fauna::PatchHabitat::get_available_forage() and \ref Fauna::PatchHabitat::remove_eaten_forage().
+- Adjust \ref Fauna::PatchHabitat::get_available_forage() to define values for your new forage-specific properties.
+(\ref Fauna::PatchHabitat::remove_eaten_forage() is generic for all forage types and does not need to be altered.)
 
 - Perhaps adjust the digestibility in your chosen \ref Fauna::GetDigestibility implementation.
 
@@ -251,7 +252,16 @@ In the \ref framework() function call \ref GuessOutput::HerbivoryOutput::set_inc
 \see \ref sec_herbiv_output
 
 
-\todo How to add a new test vegetation model.
+How to add a new test vegetation model {#sec_herbiv_new_testhabitat}
+--------------------------------------
+
+<!--TODO-->
+
+Re-using the code for other vegetation models {#sec_herbiv_reusing_code}
+---------------------------------------------
+
+<!--TODO-->
+
 
 ------------------------------------------------------------
 

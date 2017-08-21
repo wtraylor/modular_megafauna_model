@@ -826,17 +826,25 @@ TEST_CASE("Fauna::GetStarvationMortalityThreshold", "") {
 }
 
 TEST_CASE("Fauna::GrassForage", "") {
-	// exceptions
-	CHECK_THROWS(GrassForage().set_fpc(1.2));
-	CHECK_THROWS(GrassForage().set_fpc(-0.2));
-	CHECK_THROWS(GrassForage().set_mass(-0.2));
-	CHECK_THROWS(GrassForage().set_digestibility(-0.2));
-	CHECK_THROWS(GrassForage().set_digestibility(1.2));
+	SECTION("Initialization"){
+		CHECK( GrassForage().get_mass()          == 0.0 );
+		CHECK( GrassForage().get_digestibility() == 0.0 );
+		CHECK( GrassForage().get_fpc()           == 0.0 );
+	}
 
-	// initialization
-	CHECK( GrassForage().get_mass()          == 0.0 );
-	CHECK( GrassForage().get_digestibility() == 0.0 );
-	CHECK( GrassForage().get_fpc()           == 0.0 );
+	SECTION("Exceptions"){
+		CHECK_THROWS(GrassForage().set_fpc(1.2));
+		CHECK_THROWS(GrassForage().set_fpc(-0.2));
+		CHECK_THROWS(GrassForage().set_mass(-0.2));
+		CHECK_THROWS(GrassForage().set_digestibility(-0.2));
+		CHECK_THROWS(GrassForage().set_digestibility(1.2));
+
+		GrassForage g;
+		CHECK_THROWS( g.set_fpc(0.5) ); // mass must be >0.0
+		g.set_mass(1.0);
+		CHECK_THROWS( g.get_fpc() ); // illogical state
+		CHECK_THROWS( g.set_fpc(0.0) ); // fpc must be >0.0
+	}
 
 	SECTION("sward density") {
 		CHECK( GrassForage().get_sward_density() == 0.0 );
@@ -844,8 +852,8 @@ TEST_CASE("Fauna::GrassForage", "") {
 		GrassForage g;
 		const double FPC = .234;
 		const double MASS = 1256;
-		g.set_fpc(FPC);
 		g.set_mass(MASS);
+		g.set_fpc(FPC);
 		CHECK( g.get_sward_density() == Approx(MASS / FPC) );
 	}
 

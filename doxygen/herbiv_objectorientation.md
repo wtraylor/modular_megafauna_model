@@ -113,7 +113,6 @@ The following classes of the herbivory module are singleton:
 The principle of a global single class shows also up in 
 \ref GuessOutput::HerbivoryOutput.
 
-
 ### Strategy {#sec_strategy}
 The strategy design pattern defines a set of interchangable algorithms, each of which are encapsulated in a class that is derived from one abstract interface parent class.
 Thanks to C|| polymorphism, the used algorithm can change during runtime.
@@ -158,6 +157,20 @@ The class name should of course be capitalized.
 Strictly speaking, the strategy pattern aims to offer the possibility to substitute an algorithm during the lifetime of a client object.
 In the herbivory model that is usually not the case, but rather it is used as a means of [dependency injection](sec_dependency_inversion).
 
+### Facade {#sec_facade}
+
+A facade class presents a simple interface to interact with another module or subsystem of the software.
+The complexity of the subsystem is hidden behind the public functions of the facade class.
+The subsystem doesn’t know about the facade.
+
+@startuml "Structure of the facade design pattern."
+	hide members
+	hide methods
+	client ..> facade : <<use>>
+	facade ..> subsystem.class1 : <<call>>
+	facade ..> subsystem.class2 : <<call>>
+	facade ..> subsystem.class3 : <<call>>
+@enduml
 
 \author Wolfgang Pappa, Senckenberg BiK-F
 \date May 2017

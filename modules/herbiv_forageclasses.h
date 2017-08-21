@@ -162,7 +162,9 @@ namespace Fauna{
 					return element->second;
 				else
 					throw std::logic_error("Fauna::ForageValues<>::get() "
-							"Forage type not implemented or invalid.");
+							"Forage type \""+
+							get_forage_type_name(ft)
+							+"\" not implemented or invalid.");
 			}
 
 			/// Merge this object with another one by building (weighted) means.
@@ -209,29 +211,35 @@ namespace Fauna{
 				switch (tag){
 					case POSITIVE_AND_ZERO: 
 						if (value<0.0)
-							throw std::invalid_argument(
+							throw std::invalid_argument((std::string) 
 									"ForageValues<POSITIVE_AND_ZERO> "
-									"Value < 0 not allowed.");
+									"Value < 0 not allowed."+
+									" ("+get_forage_type_name(forage_type)+")");
 						break;
 					case ZERO_TO_ONE: 
 						if (value<0.0 || value>1.0)
-							throw std::invalid_argument(
+							throw std::invalid_argument((std::string)
 									"ForageValues<ZERO_TO_ONE> "
-									"Value is not in interval [0,1].");
+									"Value is not in interval [0,1]."+
+									" ("+get_forage_type_name(forage_type)+")");
 						break;
 					default:
 						throw std::logic_error("ForageValues<> "
 								"ForageValueType not implemented.");
 				}
 				if (std::isnan(value))
-					throw std::invalid_argument("ForageValues<> "
-							"NAN is not allowed as a value.");
+					throw std::invalid_argument((std::string)
+							"ForageValues<> "
+							"NAN is not allowed as a value."+
+							" ("+get_forage_type_name(forage_type)+")");
 				if (std::isinf(value))
-					throw std::invalid_argument("ForageValues<> "
-							"INFINITY is not allowed as a value.");
+					throw std::invalid_argument((std::string)"ForageValues<> "
+							"INFINITY is not allowed as a value."+
+							" ("+get_forage_type_name(forage_type)+")");
 				if (forage_type == FT_INEDIBLE)
-					throw std::invalid_argument("ForageValues<> "
-							"Forage type `FT_INEDIBLE` is not allowed.");
+					throw std::invalid_argument((std::string)"ForageValues<> "
+							"Forage type `FT_INEDIBLE` is not allowed."+
+							" ("+get_forage_type_name(forage_type)+")");
 				
 				// The map entry for any forage type should have been
 				// created on initialization.
@@ -339,8 +347,9 @@ namespace Fauna{
 			ForageValues<tag>& operator/=(const ForageValues<tag>& rhs){
 				for (iterator i=begin(); i!=end(); i++) {
 					const double divisor = rhs.get(i->first);
-					if (divisor==0) throw std::domain_error(
-							"Fauna::ForageValues<> Division by zero.");
+					if (divisor==0) throw std::domain_error((std::string)
+							"Fauna::ForageValues<> Division by zero." +
+							" ("+get_forage_type_name(i->first)+")");
 					set(i->first, i->second / divisor);
 				}
 				return *this;
@@ -393,6 +402,9 @@ namespace Fauna{
 	/// Net energy content [MJ/kgDM] for different forage types.
 	typedef ForageValues<POSITIVE_AND_ZERO> ForageEnergyContent;
 
+	/// A fraction for each forage type.
+	typedef ForageValues<ZERO_TO_ONE> ForageFraction;
+
 	/// Dry matter mass values [kgDM or kgDM/km²] for different forage types.
 	typedef ForageValues<POSITIVE_AND_ZERO> ForageMass;
 
@@ -421,7 +433,7 @@ namespace Fauna{
 			void   set_digestibility(const double d){
 				if (d<0.0 || d>1.0)
 					throw std::invalid_argument("Fauna::ForageBase::set_digestibility(): "
-							"digestibility out of range");
+							"Digestibility out of range.");
 				digestibility = d;
 			}
 
@@ -430,7 +442,7 @@ namespace Fauna{
 			void   set_mass(const double dm){
 				if (dm<0.0)
 					throw std::invalid_argument("Fauna::ForageBase::set_mass(): "
-							"dry matter is smaller than zero");
+							"Dry matter is smaller than zero.");
 				dry_matter_mass = dm;
 			}
 
@@ -458,19 +470,45 @@ namespace Fauna{
 				return sd;
 			}
 
-			/// Grass-covered area as a fraction of the habitat [fractional].
-			double get_fpc()const{return fpc;}
+			/// Foliar percentage cover [fractional].
+			/**
+			 * Grass-covered area as a fraction of the habitat.
+			 * \throw std::logic_error If the values of mass and FPC
+			 * don’t fit together: If mass is zero, FPC must also be zero,
+			 * and if mass is non-zero, FPC must not be zero.
+			 * (Call \ref set_mass() and \ref set_fpc() with correct
+			 * values before calling \ref get_fpc().)
+			 */
+			double get_fpc()const{
+				if (get_mass() == 0.0 && fpc != 0.0)
+					throw std::logic_error("Fauna::GrassForage::get_fpc() "
+							"Mass is zero, but FPC is not zero.");
+				if (get_mass() != 0.0 && fpc == 0.0)
+					throw std::logic_error("Fauna::GrassForage::get_fpc() "
+							"Mass is not zero, but FPC is zero.");
+				return fpc;
+			}
 
 			/// \copydoc ForageValues::merge()
 			GrassForage& merge(const GrassForage& other,
 					const double this_weight, const double other_weight);
 
-			/** \copydoc get_fpc()
-			 * \throw std::invalid_argument if not `0.0<=f<=1.0`*/
+			/** \copybrief get_fpc()
+			 * \note Call \ref get_mass() before this function to
+			 * avoid any illogical state (see exceptions in \ref get_fpc()).
+			 * \throw std::invalid_argument If not `0.0<=f<=1.0`.
+			 * \throw std::logic_error If `f==0.0 && get_mass()==0.0`
+			 * or `f==0.0 && get_mass()>0.0`.*/
 			void set_fpc(const double f){
 				if(!( f>=0.0 && f<=1.0))
 					throw std::invalid_argument("Fauna::GrassForage::set_fpc() "
-							"fpc out of valid range (0.0–1.0)");
+							"FPC out of valid range (0.0–1.0).");
+				if (get_mass()==0.0 && f>0.0)
+					throw std::logic_error("Fauna::GrassForage::set_fpc() "
+							"FPC must be zero if mass is zero.");
+				if (get_mass()>0.0 && f==0.0)
+					throw std::logic_error("Fauna::GrassForage::set_fpc() "
+							"FPC cannot be zero if there is grass mass.");
 				fpc=f;
 			}
 	};
@@ -486,6 +524,7 @@ namespace Fauna{
 		// ADD NEW FORAGE TYPES (E.G. BROWSE) HERE.
 
 		/// Get digestibility [fractional] for all edible forage types.
+		/** If mass is zero, digestibility is undefined.*/
 		Digestibility get_digestibility()const;
 
 		/// Get dry matter mass [kgDM/km²] for all edible forage types.
@@ -513,9 +552,11 @@ namespace Fauna{
 				case FT_INEDIBLE: 
 											 static ForageBase empty;
 											 return empty;
-				default: throw std::logic_error(
+				default: throw std::logic_error((std::string)
 										 "Fauna::HabitatForage::operator[]()const "
-										 "Forage Type is not implemented.");
+										 "Forage type \"" +
+										 get_forage_type_name(ft) + "\" "
+										 "is not implemented.");
 			}
 		}
 
@@ -528,7 +569,9 @@ namespace Fauna{
 											 static ForageBase empty;
 											 return empty;
 				default: throw std::logic_error("Fauna::HabitatForage::operator[]() "
-										 "Forage Type is not implemented.");
+										 "Forage type \"" +
+										 get_forage_type_name(ft) + "\" "
+										 "is not implemented.");
 			}
 		}
 	};

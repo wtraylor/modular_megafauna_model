@@ -12,7 +12,7 @@
 	() "Fauna::PatchHabitat" as patchhabitat
 	() "GuessOutput::HerbivoryOutput" as herbivoutput
 	node "Herbivory Output Files" as outputfiles
-	[LPJ-GUESS] as guess
+	[LPJ-GUESS Vegetation Model] as guess
 	node "Instruction Files" as insfiles
 	guess        <..  patchhabitat
 	patchhabitat  --  herbivory
@@ -68,20 +68,22 @@
 @startuml (id=herbivore_classes)
 	hide members
 	hide methods
-	interface HerbivoreInterface
-	interface PopulationInterface
-	class HerbivoreBase
-	HerbivoreInterface  <|-- HerbivoreBase
-	HerbivoreBase       <|-- HerbivoreIndividual
-	HerbivoreBase       <|-- HerbivoreCohort
-	PopulationInterface <|-up- IndividualPopulation
-	PopulationInterface <|-up- CohortPopulation
-	HerbivoreIndividual "*" <--* "1" IndividualPopulation
-	HerbivoreCohort     "*" <--* "1" CohortPopulation
-	HerbivoreIndividual  <..  IndividualPopulation : <<create>>
-	(HerbivoreIndividual, IndividualPopulation) .. CreateHerbivoreIndividual
-	HerbivoreCohort      <..  CohortPopulation     : <<create>>
-	(HerbivoreCohort, CohortPopulation) .. CreateHerbivoreCohort
+	namespace Fauna {
+		interface HerbivoreInterface
+		interface PopulationInterface
+		class HerbivoreBase
+		HerbivoreInterface  <|-- HerbivoreBase
+		HerbivoreBase       <|-- HerbivoreIndividual
+		HerbivoreBase       <|-- HerbivoreCohort
+		PopulationInterface <|-up- IndividualPopulation
+		PopulationInterface <|-up- CohortPopulation
+		HerbivoreIndividual "*" <--* "1" IndividualPopulation
+		HerbivoreCohort     "*" <--* "1" CohortPopulation
+		HerbivoreIndividual  <..  IndividualPopulation : <<create>>
+		(HerbivoreIndividual, IndividualPopulation) .. CreateHerbivoreIndividual
+		HerbivoreCohort      <..  CohortPopulation     : <<create>>
+		(HerbivoreCohort, CohortPopulation) .. CreateHerbivoreCohort
+	}
 @enduml
 
 @startuml (id=herbivorebase_compartments)
@@ -139,28 +141,19 @@
 @startuml (id=important_classes)
 	hide members
 	hide methods
-
-	annotation "framework()" as framework
-	Gridcell "1" *--> "*" Stand
-	Stand    "1" *--> "*" Patch
-	Patch    "1" *--> "*" Individual
-	class Individual{
-		Pft* pft
-	}
-	show Individual members
+	left to right direction
 
 	namespace Fauna{
-		Simulator          ..> Habitat            : <<call>>
-		.framework          ..> Simulator          : <<create>>
-		PatchHabitat      <-right-* .Patch
-		PatchHabitat       ..> .Patch              : plant–animal interactions
-		Habitat           *..> HerbivoreInterface : contains>
-		interface HerbivoreInterface {
-			Hft* hft
-		}
-		show HerbivoreInterface members
+		class Simulator
 		abstract Habitat
-		Habitat            <|-left- PatchHabitat
+		interface HerbivoreInterface 
+		class Hft
+		interface PopulationInterface
+		Simulator            ..> Habitat            : <<call>>
+		Simulator            ..> HerbivoreInterface : <<call>>
+		Habitat             *--> "*" PopulationInterface : contains >
+		PopulationInterface *--> "*" HerbivoreInterface
+		HerbivoreInterface   --> "1" Hft
 	}
 @enduml
 
@@ -315,22 +308,53 @@
 @enduml
 
 @startuml (id=patchhabitat_construction)
+	skinparam sequenceParticipant underline
 	participant "framework()" as framework
-	framework    -> "Fauna::Simulator" : <<create>>
-	activate "Fauna::Simulator"
-	framework    -> Gridcell : <<create>>
-	activate Gridcell
-	Gridcell     -> Patch : <<create>>
-	activate Patch
-	framework    -> "Fauna::Simulator" : create_populations()
-	framework  <--  "Fauna::Simulator" : populations
-	framework    -> "Fauna::Simulator" : create_digestibility_model()
-	framework  <--  "Fauna::Simulator" : digestibility_model
-	framework    -> "Fauna::PatchHabitat" : <<create>> (populations, digestibility_model)
+	participant ":Fauna::Simulator" as simulator
+	participant ":Fauna::PatchHabitat" as patchhabitat
+	participant ":Gridcell" as gridcell
+	participant ":Patch" as patch
+	framework    -> simulator : <<create>>
+	activate simulator
+	framework    -> gridcell : <<create>>
+	activate gridcell
+	gridcell     -> patch : <<create>>
+	activate patch
+	framework    -> simulator : create_populations()
+	framework  <--  simulator : populations
+	framework    -> simulator : create_digestibility_model()
+	framework  <--  simulator : digestibility_model
+	framework    -> patchhabitat : <<create>> (populations, digestibility_model)
 	note right : constructor injection
-	activate "Fauna::PatchHabitat"
-	framework    -> Patch : set_habitat()
+	activate patchhabitat
+	framework    -> patch : set_habitat()
 	note right : setter injection
+@enduml
+
+@startuml (id=patchhabitat_interactions)
+	hide members
+	hide methods
+	class Pft
+	class Individual
+	class Patch
+	class Stand
+	class Gridcell
+	Gridcell "1" *--> "*" Stand
+	Stand    "1" *--> "*" Patch
+	Patch    "1" *--> "*" Individual
+	Individual    --> Pft
+
+	namespace Fauna{
+		abstract Habitat
+		class PatchHabitat
+		Habitat <|-- PatchHabitat
+		class PftParams
+	}
+
+	Patch *-> Fauna.PatchHabitat
+	Fauna.PatchHabitat ..> Individual : <<use>>
+	Pft *-> Fauna.PftParams
+
 @enduml
 
 @startuml (id=parameters_access)

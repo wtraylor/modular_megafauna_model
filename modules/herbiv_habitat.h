@@ -51,8 +51,8 @@ namespace Fauna{
 		 * Call this once every day from the framework. 
 		 * When overwriting this in derived classes, make sure to
 		 * call this parent function first.
-		 * \param today day of the year (0 ≙ Jan 1st)
-		 * \throw std::invalid_argument if not `0<=today<=364`
+		 * \param today Day of the year (0 ≙ Jan 1st).
+		 * \throw std::invalid_argument If not `0<=today<=364`.
 		 */
 		virtual void init_day(const int today);
 
@@ -63,7 +63,7 @@ namespace Fauna{
 		 * function and do forage removal afterwards.
 		 * \param eaten_forage Dry matter leaf forage [kgDM/km²],
 		 * must not exceed available forage.
-		 * \throw std::logic_error if `eaten_forage` exceeds
+		 * \throw std::logic_error If `eaten_forage` exceeds
 		 * available forage (**to be implemented in derived classes**).
 		 */
 		virtual void remove_eaten_forage(const ForageMass& eaten_forage){

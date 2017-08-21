@@ -1,7 +1,7 @@
 Software Design of the Herbivory Module {#page_herbiv_design}
 =============================================================
 <!-- For doxygen, this is the *page* header -->
-\brief Notes on the software design of the LPJ-GUESS herbivory module from a technical perspective.
+\brief Notes on the software design of the LPJ-GUESS herbivory module from a programmer’s perspective.
 
 Software Design of the Herbivory Module {#sec_herbiv_design}
 ============================================================
@@ -11,18 +11,61 @@ Software Design of the Herbivory Module {#sec_herbiv_design}
 Overview {#sec_herbiv_designoverview}
 -------------------------------------
 
-@startuml "Component diagram of the basic interactions of the herbivory module"
+The herbivory module differs in its design from the main LPJ-GUESS code in that it aims to apply principles of [object oriented programming](\ref page_object_orientation) as much as possible.
+Its architecture is modular so that different parts can be tested in [unit tests](\ref page_herbiv_tests).
+This entails that *most* of the code of the herbivory module does not depend on LPJ-GUESS code (compare the section \ref sec_herbiv_reusing_code).
+
+The following UML diagram shows through which interfaces the herbivory module interacts with other components:
+- \ref Fauna::PatchHabitat
+- \ref Fauna::ParamReader
+- \ref GuessOutput::HerbivoryOutput
+
+@startuml "Component diagram of the basic interactions of the herbivory module."
 	!include herbiv_diagrams.iuml!basic_components
 @enduml
 
+The basic simulation design is simple:
+- Each **herbivore** is of one **Herbivore Functional Type** ([HFT](\ref Fauna::Hft)).
+In LPJ-GUESS this would correspond to each \ref Individual being of one Plant Functional Type ([PFT](\ref Pft)).
+- Each herbivore lives in a **habitat** (\ref Fauna::Habitat), grouped by **populations** (\ref Fauna::PopulationInterface) per HFT.
+In LPJ-GUESS this would correspond to a plant \ref Individual growing in a \ref Patch.
+(Note that the herbivory module is completely ignorant of [gridcells](\ref Gridcell) and [stands](\ref Stand)).
+- The **[Simulator](\ref Fauna::Simulator)** is the %framework running the simulation.
 
-@startuml "Most important simulation classes in the Herbivory Module and their connection to LPJ-GUESS"
+@startuml "Most important classes in the herbivory module."
 	!include herbiv_diagrams.iuml!important_classes
 @enduml
 
-@startuml "Construction of PatchHabitat"
+All interactions between herbivores and their environment happens through \ref Fauna::Habitat.
+
+
+### Integration with the LPJ-GUESS Vegetation Model {#sec_herbiv_lpjguess_integration}
+
+The class \ref Fauna::PatchHabitat is the central class ([facade](\ref sec_facade)) for any interactions between the herbivory module and the LPJ-GUESS vegetation model.
+
+Some new plant properties had to be introduced.
+- They are only herbivory-specific. 
+- They potentially depend on global herbivory simulation settings (\ref Fauna::Parameters).
+- They form one logical unit.
+
+For these reasons, they were not simply added to the class \ref Pft, but they are gathered in \ref Fauna::PftParams.
+For the same reasons, they are also parsed by \ref Fauna::ParamReader (see \ref sec_herbiv_parameters).
+
+@startuml "Class diagram around Fauna::PatchHabitat."
+	!include herbiv_diagrams.iuml!patchhabitat_interactions
+@enduml
+
+In order to minimize dependencies, PatchHabitat objects are not created by the class \ref Patch, but by the function \ref framework(), as this diagram shows:
+
+@startuml "Sequence diagram of how Fauna::PatchHabitat is constructed."
 	!include herbiv_diagrams.iuml!patchhabitat_construction
 @enduml
+
+#### Forage Removal {#sec_herbiv_forageremoval}
+
+<!--TODO: Write about forage removal once I figured out the mass balance and the annual vegetation growth -->
+
+![](herbiv_patchhabitat_foragereduction.png "Proportional forage removal by Fauna::PatchHabitat")
 
 Forage Classes {#sec_herbiv_forageclasses}
 ------------------------------------------
@@ -64,9 +107,11 @@ Their common model mechanics are defined in their abstract parent class, \ref Fa
 The herbivore model performs calculations generally *per area.*
 That’s why individual herbivores can only be simulated if an absolute habitat area size is defined.<!--TODO: Where is it defined-->
 
-@startuml "Herbivore classes"
+@startuml "Class diagram of the two default herbivore classes (for individual and cohort mode), which share the same model mechanics defined in Fauna::HerbivoreBase."
 	!include herbiv_diagrams.iuml!herbivore_classes
 @enduml
+
+\see \ref sec_herbiv_new_herbivore_class
 
 ### HerbivoreBase {#sec_herbiv_herbivorebase} ### 
 The herbivore class itself can be seen as a mere framework (compare \ref sec_inversion_of_control) that integrates various compartments:
@@ -83,7 +128,7 @@ HerbivoreBase instantiates the object itself according to \ref Fauna::Hft::diet_
 For a cohort that means that the density is proportionally reduced, for an individual, death is a stochastic event.
 The corresponding population objects will release dead herbivore objects automatically.
 
-@startuml "Model compartments around Fauna::HerbivoreBase"
+@startuml "Model compartments around Fauna::HerbivoreBase."
 	!include herbiv_diagrams.iuml!herbivorebase_compartments
 @enduml
 
@@ -91,7 +136,7 @@ The corresponding population objects will release dead herbivore objects automat
 Each herbivore class needs a specific population class, implementing \ref Fauna::PopulationInterface, which manages a list of class instances of the same HFT.
 Each [habitat](\ref Fauna::Habitat) has a \ref Fauna::HftPopulationsMap which manages a number of population instances, one for each HFT.
 
-@startuml "Herbivore population classes"
+@startuml "Herbivore population classes."
 	!include herbiv_diagrams.iuml!population_classes
 @enduml
 
@@ -149,7 +194,7 @@ ParamReader is the only one being directly dependent on \ref parameters.h and \r
 
 The principle that parameter member variables put in one class, which also knows to check their validity, but parsed in ParamReader, is also applied in \ref Fauna::Hft and \ref Fauna::PftParams.
 
-@startuml "Interactions of parameter-related classes in the herbivory module" 
+@startuml "Interactions of parameter-related classes in the herbivory module." 
 	!include herbiv_diagrams.iuml!parameters_classes
 @enduml
 
@@ -197,7 +242,7 @@ Output classes within the herbivory module are collected in the namespace \ref F
 - The two structs \ref FaunaOut::HabitatData and \ref FaunaOut::HerbivoreData are simple data *containers* with the ability to merge with other objects of the same type (**aggregation**).
 - The class \ref FaunaOut::Aggregator in turn aggregates all output data from herbivores and habitats into the container \ref FaunaOut::CombinedData.
 
-@startuml "Output classes of the herbivory module"
+@startuml "Output classes of the herbivory module."
 	!include herbiv_diagrams.iuml!outputclasses
 @enduml
 
@@ -230,14 +275,15 @@ So far, there is no check of congruency between [parameters](\ref Fauna::Paramet
 
 The new output module \ref GuessOutput::HerbivoryOutput is 
 derived from the abstract class \ref GuessOutput::OutputModule.
-The following diagram show 
+The following diagram shows how it interacts with the LPJ-GUESS output framework and the herbivory module. 
 <!--TODO: diagram-->
-@startuml "Class diagram of the connections around class GuessOutput::HerbivoryOutput"
+@startuml "Class diagram of the connections around class GuessOutput::HerbivoryOutput."
 	!include herbiv_diagrams.iuml!outputmodule_class
 @enduml
 
 
-The following sequence diagram shows the creation process of \ref GuessOutput::HerbivoryOutput :
+The following sequence diagram shows the creation process of \ref GuessOutput::HerbivoryOutput and the calling chain from the framework during simulations.
+The daily output routine is used for all output intervals (daily, monthly, annual,…).
 
 @startuml "Output initialization in LPJ-GUESS. All participating classes have only one instantiation, but only HerbivoryOutput implements formally the Singleton design pattern."
 	!include herbiv_diagrams.iuml!outputmodule_initialization
@@ -263,6 +309,8 @@ This approach honours the \ref sec_single_responsibility to some degree.
 - The \ref GuessOutput::OutputModuleRegistry instantiates the class. There is only one global instance, but there is no direct way to access that global instance like in the [Singleton design pattern](\ref sec_singleton).
 	To circumvent this restriction (instead of working with a lot of `static` members) the function [get_instance()](\ref GuessOutput::HerbivoryOutput::get_instance()) has been introduced.
 	To assert that no other instance can be created, the constructor throws an exception on second call. 
+
+\see \ref sec_herbiv_new_output
 
 ------------------------------------------------------------
 
