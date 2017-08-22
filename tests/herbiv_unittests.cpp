@@ -28,6 +28,14 @@ using namespace FaunaOut;
 using namespace FaunaSim;
 
 namespace {
+	struct DistributeForageDummy: public DistributeForage {
+		virtual void operator()(
+				const HabitatForage& available,
+				ForageDistribution& forage_distribution) const{
+			// TODO
+		}
+	};
+
 	/// A dummy habitat that does nothing
 	class DummyHabitat: public Habitat{
 		public:
@@ -47,9 +55,11 @@ namespace {
 			
 			virtual void eat(
 					const ForageMass& kg_per_km2,
-					const Digestibility& digestibility){}
+					const Digestibility& digestibility){
+				eaten += kg_per_km2;
+			}
 
-			virtual double get_bodymass() const{return 1.0;}
+			virtual double get_bodymass() const{return bodymass;}
 
 			virtual ForageMass get_forage_demands(
 					const HabitatForage& available_forage)const{
@@ -72,11 +82,12 @@ namespace {
 		public:
 			const ForageMass& get_demand()const{return demand;}
 			void set_demand(const ForageMass& d){demand = d;}
+			const ForageMass& get_eaten()const{return eaten;}
 		private:
 			const Hft* hft;
 			const double ind_per_km2; 
 			const double bodymass;
-			ForageMass demand;
+			ForageMass demand, eaten;
 	};
 
 	/// A population of dummy herbivores
@@ -192,7 +203,39 @@ namespace {
 } // anonymous namespace 
 
 
-// test cases in alphabetical order, please
+// TEST CASES IN ALPHABETICAL ORDER, PLEASE
+
+TEST_CASE("Dummies", "") {
+	Hft hft1;
+	hft1.name="hft1";
+	SECTION("DummyHerbivore"){
+		// INITIALIZATION
+		CHECK( DummyHerbivore(&hft1, 1.0).get_ind_per_km2() == 1.0 );
+		CHECK( DummyHerbivore(&hft1, 0.0).get_ind_per_km2() == 0.0 );
+		CHECK( DummyHerbivore(&hft1, 1.0, 25.0).get_bodymass() == 25.0);
+		CHECK( DummyHerbivore(&hft1, 1.0).get_demand() == 0.0 );
+		DummyHerbivore d(&hft1, 1.0);
+		CHECK( &d.get_hft() == &hft1 );
+		CHECK( d.get_eaten() == 0.0 );
+		CHECK( d.get_demand() == 0.0 );
+
+		const ForageMass DEMAND(23.9);
+		d.set_demand(DEMAND);
+		CHECK( d.get_demand() == DEMAND );
+		
+		const ForageMass EATEN(12.4);
+		d.eat(EATEN, Digestibility(.5));
+		CHECK( d.get_eaten() == EATEN );
+	}
+
+	SECTION("DummyPopulation"){
+		DummyHerbivore dummy1 = DummyHerbivore(&hft1, 1.0);
+		DummyHerbivore dummy2 = DummyHerbivore(&hft1, 0.0);
+		DummyPopulation pop = DummyPopulation(&hft1);
+		pop.create_offspring(1.0);
+		REQUIRE(pop.get_list().size() == 1);
+	}
+}
 
 TEST_CASE("Fauna::average()", ""){
 	CHECK_THROWS( average(1.0,2.0, -1.0, 1.0) );
@@ -435,17 +478,6 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 	}
 }
 
-TEST_CASE("Fauna::Dummies", "") {
-	Hft hft1;
-	hft1.name="hft1";
-	DummyHerbivore dummy1 = DummyHerbivore(&hft1, 1.0);
-	DummyHerbivore dummy2 = DummyHerbivore(&hft1, 0.0);
-
-	DummyPopulation pop = DummyPopulation(&hft1);
-	pop.create_offspring(1.0);
-	REQUIRE(pop.get_list().size() == 1);
-}
-
 TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 	CHECK_THROWS( FatmassEnergyBudget(-1.0, 1.0) );
 	CHECK_THROWS( FatmassEnergyBudget(0.0, 0.0) );
@@ -528,6 +560,166 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 		}
 
 	}
+}
+
+TEST_CASE("Fauna::FeedHerbivores") {
+	CHECK_THROWS(FeedHerbivores(std::auto_ptr<DistributeForage>(NULL)));
+
+	// create objects
+	const HftList HFTS = create_hfts(3, Parameters());
+	const double DENS = 1.0; // irrelevant in this test
+	FeedHerbivores feed(std::auto_ptr<DistributeForage>(
+				new DistributeForageEqually()));
+
+	// these variables are set in each test section.
+	HabitatForage AVAILABLE;
+	HerbivoreVector herbivores;
+
+	SECTION("no herbivores"){
+		// set some arbitrary forage
+		for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			AVAILABLE[*ft].set_mass(123.4);
+
+		const ForageMass OLD_AVAIL = AVAILABLE.get_mass();
+		feed(AVAILABLE, herbivores);
+
+		// no changes
+		CHECK( AVAILABLE.get_mass() == OLD_AVAIL);
+	}
+
+	SECTION("single herbivore"){
+		DummyHerbivore herbi(&HFTS[0], DENS);
+
+		// create some arbitrary demand (different for each forage type)
+		ForageMass DEMAND;
+		double i = 1.0;
+		for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			DEMAND.set(*ft, i++);
+		herbi.set_demand(DEMAND);
+
+		herbivores.push_back(&herbi);
+
+		SECTION("more available than demanded"){
+			// set available forage slightly higher than demand
+			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+					ft != FORAGE_TYPES.end(); ft++)
+				AVAILABLE[*ft].set_mass(DEMAND[*ft]*1.1);
+			const ForageMass OLD_AVAIL = AVAILABLE.get_mass();
+
+			// perform feeding operations
+			feed(AVAILABLE, herbivores);
+			const ForageMass eaten = OLD_AVAIL - AVAILABLE.get_mass();
+
+			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+					ft != FORAGE_TYPES.end(); ft++){
+				CHECK(eaten[*ft] 
+						== Approx(DEMAND[*ft]).epsilon(.05));
+				CHECK(herbi.get_eaten()[*ft] 
+						== Approx(DEMAND[*ft]).epsilon(.05));
+			}
+		}
+
+		SECTION("less available than demanded"){
+			// set available forage slightly lower than demand
+			const double FRACTION = 0.9;
+			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+					ft != FORAGE_TYPES.end(); ft++)
+				AVAILABLE[*ft].set_mass(DEMAND[*ft]*FRACTION);
+			const ForageMass OLD_AVAIL = AVAILABLE.get_mass();
+
+			// perform feeding operations
+			feed(AVAILABLE, herbivores);
+			const ForageMass eaten = OLD_AVAIL - AVAILABLE.get_mass();
+
+			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+					ft != FORAGE_TYPES.end(); ft++){
+				CHECK(eaten[*ft] 
+						== Approx(DEMAND[*ft] * FRACTION).epsilon(.05));
+				CHECK(herbi.get_eaten()[*ft] 
+						== Approx(DEMAND[*ft] * FRACTION).epsilon(.05));
+			}
+		}
+
+		SECTION("nothing available"){
+			REQUIRE( AVAILABLE.get_mass() == 0.0 );
+			feed(AVAILABLE, herbivores);
+			CHECK( AVAILABLE.get_mass() == 0.0 ); // nothing changed
+			CHECK( herbi.get_eaten() == 0.0 );
+		}
+
+		SECTION("diet switch"){
+			// TODO
+		}
+	}
+
+	SECTION("many herbivores"){
+		ForageMass TOTAL_DEMAND;
+		// number of herbivores per HFT
+		const int HERBI_COUNT = 10;
+		std::list<DummyHerbivore> dummylist;
+		// create herbivores
+		for (HftList::const_iterator hft = HFTS.begin();
+				hft != HFTS.end(); hft++){
+			for (int i = 0; i<HERBI_COUNT; i++) {
+				dummylist.push_back(DummyHerbivore(&*hft, DENS));
+				herbivores.push_back(&dummylist.back());
+				// set some arbitrary demand
+				const ForageMass IND_DEMAND((double)i);
+				dummylist.back().set_demand(IND_DEMAND);
+				TOTAL_DEMAND += IND_DEMAND;
+			}
+		}
+
+		SECTION("more available than demanded"){
+			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+					ft != FORAGE_TYPES.end(); ft++)
+				AVAILABLE[*ft].set_mass(TOTAL_DEMAND[*ft]*1.1);
+			const ForageMass OLD_AVAIL = AVAILABLE.get_mass();
+
+			feed(AVAILABLE, herbivores);
+			const ForageMass eaten = OLD_AVAIL - AVAILABLE.get_mass();
+
+			for (std::vector<HerbivoreInterface*>::const_iterator
+					itr = herbivores.begin(); itr != herbivores.end(); itr++){
+				const DummyHerbivore& herbi = *((DummyHerbivore*)*itr);
+				// check for each forage type
+				for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+						ft != FORAGE_TYPES.end(); ft++){
+					CHECK( herbi.get_eaten()[*ft] 
+							== Approx(herbi.get_demand()[*ft]).epsilon(.05) );
+					CHECK( eaten[*ft] 
+							== Approx(TOTAL_DEMAND[*ft]).epsilon(.05) );
+				}
+			}
+		}
+
+		SECTION("less available than demanded"){
+			const double FRACTION = .4;
+			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+					ft != FORAGE_TYPES.end(); ft++)
+				AVAILABLE[*ft].set_mass(TOTAL_DEMAND[*ft]*FRACTION);
+			const ForageMass OLD_AVAIL = AVAILABLE.get_mass();
+
+			feed(AVAILABLE, herbivores);
+			const ForageMass eaten = OLD_AVAIL - AVAILABLE.get_mass();
+
+			for (std::vector<HerbivoreInterface*>::const_iterator
+					itr = herbivores.begin(); itr != herbivores.end(); itr++){
+				const DummyHerbivore& herbi = *((DummyHerbivore*)*itr);
+				// check for each forage type
+				for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+						ft != FORAGE_TYPES.end(); ft++){
+					CHECK( herbi.get_eaten()[*ft] 
+							== Approx(herbi.get_demand()[*ft] * FRACTION).epsilon(.05) );
+					CHECK( eaten[*ft] 
+							== Approx(TOTAL_DEMAND[*ft] * FRACTION).epsilon(.05) );
+				}
+			}
+		}
+	}
+
 }
 
 TEST_CASE("Fauna::ForageValues", "") {

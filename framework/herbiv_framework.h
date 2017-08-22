@@ -15,14 +15,44 @@
 
 namespace Fauna{
 	// Forward declarations
-	class DistributeForageEqually;
 	class DistributeForage;
 	class GetDigestibility;
+	class FeedHerbivores;
 	class Habitat;
 	class HerbivoreInterface;
 	class HftList;
 	class HftPopulationsMap;
 	class Parameters;
+
+	/// A vector of herbivore pointers.
+	/** Originally defined in \ref herbiv_population.h */
+	typedef std::vector<HerbivoreInterface*> HerbivoreVector;
+
+
+	/// Function object to feed herbivores.
+	class FeedHerbivores{
+		public:
+			/// Constructor.
+			/** 
+			 * \param distribute_forage Strategy object for 
+			 * calculating the forage portions.
+			 * \throw std::invalid_argument If `distribute_forage==NULL`. */
+			FeedHerbivores(std::auto_ptr<DistributeForage> distribute_forage);
+
+			/// Feed the herbivores.
+			/**
+			 * \param[in,out] available Available forage mass in the
+			 * habitat. This will be reduced by the amount of eaten 
+			 * forage.
+			 * \param[in,out] herbivores Herbivore objects that are
+			 * being fed by calling \ref HerbivoreInterface::eat().
+			 */
+			void operator()(
+					HabitatForage& available,
+					const HerbivoreVector& herbivores) const;
+		private:
+			std::auto_ptr<DistributeForage> distribute_forage;
+	};
 
 	/// Central herbivory framework class.
 	/**
@@ -35,6 +65,8 @@ namespace Fauna{
 			 * \param params **valid** global simulation parameters
 			 * \param hftlist set of **valid** herbivore functional types
 			 * \throw std::invalid_argument if any parameter not valid.
+			 * \throw std::logic_error if 
+			 * \ref Parameters::forage_distribution not implemented 
 			 */
 			Simulator(const Parameters& params, const HftList& hftlist);
 
@@ -69,39 +101,36 @@ namespace Fauna{
 			void simulate_day(const int day_of_year, Habitat& habitat,
 					const bool do_herbivores);
 		private:
+			/// Create new \ref DistributeForage object according to
+			/// parameters.
+			std::auto_ptr<DistributeForage> create_distribute_forage();
+
 			const HftList& hftlist;
 			const Parameters& params;
+			FeedHerbivores feed_herbivores; 
 			int days_since_last_establishment;
-
-			/// Get the forage distribution algorithm class chosen in parameters
-			/**\return a function object (see \ref sec_functors) that can
-			 * be called directly with the `()` operator.
-			 * \throw std::logic_error if 
-			 * \ref Parameters::forage_distribution not implemented */
-			DistributeForage& distribute_forage();
 	};
 
 	/// Interface for a forage distribution algorithm
 	/** \see \ref sec_strategy */
-	class DistributeForage{
-		public:
-			/// Distribute forage equally among herbivores
-			/**
-			 * No direct competition.
-			 * Under forage scarcity, each herbivore gets its share in
-			 * proportion to its demanded forage.
-			 * \param[in]  available Available forage in the habitat.
-			 * \param[in,out] forage_distribution As input: Demanded
-			 * forage of each herbivore 
-			 * (see \ref HerbivoreInterface::get_forage_demands()).
-			 * As output: Forage portion for each herbivore.
-			 * Unit is kgDM/km².
-			 * The sum of all portions must not exceed the available
-			 * forage!
-			 */
-			virtual void operator()(
-					const HabitatForage& available,
-					ForageDistribution& forage_distribution) const = 0;
+	struct DistributeForage{
+		/// Distribute forage equally among herbivores
+		/**
+		 * No direct competition.
+		 * Under forage scarcity, each herbivore gets its share in
+		 * proportion to its demanded forage.
+		 * \param[in]  available Available forage in the habitat.
+		 * \param[in,out] forage_distribution As input: Demanded
+		 * forage of each herbivore 
+		 * (see \ref HerbivoreInterface::get_forage_demands()).
+		 * As output: Forage portion for each herbivore.
+		 * Unit is kgDM/km².
+		 * The sum of all portions must not exceed the available
+		 * forage!
+		 */
+		virtual void operator()(
+				const HabitatForage& available,
+				ForageDistribution& forage_distribution) const = 0;
 	};
 
 	/// Equal forage distribution algorithm
