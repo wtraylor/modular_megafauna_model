@@ -28,9 +28,12 @@ namespace Fauna {
 	 * @startuml "Dependencies of Fauna::PatchHabitat" 
 	 * !include herbiv_diagrams.iuml!patchhabitat
 	 * @enduml
+	 *
 	 * \note There are no unit tests for this class because the
 	 * class \ref Patch cannot reasonably be instantiated in a
 	 * unit test without the whole LPJ-GUESS framework.
+	 *
+	 * \see \ref sec_herbiv_lpjguess_integration
 	 */
 	class PatchHabitat : public Habitat{
 	public:
@@ -48,8 +51,17 @@ namespace Fauna {
 				Patch& patch, 
 				std::auto_ptr<GetDigestibility> digestibility_model);
 
-		// ----- Fauna::Habitat implementation -----
+	public: // ----- Fauna::Habitat implementation -----
+		/** \copydoc Habitat::get_available_forage()
+		 * \see \ref GetDigestibility
+		 * \see \ref Individual::get_forage_mass()
+		 */
 		virtual HabitatForage get_available_forage() const;
+
+		/** \copydoc Habitat::remove_eaten_forage()
+		 * \see \ref Individual::reduce_forage_mass()
+		 * \see \ref sec_herbiv_forageremoval
+		 */
 		virtual void remove_eaten_forage(const ForageMass& eaten_forage);
 	protected:
 		std::auto_ptr<GetDigestibility> get_digestibility;

@@ -39,9 +39,15 @@ HabitatForage PatchHabitat::get_available_forage() const {
 	double grass_fpc = 0.0;
 
 	// Loop through all vegetation individuals in this patch
-	patch.vegetation.firstobj();
-	while (patch.vegetation.isobj) {
+	for (patch.vegetation.firstobj(); 
+			patch.vegetation.isobj;
+			patch.vegetation.nextobj()) 
+	{
 		const Individual& indiv = patch.vegetation.getobj();
+		if (!indiv.alive)
+			continue;
+
+
 		const ForageType ft = indiv.get_forage_type();
 
 		if (ft != FT_INEDIBLE){
@@ -84,7 +90,6 @@ HabitatForage PatchHabitat::get_available_forage() const {
 			// ADD OTHER FORAGE-SPECIFIC PROPERTIES HERE
 
 		}
-		patch.vegetation.nextobj();
 	}
 
 	return result;
@@ -98,16 +103,19 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	ForageMass old_forage;
 
 	// Sum up the old forage
-	patch.vegetation.firstobj();
-	while (patch.vegetation.isobj) {
+	for (patch.vegetation.firstobj(); 
+			patch.vegetation.isobj;
+			patch.vegetation.nextobj()) 
+	{
 		const Individual& indiv = patch.vegetation.getobj();
+		if (!indiv.alive)
+			continue;
 		const ForageType ft = indiv.get_forage_type();
 
 		if (ft != FT_INEDIBLE){
 			old_forage.set(ft, 
 					old_forage.get(ft) + indiv.get_forage_mass());
 		}
-		patch.vegetation.nextobj();
 	}
 
 	// The fraction of forage that is left after eating.
@@ -133,15 +141,17 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	}
 
 	// Reduce the forage of each plant individual
-	patch.vegetation.firstobj();
-	while (patch.vegetation.isobj) {
+	for (patch.vegetation.firstobj(); 
+			patch.vegetation.isobj;
+			patch.vegetation.nextobj()) 
+	{
 		Individual& indiv = patch.vegetation.getobj();
+		if (!indiv.alive)
+			continue;
 		const ForageType ft = indiv.get_forage_type();
 
 		// Reduce the forage of each individual proportionally
 		if (ft != FT_INEDIBLE)
 			indiv.reduce_forage_mass(fraction_left[ft]);
-
-		patch.vegetation.nextobj();
 	} 
 }

@@ -162,7 +162,7 @@ Forage net energy content is implemented with the [strategy design pattern](\ref
   implement your algorithm.
 
 - Return a reference to an object of your class in
-  \ref Fauna::Simulator::distribute_forage().
+  \ref Fauna::Simulator::create_distribute_forage().
 
 - Add an identifier in \ref Fauna::ForageDistributionAlgorithm and
   add your string identifier in \ref Fauna::ParamReader::callback()
