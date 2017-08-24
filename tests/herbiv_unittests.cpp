@@ -1575,6 +1575,7 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 	const double AREA = 10.0; // habitat area [km²]
 	// prepare parameters
 	Parameters params;
+	params.habitat_area_km2 = AREA;
 	REQUIRE(params.is_valid());
 
 	// prepare HFT
@@ -1585,7 +1586,7 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 	REQUIRE( hft.is_valid(params) );
 
 	// prepare creating object
-	CreateHerbivoreIndividual create_ind(&hft, &params, AREA);
+	CreateHerbivoreIndividual create_ind(&hft, &params);
 
 	SECTION("Create empty population"){
 		IndividualPopulation pop(create_ind);

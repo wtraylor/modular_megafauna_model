@@ -86,7 +86,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			// compile and check mandatory parameters
 			MandatoryParamList mandatory_hft_params;
 
-			mandatory_hft_params.push_back(MandatoryParam("include",""));
+			mandatory_hft_params.push_back(MandatoryParam("include"));
 
 			if (params.herbivore_type == HT_INDIVIDUAL ||
 					params.herbivore_type == HT_COHORT) {
@@ -164,19 +164,25 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 			// Add mandatory parameters 
 			mandatory_global_params.push_back(MandatoryParam(
-						"digestibility_model", ""));
+						"digestibility_model"));
 			mandatory_global_params.push_back(MandatoryParam(
-						"forage_distribution", ""));
+						"forage_distribution"));
 			mandatory_global_params.push_back(MandatoryParam(
-						"free_herbivory_years", ""));
+						"free_herbivory_years"));
 			mandatory_global_params.push_back(MandatoryParam(
-						"herbivore_establish_interval", ""));
+						"herbivore_establish_interval"));
 			mandatory_global_params.push_back(MandatoryParam(
-						"herbivore_type", ""));
+						"herbivore_type"));
 
 			if (params.herbivore_type == HT_COHORT) 
 				mandatory_global_params.push_back(MandatoryParam(
-							"dead_herbivore_threshold", ""));
+							"dead_herbivore_threshold", 
+							"herbivore_type=\"cohort\""));
+
+			if (params.herbivore_type == HT_INDIVIDUAL)
+				mandatory_global_params.push_back(MandatoryParam(
+							"habitat_area_km2",
+							"herbivore_type=\"individual\""));
 
 			// check the list
 			if (!check_mandatory(mandatory_global_params,
@@ -431,6 +437,13 @@ void ParamReader::declare_parameters(
 				1,          // number of parameters
 				CB_NONE,
 				"Number of years without herbivory, as part of vegetation spinup.");
+
+		declareitem("habitat_area_km2",
+				&(params.habitat_area_km2),
+				DBL_MIN, DBL_MAX, // min, max
+				1,                // number of parameters
+				CB_NONE,
+				"Area size of one patch [km²] for herbivore individual mode.");
 
 		declareitem("herbivore_establish_interval",
 				&(params.herbivore_establish_interval),

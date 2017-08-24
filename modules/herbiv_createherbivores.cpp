@@ -47,16 +47,8 @@ double CreateHerbivoreCommon::get_body_condition(
 //------ CreateHerbivoreIndividual ---------------------------
 //------------------------------------------------------------
 
-CreateHerbivoreIndividual::CreateHerbivoreIndividual(
-					const Hft* hft,
-					const Parameters* parameters,
-					const double area_km2):
-	CreateHerbivoreCommon(hft, parameters),
-	area_km2(area_km2)
-{
-	if (area_km2 <= 0.0)
-		throw std::invalid_argument("Fauna::CreateHerbivoreIndividual::CreateHerbivoreIndividual() "
-				"area_km2 <= 0.0");
+double CreateHerbivoreIndividual::get_area_km2()const{
+	return get_params().habitat_area_km2;
 }
 
 HerbivoreIndividual CreateHerbivoreIndividual::operator()(
@@ -65,10 +57,10 @@ HerbivoreIndividual CreateHerbivoreIndividual::operator()(
 		throw std::invalid_argument("Fauna::CreateHerbivoreIndividual::operator()() "
 				"age_days < 0");
 
-	assert(area_km2 > 0.0);
+	assert(get_area_km2() > 0.0);
 	if (age_days == 0) 
 		// Call birth constructor
-		return HerbivoreIndividual(&get_hft(), sex, area_km2);
+		return HerbivoreIndividual(&get_hft(), sex, get_area_km2());
 	else
 		// Call establishment constructor
 		return HerbivoreIndividual(
@@ -76,7 +68,7 @@ HerbivoreIndividual CreateHerbivoreIndividual::operator()(
 				get_body_condition(age_days),
 				&get_hft(),
 				sex,
-				area_km2);
+				get_area_km2());
 }
 
 //------------------------------------------------------------

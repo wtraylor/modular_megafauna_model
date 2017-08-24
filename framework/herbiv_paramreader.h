@@ -109,9 +109,11 @@ namespace Fauna {
 			struct MandatoryParam{
 				std::string param;
 				std::string required_by;
-				/// Constructor
+				/// Constructor with `required_by`
 				MandatoryParam(std::string param, std::string required_by):
 					param(param), required_by(required_by){}
+				/// Simple constructor for always mandatory parameters.
+				MandatoryParam(std::string param): param(param){}
 			}; 
 			typedef std::list<MandatoryParam> MandatoryParamList;
 

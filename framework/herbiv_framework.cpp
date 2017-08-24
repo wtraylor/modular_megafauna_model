@@ -89,8 +89,7 @@ std::auto_ptr<HftPopulationsMap> Simulator::create_populations()const{
 			const double AREA=1.0; // TODO THis is only a test
 			std::auto_ptr<PopulationInterface> pind_pop(
 					new IndividualPopulation(
-						CreateHerbivoreIndividual(phft, &params, 
-							AREA)));
+						CreateHerbivoreIndividual(phft, &params)));
 			// TODO Where does the area size come from??
 			// -> from Habitat (then merge() doesn’t work anymore)
 			// -> from Parameters (then CreateHerbivoreIndividual

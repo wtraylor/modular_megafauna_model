@@ -52,6 +52,10 @@ namespace Fauna {
 		/// Simulation years without herbivores (as part of spinup). 
 		int free_herbivory_years;
 
+		/// Habitat area [km²].
+		/** Only relevant if \ref herbivore_type == \ref HT_INDIVIDUAL. */
+		double habitat_area_km2;
+
 		/// Days between establishment check for herbivores.
 		int herbivore_establish_interval;
 
@@ -63,6 +67,7 @@ namespace Fauna {
 
 		/// Constructor with default (valid!) settings
 		Parameters(): // alphabetical order
+			habitat_area_km2(100.0),
 			dead_herbivore_threshold(0.1),
 			forage_distribution(FD_EQUALLY),
 			free_herbivory_years(0),

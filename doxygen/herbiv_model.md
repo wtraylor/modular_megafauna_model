@@ -16,11 +16,27 @@ Large Herbivore Model {#sec_herbiv_model}
     -> no lactation, bonding, herding, etc.
 -->
 
+Basic Model Concepts {#sec_herbiv_basicconcepts}
+------------------------------------------------
+
+![](herbiv_habitatarea.png "Illustration of the habitat concept in the herbivory module as an abstraction of the vegetation patch.")
+
 A herbivore is defined by these state variables:
 - Age
 - Sex
 - Current energy need
 - Fat mass
+
+Plant–Herbivore Interaction {#sec_herbiv_plantherbivore_interactions}
+---------------------------------------------------------------------
+
+![](herbivory_fluxes.png "Carbon and nitrogen fluxes in the vegetation model caused by herbivory.")
+
+### Forage Removal {#sec_herbiv_forageremoval}
+
+### Nitrogen Excretion {#sec_herbiv_nitrogen_excretion}
+
+### Trampling {#sec_herbiv_trampling}
 
 Energetics {#sec_herbiv_energetics}
 -----------------------------------
@@ -66,13 +82,6 @@ Life History {#sec_herbiv_life_history}
 growth linear: \ref Fauna::HerbivoreBase::get_bodymass()
 
 Mortality {#sec_herbiv_mortality}
----------------------------------
-
-Nitrogen Excretion {#sec_herbiv_nitrogen_excretion}
----------------------------------------------------
-
-
-Trampling {#sec_herbiv_trampling}
 ---------------------------------
 
 ------------------------------------------------------------

@@ -51,17 +51,14 @@ namespace Fauna{
 	class CreateHerbivoreIndividual: public CreateHerbivoreCommon{
 		public:
 			/// Constructor
-			/**
-			 * \throw std::invalid_argument If `area_km2<=0.0`
-			 * \see \ref CreateHerbivoreCommon::CreateHerbivoreCommon() 
-			 */
+			/** \copydoc CreateHerbivoreCommon::CreateHerbivoreCommon() */
 			CreateHerbivoreIndividual(
 					const Hft* hft,
-					const Parameters* parameters,
-					const double area_km2);
+					const Parameters* parameters):
+				CreateHerbivoreCommon(hft, parameters){}
 
 			/// Habitat area size [km²].
-			double get_area_km2()const{return area_km2;}
+			double get_area_km2()const;
 
 			/// Create a new object instance.
 			/**
@@ -72,15 +69,13 @@ namespace Fauna{
 			 */
 			virtual HerbivoreIndividual operator()(const int age_days,
 					const Sex sex)const;
-		private:
-			double area_km2;
 	};
 
 	/// Function class constructing \ref HerbivoreCohort objects.
 	class CreateHerbivoreCohort: public CreateHerbivoreCommon{
 		public:
 			/// Constructor
-			/** \see \ref CreateHerbivoreCommon::CreateHerbivoreCommon() */
+			/** \copydoc CreateHerbivoreCommon::CreateHerbivoreCommon() */
 			CreateHerbivoreCohort(
 					const Hft* hft,
 					const Parameters* parameters):
