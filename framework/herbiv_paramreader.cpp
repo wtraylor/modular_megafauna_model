@@ -324,7 +324,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				current_hft.mortality_factors.insert(MF_BACKGROUND);
 			else if (*itr == "LIFESPAN") 
 				current_hft.mortality_factors.insert(MF_LIFESPAN);
-			else if (*itr == "STARVATION_ILLIUS2000") 
+			else if (*itr == "STARVATION_ILLIUS_2000") 
 				current_hft.mortality_factors.insert(MF_STARVATION_ILLIUS2000);
 			else if (*itr == "STARVATION_THRESHOLD") 
 				current_hft.mortality_factors.insert(MF_STARVATION_THRESHOLD);
@@ -336,7 +336,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 							"Valid types: "
 							"\"background\", "
 							"\"lifespan\", "
-							"\"starvation_illius2000\", "
+							"\"starvation_illius_2000\", "
 							"\"starvation_threshold\"").c_str());
 				plibabort();
 			} 
@@ -622,7 +622,7 @@ void ParamReader::declare_parameters(
 				"\"background\", "
 				"\"lifespan\", "
 				"\"starvation_threshold\", "
-				"\"starvation_illius2000\" (only for cohorts)");  
+				"\"starvation_illius_2000\" (only for cohorts)");  
 
 		declareitem("mortality_juvenile",
 				&current_hft.mortality_juvenile,
