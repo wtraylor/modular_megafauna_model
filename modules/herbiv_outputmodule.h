@@ -17,8 +17,8 @@
 // forward declarations of referenced classes
 class Date;
 namespace Fauna{
-	class Habitat;
 	class HftList;
+	class SimulationUnit;
 }
 namespace FaunaOut{
 	class CombinedData;
@@ -91,7 +91,8 @@ namespace GuessOutput {
 			/// Inherited function that is not used.
 			virtual void outannual(Gridcell& gridcell){}
 
-			/// Write output of one year for a number of habitats.
+			/// Write output of one year for a number of habitats and 
+			/// their herbivores.
 			/** 
 			 * Depending on \ref interval, for each day, each month,
 			 * etc., one row if data is added to the output tables.
@@ -101,20 +102,20 @@ namespace GuessOutput {
 			 * \param latitude  Value for the latitude column.
 			 * \param day Day of the year (0=Jan 1st).
 			 * \param year Simulation year (starting with 0).
-			 * \param habitats The group of habitats whose output is
-			 * merged to one data point.
+			 * \param simulation_units The group of habitats and
+			 * herbivores whose output is merged to one data point.
 			 * \throw std::invalid_argument If not `day` in [0,364] or
 			 * `year<0`
 			 */
 			void outdaily(const double longitude, const double latitude,
 					const int day, const int year,
-					const std::vector<Fauna::Habitat*>& habitats);
+					const std::vector<Fauna::SimulationUnit*>& simulation_units);
 
 			/// Write output for a \ref Gridcell.
 			/** This will write daily, monthly, etc. according to
 			 * interval. 
-			 * All \ref Fauna::Habitat objects are read into a pointer 
-			 * list and past to the other outdaily function.
+			 * All \ref Fauna::SimulationUnit objects are read into a 
+			 * pointer list and past to the other outdaily function.
 			 */
 			virtual void outdaily(Gridcell& gridcell);
 

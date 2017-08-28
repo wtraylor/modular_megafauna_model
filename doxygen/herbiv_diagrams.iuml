@@ -141,7 +141,6 @@
 @startuml (id=important_classes)
 	hide members
 	hide methods
-	left to right direction
 
 	namespace Fauna{
 		class Simulator
@@ -149,9 +148,12 @@
 		interface HerbivoreInterface 
 		class Hft
 		interface PopulationInterface
-		Simulator            ..> Habitat            : <<call>>
-		Simulator            ..> HerbivoreInterface : <<call>>
-		Habitat             *--> "*" PopulationInterface : contains >
+		Simulator            ..> SimulationUnit : <<use>>
+		class SimulationUnit
+		SimulationUnit      *--> "1" Habitat
+		SimulationUnit      *--> "*" PopulationInterface : contains >
+		class HftPopulationsMap
+		(SimulationUnit, PopulationInterface) .. HftPopulationsMap
 		PopulationInterface *--> "*" HerbivoreInterface
 		HerbivoreInterface   --> "1" Hft
 	}
@@ -312,22 +314,34 @@
 	participant "framework()" as framework
 	participant ":Fauna::Simulator" as simulator
 	participant ":Fauna::PatchHabitat" as patchhabitat
+	participant ":Fauna::HftPopulationsMap" as populations
 	participant ":Gridcell" as gridcell
 	participant ":Patch" as patch
 	framework    -> simulator : <<create>>
 	activate simulator
+
 	framework    -> gridcell : <<create>>
 	activate gridcell
+	
 	gridcell     -> patch : <<create>>
 	activate patch
-	framework    -> simulator : create_populations()
-	framework  <--  simulator : populations
+
 	framework    -> simulator : create_digestibility_model()
 	framework  <--  simulator : digestibility_model
-	framework    -> patchhabitat : <<create>> (populations, digestibility_model)
+
+	framework    -> patchhabitat : <<create>> (digestibility_model)
 	note right : constructor injection
 	activate patchhabitat
-	framework    -> patch : set_habitat()
+
+	framework    -> simulator : create_populations()
+	simulator    -> populations : <<create>>
+	activate populations
+
+	framework  <--  simulator : populations
+
+	note over framework : combine habitat and populations in a SimulationUnit
+
+	framework    -> patch : set_herbivory_unit(SimulationUnit)
 	note right : setter injection
 @enduml
 
@@ -346,15 +360,18 @@
 
 	namespace Fauna{
 		abstract Habitat
+		class SimulationUnit
+		SimulationUnit *-down-> Habitat
 		class PatchHabitat
-		Habitat <|-- PatchHabitat
+		Habitat <|-down- PatchHabitat
+		interface GetDigestibility
+		PatchHabitat *-> "1" GetDigestibility
 		class PftParams
 	}
 
-	Patch *-> Fauna.PatchHabitat
-	Fauna.PatchHabitat ..> Individual : <<use>>
-	Pft *-> Fauna.PftParams
-
+	Patch *-> Fauna.SimulationUnit : owns >
+	Fauna.PatchHabitat -> Patch : <<use>>
+	Pft *-left-> Fauna.PftParams
 @enduml
 
 @startuml (id=parameters_access)
@@ -416,19 +433,6 @@
 	FaunaSim.Framework ..> Fauna.ParamReader : <<use>>
 @enduml
 
-@startuml (id=patchhabitat)
-	hide members
-	hide methods
-	Patch "1"                 <--> "1" Fauna.PatchHabitat
-	abstract Fauna.Habitat
-	Fauna.Habitat         <|-- Fauna.PatchHabitat
-	interface "Fauna.GetDigestibility"
-	Fauna.GetDigestibility <-- Fauna.PatchHabitat
-	Fauna.HftPopulationsMap --* Fauna.Habitat
-	interface Fauna.PopulationInterface
-	Fauna.HftPopulationsMap *-- "*" Fauna.PopulationInterface
-@enduml
-
 @startuml (id=population_classes)
 	hide members
 	hide methods
@@ -438,9 +442,11 @@
 		PopulationInterface <|-- CohortPopulation
 		IndividualPopulation *-- "*" HerbivoreIndividual
 		CohortPopulation     *-- "*" HerbivoreCohort
+		class SimulationUnit
+		SimulationUnit *-- "*" PopulationInterface
+		(SimulationUnit, PopulationInterface) .. HftPopulationsMap
 		abstract Habitat
-		Habitat *-- "*" PopulationInterface
-		(Habitat, PopulationInterface) .. HftPopulationsMap
+		SimulationUnit *-- "1" Habitat
 	}
 @enduml
 
@@ -451,8 +457,9 @@
 	namespace FaunaSim {
 		class "Framework" <<singleton>>
 		class HabitatGroup
+		class HabitatGroupList
+		HabitatGroupList *-> "*" HabitatGroup
 		class SimpleHabitat
-		HabitatGroup "1" *-- "*" SimpleHabitat
 		class LogisticGrass
 		SimpleHabitat *-> LogisticGrass
 	}
@@ -460,7 +467,9 @@
 		class "ParamReader"   <<singleton>>
 		abstract Habitat 
 		Simulator     ..> Habitat                        : <<call>>
+		SimulationUnit *-> Habitat
 	}
+	FaunaSim.HabitatGroup *--> "*" Fauna.SimulationUnit
 	FaunaSim.SimpleHabitat --|> Fauna.Habitat
 	FaunaSim.Framework ..> Fauna.ParamReader              : <<use>>
 	FaunaSim.Framework .up.> .parameters                    : <<use>>

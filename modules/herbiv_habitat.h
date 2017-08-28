@@ -8,7 +8,7 @@
 #ifndef HERBIV_HABITAT_H
 #define HERBIV_HABITAT_H
 
-#include "herbiv_forageclasses.h" // for ForageMass
+#include "herbiv_forageclasses.h" // for HabitatForage
 #include "herbiv_outputclasses.h" // for FaunaOut::HabitatOutput
 #include <cassert>                // for assert()
 #include <list>                   // for HabitatList
@@ -23,13 +23,13 @@ namespace Fauna{
 	// Forward declaration of classes in the same namespace
 	class HerbivoreInterface; 
 	class Hft;
-	class HftPopulationsMap;
 
 	/// Abstract class of a spatial unit populated by herbivores
 	/** 
 	 * \note While this base class implements the basic output 
 	 * functions, any derived class is responsible to add its 
 	 * own output.
+	 * \see \ref Fauna::SimulationUnit
 	 */
 	class Habitat{
 	public: 
@@ -40,12 +40,6 @@ namespace Fauna{
 		/// Get dry-matter biomass [kgDM/km²] that is available to herbivores to eat.
 		virtual HabitatForage get_available_forage() const = 0;
 
-		/// Get the herbivore populations in the habitat.
-		HftPopulationsMap& get_populations(){ 
-            assert( populations.get() != NULL );
-            return *populations; 
-        }
-		
 		/// Update at the start of the day.
 		/** 
 		 * Call this once every day from the framework. 
@@ -84,14 +78,6 @@ namespace Fauna{
 		int get_day()const{return day_of_year;}
 
 	protected:
-		/// Constructor
-		/**
-		 * \param populations object holding the herbivore populations
-		 * \see constructor injection: \ref sec_inversion_of_control
-		 * \throw std::invalid_argument If `populations` is NULL.
-		 */
-		Habitat(std::auto_ptr<HftPopulationsMap> populations);
-
 		/// Add output for each day into this object.
 		FaunaOut::HabitatData& todays_output(){
 			return current_output;
@@ -103,7 +89,6 @@ namespace Fauna{
 		FaunaOut::HabitatData aggregated_output;
 		FaunaOut::HabitatData current_output;
 		int day_of_year; 
-		std::auto_ptr<HftPopulationsMap> populations;
 	};
 
 	/// A list of \ref Habitat pointers.

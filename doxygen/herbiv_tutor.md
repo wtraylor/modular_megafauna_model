@@ -255,7 +255,8 @@ In the \ref framework() function call \ref GuessOutput::HerbivoryOutput::set_inc
 How to add a new test vegetation model {#sec_herbiv_new_testhabitat}
 --------------------------------------
 
-<!--TODO-->
+By default, the class \ref FaunaSim::SimpleHabitat is used for all test simulations.
+If you want to run your own vegetation model, create it in \ref FaunaSim::Framework::create_habitat().
 
 Re-using the code for other vegetation models {#sec_herbiv_reusing_code}
 ---------------------------------------------

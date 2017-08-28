@@ -9,7 +9,7 @@
 #include "config.h"
 #include "herbiv_outputmodule.h"
 #include "guess.h"                // for Date and Gridcell
-#include "herbiv_habitat.h"       // for HabitatList
+#include "herbiv_framework.h"     // for SimulationUnit
 #include "herbiv_hft.h"           // for HftList
 #include "herbiv_outputclasses.h" // for HabitatData and HerbivoreData
 #include "herbiv_patchhabitat.h"  // for Patch::get_habitat()
@@ -259,13 +259,14 @@ ColumnDescriptors HerbivoryOutput::get_columns(
 void HerbivoryOutput::outdaily(Gridcell& gridcell){
 	if (!isactive) return;
 
-	// References to all Habitat objects in the gridcell.
-	std::vector<Habitat*> habitats;
+	// References to all simulation units in the gridcell.
+	std::vector<SimulationUnit*> simulation_units;
 
 	// reserve space in array: number of stands (gridcell.size())
 	// times number of patches in first stand object.
 	if (gridcell.size() > 0)
-		habitats.reserve(gridcell.size() * (*gridcell.begin()).nobj);
+		simulation_units.reserve(
+				gridcell.size() * (*gridcell.begin()).nobj);
 
 	//Loop through Patches to gather all habitats
 	Gridcell::iterator gc_itr = gridcell.begin();
@@ -274,9 +275,8 @@ void HerbivoryOutput::outdaily(Gridcell& gridcell){
 		stand.firstobj(); 
 		while (stand.isobj) {
 			Patch& patch = stand.getobj();
-			// add pointer to the habitat to the list
-			Habitat& habitat = patch.get_habitat();
-			habitats.push_back(&habitat);
+			// add pointer of the unit to the list
+			simulation_units.push_back(&patch.get_herbivory_unit());
 			stand.nextobj(); // next patch
 		} // patch loop
 		++gc_itr; // next stand
@@ -284,13 +284,13 @@ void HerbivoryOutput::outdaily(Gridcell& gridcell){
 
 	// Use the more general function to do the rest
 	outdaily(gridcell.get_lon(), gridcell.get_lat(), 
-			date.day, date.year, habitats);
+			date.day, date.year, simulation_units);
 }	
 
 void HerbivoryOutput::outdaily(
 		const double longitude, const double latitude,
 		const int day, const int year,
-		const std::vector<Fauna::Habitat*>& habitats)
+		const std::vector<Fauna::SimulationUnit*>& simulation_units)
 {
 	if (day<0 || day>=365)
 		throw std::invalid_argument("GuessOutput::HerbivoryOutput::outdaily() "
@@ -315,16 +315,18 @@ void HerbivoryOutput::outdaily(
 
 		// Loop through all habitats and aggregate their output
 		// to one data point.
-		for (std::vector<Fauna::Habitat*>::const_iterator itr=habitats.begin();
-				itr != habitats.end(); itr++)
+		for (std::vector<Fauna::SimulationUnit*>::const_iterator 
+				itr  = simulation_units.begin();
+				itr != simulation_units.end(); itr++)
 		{
-			Habitat& habitat = **itr;
-			// add habitat data
+			Habitat& habitat = (**itr).get_habitat();
+
+			// ADD HABITAT DATA
 			aggregator.add(habitat.retrieve_output());
 
-			// add herbivore data
+			// ADD HERBIVORE DATA
 			// all populations in the habitat (one for each HFT)
-			HftPopulationsMap& populations = habitat.get_populations();
+			HftPopulationsMap& populations = (**itr).get_populations();
 
 			// All herbivores in the habitat
 			HerbivoreVector herbivores = populations.get_all_herbivores();
@@ -338,7 +340,7 @@ void HerbivoryOutput::outdaily(
 						herbivore.retrieve_output());
 			}
 		}
-		// Write output
+		// WRITE OUTPUT
 		write_datapoint( longitude, latitude, day, year, aggregator.reset() );
 	}
 }

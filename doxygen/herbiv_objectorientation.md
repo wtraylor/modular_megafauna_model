@@ -14,6 +14,14 @@ concepts of object-oriented programming.
 
 ## Good Programming Practice ## {#sec_good_practice}
 
+### Information Hiding ### {#sec_information_hiding}
+Information or data hiding means that any parts that may be subject to later changes in the software design must not be accessible from other modules or from clients.
+Only the very necessary access may be granted in well-defined, minimal interfaces.
+
+Always assume the worst: If access is given to any other part of the software, that part may change it in unpredictable ways!
+
+Declaring class members `private` (**encapsulation**) is one way to data hiding.
+
 ### Rule of Three ### {#sec_rule_of_three}
 If a class explicitely defines at least one of the following methods, it should most likely also define the other ones:
 
@@ -21,7 +29,7 @@ If a class explicitely defines at least one of the following methods, it should 
 - Copy Constructor
 - Copy Assignment Operator
 
-\note If moving to C||11, the **Rule of Five** becomes relevant
+\note If moving to C++11, the **Rule of Five** becomes relevant
 
 ## S-O-L-I-D Design principles ## {#sec_design_solid}
 
@@ -71,7 +79,7 @@ One object (the framework) supplies the dependencies for another object (the cli
 This is a direct alternative to global objects/variables.
 
 Two kinds of dependency injection are used
-1. **Setter Injection:** A client receives its dependency *after* being constructed, via a setter method. This is dangerous, because until initialization through the setter method, the client might be in an invalid state. (Example: \ref Patch::set_habitat())
+1. **Setter Injection:** A client receives its dependency *after* being constructed, via a setter method. This is dangerous, because until initialization through the setter method, the client might be in an invalid state. (Example: \ref Patch::set_herbivory_unit())
 2. **Constructor Injection:** Any object of the client class receives its dependency in the constructor. (Example: \ref Fauna::PatchHabitat::PatchHabitat())
 
 For example: The \ref Fauna::HftList object is not a global variable, but is instead being passed down from the \ref framework() function to \ref Fauna::Simulator.

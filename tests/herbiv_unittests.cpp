@@ -39,9 +39,6 @@ namespace {
 	/// A dummy habitat that does nothing
 	class DummyHabitat: public Habitat{
 		public:
-			/// Constructor with empty populations
-			DummyHabitat(): 
-				Habitat(std::auto_ptr<HftPopulationsMap>(new HftPopulationsMap())) {}
 			virtual HabitatForage get_available_forage() const { return HabitatForage(); }
 			int get_day_public()const{return get_day();}
 	};
@@ -1800,6 +1797,16 @@ TEST_CASE("Fauna::ReproductionIllius2000", "") {
 	}
 }
 
+TEST_CASE("Fauna::SimulationUnit") {
+	Hft HFT;
+	CHECK_THROWS( SimulationUnit(
+				std::auto_ptr<Habitat>(NULL),
+				std::auto_ptr<HftPopulationsMap>()) );
+	CHECK_THROWS( SimulationUnit(
+				std::auto_ptr<Habitat>(new DummyHabitat()),
+				std::auto_ptr<HftPopulationsMap>(NULL)) );
+}
+
 TEST_CASE("Fauna::Simulator", "") {
 	Fauna::Parameters params;
 	REQUIRE( params.is_valid() );
@@ -1828,14 +1835,16 @@ TEST_CASE("Fauna::Simulator", "") {
 	}
 
 	// Check simulate_day()
-	DummyHabitat habitat;
-	CHECK_THROWS( sim.simulate_day(-1, habitat, true) );
-	CHECK_THROWS( sim.simulate_day(366, habitat, true) );
+	SimulationUnit simunit(
+			std::auto_ptr<Habitat>(new DummyHabitat()),
+			std::auto_ptr<HftPopulationsMap>(new HftPopulationsMap));
+	CHECK_THROWS( sim.simulate_day(-1, simunit, true) );
+	CHECK_THROWS( sim.simulate_day(366, simunit, true) );
 	const bool do_herbivores = true;
 	for (int d=0; d<365; d++){
-		sim.simulate_day(d,habitat, do_herbivores);
+		sim.simulate_day(d,simunit, do_herbivores);
 		// NOTE: So far, only the day is checked!
-		CHECK(habitat.get_day_public() == d);
+		CHECK(((DummyHabitat&)simunit.get_habitat()).get_day_public() == d);
 	}
 }
 
@@ -2066,7 +2075,7 @@ TEST_CASE("FaunaSim::SimpleHabitat", "") {
 	// create a habitat with some populations
 	const Fauna::Parameters params;
 	Simulator sim(params, create_hfts(4, params)); 
-	SimpleHabitat habitat(sim.create_populations(), settings);
+	SimpleHabitat habitat(settings);
 	
 	SECTION("Initialization") {
 		CHECK( habitat.get_available_forage().grass.get_fpc() 
@@ -2111,13 +2120,20 @@ TEST_CASE("FaunaSim::HabitatGroup","") {
 	HabitatGroup group(1.0,1.0); // lon,lat
 	group.reserve(5);
 	for (int i=1; i<5; i++) {
-		// add a habitat
-		group.add(std::auto_ptr<Habitat>(new DummyHabitat()));
+		// create a simulation unit
+		std::auto_ptr<Habitat> habitat( new DummyHabitat() );
+		std::auto_ptr<HftPopulationsMap> populations(
+				new HftPopulationsMap() );
+		std::auto_ptr<SimulationUnit> simunit( 
+				new SimulationUnit(habitat, populations));
+		// add it to the group
+		group.add(simunit);
+		// Check if it has been added properly
 		CHECK( group.size() == i );
-		CHECK( group.get_habitat_references().size() == i ); 
+		CHECK( group.get_vector().size() == i ); 
 	}
 	// Make sure the references are pointing correctly to the objects
-	const std::vector<Habitat*> refs = group.get_habitat_references();
+	const std::vector<SimulationUnit*> refs = group.get_vector();
 	HabitatGroup::const_iterator itr = group.begin();
 	int j=0;
 	while (itr != group.end()){
@@ -2134,15 +2150,23 @@ TEST_CASE("FaunaSim::HabitatGroupList","") {
 
 	// add some habitat groups
 	for (int i=1; i<5; i++) {
-		HabitatGroup& group = gl.add(new HabitatGroup(i,i));
+		HabitatGroup& group = gl.add(
+				std::auto_ptr<HabitatGroup>(new HabitatGroup(i,i)));
 		for (int j=1; j<4; j++) {
-			// add a habitat
-			group.add(std::auto_ptr<Habitat>(new DummyHabitat()));
+			// create a simulation unit
+			std::auto_ptr<Habitat> habitat( new DummyHabitat() );
+			std::auto_ptr<HftPopulationsMap> populations(
+					new HftPopulationsMap() );
+			std::auto_ptr<SimulationUnit> simunit( 
+					new SimulationUnit(habitat, populations));
+			// add it to the group
+			group.add(simunit);
 		}
 		CHECK(gl.size() == i);
 	}
 	// Don’t allow adding a group with same coordinates twice
-	CHECK_THROWS( gl.add(new HabitatGroup(1,1)) );
+	CHECK_THROWS( gl.add(
+				std::auto_ptr<HabitatGroup>(new HabitatGroup(1,1))) );
 }
 
 // TEST_CASE("Fauna::is_first_day_of_month()", ""){

@@ -20,6 +20,23 @@ using namespace Fauna;
 using namespace FaunaSim;
 using namespace GuessOutput;
 
+// Anonymous namespace with definitions local to this file 
+namespace {
+	/// Creates a vector of pointers from a vector of 
+	/// \ref SimulationUnit objects.
+	std::vector<SimulationUnit*> simunit_vector_to_pointers(
+			std::vector<SimulationUnit> vec_input)
+	{
+		std::vector<SimulationUnit*> result;
+		result.reserve(vec_input.size());
+		for (std::vector<SimulationUnit>::iterator itr = vec_input.begin();
+				itr != vec_input.end(); itr++)
+			result.push_back(&*itr);
+		return result;
+	}
+}
+
+
 // The name of the log file to which output from all dprintf and fail calls is sent
 const xtring file_log = "herbivsim.log";
 
@@ -94,6 +111,11 @@ int main(int argc,char* argv[]) {
 ////////////////////////////////////////////////////////
 
 const int Framework::COORDINATES_PRECISION = 0;
+
+std::auto_ptr<Habitat> Framework::create_habitat()const{
+	return std::auto_ptr<Habitat>(
+			new SimpleHabitat(params.habitat));
+}
 
 void Framework::declare_parameters(){
 
@@ -215,31 +237,31 @@ bool Framework::run(const Fauna::Parameters& global_params,
 	// instruction file.
 	Simulator habitat_simulator(global_params, hftlist);
 
+	dprintf("Creating ecosystem with habitats and herbivores.\n");
 
-	// The habitat groups in this run
-	// these are pointers (because HabitatGroup cannot be
-	// copied) and need to be deleted later
-	HabitatGroupList habitat_groups;
-	habitat_groups.reserve(params.ngroups);
-	for (int g=0; g<params.ngroups; g++){
-		// The x and y coordinates are just for labeling the
-		// lon/lat columns in the output.
-		const double x = (double) g;
-		const double y = (double) g;
+	// Container for all the groups, each being a vector of
+	// simulation units.
+	HabitatGroupList groups;
+	groups.reserve( params.nhabitats_per_group );
+	for (int g=0; g<params.ngroups;g++){
 
-		// create a habitat group 
-		HabitatGroup& group = habitat_groups.add( new HabitatGroup(x,y) );
+		// This is only for labelling the output:
+		const double lon = (double) g;
+		const double lat = (double) g;
 
-		// fill group with habitats
-		group.reserve( params.nhabitats_per_group );
+		HabitatGroup& new_group = groups.add(
+				std::auto_ptr<HabitatGroup>(
+					new HabitatGroup(lon, lat)));
+		
+		// Fill one group with habitats and populations
 		for (int h=0; h<params.nhabitats_per_group; h++){
 			try {
-				// At this point, any other Habitat object
-				// could be inserted too.
-				group.add(std::auto_ptr<Habitat>(new SimpleHabitat(
-							habitat_simulator.create_populations(),
-							params.habitat
-							)));
+				// create a new pair of habitat and populations
+				new_group.add( std::auto_ptr<SimulationUnit>(
+							new SimulationUnit(
+								create_habitat(),
+								habitat_simulator.create_populations())));
+
 			} catch (const std::exception& e){
 				dprintf("Exception during habitat creation:\n"
 						"group number %d of %d\n"
@@ -248,10 +270,11 @@ bool Framework::run(const Fauna::Parameters& global_params,
 						g, params.ngroups,
 						h, params.nhabitats_per_group,
 						e.what());
-						return false;
+				return false;
 			}
 		}
-	} // end of habitat creation
+
+	}
 
 	dprintf("Starting simulation.\n");
 
@@ -259,14 +282,18 @@ bool Framework::run(const Fauna::Parameters& global_params,
 		for (int day_of_year=0; day_of_year < 365; day_of_year++){
 
 			// loop through habitat groups
-			for (HabitatGroupList::iterator itr_g=habitat_groups.begin();
-					itr_g != habitat_groups.end(); itr_g++) {
+			for (HabitatGroupList::iterator itr_g = groups.begin();
+					itr_g != groups.end();
+					itr_g++)
+			{
 				HabitatGroup& group = **itr_g;
 
-				//loop through habitat objects in this group
-				HabitatGroup::iterator itr_habitat = group.begin();
-				while (itr_habitat != group.end()) {
-					Habitat& habitat = **itr_habitat;
+				//loop through SimulationUnit objects in this group
+				for (HabitatGroup::iterator itr_u = group.begin();
+						itr_u != group.end();
+						itr_u++)
+				{
+					SimulationUnit& simulation_unit = **itr_u;
 
 					// VEGATATION AND HERBIVORE SIMULATION
 					const bool do_herbivores = 
@@ -276,20 +303,21 @@ bool Framework::run(const Fauna::Parameters& global_params,
 					try {
 						habitat_simulator.simulate_day(
 								day_of_year, 
-								habitat, 
+								simulation_unit,
 								do_herbivores); 
 					} catch (const std::exception& e){
 						dprintf("Exception during herbivore simulation:\n\%s",
 								e.what());
 						return false;
 					}
-
-					itr_habitat++;
 				}
 
 				// Write output
-				herbiv_out.outdaily(group.get_lon(), group.get_lat(), 
-						day_of_year, year, group.get_habitat_references());
+				herbiv_out.outdaily(
+						group.get_lon(), // longitude (only for labelling)
+						group.get_lat(), // latitude  (only for labelling)
+						day_of_year, year,
+						group.get_vector());
 			} // end of habitat group loop
 
 		}// day loop: end of year

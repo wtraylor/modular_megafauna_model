@@ -10,14 +10,6 @@
 
 using namespace Fauna;
 
-Habitat::Habitat(std::auto_ptr<HftPopulationsMap> populations):
-	populations(populations)
-{
-	if (this->populations.get() == NULL)
-		throw std::invalid_argument("Fauna::Habitat::Habitat() "
-				"Argument \"populations\" is NULL.");
-}
-
 void Habitat::aggregate_todays_output(){
 	if (todays_output().datapoint_count > 0) {
 		aggregated_output.merge(todays_output());

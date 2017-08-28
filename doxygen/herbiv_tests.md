@@ -64,11 +64,14 @@ One SimpleHabitat object corresponds to a \ref Patch in a way.
 So far, only this one kind of vegetation model is implemented.
 (However, if desirable, also other types of vegetation models could be implemented as classes derived from \ref Fauna::Habitat.)
 
-The class \ref FaunaSim::HabitatGroup holds a list of objects which implement \ref Fauna::Habitat and thus corresponds to a \ref Gridcell.
+The class \ref FaunaSim::HabitatGroup holds a list of \ref Fauna::SimulationUnit objects, each of which contains a \ref Fauna::Habitat implementing object and a herbivore population (\ref Fauna::HftPopulationsMap).
+The HabitatGroup corresponds in a way to the LPJ-GUESS \ref Gridcell.
 
 @startuml "Class interactions of the Herbivory Test Simulations"
 	!include herbiv_diagrams.iuml!testsim_classes
 @enduml
+
+\see \ref sec_herbiv_new_testhabitat
 
 ### Parameters ###
 

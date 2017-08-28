@@ -21,13 +21,9 @@ namespace Fauna {
 
 	/// Class with herbivore habitat functionality for an LPJ-GUESS \ref Patch.
 	/** 
-	 * Objects of this class are supposed to be owned by the
-	 * corresponding \ref Patch object which takes care of 
+	 * Any object of this class are supposed to be owned by the
+	 * corresponding \ref Patch object, which takes care of 
 	 * instantiating and releasing.
-	 *
-	 * @startuml "Dependencies of Fauna::PatchHabitat" 
-	 * !include herbiv_diagrams.iuml!patchhabitat
-	 * @enduml
 	 *
 	 * \note There are no unit tests for this class because the
 	 * class \ref Patch cannot reasonably be instantiated in a
@@ -39,7 +35,6 @@ namespace Fauna {
 	public:
 		/// Constructor
 		/**
-		 * \param populations The herbivore populations
 		 * \param patch The one-to-one relationship to the patch
 		 * \param digestibility_model Strategy object for
 		 * calculating the digestibility of forage (constructor
@@ -47,7 +42,6 @@ namespace Fauna {
 		 * \see \ref sec_inversion_of_control
 		 */
 		PatchHabitat( 
-				std::auto_ptr<HftPopulationsMap> populations,
 				Patch& patch, 
 				std::auto_ptr<GetDigestibility> digestibility_model);
 

@@ -16,19 +16,13 @@ using namespace Fauna;
 //forward declarations
 namespace Fauna {
 	class Parameters;
+	class SimulationUnit;
 }
 
 namespace FaunaSim {
 
 
 	/// Helper class for performing simple grass growth to test herbivore functionality
-	/**
-	 * \startuml
-	 * hide members
-	 * hide methods
-	 * FaunaSim.SimpleHabitat *--> FaunaSim.LogisticGrass
-	 * \enduml
-	 */
 	class LogisticGrass {
 		public:
 			/// Settings for grass growth
@@ -118,13 +112,11 @@ namespace FaunaSim {
 
 			/// Constructor with simulation settings.
 			/**
-			 * \param populations Herbivore populations; see \ref Fauna::Habitat::Habitat()
 			 * \param settings Simulation settings for the vegetation
 			 * model.
 			 */
-			SimpleHabitat(std::auto_ptr<HftPopulationsMap> populations,
-					const SimpleHabitat::Parameters settings):
-				Habitat(populations), grass(settings.grass){}
+			SimpleHabitat( const SimpleHabitat::Parameters settings):
+				grass(settings.grass){}
 
 			// ------ Fauna::Habitat implementations ----
 			virtual void init_day(const int today); 
@@ -146,67 +138,46 @@ namespace FaunaSim {
 			LogisticGrass grass;
 	};
 
-	/// A set of \ref Fauna::Habitat objects.
-	/** In the herbivore test simulations this corresponds semantically
-	 * to a \ref ::Gridcell with \ref ::Patch objects. 
-	 * \startuml
-	 * hide members
-	 * hide methods
-	 * interface Fauna.Habitat
-	 * FaunaSim.SimpleHabitat --|> Fauna.Habitat
-	 * Fauna.Habitat "*" <--* FaunaSim.HabitatGroup
-	 * \enduml
+	/// A set of \ref Fauna::SimulationUnit objects.
+	/** 
+	 * In the herbivore test simulations this corresponds 
+	 * semantically to a \ref ::Gridcell with \ref ::Patch objects. 
 	 */
 	class HabitatGroup{
 		public:
-
 			/// Constructor
 			/** 
 			 * \param lon longitude (just for output labels)
 			 * \param lat latitude  (just for output labels)
 			 */
 			HabitatGroup(const double lon, const double lat):
-		lon(lon), lat(lat){}
+				lon(lon), lat(lat){}
 
-			/// Destructor, deleting all \ref Fauna::Habitat instances.
-			~HabitatGroup(){
-				for (iterator itr=begin(); itr!=end(); itr++)
-					delete *itr;
-				vec.clear();
-			}
+			/// Destructor, deleting all \ref Fauna::SimulationUnit instances.
+			~HabitatGroup();
+
+			/// Add a newly created \ref Fauna::SimulationUnit object
+			/** The object instance will be owned by the group
+			 * and released on its destruction.
+			 * \param new_unit Pointer to a newly created object
+			 * \throw std::invalid_argument if `new_unit.get()==NULL`
+			 */
+			void add(std::auto_ptr<SimulationUnit> new_unit);
 
 			/// Latitude as defined in the constructor.
 			double get_lon()const{return lon;}
 			/// Latitude as defined in the constructor.
 			double get_lat()const{return lat;}
 
-			/// Add a newly created \ref Fauna::Habitat object
-			/** The \ref Fauna::Habitat instance will be owned by the group
-			 * and released on its destruction.
-			 * \param new_habitat Pointer to a newly created object
-			 * \throw std::invalid_argument if `new_habitat==NULL`
-			 */
-			void add(std::auto_ptr<Habitat> new_habitat){
-				if (new_habitat.get() == NULL)
-					throw std::invalid_argument("HabitatGroup::add(): "
-							"received NULL-Pointer as argument.");
-				Habitat* bare_pointer = new_habitat.get();
-				new_habitat.release(); // release ownership of auto_ptr
-				vec.push_back(bare_pointer);
-			}
-
-			/// Get list of readonly habitat references.
-			std::vector<Habitat*> get_habitat_references(){
-				std::vector<Habitat*> result;
-				for (int i=0; i<vec.size(); i++)
-					result.push_back(vec[i]);
-				return result;
+			/// Get the underlying vector of references.
+			const std::vector<SimulationUnit*>& get_vector(){
+				return vec;
 			}
 
 			/** @{ \name Wrapper around std::vector 
 			 * Equivalents to methods in Standard Library Container std::vector.*/
-			typedef std::vector<Habitat*>::iterator iterator;
-			typedef std::vector<Habitat*>::const_iterator const_iterator;
+			typedef std::vector<SimulationUnit*>::iterator iterator;
+			typedef std::vector<SimulationUnit*>::const_iterator const_iterator;
 			iterator begin()            { return vec.begin(); }
 			const_iterator begin()const { return vec.begin(); }
 			iterator end()              { return vec.end();   }
@@ -215,8 +186,8 @@ namespace FaunaSim {
 			void reserve(const int size){ vec.reserve(size);  } 
 			/** @} */ // Container functionality 
 		private:
-			std::vector<Habitat*> vec;
-			double lon,lat;
+			double lon,lat;		
+			std::vector<SimulationUnit*> vec;
 
 			// Deleted copy constructor and copy assignment operator.
 			// If they were not deleted, the unique ownership of the
@@ -240,22 +211,14 @@ namespace FaunaSim {
 				vec.clear();
 			}
 
-			/// Add a new element
-			/** \param pnew newly constructed object, now owned by the list.
-			 * \return reference to `pnew` 
-			 * \throw std::logic_error if a habitat group with the same
+			/// Add a new element.
+			/** \param new_group New object, now owned by the list.
+			 * \return Reference to `new_group`.
+			 * \throw std::logic_error If a habitat group with the same
 			 * longitute and latitude already exists.
+			 * \throw std::invalid_argument If `new_group.get()==NULL`.
 			 */
-			HabitatGroup& add( HabitatGroup* pnew){
-				for (const_iterator itr=begin(); itr!=end(); itr++)
-					if ((*itr)->get_lon() == pnew->get_lon() &&
-							(*itr)->get_lat() == pnew->get_lat())
-						throw std::logic_error("FaunaSim::HabitatGroup::add() "
-								"A HabitatGroup object with the same longitude and "
-								"latitude already exists in the list.");
-				vec.push_back(pnew);
-				return *pnew;
-			}
+			HabitatGroup& add( std::auto_ptr<HabitatGroup> new_group);
 
 			/** @{ \name Wrapper around std::vector 
 			 * Equivalents to methods in Standard Library Container std::vector.*/

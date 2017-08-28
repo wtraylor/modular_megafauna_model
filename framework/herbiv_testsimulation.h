@@ -21,18 +21,8 @@ namespace Fauna{
 namespace FaunaSim{
 	/// Performs test simulations for herbivores outside of the LPJ-GUESS vegetation model
 	/** 
-	 * \startuml
-	 * hide members
-	 * hide methods
-	 * namespace FaunaSim{
-	 * 	Framework ..> "*" SimpleHabitat : <<create>>
-	 * 	Framework ..> "*" HabitatGroup : <<create>>
-	 * 	SimpleHabitat "*" <--* HabitatGroup
-	 * 	Framework ..> "1" .Fauna.Simulator : <<create>>
-	 * 	Framework ..> .Fauna.ParamReader : <<use>>
-	 * }
-	 * \enduml
 	 * \see \ref sec_singleton for an explanation of the design pattern used.
+	 * \see \ref sec_herbiv_testsimulations
 	 */
 	class Framework{
 		public:
@@ -65,6 +55,9 @@ namespace FaunaSim{
 			/** Fills \ref mandatory_parameters.*/
 			virtual void declare_parameters();
 		private:
+			/// Create a new habitat according to preferences.
+			std::auto_ptr<Habitat> create_habitat()const;
+
 			/// Output module
 			GuessOutput::HerbivoryOutput herbiv_out;
 
@@ -90,7 +83,6 @@ namespace FaunaSim{
 			/// Deleted assignment constructor
 			void operator=(Framework const&); //don’t implement, it’s deleted
 	};
-
 }
 
 #endif // HERBIV_TESTSIMULATION_H

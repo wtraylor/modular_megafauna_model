@@ -54,8 +54,47 @@ namespace Fauna{
 			std::auto_ptr<DistributeForage> distribute_forage;
 	};
 
+	/// A habitat with the herbivores that live in it.
+	/** \see \ref sec_herbiv_designoverview */
+	class SimulationUnit{
+		public:
+			/// Constructor
+			/**
+			 * \throw std::invalid_argument If one of the parameters
+			 * is NULL.
+			 */
+			SimulationUnit( std::auto_ptr<Habitat>,
+					std::auto_ptr<HftPopulationsMap>);
+
+			/// The habitat where the populations live.
+			/** \throw std::logic_error If the private pointer is NULL. */
+			Habitat& get_habitat(){
+				if (habitat.get() == NULL)
+					throw std::logic_error("Fauna::SimulationUnit::get_habitat() "
+							"The unique pointer to habitat is NULL. "
+							"The SimulationUnit object lost ownership "
+							"of the Habitat object."); 
+				return *habitat;
+			};
+
+			/// The herbivores that lives in the habitat.
+			/** \throw std::logic_error If the private pointer is NULL. */
+			HftPopulationsMap& get_populations(){
+				if (populations.get() == NULL)
+					throw std::logic_error("Fauna::SimulationUnit::get_populations() "
+							"The unique pointer to populations is NULL. "
+							"The SimulationUnit object lost ownership "
+							"of the HftPopulationsMap object."); 
+				return *populations;
+			}
+		private:
+			std::auto_ptr<Habitat> habitat;
+			std::auto_ptr<HftPopulationsMap> populations;
+	};
+
 	/// Central herbivory framework class.
 	/**
+	 * \see \ref sec_herbiv_designoverview
 	 * \see \ref sec_inversion_of_control
 	 */
 	class Simulator{
@@ -92,13 +131,15 @@ namespace Fauna{
 			 * because it prepares the output data which might be
 			 * used by \ref GuessOutput::HerbivoryOutput.
 			 * \param day_of_year Current day of year (0 = Jan 1st)
-			 * \param habitat The Habitat to simulate
+			 * \param simulation_unit The habitat and herbivores to
+			 * simulate.
 			 * \param do_herbivores Whether to perform herbivore 
 			 * simulations.
 			 * If false, only the output data of the habitats are updated.
 			 * \throw std::invalid_argument if day_of_year not in [0,364]
 			 */
-			void simulate_day(const int day_of_year, Habitat& habitat,
+			void simulate_day(const int day_of_year, 
+					SimulationUnit& simulation_unit,
 					const bool do_herbivores);
 		private:
 			/// Create new \ref DistributeForage object according to

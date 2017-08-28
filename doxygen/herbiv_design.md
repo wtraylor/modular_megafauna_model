@@ -27,7 +27,7 @@ The following UML diagram shows through which interfaces the herbivory module in
 The basic simulation design is simple:
 - Each **herbivore** is of one **Herbivore Functional Type** ([HFT](\ref Fauna::Hft)).
 In LPJ-GUESS this would correspond to each \ref Individual being of one Plant Functional Type ([PFT](\ref Pft)).
-- Each herbivore lives in a **habitat** (\ref Fauna::Habitat), grouped by **populations** (\ref Fauna::PopulationInterface) per HFT.
+- Each herbivore lives in a **habitat** (\ref Fauna::Habitat), grouped in by HFT in **populations** (\ref Fauna::PopulationInterface).
 In LPJ-GUESS this would correspond to a plant \ref Individual growing in a \ref Patch.
 (Note that the herbivory module is completely ignorant of [gridcells](\ref Gridcell) and [stands](\ref Stand)).
 - The **[Simulator](\ref Fauna::Simulator)** is the %framework running the simulation.
@@ -36,12 +36,21 @@ In LPJ-GUESS this would correspond to a plant \ref Individual growing in a \ref 
 	!include herbiv_diagrams.iuml!important_classes
 @enduml
 
-All interactions between herbivores and their environment happens through \ref Fauna::Habitat.
+All interactions between herbivores and their environment happen through \ref Fauna::Habitat.
+The herbivores don’t feed themselves and don’t have any direct connection to the habitat.
+With each simulated day ([simulate_day()](\ref Fauna::HerbivoreInterface::simulate_day())), it is calculated, how much forage they would like to consume. ([get_forage_demands()](\ref Fauna::HerbivoreInterface::get_forage_demands()));
+but they need to wait for the Simulator to be able to [eat](\ref Fauna::HerbivoreInterface::eat()).
+This approach follows the [Inversion of Control Principle](\ref sec_inversion_of_control).
+
+Similarly, the Habitat does not interact with the herbivores either.
+It does not even *know* about the herbivore populations, as it is capsuled in \ref Fauna::SimulationUnit.
 
 
 ### Integration with the LPJ-GUESS Vegetation Model {#sec_herbiv_lpjguess_integration}
 
 The class \ref Fauna::PatchHabitat is the central class ([facade](\ref sec_facade)) for any interactions between the herbivory module and the LPJ-GUESS vegetation model.
+The life of any PatchHabitat object and its associated herbivores (encapsuled in \ref Fauna::SimulationUnit) depends on the owning Patch object.
+However, the habitat and its herbivores should *not* be manipulated by the vegetation model!
 
 Some new plant properties had to be introduced.
 - They are only herbivory-specific. 
@@ -134,13 +143,12 @@ The corresponding population objects will release dead herbivore objects automat
 
 ### Populations {#sec_herbiv_populations} ### 
 Each herbivore class needs a specific population class, implementing \ref Fauna::PopulationInterface, which manages a list of class instances of the same HFT.
-Each [habitat](\ref Fauna::Habitat) has a \ref Fauna::HftPopulationsMap which manages a number of population instances, one for each HFT.
+Each [habitat](\ref Fauna::Habitat) is populated by herbivores.
+The class \ref Fauna::SimulationUnit a habitat and its herbivores (managed by HFT in \ref Fauna::HftPopulationsMap).
 
 @startuml "Herbivore population classes."
 	!include herbiv_diagrams.iuml!population_classes
 @enduml
-
-
 
 Error Handling {#sec_herbiv_errorhandling}
 ------------------------------------------

@@ -18,6 +18,10 @@
 
 using namespace Fauna;
 
+//============================================================
+// Simulator
+//============================================================
+
 Simulator::Simulator(const Parameters& params, const HftList& hftlist):
 	hftlist(hftlist), params(params),
 	days_since_last_establishment(params.herbivore_establish_interval),
@@ -105,11 +109,17 @@ std::auto_ptr<HftPopulationsMap> Simulator::create_populations()const{
 	return pmap;
 }
 
-void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
+void Simulator::simulate_day(const int day_of_year, 
+					SimulationUnit& simulation_unit,
 		const bool do_herbivores){
 	if (day_of_year < 0 || day_of_year >= 365)
 		throw std::invalid_argument("Simulator::simulate_day(): "
 				"argument day_of_year out of range");
+
+	// The habitat to simulate
+	Habitat& habitat = simulation_unit.get_habitat();
+	// all populations in the habitat (one for each HFT)
+	HftPopulationsMap& populations = simulation_unit.get_populations();
 
 	// pass the current date into the herbivore module
 	habitat.init_day(day_of_year);
@@ -117,9 +127,6 @@ void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
 	days_since_last_establishment++;
 
 	if (do_herbivores && hftlist.size()>0) {
-
-		// all populations in the habitat (one for each HFT)
-		HftPopulationsMap& populations = habitat.get_populations();
 
 		// ---------------------------------------------------------
 		// ESTABLISHMENT
@@ -203,6 +210,25 @@ void Simulator::simulate_day(const int day_of_year, Habitat& habitat,
 		}
 	}
 
+}
+
+//============================================================
+// SimulationUnit
+//============================================================
+
+
+SimulationUnit::SimulationUnit( std::auto_ptr<Habitat> _habitat,
+		std::auto_ptr<HftPopulationsMap> _populations):
+	// move ownership to private auto_ptr objects
+	habitat(_habitat),
+	populations(_populations)
+{
+	if (habitat.get() == NULL)
+		throw std::invalid_argument("Fauna::SimulationUnit::SimulationUnit() "
+				"Pointer to habitat is NULL.");
+	if (populations.get() == NULL)
+		throw std::invalid_argument("Fauna::SimulationUnit::SimulationUnit() "
+				"Pointer to populations is NULL.");
 }
 
 //============================================================

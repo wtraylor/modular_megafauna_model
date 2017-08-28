@@ -19,10 +19,8 @@ using namespace Fauna;
 //============================================================
 
 PatchHabitat::PatchHabitat(
-				std::auto_ptr<HftPopulationsMap> populations,
 				Patch& patch, 
 				std::auto_ptr<GetDigestibility> digestibility_model):
-	Habitat(populations), // parent constructor
 	patch(patch), 
 	get_digestibility(digestibility_model)
 {
