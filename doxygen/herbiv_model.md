@@ -61,8 +61,10 @@ Population densities of herbivores are either in `kg/km²` or `ind/km²` (ind=in
 
 ### Feeding on Plants in a Patch ### {#sec_herbiv_foraging_patch}
 
-Each \ref Individual offers an amount of forage (kgDM/km²) that is available
-to herbivores (\ref Individual.get_forage_mass()).
+Each \ref Individual offers an amount of forage (kgDM/km²) that is available to herbivores (\ref Individual.get_forage_mass()).
+
+<!-- TODO: explain some more -->
+
 
 \todo Growth happens only once per year (\ref growth()) for natural vegetation.
 However, seasonal shifts of forage availability are crucial for herbivore
