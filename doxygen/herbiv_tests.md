@@ -77,10 +77,10 @@ The HabitatGroup corresponds in a way to the LPJ-GUESS \ref Gridcell.
 
 An example instruction file is provided in 
 `data/ins/herbiv_testsim.ins`.
+It emulates the scenario of the metaphysiological model by Norman Owen-Smith \cit owensmith_metaphysiological_2002 during growing season.
 These are the relevant parameters:
 
-<!-- Alternatively to the snippet command, the dontinclude command -->
-<!-- could be used. -->
+<!-- Alternatively to the snippet command, the dontinclude command could be used. -->
 \snippet herbiv_testsim.ins Simulation Parameters
 
 \note Make sure that `ifherbivory` is true because otherwise

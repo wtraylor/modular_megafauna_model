@@ -14,10 +14,11 @@
 outputdirectory "./"
 
 import "herbiv_output.ins"
-import "/home/living/promotion/pleistocene_herbivores.ins"
 
 ifherbivory 1
 
+! The following example default parameters are taken from
+! Owen-Smith (2002)
 !////////////////////////////////////////////////////////////
 ! /// [Simulation Parameters] 
 
@@ -31,7 +32,7 @@ nhabitat_groups 1
 nhabitats_per_group 1
 
 ! Proportional daily grass decay rate. (0,∞)
-grass_decay 0.0
+grass_decay 0.0014 ! = 0.01 g/(g week)
 
 ! Fractional grass digestibility. (0,1]
 grass_digestibility 0.5
@@ -41,16 +42,19 @@ grass_fpc 0.8
 
 ! Proportional daily grass growth rate. [0,∞)
 ! A value of 0.1 means an increase of 10% every day.
-grass_growth 0.1
+grass_growth 0.03 ! = 0.2 g/(g week)
 
 ! Initial grass biomass [kgDM/km²]. [0,∞) and <grass_saturation
-grass_init_mass 20000
+grass_init_mass  100000 ! = 100 g/m²
 
 ! Ungrazable grass reserve [kgDM/km²]. [0,∞)
 ! Not available to grazers but necessary for regrowth
-grass_reserve 2000
+grass_reserve     20000 ! =  20 g/m²
 
 ! Saturation grass biomass [kgDM/km²]. (0,∞) and >grass_init_mass
 grass_saturation 200000 ! = 200 g/m²
 
 ! /// [Simulation Parameters] 
+
+	
+!	Owen-Smith, N. (2002). A metaphysiological modelling approach to stability in herbivore–vegetation systems. Ecological Modelling, 149(1), 153-178.
