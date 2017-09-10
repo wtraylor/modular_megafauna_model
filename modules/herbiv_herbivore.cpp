@@ -194,6 +194,7 @@ void HerbivoreBase::eat(
 
 	// Add to output
 	todays_output().eaten_forage += kg_per_ind;
+	todays_output().energy_intake += net_energy;
 }
 
 double HerbivoreBase::get_bodyfat()const{

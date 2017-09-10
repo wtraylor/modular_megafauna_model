@@ -146,9 +146,6 @@ namespace GuessOutput {
 			static const char CAPTION_SEPARATOR = '_';
 
 		private:
-			/// Width of one column in the output table.
-			static const int COLUMN_WIDTH = 12;
-
 			/// Value to insert for missing data.
 			static const double NA_VALUE;
 
@@ -226,6 +223,7 @@ namespace GuessOutput {
 			TableFile TBL_AVAILABLE_FORAGE;
 			TableFile TBL_DIGESTIBILITY;
 			TableFile TBL_EATEN_FORAGE;
+			TableFile TBL_ENERGY_INTAKE;
 			/** @} */
 
 			/** @{ \name HFT output tables.*/

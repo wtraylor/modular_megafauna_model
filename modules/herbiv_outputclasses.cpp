@@ -31,7 +31,9 @@ HabitatData& HabitatData::merge(const HabitatData& other){
 
 HerbivoreData& HerbivoreData::merge(const HerbivoreData& other){
 
-	// Build average for each variable:
+	// Build average for each variable
+
+	// Average building for double values
 	age_years = average(
 			age_years, other.age_years,
 			datapoint_count, other.datapoint_count);
@@ -48,7 +50,9 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other){
 			expenditure, other.expenditure,
 			datapoint_count, other.datapoint_count);
 
+	// Average building for ForageValues
 	eaten_forage.merge(other.eaten_forage);
+	energy_intake.merge(other.energy_intake);
 
 	// Only use those mortality factors that are included in
 	// *both* maps.

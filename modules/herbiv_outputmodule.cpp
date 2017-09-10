@@ -14,6 +14,7 @@
 #include "herbiv_outputclasses.h" // for HabitatData and HerbivoreData
 #include "herbiv_patchhabitat.h"  // for Patch::get_habitat()
 #include "herbiv_population.h"    // for HerbivoreVector
+#include <algorithm>              // for std::max
 #include <cassert>                // for assert()
 #include <cmath>                  // for NAN
 #ifndef NO_GUESS_PARAMETERS
@@ -71,6 +72,11 @@ HerbivoryOutput::HerbivoryOutput():
 			"file_herbiv_eaten_forage",
 			"Forage eaten by herbivores per day.",
 			"kgDM/km²/day",
+			CS_FORAGE),
+	TBL_ENERGY_INTAKE(
+			"file_herbiv_energy_intake",
+			"Herbivore net energy intake from forage.",
+			"MJ/ind/day",
 			CS_FORAGE),
 	TBL_BODYFAT(
 			"file_herbiv_bodyfat",
@@ -155,6 +161,7 @@ const std::vector<HerbivoryOutput::TableFile*> HerbivoryOutput::init_tablefiles(
 		list.push_back(&TBL_AVAILABLE_FORAGE);
 		list.push_back(&TBL_DIGESTIBILITY);
 		list.push_back(&TBL_EATEN_FORAGE);
+		list.push_back(&TBL_ENERGY_INTAKE);
 		list.push_back(&TBL_BODYFAT);
 		list.push_back(&TBL_EXPENDITURE);
 		list.push_back(&TBL_INDDENS);
@@ -205,16 +212,18 @@ void HerbivoryOutput::init() {
 
 ColumnDescriptors HerbivoryOutput::get_columns(
 		const HerbivoryOutput::ColumnSelector selector){
-	ColumnDescriptors result;
+	// The width of each column must be one greater than the longest
+	// column caption. The column captions need to be defined first.
+	
+	std::vector<std::string> captions;
+
 	switch (selector){
 		case CS_FORAGE:
 			// names of forage types
 			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
 					ft != FORAGE_TYPES.end(); ft++)
 			{
-				result += ColumnDescriptor(
-						get_forage_type_name(*ft).c_str(),
-						COLUMN_WIDTH, precision);
+				captions.push_back(get_forage_type_name(*ft));
 			}
 			break;
 		case CS_HFT:
@@ -222,9 +231,7 @@ ColumnDescriptors HerbivoryOutput::get_columns(
 			assert(hftlist.get() != NULL);
 			for (HftList::const_iterator hft = hftlist->begin();
 					hft != hftlist->end(); hft++) {
-				result += ColumnDescriptor(
-						hft->name.c_str(),
-						COLUMN_WIDTH, precision);
+				captions.push_back(hft->name);
 			}
 			break;
 		case CS_HFT_FORAGE:
@@ -240,18 +247,35 @@ ColumnDescriptors HerbivoryOutput::get_columns(
 				{
 					const std::string combined = 
 						hft->name + CAPTION_SEPARATOR + get_forage_type_name(*ft);
-					result += ColumnDescriptor(
-							combined.c_str(),
-							COLUMN_WIDTH, precision);
+					captions.push_back(combined);
 				}
 			break;
 		case CS_HABITAT:
 			// In this special case, there is no fixed/independent
 			// variable that would define the captions.
-			result += ColumnDescriptor(
-					"value",
-					COLUMN_WIDTH, precision);
+			captions.push_back("value");
 			break;
+	}
+
+	// Get the maximum caption length
+	assert( !captions.empty() );
+	int max_length = 0;
+	for (std::vector<std::string>::const_iterator itr=captions.begin();
+			itr != captions.end(); itr++)
+	{
+		max_length = std::max(max_length, (int) itr->length());
+	}
+
+	// Now that we know the maximum column width, we can create
+	// the descriptor object.
+	ColumnDescriptors result;
+	for (std::vector<std::string>::const_iterator itr=captions.begin();
+			itr != captions.end(); itr++)
+	{
+		result += ColumnDescriptor(
+				itr->c_str(), // title
+				max_length+1, // column width
+				precision);   // precision
 	}
 	return result;
 }

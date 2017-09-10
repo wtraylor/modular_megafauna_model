@@ -88,6 +88,9 @@ namespace FaunaOut {
 		/// Eaten forage [kgDM/ind/day].
 		Fauna::ForageMass eaten_forage;
 
+		/// Intake of net energy in forage [MJ/ind/day]
+		Fauna::ForageEnergy energy_intake;
+
 		/// Energy expenditure [MJ/ind/day].
 		double expenditure;
 
