@@ -73,11 +73,6 @@ HerbivoryOutput::HerbivoryOutput():
 			"Forage eaten by herbivores per day.",
 			"kgDM/km²/day",
 			CS_FORAGE),
-	TBL_ENERGY_INTAKE(
-			"file_herbiv_energy_intake",
-			"Herbivore net energy intake from forage.",
-			"MJ/ind/day",
-			CS_FORAGE),
 	TBL_BODYFAT(
 			"file_herbiv_bodyfat",
 			"Herbivore body fat.",
@@ -107,6 +102,11 @@ HerbivoryOutput::HerbivoryOutput():
 			"file_herbiv_eaten_ind",
 			"Forage eaten by herbivores per day.",
 			"kgDM/ind/day",
+			CS_HFT_FORAGE),
+	TBL_ENERGY_INTAKE(
+			"file_herbiv_energy_intake",
+			"Herbivore net energy intake from forage.",
+			"MJ/ind/day",
 			CS_HFT_FORAGE),
 	TABLEFILES(init_tablefiles())
 {
@@ -266,6 +266,13 @@ ColumnDescriptors HerbivoryOutput::get_columns(
 		max_length = std::max(max_length, (int) itr->length());
 	}
 
+	// The column width should reserve a minimum space for the integer
+	// part of the value.
+	const int MIN_INT_SPACE = 6; // this is just a hopeful guess
+	const int min_col_width = 
+		MIN_INT_SPACE + 1 + precision + 1; // +1 for comma, +1 for space
+	const int col_width = std::max(max_length+1, min_col_width);
+
 	// Now that we know the maximum column width, we can create
 	// the descriptor object.
 	ColumnDescriptors result;
@@ -274,7 +281,7 @@ ColumnDescriptors HerbivoryOutput::get_columns(
 	{
 		result += ColumnDescriptor(
 				itr->c_str(), // title
-				max_length+1, // column width
+				col_width,    // column width
 				precision);   // precision
 	}
 	return result;
@@ -482,6 +489,8 @@ void HerbivoryOutput::write_datapoint(
 			{
 				output_rows.add_value(TBL_EATEN_IND.table,
 						herbidata.eaten_forage[*ft]);
+				output_rows.add_value(TBL_ENERGY_INTAKE.table,
+						herbidata.energy_intake[*ft]);
 				// ** add new HFT-Forage variables here
 			}
 		} else {
