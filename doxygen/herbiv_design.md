@@ -266,7 +266,7 @@ This way, all variables can be aggregated using the same algorithm, whether they
 
 The pros of this design:
 - Simplicity: Only few, easy-to-understand classes.
-- Separation of concerns: Each class (herbivores and habitats) is self-responsible for managing its own output, and the output data containers are self-responsible for aggregating of their data.
+- Separation of concerns: Each class (herbivores and habitats) is self-responsible for managing its own output, and the output data containers are self-responsible for aggregating their data.
 - Diversity of data structures: There is no restriction in regards to data type for new member variables in the output containers (as long as they can be merged).
 
 The cons of this design:
@@ -276,7 +276,8 @@ The cons of this design:
 - Lack of modularity: A submodule of, e.g. HerbivoreBase cannot easiliy deliver its own output variable.
 - Cumbersome extensibility: New output variables need to be introduced in various places (see \ref sec_herbiv_new_output).
 That is a violation of the [Open/Closed Principle](\ref sec_open_closed).
-- Any variable that is specific to a submodule or interface implementation (e.g. `bodyfat` is specific to HerbivoreBase) will have produce undefined values, and the user is responsible to interpret them as invalid or disable their output.
+- Any variable that is specific to a submodule or interface implementation (e.g. `bodyfat` is specific to HerbivoreBase) will produce undefined values if that submodule is not active.
+The user is then responsible to interpret them as invalid or disable their output.
 So far, there is no check of congruency between [parameters](\ref Fauna::Parameters)/[HFT settings](\ref Fauna::Hft) and the selection of output variables in the output module.
 
 ### Output Module {#sec_herbiv_outputmodule}
@@ -300,9 +301,8 @@ The daily output routine is used for all output intervals (daily, monthly, annua
 
 The output module \ref GuessOutput::HerbivoryOutput is used both in the standard LPJ-GUESS framework and in the test simulations
 (\ref page_herbiv_tests).
-If the parameter `ifherbivory` is 0, the whole class is deactivated and won’t produce any output or create files.
-
-This is necessary because some herbivore module parameters, like `digestibility_model`, are not checked when reading the instruction file.
+If the parameter `ifherbivory` is 0, the whole class is deactivated and won’t produce any output or create files. 
+This is necessary because some herbivore module parameters that the output module relies on (like \ref Fauna::Parameters::digestibility_model) are not checked if `ifherbivory` is `false`.
 
 While the class \ref GuessOutput::HerbivoryOutput complies with the output module framework of LPJ-GUESS, a few technical improvements
 to \ref GuessOutput::CommonOutput were made:
@@ -311,8 +311,9 @@ The table structure stays always the same (no month columns).
 - The functions are smaller and better maintainable.
 - The preprocessing of the data (building averages etc.) is done in the data-holding classes. 
 This approach honours the \ref sec_single_responsibility to some degree.
-- The inherited functions delegate to more generic functions, which are also used by \ref FaunaSim::Framework.
-- The class \ref GuessOutput::IncludeDate has been introduced in order to observe the \ref sec_dependency_inversion and to avoid global variables.
+- Functions inherited from \ref OutputModule, which use classes specific to the LPJ-GUESS vegetation model (\ref Gridcell), delegate to more generic functions. 
+These are then also used by \ref FaunaSim::Framework, which is independent of the LPJ-GUESS vegetation.
+- As a substitute for \ref GuessOutput::outlimit(), the class \ref GuessOutput::IncludeDate has been introduced in order to observe the \ref sec_dependency_inversion and to avoid global variables.
   See also: \ref sec_herbiv_limit_output.
 - The \ref GuessOutput::OutputModuleRegistry instantiates the class. There is only one global instance, but there is no direct way to access that global instance like in the [Singleton design pattern](\ref sec_singleton).
 	To circumvent this restriction (instead of working with a lot of `static` members) the function [get_instance()](\ref GuessOutput::HerbivoryOutput::get_instance()) has been introduced.
