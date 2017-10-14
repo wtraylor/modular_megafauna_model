@@ -91,14 +91,21 @@ namespace Fauna{
 
 	/// Energy expenditure based on cattle from Taylor et al. (1981)
 	/**
-	 * Bibliography reference: \cite taylor_genetic_1981
+	 * Taylor et al. (1981)\cite taylor_genetic_1981
+	 * Daily energy expenditure is given by
+	 * \f[
+	 * E [\frac{MJ},{day*ind}] = 0.4 * M * M_{ad}^{-0.27}\text{,}
+	 * \f]
+	 * where M is current body mass [kg/ind] and \f$M_{ad}\f$ is
+	 * adult body mass.
+	 *
 	 * \return energy expenditure in MJ for one herbivore individual 
 	 * per day [MJ/day/ind]
 	 */
 	inline double get_expenditure_taylor_1981(
 			const double current_bodymass,
 			const double adult_bodymass){
-		return 0.4 * current_bodymass * pow(adult_bodymass,0.27);
+		return 0.4 * current_bodymass * pow(adult_bodymass,-0.27);
 	}
 }
 
