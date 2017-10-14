@@ -22,6 +22,7 @@
 #include "herbiv_reproduction.h"
 #include "herbiv_testhabitat.h" 
 #include <memory> // for std::auto_ptr
+#include <cmath>  // for exp() and pow()
 
 using namespace Fauna;
 using namespace FaunaOut;
@@ -475,6 +476,13 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 	}
 }
 
+TEST_CASE("Fauna::get_expenditure_taylor_1981()") {
+	const double CURRENT = 90; // [kg]
+	const double ADULT   = 100; // [kg]
+	CHECK(get_expenditure_taylor_1981(CURRENT, ADULT) ==
+			Approx(0.4 * CURRENT * pow(ADULT, -0.27)) );
+}
+
 TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 	CHECK_THROWS( FatmassEnergyBudget(-1.0, 1.0) );
 	CHECK_THROWS( FatmassEnergyBudget(0.0, 0.0) );
@@ -497,17 +505,25 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 	CHECK_THROWS( budget.set_max_fatmass(INIT_FATMASS/2.0) );
 	CHECK_THROWS( budget.set_max_fatmass(-1.0) );
 
-	SECTION("Anabolism"){
-		budget.metabolize_energy(10.0);
-		CHECK( budget.get_fatmass() > INIT_FATMASS );
-	}
+	const double ENERGY = 10.0; // MJ
 
-	const double ENERGY = 10.0;
+	SECTION("Anabolism"){
+		budget.metabolize_energy(ENERGY);
+		CHECK( budget.get_fatmass() > INIT_FATMASS );
+
+		// Check the number with coefficient of Blaxter (1989)
+		CHECK( budget.get_fatmass() ==
+				Approx(INIT_FATMASS + ENERGY/54.6) );
+	}
 
 	SECTION("Catabolism"){
 		budget.add_energy_needs(ENERGY);
 		budget.catabolize_fat();
 		CHECK( budget.get_fatmass() < INIT_FATMASS );
+		
+		// Check the number with coefficient of Blaxter (1989)
+		CHECK( budget.get_fatmass() ==
+				Approx(INIT_FATMASS - ENERGY/39.3) );
 	}
 
 	SECTION("Metabolism"){
@@ -871,6 +887,26 @@ TEST_CASE("Fauna::GetDigestiveLimitIllius1992", "") {
 		CHECK_THROWS( rum(-1.0, digestibility) );
 	}
 
+	SECTION("check some example numbers"){
+		const double ADULT = 40.0; // adult weight, [kg]
+		const double CURRENT = 20.0; // current weight [kg]
+		GetDigestiveLimitIllius1992 rum(ADULT, DT_RUMINANT);
+		GetDigestiveLimitIllius1992 hind(ADULT, DT_HINDGUT);
+
+		SECTION("...for grass"){
+			const double d = digestibility[FT_GRASS];
+			CHECK( rum(CURRENT, d)[FT_GRASS] ==
+					Approx(0.034 * exp(3.565*d)
+						* pow(ADULT, 0.077*exp(d) + 0.73)
+						* pow(CURRENT / ADULT, 0.75)) );
+
+			CHECK( hind(CURRENT, d)[FT_GRASS] ==
+					Approx(0.108 * exp(3.284*d)
+						* pow(ADULT, 0.080*exp(d) + 0.73)
+						* pow(CURRENT / ADULT, 0.75)) );
+		}
+	}
+
 	SECTION("pre-adult has less capacity"){
 		const double ADULT = 100.0;
 		GetDigestiveLimitIllius1992 rum(ADULT, DT_RUMINANT);
@@ -940,6 +976,18 @@ TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {
 
 	// hindguts have lower efficiency
 	CHECK( ne_ruminant(DIG1) > ne_hindgut(DIG2) );
+
+	// Check some absolute numbers
+	{ // grass for ruminants
+		const double ME = 15.0 * DIG1[FT_GRASS];
+		CHECK( ne_ruminant(DIG1[FT_GRASS])[FT_GRASS] ==
+				Approx(ME * (0.019*ME + 0.503)) );
+	}
+	{ // grass for hindguts
+		const double ME = 15.0 * DIG1[FT_GRASS];
+		CHECK( ne_hindgut(DIG1[FT_GRASS])[FT_GRASS] ==
+				Approx(ME * (0.019*ME + 0.503) * 0.93) );
+	}
 }
 
 TEST_CASE("Fauna::get_random_fraction", "") {
@@ -1779,6 +1827,11 @@ TEST_CASE("Fauna::ReproductionIllius2000", "") {
 		CHECK( rep.get_offspring_density(START, OPT) 
 				== Approx(INC).epsilon(0.05) );
 		CHECK( rep.get_offspring_density(START, BAD) < INC);
+
+		SECTION("Check an absolute value for bad body condition"){
+			CHECK( rep.get_offspring_density(START, BAD) ==
+				Approx(INC / (1 + exp(-15.0*(BAD - 0.3)))) );
+		}
 	}
 
 	SECTION("Sum of offspring over year must be max. annual increase"){
@@ -2188,3 +2241,7 @@ TEST_CASE("FaunaSim::HabitatGroupList","") {
 // 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30+31+31+30+31+30) );
 // 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30+31+31+30+31+30+31) );
 // }
+
+//////////////////////////////////////////////////////////////
+// REFERENCES
+// Blaxter, Kenneth (1989). Energy Metabolism in Animals and Man. CUP Archive. 356 pp.
