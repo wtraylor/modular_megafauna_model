@@ -71,7 +71,7 @@
 	namespace Fauna {
 		interface HerbivoreInterface
 		interface PopulationInterface
-		class HerbivoreBase
+		abstract HerbivoreBase
 		HerbivoreInterface  <|-- HerbivoreBase
 		HerbivoreBase       <|-- HerbivoreIndividual
 		HerbivoreBase       <|-- HerbivoreCohort
@@ -90,7 +90,7 @@
 	hide members
 	hide methods
 	namespace Fauna{
-	class HerbivoreBase{
+	abstract HerbivoreBase{
 		-Hft hft
 		-int age_days
 	}
@@ -179,6 +179,7 @@
 			merge()
 		}
 		HabitatForage *--> NewForage
+		abstract HerbivoreBase
 		HerbivoreBase ..> HabitatForage : <<use>>
 		interface GetDigestibility
 		class PatchHabitat{
@@ -201,7 +202,7 @@
 		hide members
 		hide methods
 		interface HerbivoreInterface
-		class HerbivoreBase
+		abstract HerbivoreBase
 		HerbivoreInterface  <|-- HerbivoreBase
 		HerbivoreBase       <|-- HerbivoreIndividual
 		HerbivoreBase       <|-- HerbivoreCohort
@@ -222,6 +223,7 @@
 		Hft *--> NetEnergyModel
 		interface GetNetEnergyContentInterface <<strategy>>
 		GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
+		abstract HerbivoreBase
 		HerbivoreBase ..> GetNetEnergyContentInterface : <<create>>
 	}
 @enduml
@@ -387,6 +389,7 @@
 		PatchHabitat              ..> PftParams
 		CohortPopulation          .up.> Hft
 		IndividualPopulation      .up.> Hft
+		abstract HerbivoreBase
 		HerbivoreBase             .up.> Hft
 	}
 	namespace FaunaSim{
