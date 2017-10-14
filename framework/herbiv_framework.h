@@ -9,6 +9,7 @@
 #define HERBIV_FRAMEWORK_H
 
 #include "herbiv_forageclasses.h" // for ForageMass
+#include "herbiv_outputclasses.h" // for FaunaOut::CombinedData
 #include <vector>                 // for herbivore list
 #include <map>                    // for ForageDistribution
 #include <memory>                 // for std::auto_ptr
@@ -87,7 +88,15 @@ namespace Fauna{
 							"of the HftPopulationsMap object."); 
 				return *populations;
 			}
+
+			/// @{ \brief Get temporally aggregated habitat and herbivore output. 
+			FaunaOut::CombinedData& get_output(){ return current_output; }
+			const FaunaOut::CombinedData& get_output()const{
+				return current_output;
+			}
+			/**@}*/ // Output Functions
 		private:
+			FaunaOut::CombinedData current_output;
 			std::auto_ptr<Habitat> habitat;
 			std::auto_ptr<HftPopulationsMap> populations;
 	};
@@ -130,6 +139,7 @@ namespace Fauna{
 			 * Call this even if you don’t want herbivores in your model
 			 * because it prepares the output data which might be
 			 * used by \ref GuessOutput::HerbivoryOutput.
+			 *
 			 * \param day_of_year Current day of year (0 = Jan 1st)
 			 * \param simulation_unit The habitat and herbivores to
 			 * simulate.

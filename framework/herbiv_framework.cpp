@@ -124,12 +124,14 @@ void Simulator::simulate_day(const int day_of_year,
 	// pass the current date into the herbivore module
 	habitat.init_day(day_of_year);
 
+	// Keep track of the establishment cycle.
 	days_since_last_establishment++;
 
 	if (do_herbivores && hftlist.size()>0) {
 
 		// ---------------------------------------------------------
 		// ESTABLISHMENT
+		// If we have reached the end of one establishment cycle.
 		if (days_since_last_establishment > params.herbivore_establish_interval)
 		{
 			// iterate through HFT populations
@@ -151,6 +153,12 @@ void Simulator::simulate_day(const int day_of_year,
 
 		// All offspring for each HFT today [ind/km²]
 		std::map<const Hft*, double> total_offspring;
+
+		// Output data of all herbivores for today in this habitat.
+		// We define a local data type to save some typing.
+		typedef std::map<const Hft*, std::vector<FaunaOut::HerbivoreData> >
+			TodaysHftOutput;
+		TodaysHftOutput hft_output;
 
 		{ // Custom variable scope: to make clear that the
 			// pointers to the herbivores in the variable `herbivores`
@@ -175,8 +183,10 @@ void Simulator::simulate_day(const int day_of_year,
 				// [ind/km²]
 				double offspring = 0.0;
 
+				// Let the herbivores do their simulation.
 				herbivore.simulate_day(day_of_year, offspring);
 
+				// Gather the offspring.
 				total_offspring[&herbivore.get_hft()] += offspring;
 			}
 
@@ -196,13 +206,55 @@ void Simulator::simulate_day(const int day_of_year,
 			habitat.remove_eaten_forage(
 					old_forage - available_forage.get_mass()); 
 
+			// ---------------------------------------------------------
+			// GATHER OUTPUT
+
+			// loop through all herbivores: gather output
+			for (HerbivoreVector::iterator itr_h=herbivores.begin();
+					itr_h != herbivores.end(); itr_h++) 
+			{
+				HerbivoreInterface& herbivore = **itr_h;
+
+				// Add the output of this herbivore to the vector of output
+				// data for this HFT.
+				hft_output[&herbivore.get_hft()].push_back(
+						herbivore.get_todays_output());
+			} 
+
 		} // end of custom scope
 
 		// ---------------------------------------------------------
+		// MERGE OUTPUT
+		// Aggregate output of herbivores for one habitat.
+		FaunaOut::CombinedData todays_datapoint;
+		for (TodaysHftOutput::const_iterator itr = hft_output.begin();
+				itr != hft_output.end();
+				itr++)
+		{
+			const Hft& hft = *itr->first;
+
+			// Create a datapoint for each HFT that can then be merged
+			// across habitats and time.
+			todays_datapoint.hft_data[&hft] = 
+				FaunaOut::HerbivoreData::create_datapoint( itr->second );
+		}
+		// Add the habitat data to the output
+		todays_datapoint.habitat_data =
+			((const Habitat&) habitat).get_todays_output();
+		// The output data container is now one complete datapoint.
+		todays_datapoint.datapoint_count = 1;
+		// Merge today’s output into temporal aggregation of the simulation
+		// unit.
+		simulation_unit.get_output().merge(todays_datapoint);
+
+		// ---------------------------------------------------------
 		// REPRODUCTION
-		// create new herbivores
+		// For each HFT, let the PopulationInterface object create herbivores.
+		// This will go into output next simulation cycle.
 		for (std::map<const Hft*, double>::iterator itr = total_offspring.begin();
-				itr != total_offspring.end(); itr++){
+				itr != total_offspring.end(); 
+				itr++)
+		{
 			const Hft* hft = itr->first;
 			const double offspring = itr->second;
 			if (offspring > 0.0)
@@ -215,7 +267,6 @@ void Simulator::simulate_day(const int day_of_year,
 //============================================================
 // SimulationUnit
 //============================================================
-
 
 SimulationUnit::SimulationUnit( std::auto_ptr<Habitat> _habitat,
 		std::auto_ptr<HftPopulationsMap> _populations):

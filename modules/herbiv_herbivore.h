@@ -71,8 +71,8 @@ namespace Fauna{
 		/// Get herbivore biomass density [kg/km²]
 		virtual double get_kg_per_km2() const = 0; 
 
-		/** \copydoc Fauna::Habitat::retrieve_output() */
-		virtual FaunaOut::HerbivoreData retrieve_output() = 0;
+		/// Read current output.
+		virtual const FaunaOut::HerbivoreData& get_todays_output()const = 0;
 
 		/// Simulate daily events.
 		/** 
@@ -108,7 +108,9 @@ namespace Fauna{
 				return *hft;
 			}
 			virtual double get_kg_per_km2() const;
-			virtual FaunaOut::HerbivoreData retrieve_output();
+			virtual const FaunaOut::HerbivoreData& get_todays_output()const{
+				return current_output;
+			};
 			virtual void simulate_day(const int day, double& offspring);
 		public:
 			/// Current age in days.
@@ -206,15 +208,12 @@ namespace Fauna{
 			}
 			/**@}*/
 
-			/// Current output data.
-			FaunaOut::HerbivoreData& todays_output(){
+			/// Class-internal read/write access to current output.
+			FaunaOut::HerbivoreData& get_todays_output(){
 				return current_output;
 			}
 
 		private: 
-			/// Add \ref current_output to \ref aggregated_output.
-			void aggregate_todays_output();
-
 			/// Calculate mortality according to \ref Hft::mortality_factors.
 			/** Calls \ref apply_mortality(), which is implemented by 
 			 * child classes.*/
@@ -274,10 +273,7 @@ namespace Fauna{
 			int today;
 			/** @} */ // state variables
 
-			/// @{ \name Output Variables
-			FaunaOut::HerbivoreData aggregated_output;
 			FaunaOut::HerbivoreData current_output;
-			/** @} */ // Output Variables
 
 			/// @{ \name Constants
 			const Hft* hft;

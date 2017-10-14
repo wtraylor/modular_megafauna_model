@@ -98,12 +98,6 @@ HerbivoreBase& HerbivoreBase::operator=(const HerbivoreBase& other){
 	return *this; 
 }
 
-void HerbivoreBase::aggregate_todays_output(){
-	if (todays_output().datapoint_count > 0)
-		aggregated_output.merge(todays_output());
-	todays_output().reset();
-}
-
 void HerbivoreBase::apply_mortality_factors_today(){
 	// Sum of death proportions today. Because different mortality
 	// factors are thought to be mutually exclusive (i.e. each death
@@ -122,7 +116,7 @@ void HerbivoreBase::apply_mortality_factors_today(){
 			const double mortality = background(get_age_days());
 			mortality_sum += mortality;
 			// output:
-			todays_output().mortality[MF_BACKGROUND] = mortality;
+			get_todays_output().mortality[MF_BACKGROUND] = mortality;
 		}
 
 		if (*itr == MF_LIFESPAN) {
@@ -131,7 +125,7 @@ void HerbivoreBase::apply_mortality_factors_today(){
 			const double mortality = lifespan(get_age_days());
 			mortality_sum += mortality;
 			// output:
-			todays_output().mortality[MF_LIFESPAN] = mortality;
+			get_todays_output().mortality[MF_LIFESPAN] = mortality;
 		}
 
 		if (*itr == MF_STARVATION_ILLIUS2000) {
@@ -140,7 +134,7 @@ void HerbivoreBase::apply_mortality_factors_today(){
 			const double mortality = starv_illius(body_condition);
 			mortality_sum += mortality;
 			// output:
-			todays_output().mortality[MF_STARVATION_ILLIUS2000] = mortality;
+			get_todays_output().mortality[MF_STARVATION_ILLIUS2000] = mortality;
 		}
 
 		if (*itr == MF_STARVATION_THRESHOLD) {
@@ -148,7 +142,7 @@ void HerbivoreBase::apply_mortality_factors_today(){
 			const double mortality = starv_thresh(get_bodyfat());
 			mortality_sum += mortality;
 			// output:
-			todays_output().mortality[MF_STARVATION_THRESHOLD] = mortality;
+			get_todays_output().mortality[MF_STARVATION_THRESHOLD] = mortality;
 		}
 
 	}
@@ -183,7 +177,7 @@ void HerbivoreBase::eat(
 	assert( get_ind_per_km2() != 0.0 );
 	const ForageMass kg_per_ind = kg_per_km2 / get_ind_per_km2();
 
-	// net energy in the forage [MJ]
+	// net energy in the forage [MJ/ind]
 	// Divide mass by energy content and set any forage with zero
 	// energy content to zero mass.
 	const ForageEnergy net_energy = 
@@ -193,8 +187,8 @@ void HerbivoreBase::eat(
 	get_energy_budget().metabolize_energy(net_energy.sum());
 
 	// Add to output
-	todays_output().eaten_forage += kg_per_ind;
-	todays_output().energy_intake += net_energy;
+	get_todays_output().eaten_forage  += kg_per_km2;
+	get_todays_output().energy_intake += net_energy * get_ind_per_km2();
 }
 
 double HerbivoreBase::get_bodyfat()const{
@@ -400,16 +394,6 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 
 }
 
-FaunaOut::HerbivoreData HerbivoreBase::retrieve_output(){
-	// Add current output to aggregation
-	aggregate_todays_output(); 
-	// Call copy constructor
-	FaunaOut::HerbivoreData result(aggregated_output);
-	// reset aggregated output
-	aggregated_output.reset();
-	return result;
-}
-
 void HerbivoreBase::simulate_day(const int day, double& offspring){
 	if (day < 0 || day >= 365)
 		throw std::invalid_argument("Fauna::HerbivoreBase::simulate_day() "
@@ -424,15 +408,12 @@ void HerbivoreBase::simulate_day(const int day, double& offspring){
 	/// - Update maximum fat mass in \ref Fauna::FatmassEnergyBudget.
 	get_energy_budget().set_max_fatmass(get_max_fatmass());
 
-	/// - Aggregate old output.
-	aggregate_todays_output();
-
 	/// - Add new output.
-	todays_output().datapoint_count = 1; // one single day’s data
-	todays_output().inddens         = get_ind_per_km2();
-	todays_output().age_years       = get_age_years();
-	todays_output().massdens        = get_kg_per_km2();
-	todays_output().bodyfat         = get_bodyfat();
+	get_todays_output().reset();
+	get_todays_output().inddens   = get_ind_per_km2();
+	get_todays_output().age_years = get_age_years();
+	get_todays_output().massdens  = get_kg_per_km2();
+	get_todays_output().bodyfat   = get_bodyfat();
 
 	/// - Catabolize fat to compensate unmet energy needs.
 	get_energy_budget().catabolize_fat();
@@ -440,7 +421,7 @@ void HerbivoreBase::simulate_day(const int day, double& offspring){
 	/// - Add energy needs for today.
 	const double todays_expenditure = get_todays_expenditure();
 	get_energy_budget().add_energy_needs(todays_expenditure);
-	todays_output().expenditure = todays_expenditure;
+	get_todays_output().expenditure = todays_expenditure;
 
 	/// - Calculate offspring.
 	offspring = get_todays_offspring_proportion()*get_ind_per_km2();

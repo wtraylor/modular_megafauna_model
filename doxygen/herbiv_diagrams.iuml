@@ -234,9 +234,6 @@
 	namespace FaunaOut{
 		class HerbivoreData
 		class HabitatData
-		class Aggregator
-		Aggregator ..> HerbivoreData : aggregates >
-		Aggregator ..> HabitatData : aggregates >
 		class CombinedData
 		CombinedData o-> "*" HerbivoreData
 		note on link : by HFT
@@ -270,11 +267,11 @@
 		abstract Habitat
 	}
 	namespace FaunaOut{
-		class Aggregator
+		class CombinedData
 	}
 	GuessOutput.HerbivoryOutput ..> Fauna.Habitat : retrieve_output() >
 	GuessOutput.HerbivoryOutput ..> Fauna.HerbivoreInterface : retrieve_output() >
-	GuessOutput.HerbivoryOutput ..> FaunaOut.Aggregator : <<use>> >
+	GuessOutput.HerbivoryOutput ..> FaunaOut.CombinedData : <<use>> >
 @enduml
 
 @startuml (id=outputmodule_initialization)

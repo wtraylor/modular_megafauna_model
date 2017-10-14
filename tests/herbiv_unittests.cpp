@@ -71,8 +71,9 @@ namespace {
 				return bodymass*ind_per_km2;
 			}
 
-			virtual FaunaOut::HerbivoreData retrieve_output(){
-				return FaunaOut::HerbivoreData();
+			virtual const FaunaOut::HerbivoreData& get_todays_output()const{
+				static FaunaOut::HerbivoreData dummy_output;
+				return dummy_output;
 			}
 
 			virtual void simulate_day(const int day,
@@ -1136,34 +1137,27 @@ TEST_CASE("Fauna::Habitat", "") {
 
 	SECTION("output") {
 		// initialized with zero output.
-		REQUIRE( habitat.retrieve_output().datapoint_count == 0 );
-
 		const int COUNT = 22; // day count (even number!)
 		const ForageMass EATEN_AVG(54); // eaten total per day
-		for (int i=0; i<COUNT; i++){
-			habitat.init_day(i);
 
-			// mix up the daily eaten forage, but keep the average the
-			// same
-			ForageMass eaten_today;
-			if (i%2 == 0) // on even days
-				eaten_today = EATEN_AVG * 0.5;
-			else // on odd days
-				eaten_today = EATEN_AVG * 1.5;
+		habitat.init_day(23);
 
-			// remove twice in the same day
-			habitat.remove_eaten_forage(eaten_today*0.4);
-			habitat.remove_eaten_forage(eaten_today*0.6);
+		// remove twice in the same day, but keeping sum to given value
+		habitat.remove_eaten_forage(EATEN_AVG*0.4);
+		habitat.remove_eaten_forage(EATEN_AVG*0.6);
+
+		SECTION("check this day"){
+			const HabitatData out = ((const Habitat&) habitat).get_todays_output();
+			// Check eaten forage per day as a sample.
+			CHECK( out.eaten_forage[FT_GRASS] == Approx(EATEN_AVG[FT_GRASS]) );
 		}
 
-		const HabitatData out = habitat.retrieve_output();
-		CHECK( out.datapoint_count == COUNT );
-		// Check eaten forage per day as a sample.
-		CHECK( out.eaten_forage[FT_GRASS] 
-				== Approx(EATEN_AVG[FT_GRASS]) );
-
-		// Now the output should be reset
-		CHECK( habitat.retrieve_output().datapoint_count == 0 );
+		SECTION("init next day"){
+			habitat.init_day(24);
+			const HabitatData out = ((const Habitat&) habitat).get_todays_output();
+			// The values should be reset to zero.
+			CHECK( out.eaten_forage[FT_GRASS] == 0.0 );
+		}
 	}
 }
 
@@ -1901,134 +1895,205 @@ TEST_CASE("Fauna::Simulator", "") {
 	}
 }
 
-TEST_CASE("FaunaOut::Aggregator", ""){
-	SECTION("Initialization"){
-		CHECK( Aggregator().reset().hft_data.empty() );
-		CHECK( Aggregator().reset().habitat_data.datapoint_count == 0 );
+TEST_CASE("FaunaOut::CombinedData"){
+	CombinedData c1, c2;
+	CHECK( c1.datapoint_count == 0 );
+
+	// create some habitat data
+	HabitatData hab1, hab2;
+	hab1.available_forage.grass.set_mass(1.0);
+	hab1.available_forage.grass.set_fpc(.5);
+	hab2.available_forage.grass.set_mass(2.0);
+	hab2.available_forage.grass.set_fpc(.5);
+
+	// put habitat data into CombinedData
+	c1.habitat_data = hab1;
+	c2.habitat_data = hab2;
+
+	// create some herbivore data
+
+	const HftList hfts = create_hfts(2, Parameters());
+	REQUIRE( hfts.size() == 2 );
+
+	HerbivoreData h1, h2; // HFT 0
+	HerbivoreData h3;     // HFT 1
+
+	h1.inddens = 1.0;
+	h2.inddens = 2.0;
+	h3.inddens = 3.0;
+	h1.expenditure = 1.0;
+	h2.expenditure = 2.0;
+	h3.expenditure = 3.0;
+
+	// put the herbivore data into CombinedData
+
+	c1.hft_data[&hfts[0]] = h1;
+	// note: c2 has no entry for HFT 1
+	c1.hft_data[&hfts[1]] = h3;
+	c2.hft_data[&hfts[0]] = h2;
+
+	SECTION("merge() with zero datapoint count"){
+		c1.datapoint_count = 0;
+		c2.datapoint_count = 1;
+
+		c2.merge(c1);
+
+		// c2 should be left unchanged
+
+		CHECK(c2.datapoint_count == 1);
+		CHECK(c2.hft_data.size() == 1);
+		CHECK(c2.habitat_data.available_forage.grass.get_mass() == 2.0);
 	}
-	const HftList hfts = create_hfts(3, Parameters());
-	SECTION("Adding data"){
-		Aggregator a;
 
-		HabitatData hab1;
-		hab1.eaten_forage.set(FT_GRASS, 234); // just a random sample
-		hab1.datapoint_count = 1;
-		a.add(hab1);
+	SECTION("merge() with equal datapoint counts"){
+		// merge with equal weight
+		c1.datapoint_count = c2.datapoint_count = 3;
 
-		HerbivoreData herb1;
-		herb1.expenditure = 234; // sample
-		herb1.datapoint_count = 3;
-		a.add(hfts[0], herb1);
+		c1.merge(c2);
 
-		HerbivoreData herb2;
-		herb2.datapoint_count = 4;
-		a.add(hfts[1], herb2);
+		CHECK( c1.datapoint_count == 6 );
 
-		SECTION("Single add"){
-			CombinedData c = a.reset();
+		CHECK( c1.habitat_data.available_forage.grass.get_mass() 
+				== Approx(1.5) );
+		// c1 now has data for both HFTs
+		REQUIRE( c1.hft_data.size() == 2 );
+		// in HFT 0, two datapoints are merged
+		CHECK( c1.hft_data[&hfts[0]].inddens 
+				== Approx((1.0+2.0)/2.0) ); // normal average
+		CHECK( c1.hft_data[&hfts[0]].expenditure 
+				== Approx((1.0*1.0 + 2.0*2.0)/(1.0+2.0)) ); // weighted by inddens
 
-			// only check samples, not every variable
-			CHECK( c.habitat_data.eaten_forage == hab1.eaten_forage );
-			CHECK( c.habitat_data.datapoint_count
-					== hab1.datapoint_count );
+		// in HFT 1, one datapoint is merged with zero values
+		CHECK( c1.hft_data[&hfts[1]].inddens 
+				== Approx((0.0+3.0)/2.0) ); // normal average
+		CHECK( c1.hft_data[&hfts[1]].expenditure 
+				== Approx(3.0) ); // weighted by inddens, but only one data point
+	}
 
-			REQUIRE( c.hft_data.size() == 2 );
-			CHECK( c.hft_data[&hfts[0]].datapoint_count
-					== herb1.datapoint_count );
-			CHECK( c.hft_data[&hfts[0]].expenditure
-					== herb1.expenditure );
-			CHECK( c.hft_data[&hfts[1]].datapoint_count 
-					== herb2.datapoint_count );
+	SECTION("merge() with different data point counts"){
+		c1.datapoint_count = 1;
+		c2.datapoint_count = 2;
 
-			// Has it been reset properly?
-			c = a.reset();
-			CHECK( c.habitat_data.datapoint_count == 0 );
-			CHECK( c.hft_data.empty() );
-		}
+		c1.merge(c2);
 
-		SECTION("Merging data"){
-			HabitatData hab2;
-			hab2.datapoint_count = 2;
-			a.add(hab2);
+		CHECK( c1.datapoint_count == 3 );
 
-			HerbivoreData herb3;
-			herb3.datapoint_count = 5;
-			a.add(hfts[0], herb3);
+		CHECK( c1.habitat_data.available_forage.grass.get_mass() 
+				== Approx((1.0*1.0 + 2.0*2.0) / (3.0)) );
+		// c1 now has data for both HFTs
+		REQUIRE( c1.hft_data.size() == 2 );
 
-			HerbivoreData herb4;
-			herb4.datapoint_count = 7;
-			a.add(hfts[1], herb4);
+		// in HFT 0, two datapoints are merged
+		CHECK( c1.hft_data[&hfts[0]].inddens 
+				== Approx((1.0+2.0*2.0)/3.0) ); // weighted by datapoint_count
 
-			CombinedData c = a.reset();
+		// weighted by inddens*datapoint_count:
+		CHECK( c1.hft_data[&hfts[0]].expenditure 
+				== Approx((1.0 + 2.0*2.0*2.0)/(1.0+2.0*2.0)) );
 
-			// we check only the data points count, not every single
-			// variable
-			CHECK( c.habitat_data.datapoint_count 
-					== hab1.datapoint_count + hab2.datapoint_count );
-			CHECK( c.habitat_data.eaten_forage[FT_GRASS]
-					== Approx(average(
-							hab1.eaten_forage[FT_GRASS],
-							hab2.eaten_forage[FT_GRASS],
-							hab1.datapoint_count,
-							hab2.datapoint_count)) );
+		// in HFT 1, one datapoint is merged with zero values
+		CHECK( c1.hft_data[&hfts[1]].inddens 
+				== Approx((1.0*3.0+2.0*0.0)/(1.0 + 2.0)) ); // weighted by datapoint_count
 
-			REQUIRE( c.hft_data.size() == 2 ); // only 2 HFTs
-			CHECK( c.hft_data[&hfts[0]].datapoint_count 
-					== herb1.datapoint_count + herb3.datapoint_count );
-			CHECK( c.hft_data[&hfts[0]].expenditure
-					== Approx(average(herb1.expenditure, herb3.expenditure,
-							herb1.datapoint_count, herb3.datapoint_count)) );
-			CHECK( c.hft_data[&hfts[1]].datapoint_count 
-					== herb2.datapoint_count + herb4.datapoint_count );
-		}
+		// weighted by inddens*datapoint_count, but since c2 has no data for
+		// HFT 1, and since expenditure is individual based, c2 is simply not
+		// included in the average.
+		CHECK( c1.hft_data[&hfts[1]].expenditure 
+				== h3.expenditure);
+	}
+
+	SECTION("reset()"){
+		c1.reset();
+		CHECK( c1.datapoint_count == 0 );
+		CHECK( c1.hft_data.empty() );
+		CHECK( c1.habitat_data.available_forage.get_mass().sum() == 0.0 );
 	}
 }
 
 TEST_CASE("FaunaOut::HabitatData", ""){
-	// initialization
-	CHECK(HabitatData().datapoint_count == 0);
-
 	SECTION("Exceptions"){
 		HabitatData d1,d2;
-		// weight of sums is zero
-		CHECK_THROWS( d1.merge(d2) );
+		CHECK_THROWS( d1.merge(d2, 0, 0) );
+		CHECK_THROWS( d1.merge(d2, -1, 1) );
+		CHECK_THROWS( d1.merge(d2, 1, -1) );
 	}
 
-	SECTION("Merge and reset"){
-		// The values of the merge are not checked here because
-		// they are given by Fauna::ForageValues<>::merge()
-		// and Fauna::average().
-		HabitatData d1,d2;
-		d1.datapoint_count = 1;
-		d2.datapoint_count = 3;
-		CHECK( d1.merge(d2).datapoint_count == 4 );
-
-		d1.reset();
-		CHECK( d1.datapoint_count == 0 );
-	}
+	// The values of the merge are not checked here because
+	// they are given by Fauna::ForageValues<>::merge()
+	// and Fauna::average().
 }
 
 TEST_CASE("FaunaOut::HerbivoreData", ""){
-	CHECK(HerbivoreData().datapoint_count == 0);
 
 	SECTION("Exceptions"){
 		HerbivoreData d1,d2;
-		// weight of sums is zero
-		CHECK_THROWS( d1.merge(d2) );
+		CHECK_THROWS( d1.merge(d2, 0, 0) );
+		CHECK_THROWS( d1.merge(d2, -1, 1) );
+		CHECK_THROWS( d1.merge(d2, 1, -1) );
+		CHECK_THROWS( HerbivoreData::create_datapoint(
+					std::vector<HerbivoreData>() ) );
 	}
 
-	SECTION("Merge and reset"){
-		// The values of the merge are not checked here because
-		// they are given by Fauna::ForageValues<>::merge()
-		// and Fauna::average().
-		HerbivoreData d1,d2;
-		d1.datapoint_count = 1;
-		d2.datapoint_count = 3;
-		CHECK( d1.merge(d2).datapoint_count == 4 );
+	SECTION("create_datapoint()"){
+		HerbivoreData d0, d1, d2, d3;
+		REQUIRE( d0.inddens == 0.0 ); // zero initialization
 
-		d1.reset();
-		CHECK( d1.datapoint_count == 0 );
+		// prepare some arbitrary data
+		d1.inddens = 1;
+		d2.inddens = 2;
+		d3.inddens = 3;
+		d1.expenditure = 1;
+		d2.expenditure = 2;
+		d3.expenditure = 3;
+		d1.mortality[MF_BACKGROUND] = .1;
+		d2.mortality[MF_BACKGROUND] = .2;
+		d3.mortality[MF_BACKGROUND] = .3;
+		d1.mortality[MF_LIFESPAN]   = .5; 
+
+		// put them in a vector
+		std::vector<HerbivoreData> vec;
+		vec.push_back(d1);
+		vec.push_back(d2);
+		vec.push_back(d3);
+
+		// create a datapoint
+		HerbivoreData datapoint = HerbivoreData::create_datapoint(vec);
+
+		// check if values are okay
+		CHECK( datapoint.inddens == Approx(6.0) ); // sum of all items
+		// averages weighted by inddens:
+		CHECK( datapoint.expenditure == Approx((1.0+2.0*2.0+3.0*3.0)/6.0) );
+		CHECK( datapoint.mortality[MF_BACKGROUND]
+				== Approx(.6) );
+		// this mortality factor was only present in one item:
+		CHECK( datapoint.mortality[MF_LIFESPAN]
+				== Approx(.5) );
 	}
+
+	SECTION("merge()"){
+		HerbivoreData d1, d2;
+		d1.inddens = 1;
+		d2.inddens = 2;
+		d1.expenditure = 1.0;
+		d2.expenditure = 2.0;
+
+		SECTION("equal weights") {
+			d1.merge(d2, 1.0, 1.0);
+			// simple average:
+			CHECK( d1.inddens == Approx(1.5) );
+			// average weighted by inddens:
+			CHECK( d1.expenditure == Approx((1.0+2.0*2.0)/3.0) );
+		}
+
+		SECTION("different weights") {
+			d1.merge(d2, 1.0, 2.0);
+			// simple average:
+			CHECK( d1.inddens == Approx((1.0 + 2.0*2.0)/(1.0 + 2.0)) );
+			// average weighted by inddens:
+			CHECK( d1.expenditure == Approx((1.0+2.0*2.0*2.0)/(1.0 + 2.0*2.0)) );
+		}
+	}
+
 }
 
 TEST_CASE("FaunaSim::LogisticGrass", "") {

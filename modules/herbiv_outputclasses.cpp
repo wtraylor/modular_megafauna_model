@@ -13,50 +13,80 @@
 using namespace Fauna;
 using namespace FaunaOut;
 
-HabitatData& HabitatData::merge(const HabitatData& other){
+namespace {
+	/// Mortality–value map.
+	typedef std::map<Fauna::MortalityFactor, double> MortMap;
+}
+
+HabitatData& HabitatData::merge(const HabitatData& other,
+		const double this_weight,
+		const double other_weight)
+{
+	if (!(this_weight >= 0.0))
+		throw std::invalid_argument("FaunaOut::HabitatData::merge() "
+				"Parameter `this_weight` is not a >=0.0");
+	if (!(other_weight >= 0.0))
+		throw std::invalid_argument("FaunaOut::HabitatData::merge() "
+				"Parameter `other_weight` is not a >=0.0");
+	if (this_weight == 0.0 && other_weight == 0.0)
+		throw std::invalid_argument("FaunaOut::HabitatData::merge() "
+				"Both objects have zero weight");
+
 	if (&other == this)
 		return *this;
 
 	// Build average for each variable:
 	eaten_forage.merge(other.eaten_forage,
-			this->datapoint_count, other.datapoint_count);
+			this_weight, other_weight);
 	available_forage.merge(other.available_forage,
-			this->datapoint_count, other.datapoint_count);
+			this_weight, other_weight);
 
 	// ADD NEW VARIABLES HERE
 
-	datapoint_count += other.datapoint_count;
 	return *this;
 }
 
-HerbivoreData& HerbivoreData::merge(const HerbivoreData& other){
+HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
+		const double this_weight,
+		const double other_weight)
+{
+	if (!(this_weight >= 0.0))
+		throw std::invalid_argument("FaunaOut::HerbivoreData::merge() "
+				"Parameter `this_weight` is not a >=0.0");
+	if (!(other_weight >= 0.0)) 
+		throw std::invalid_argument("FaunaOut::HerbivoreData::merge() "
+				"Parameter `other_weight` is not a >=0.0");
+	if (this_weight == 0.0 && other_weight == 0.0)
+		throw std::invalid_argument("FaunaOut::HerbivoreData::merge() "
+				"Both objects have zero weight");
 
-	// Build average for each variable
+	if (&other == this)
+		return *this;
 
-	// Average building for double values
-	age_years = average(
-			age_years, other.age_years,
-			datapoint_count, other.datapoint_count);
-	bodyfat = average(
-			bodyfat, other.bodyfat,
-			datapoint_count, other.datapoint_count);
-	inddens = average(
-			inddens, other.inddens,
-			datapoint_count, other.datapoint_count);
-	massdens = average(
-			massdens, other.massdens,
-			datapoint_count, other.datapoint_count);
-	expenditure = average(
-			expenditure, other.expenditure,
-			datapoint_count, other.datapoint_count);
+	// ------------------------------------------------------------------
+	// PER INDIVIDUAL
+	// Here, we weigh additionally with individual density.
+	if (other.inddens > 0.0) {
+		const double this_weight_ind  = this_weight * inddens;
+		const double other_weight_ind = other_weight * other.inddens;
 
-	// Average building for ForageValues
-	eaten_forage.merge(other.eaten_forage);
-	energy_intake.merge(other.energy_intake);
+		age_years = average(
+				age_years, other.age_years,
+				this_weight_ind, other_weight_ind);
+		bodyfat = average(
+				bodyfat, other.bodyfat,
+				this_weight_ind, other_weight_ind);
+		expenditure = average(
+				expenditure, other.expenditure,
+				this_weight_ind, other_weight_ind);
+	}
+
+	// ------------------------------------------------------------------
+	// PER HABITAT VARIABLES
+	// Here, we weigh just with the given weights.
 
 	// Only use those mortality factors that are included in
 	// *both* maps.
-	typedef std::map<Fauna::MortalityFactor, double> MortMap;
 	MortMap mort_intersect;
 	for (MortMap::const_iterator itr = other.mortality.begin();
 			itr != other.mortality.end(); itr++)
@@ -67,12 +97,118 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other){
 		if (found != this->mortality.end())
 			mort_intersect[mf] = average(
 					found->second, itr->second,
-					datapoint_count, other.datapoint_count);
+					this_weight, other_weight);
 	}
 	this->mortality = mort_intersect;
 
-	// ADD NEW VARIABLES HERE
+	inddens = average(
+			inddens, other.inddens,
+			this_weight, other_weight);
+	massdens = average(
+			massdens, other.massdens,
+			this_weight, other_weight);
 
-	datapoint_count += other.datapoint_count;
+	// Delegate average building to class ForageValues.
+	eaten_forage.merge(other.eaten_forage, this_weight, other_weight);
+	energy_intake.merge(other.energy_intake, this_weight, other_weight);
+
+	return *this;
+}
+
+HerbivoreData HerbivoreData::create_datapoint(
+		const std::vector<HerbivoreData> vec)
+{
+	if (vec.empty())
+		throw std::invalid_argument("FaunaOut::HerbivoreData::create_datapoint() "
+				"Received empty vector as argument.");
+
+	HerbivoreData result;
+
+	for (std::vector<HerbivoreData>::const_iterator itr = vec.begin();
+			itr != vec.end();
+			itr++)
+	{
+		const HerbivoreData& other = *itr;
+
+		// ------------------------------------------------------------------
+		// AVERAGE building for per-individual variables
+		// All numbers are weighed by the individual density.
+		result.age_years = average(
+				result.age_years, other.age_years,
+				result.inddens, other.inddens);
+		result.bodyfat = average(
+				result.bodyfat, other.bodyfat,
+				result.inddens, other.inddens);
+		result.expenditure = average(
+				result.expenditure, other.expenditure,
+				result.inddens, other.inddens);
+
+		// ------------------------------------------------------------------
+		// SUM building for per-area and per-habitat variables
+		result.inddens += other.inddens;
+		result.massdens += other.massdens;
+
+		result.eaten_forage  += other.eaten_forage;
+		result.energy_intake += other.energy_intake;
+
+		// Include *all* mortality factors.
+		for (MortMap::const_iterator itr = other.mortality.begin();
+				itr != other.mortality.end();
+				itr++)
+		{
+			result.mortality[itr->first] += itr->second;
+		}
+	}
+
+	return result;
+}
+
+CombinedData& CombinedData::merge(const CombinedData& other){
+	if (other.datapoint_count == 0)
+		return *this;
+	// ------------------------------------------------------------------
+	// HABITAT DATA
+	habitat_data.merge(other.habitat_data,
+			this->datapoint_count, other.datapoint_count);
+
+	// ------------------------------------------------------------------
+	// HERBIVORE DATA
+	// Merge herbivore data for each HFT.
+	
+	typedef std::map<const Fauna::Hft*, HerbivoreData> HftMap;
+
+	// First, create empty HerbivoreData objects for all HFTs that are not
+	// yet present in this object.
+	for (HftMap::const_iterator itr = other.hft_data.begin();
+			itr != other.hft_data.end();
+			itr++)
+	{
+		// create new object if HFT not found.
+		if (!hft_data.count(itr->first))
+			hft_data[itr->first] = HerbivoreData();
+	}
+
+	// Second, merge all herbivore data. 
+	for (HftMap::iterator itr = hft_data.begin();
+			itr != hft_data.end();
+			itr++)
+	{
+		// try to find this HFT in the other object
+		HftMap::const_iterator found = other.hft_data.find(itr->first);
+
+		// If the other object doesn’t contain this HFT, we use an empty
+		// object.
+		HerbivoreData other_herbi_data;
+		if (found != other.hft_data.end())
+			other_herbi_data = found->second;
+
+		// Let the class HerbivoreData do the actual merge.
+		itr->second.merge(other_herbi_data,
+				this->datapoint_count, other.datapoint_count);
+	}
+
+	// increment datapoint counter
+	this->datapoint_count += other.datapoint_count;
+
 	return *this;
 }

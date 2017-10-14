@@ -98,15 +98,15 @@ HerbivoryOutput::HerbivoryOutput():
 			"Daily herbivore mortality through starvation.",
 			"ind/ind/day",
 			CS_HFT),
-	TBL_EATEN_IND(
+	TBL_EATEN_HFT(
 			"file_herbiv_eaten_ind",
 			"Forage eaten by herbivores per day.",
-			"kgDM/ind/day",
+			"kgDM/km²/day",
 			CS_HFT_FORAGE),
 	TBL_ENERGY_INTAKE(
 			"file_herbiv_energy_intake",
 			"Herbivore net energy intake from forage.",
-			"MJ/ind/day",
+			"MJ/km²/day",
 			CS_HFT_FORAGE),
 	TABLEFILES(init_tablefiles())
 {
@@ -167,7 +167,7 @@ const std::vector<HerbivoryOutput::TableFile*> HerbivoryOutput::init_tablefiles(
 		list.push_back(&TBL_INDDENS);
 		list.push_back(&TBL_MASSDENS);
 		list.push_back(&TBL_STARVATION);
-		list.push_back(&TBL_EATEN_IND);
+		list.push_back(&TBL_EATEN_HFT);
 	}
 	return list;
 }
@@ -342,7 +342,7 @@ void HerbivoryOutput::outdaily(
 			(interval == ANNUAL && day==0) ||
 			(interval == DECADAL && year%10==0 && day==0))
 	{
-		FaunaOut::Aggregator aggregator;
+		FaunaOut::CombinedData datapoint;
 
 		// Loop through all habitats and aggregate their output
 		// to one data point.
@@ -350,29 +350,13 @@ void HerbivoryOutput::outdaily(
 				itr  = simulation_units.begin();
 				itr != simulation_units.end(); itr++)
 		{
-			Habitat& habitat = (**itr).get_habitat();
+			Fauna::SimulationUnit& sim_unit= **itr;
 
-			// ADD HABITAT DATA
-			aggregator.add(habitat.retrieve_output());
-
-			// ADD HERBIVORE DATA
-			// all populations in the habitat (one for each HFT)
-			HftPopulationsMap& populations = (**itr).get_populations();
-
-			// All herbivores in the habitat
-			HerbivoreVector herbivores = populations.get_all_herbivores();
-
-			// loop through all herbivores
-			for (HerbivoreVector::iterator itr_h=herbivores.begin();
-					itr_h != herbivores.end(); itr_h++) {
-				HerbivoreInterface& herbivore = **itr_h;
-				// aggregate this herbivore’s output
-				aggregator.add(herbivore.get_hft(), 
-						herbivore.retrieve_output());
-			}
+			// AGGREGATE DATA
+			datapoint.merge(sim_unit.get_output().reset());
 		}
 		// WRITE OUTPUT
-		write_datapoint( longitude, latitude, day, year, aggregator.reset() );
+		write_datapoint( longitude, latitude, day, year, datapoint );
 	}
 }
 
@@ -417,11 +401,12 @@ void HerbivoryOutput::write_datapoint(
 	// ALL HFT-SPECIFIC TABLES
 	assert(hftlist.get() != NULL);
 	for (HftList::const_iterator itr_hft = hftlist->begin();
-			itr_hft != hftlist->end(); itr_hft++)
+			itr_hft != hftlist->end();
+			itr_hft++)
 	{
 		const Hft& hft = *itr_hft;
 
-		// See if we find the HFT in the data point
+		// See if we find the HFT in the datapoint•
 		//
 		// Here it is important to remember that HerbivoryOutput
 		// has its own *copy* of an HftList. Therefore, we need to
@@ -442,8 +427,11 @@ void HerbivoryOutput::write_datapoint(
 			}
 		}
 
-		if (pherbidata != NULL) {
-			// Okay, data for HFT found, we add it to the output
+		if (pherbidata != NULL && pherbidata->massdens > 0.0) {
+			// Okay, there is a data object for the HFT, it contains valid
+			// data. We add it to the output
+
+			// Now we can safely dereference the pointer.
 			const FaunaOut::HerbivoreData& herbidata = *pherbidata;
 
 			// HFT TABLES
@@ -487,7 +475,7 @@ void HerbivoryOutput::write_datapoint(
 			for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
 					ft!=FORAGE_TYPES.end(); ft++)
 			{
-				output_rows.add_value(TBL_EATEN_IND.table,
+				output_rows.add_value(TBL_EATEN_HFT.table,
 						herbidata.eaten_forage[*ft]);
 				output_rows.add_value(TBL_ENERGY_INTAKE.table,
 						herbidata.energy_intake[*ft]);
@@ -505,6 +493,8 @@ void HerbivoryOutput::write_datapoint(
 				if (tablefile.column_selector == CS_HFT ||
 						tablefile.column_selector == CS_HFT_FORAGE) 
 				{
+					// Only individual density and mass density are never missing
+					// values.
 					if (&tablefile == &TBL_INDDENS || &tablefile == &TBL_MASSDENS)
 						output_rows.add_value(tablefile.table, 0.0);
 					else 

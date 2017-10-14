@@ -247,17 +247,32 @@ That means that for each “measured” output variable (e.g. `individual densit
 ### Output Classes {#sec_herbiv_outputclasses}
 
 Output classes within the herbivory module are collected in the namespace \ref FaunaOut.
-- The two structs \ref FaunaOut::HabitatData and \ref FaunaOut::HerbivoreData are simple data *containers* with the ability to merge with other objects of the same type (**aggregation**).
-- The class \ref FaunaOut::Aggregator in turn aggregates all output data from herbivores and habitats into the container \ref FaunaOut::CombinedData.
+- The two structs \ref FaunaOut::HabitatData and \ref FaunaOut::HerbivoreData are simple data containers.
+- The struct \ref FaunaOut::CombinedData represents one datapoint (‘tupel’/‘observation’) of all output variables in space and time.
 
 @startuml "Output classes of the herbivory module."
 	!include herbiv_diagrams.iuml!outputclasses
 @enduml
 
-Both \ref Fauna::Habitat and \ref Fauna::HerbivoreInterface objects aggregate their output data each day automatically.
-Following the [Inversion of Control Principle](\ref sec_inversion_of_control), both classes  deliver their aggregated output data when another object (\ref GuessOutput::HerbivoryOutput) calls the public method `retrieve_output()`.
+There are three levels of data aggregation:
 
-Be aware that all time-dependent values are always **per day.**
+1) Each day in \ref Simulator::simulate_day(), a new datapoint (\ref FaunaOut::CombinedData) is created for each simulation unit.
+For this, the habitat data is taken as is, but the herbivore data is aggregated per HFT (see \ref FaunaOut::HerbivoreData::create_datapoint()).
+This level of aggregation is **spatial within one habitat**.
+Here, any variables *per habitat* or *per area* are summed, for instance herbivore densities.
+Variables *per individual* are averaged, using individual density as weight.
+
+2) The second level of aggregation happens also in \ref Simulator::simulate_day().
+The datapoint for that day is added to the temporal average in the \ref Fauna::SimulationUnit object.
+This level of aggregation is therefore **temporal across days**.
+
+3) The third level of aggregation takes place in \ref GuessOutput::OutputModule.
+Here, the accumulated temporal averages from the simulation units are combined in spatial units, i.e. [gridcells](\ref Gridcell).
+This level of aggregation is therefore **spatial across habitats**.
+
+The latter two aggregation levels are performed by \ref FaunaOut::CombinedData::merge().
+
+Note that all time-dependent variables are always **per day.**
 For example, there is no such thing like *forage eaten in one year.*
 This way, all variables can be aggregated using the same algorithm, whether they are time-independent (like *individual density*) or represent a time-dependent rate (like *mortality* or *eaten forage*).
 

@@ -176,7 +176,8 @@ namespace GuessOutput {
 					const double longitude, const double latitude,
 					const int day, const int year,
 					const FaunaOut::CombinedData& datapoint);
-		private: // tables
+
+		private: // helper functions
 			/// Selector for a set of columns in a table.
 			enum ColumnSelector{
 				CS_FORAGE,
@@ -186,6 +187,7 @@ namespace GuessOutput {
 			};
 			ColumnDescriptors get_columns(const ColumnSelector);
 
+		private: // tables
 			/// File and table descriptor for one output variable.
 			struct TableFile{
 				TableFile(
@@ -223,7 +225,6 @@ namespace GuessOutput {
 			TableFile TBL_AVAILABLE_FORAGE;
 			TableFile TBL_DIGESTIBILITY;
 			TableFile TBL_EATEN_FORAGE;
-			TableFile TBL_ENERGY_INTAKE;
 			/** @} */
 
 			/** @{ \name HFT output tables.*/
@@ -235,7 +236,8 @@ namespace GuessOutput {
 			/** @} */ 
 
 			/** @{ \name HFT–Forage output tables.*/
-			TableFile TBL_EATEN_IND;
+			TableFile TBL_EATEN_HFT;
+			TableFile TBL_ENERGY_INTAKE;
 			/** @} */ 
 	};
 

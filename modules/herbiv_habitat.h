@@ -61,32 +61,23 @@ namespace Fauna{
 		 * available forage (**to be implemented in derived classes**).
 		 */
 		virtual void remove_eaten_forage(const ForageMass& eaten_forage){
-			todays_output().eaten_forage += eaten_forage;
+			get_todays_output().eaten_forage += eaten_forage;
 		}
-
-		/// Get output data that has been aggregated since the last call.
-		/**
-		 * Each day, the output data is aggregated over time.
-		 * When this function is called, it will return the aggregated
-		 * data and reset its internal state to blank.
-		 * \return Aggregated output data. 
-		 */
-		FaunaOut::HabitatData retrieve_output();
 
 		/// The current day as set by \ref init_day().
 		/** \see Date::day */
 		int get_day()const{return day_of_year;}
 
+		/// The current output data (read-only).
+		const FaunaOut::HabitatData& get_todays_output()const{ 
+			return current_output; 
+		}
 	protected:
-		/// Add output for each day into this object.
-		FaunaOut::HabitatData& todays_output(){
-			return current_output;
+		/// Class-internal read/write access to current output data.
+		FaunaOut::HabitatData& get_todays_output(){ 
+			return current_output; 
 		}
 	private:
-		/// Add \ref current_output to \ref aggregated_output.
-		void aggregate_todays_output();
-
-		FaunaOut::HabitatData aggregated_output;
 		FaunaOut::HabitatData current_output;
 		int day_of_year; 
 	};
