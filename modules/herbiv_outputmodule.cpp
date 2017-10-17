@@ -108,6 +108,11 @@ HerbivoryOutput::HerbivoryOutput():
 			"Herbivore net energy intake from forage.",
 			"MJ/km²/day",
 			CS_HFT_FORAGE),
+	TBL_ENERGY_INTAKE(
+			"file_herbiv_energy_intake",
+			"Herbivore net energy intake from forage.",
+			"MJ/ind/day",
+			CS_HFT_FORAGE),
 	TABLEFILES(init_tablefiles())
 {
 	// Check if someone is trying to create another instance
