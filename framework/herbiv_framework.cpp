@@ -116,8 +116,12 @@ void Simulator::simulate_day(const int day_of_year,
 		throw std::invalid_argument("Simulator::simulate_day(): "
 				"argument day_of_year out of range");
 
+	// Habitat and herbivore output for this day.
+	FaunaOut::CombinedData todays_datapoint;
+
 	// The habitat to simulate
 	Habitat& habitat = simulation_unit.get_habitat();
+
 	// all populations in the habitat (one for each HFT)
 	HftPopulationsMap& populations = simulation_unit.get_populations();
 
@@ -224,9 +228,8 @@ void Simulator::simulate_day(const int day_of_year,
 		} // end of custom scope
 
 		// ---------------------------------------------------------
-		// MERGE OUTPUT
+		// MERGE HERBIVORE OUTPUT
 		// Aggregate output of herbivores for one habitat.
-		FaunaOut::CombinedData todays_datapoint;
 		for (TodaysHftOutput::const_iterator itr = hft_output.begin();
 				itr != hft_output.end();
 				itr++)
@@ -238,14 +241,6 @@ void Simulator::simulate_day(const int day_of_year,
 			todays_datapoint.hft_data[&hft] = 
 				FaunaOut::HerbivoreData::create_datapoint( itr->second );
 		}
-		// Add the habitat data to the output
-		todays_datapoint.habitat_data =
-			((const Habitat&) habitat).get_todays_output();
-		// The output data container is now one complete datapoint.
-		todays_datapoint.datapoint_count = 1;
-		// Merge today’s output into temporal aggregation of the simulation
-		// unit.
-		simulation_unit.get_output().merge(todays_datapoint);
 
 		// ---------------------------------------------------------
 		// REPRODUCTION
@@ -263,6 +258,17 @@ void Simulator::simulate_day(const int day_of_year,
 		}
 	}
 
+	// ---------------------------------------------------------
+	// ADD HABITAT OUTPUT
+	// Add the habitat data to the output even if no herbivores are 
+	// simulated.
+	todays_datapoint.habitat_data =
+		((const Habitat&) habitat).get_todays_output();
+	// The output data container is now one complete datapoint.
+	todays_datapoint.datapoint_count = 1;
+	// Merge today’s output into temporal aggregation of the simulation
+	// unit.
+	simulation_unit.get_output().merge(todays_datapoint);
 }
 
 //============================================================

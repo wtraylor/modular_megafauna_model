@@ -10,12 +10,14 @@
 ! In the comments below, the value range of the parameters is 
 ! denoted in mathematical notation.
 
+! Uncomment the following line to get the full output.
+! import "herbiv_output.ins"
+
 ! Directory for the output files
 outputdirectory "./"
 
-import "herbiv_output.ins"
-
 ifherbivory 1
+
 
 ! The following example default parameters are taken from
 ! Owen-Smith (2002)
@@ -35,7 +37,7 @@ nhabitats_per_group 1
 grass_decay 0.0014 ! = 0.01 g/(g week)
 
 ! Fractional grass digestibility. (0,1]
-grass_digestibility 0.5
+grass_digestibility 0.6 ! approximates mediocre green grass
 
 ! Foliar Percentage Cover of the grass. [0,1]
 grass_fpc 0.8

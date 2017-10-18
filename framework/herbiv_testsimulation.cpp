@@ -85,6 +85,7 @@ int main(int argc,char* argv[]) {
 		}
 
 		// store the parameters
+		assert(ParamReader::get_instance().parsing_completed());
 		const Parameters params = ParamReader::get_instance().get_params();
 		const HftList hftlist = ParamReader::get_instance().get_hftlist();
 

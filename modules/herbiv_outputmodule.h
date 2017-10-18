@@ -238,7 +238,7 @@ namespace GuessOutput {
 			/** @} */ 
 
 			/** @{ \name HFT–Forage output tables.*/
-			TableFile TBL_EATEN_HFT;
+			TableFile TBL_EATEN_IND;
 			TableFile TBL_ENERGY_INTAKE;
 			/** @} */ 
 	};
