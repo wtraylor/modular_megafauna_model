@@ -72,6 +72,43 @@ bool ParamReader::check_mandatory(const MandatoryParamList& list,
 	return okay;
 }
 
+void ParamReader::check_all_params(bool& fatal, std::string& msg)const{
+	fatal = false;
+
+	// We write into a string stream for convenience and convert it later
+	// to a std::string.
+	std::ostringstream msg_stream;
+
+	{ // GLOBAL PARAMETERS
+		std::string msg;
+		if (!params.is_valid(msg))
+			fatal = true;
+		msg_stream << msg;
+	}
+
+	{ // HFT PARAMETERS
+
+		// Now check each HFT if it is valid also in the context of the global
+		// parameters.
+		for (HftList::const_iterator hft_itr = hftlist.begin();
+				hft_itr != hftlist.end();
+				hft_itr++)
+		{
+			std::string msg;
+			if (!hft_itr->is_valid(params, msg))
+				fatal = true;
+			// Print message even if HFT might be valid. Maybe the message is
+			// just a warning, but no fatal error.
+			if (!msg.empty())
+				 msg_stream << "HFT \"" << hft_itr->name << "\":" << msg;
+		}
+	}
+
+	// Convert stringstream to string
+	msg = msg_stream.str();
+}
+
+
 void ParamReader::callback(const int callback, Pft* ppft){
 
 	// Turn the string parameter to upper case to make
@@ -201,6 +238,23 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					"no HFTs were included. The herbivory output "
 					"module will be active, but no herbivory simulation "
 					"will be done.\n");
+		}
+
+		{
+			// Check again the parameters of the herbivory module.
+			bool fatal;
+			std::string msg;
+			check_all_params(fatal, msg);
+			if (fatal){
+				sendmessage("Error", std::string(
+							"Parameters of the herbivory module are not valid:\n"
+							+ msg).c_str());
+				plibabort();
+			} else
+				if (!msg.empty())
+					sendmessage("Warning", std::string(
+								"Warning messages in the herbivory module:\n"
+								+ msg).c_str());
 		}
 
 		// This is the very end of the plib checks

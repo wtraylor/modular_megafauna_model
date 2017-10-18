@@ -94,7 +94,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		if (bodymass_birth >= bodymass_male || bodymass_birth >= bodymass_female) {
 			stream << "bodymass_birth must not be greater than either "
 				<<"bodymass_male or bodymass_female ("
-				<<bodyfat_birth<<")"<<std::endl;
+				<<bodymass_birth<<")"<<std::endl;
 			is_valid = false;
 		}
 

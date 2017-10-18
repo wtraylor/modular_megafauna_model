@@ -39,12 +39,15 @@ namespace Fauna {
 			/// Check global parameters within the plib framework.
 			/** 
 			 * Helper function to \ref plib_callback().
-			 * This function only checks if mandatory items have been
-			 * parsed and converts strings to numeric values.
+			 * This function only checks if mandatory items have been parsed and 
+			 * converts strings to numeric values.
 			 * \see \ref Parameters::is_valid()
 			 *
-			 * Any parameter can only be mandatory if 
-			 * \ref Parameters::ifherbivory is true.
+			 * After all parameters are read, it also checks if all HFTs are
+			 * valid (see \ref Hft::is_valid()).
+			 *
+			 * Any parameter can only be mandatory if \ref Parameters::ifherbivory 
+			 * is true.
 			 *
 			 * \warning Call this *only* from \ref plib_callback()
 			 * because otherwise the plib functions cause addressing errors.
@@ -116,6 +119,16 @@ namespace Fauna {
 				MandatoryParam(std::string param): param(param){}
 			}; 
 			typedef std::list<MandatoryParam> MandatoryParamList;
+
+			/// Check both global and HFT parameters.
+			/**
+			 * \param[out] fatal Whether the simulation cannot run with given
+			 * parameters.
+			 * \param[out] msg Error and warning messages.
+			 * \see \ref Fauna::Hft::is_valid()
+			 * \see \ref Fauna::Parameters::is_valid()
+			 */
+			void check_all_params(bool& fatal, std::string& msg)const;
 
 			/// Check with \ref itemparsed() through list of parameters
 			/** Prints error messages. 

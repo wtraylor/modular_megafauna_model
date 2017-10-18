@@ -72,8 +72,15 @@ int main(int argc,char* argv[]) {
 					fail("Could not open instruction file");
 
 				// let plib parse the instruction script
-				if (!plib(instruction_filename)) 
-					fail("Bad instruction file!");
+				try {
+					// plib doesn’t use exceptions, it just returns zero on error.
+					if (!plib(instruction_filename)) 
+						fail("Bad instruction file!");
+				} catch (const std::exception e){
+					dprintf("An exception occurred while reading the instruction "
+							"file: \n%s\n", e.what());
+					fail();
+				}
 			}
 		}
 		else {
