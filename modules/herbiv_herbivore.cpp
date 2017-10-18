@@ -189,7 +189,7 @@ void HerbivoreBase::eat(
 	get_energy_budget().metabolize_energy(mj_per_ind.sum());
 
 	// Add to output
-	get_todays_output().eaten_forage  += kg_per_km2;
+	get_todays_output().eaten_forage  += kg_per_ind;
 	get_todays_output().energy_intake += mj_per_ind;
 }
 

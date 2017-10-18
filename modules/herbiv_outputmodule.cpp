@@ -108,10 +108,10 @@ HerbivoryOutput::HerbivoryOutput():
 			"Daily herbivore mortality through starvation.",
 			"ind/ind/day",
 			CS_HFT),
-	TBL_EATEN_HFT(
+	TBL_EATEN_IND(
 			"file_herbiv_eaten_ind",
-			"Forage eaten by herbivores per day.",
-			"kgDM/km²/day",
+			"Forage eaten by herbivore individuals per day.",
+			"kgDM/ind/day",
 			CS_HFT_FORAGE),
 	TBL_ENERGY_INTAKE(
 			"file_herbiv_energy_intake",
@@ -179,7 +179,7 @@ const std::vector<HerbivoryOutput::TableFile*> HerbivoryOutput::init_tablefiles(
 		list.push_back(&TBL_MORT_BACKGROUND);
 		list.push_back(&TBL_MORT_LIFESPAN);
 		list.push_back(&TBL_MORT_STARVATION);
-		list.push_back(&TBL_EATEN_HFT);
+		list.push_back(&TBL_EATEN_IND);
 	}
 	return list;
 }
@@ -513,7 +513,7 @@ void HerbivoryOutput::write_datapoint(
 			for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
 					ft!=FORAGE_TYPES.end(); ft++)
 			{
-				output_rows.add_value(TBL_EATEN_HFT.table,
+				output_rows.add_value(TBL_EATEN_IND.table,
 						herbidata.eaten_forage[*ft]);
 				output_rows.add_value(TBL_ENERGY_INTAKE.table,
 						herbidata.energy_intake[*ft]);

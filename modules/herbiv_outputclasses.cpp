@@ -45,10 +45,8 @@ HabitatData& HabitatData::merge(const HabitatData& other,
 	} 
 
 	// Build average for each variable:
-	eaten_forage.merge(other.eaten_forage,
-			this_weight, other_weight);
-	available_forage.merge(other.available_forage,
-			this_weight, other_weight);
+	eaten_forage.merge(other.eaten_forage, this_weight, other_weight);
+	available_forage.merge(other.available_forage, this_weight, other_weight);
 
 	// ADD NEW VARIABLES HERE
 
@@ -143,6 +141,7 @@ HerbivoreData HerbivoreData::create_datapoint(
 
 	HerbivoreData result;
 
+	// Iterate through all herbivore data items and add them to `result`.
 	for (std::vector<HerbivoreData>::const_iterator itr = vec.begin();
 			itr != vec.end();
 			itr++)
@@ -161,14 +160,13 @@ HerbivoreData HerbivoreData::create_datapoint(
 		result.expenditure = average(
 				result.expenditure, other.expenditure,
 				result.inddens, other.inddens);
+		result.eaten_forage.merge(other.eaten_forage);
+		result.energy_intake.merge(other.energy_intake);
 
 		// ------------------------------------------------------------------
 		// SUM building for per-area and per-habitat variables
-		result.inddens += other.inddens;
+		result.inddens  += other.inddens;
 		result.massdens += other.massdens;
-
-		result.eaten_forage  += other.eaten_forage;
-		result.energy_intake += other.energy_intake;
 
 		// Include *all* mortality factors.
 		for (MortMap::const_iterator itr = other.mortality.begin();
