@@ -67,6 +67,8 @@ namespace Fauna{
 
 	/// Algorithm to calculate herbivore reproduction time and success.
 	enum ReproductionModel{
+		/// Use class \ref ReproductionConstMax for reproduction.
+		RM_CONST_MAX,
 		/// Use class \ref ReproductionIllius2000 to calculate reproduction.
 		RM_ILLIUS_2000
 	};

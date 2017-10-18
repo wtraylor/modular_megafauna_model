@@ -39,17 +39,17 @@ namespace Fauna{
 		/** 
 		 * The new herbivores are owned by this population object.
 		 * \param ind_per_km2 Offspring amount [ind/km²].
-		 * \throw std::invalid_argument if `offspring<0.0`
+		 * \throw std::invalid_argument If `offspring<0.0`.
 		 */
 		virtual void create_offspring(const double ind_per_km2)=0;
 
 		/// Create a set of new herbivores to establish a population.
 		/**
-		 * - The new herbivores’ age must match
+		 * - The new herbivores’ age matches
 		 *   \ref Hft::maturity_age_phys_female and
 		 *   \ref Hft::maturity_age_phys_male, respectively.
 		 * - The sex ratio is even.
-		 * - Initial density must match \ref Hft::establishment_density
+		 * - Initial density matches \ref Hft::establishment_density
 		 *   as close as possible, but with at least two individuals
 		 *   per habitat (if in individual mode and 
 		 *   \ref Hft::establishment_density > 0.0).
@@ -77,7 +77,13 @@ namespace Fauna{
 	/// A population of \ref HerbivoreIndividual objects.
 	class IndividualPopulation: public PopulationInterface{
 		public: // ------ PopulationInterface -------
-			virtual void create_offspring(const double ind_per_km2); 
+			/** \copydoc PopulationInterface::create_offspring() 
+			 * Since we can only creat ‘complete’ (discrete) individuals, but 
+			 * the given density `ind_per_km2` is continuous, the remainder
+			 * (‘incomplete individual’) for each sex will be remembered until 
+			 * next call of `create_offspring()`.
+			 */
+			virtual void create_offspring(double ind_per_km2); 
 			virtual void establish();
 			virtual const Hft& get_hft()const{
 				return create_individual.get_hft();
@@ -93,15 +99,32 @@ namespace Fauna{
 			IndividualPopulation(
 					const CreateHerbivoreIndividual create_individual);
 		private:
+			/// Create either male or female newborn individuals.
+			/** \see \ref create_offspring() */
+			void create_offspring_by_sex( const Sex sex, const double ind_per_km2);
+
 			const CreateHerbivoreIndividual create_individual;
 			typedef std::list<HerbivoreIndividual> List;
 			List list;
+			/// ‘Incomplete` newborn herbivore (<1.0).
+			/** \see \ref create_offspring() */
+			std::map<Sex, double> incomplete_offspring;
 	};
 
 	/// A population of \ref HerbivoreCohort objects.
 	class CohortPopulation: public PopulationInterface{
 		public: // ------ PopulationInterface -------
+			/** \copydoc PopulationInterface::create_offspring() 
+			 * If the resulting newborn cohort would be below the viable
+			 * minimum density (\ref dead_herbivore_threshold), the offspring
+			 * is ‘accumulated’ until it reaches (after several calls to 
+			 * `create_offspring()`) a sum above the threshold.
+			 */
 			virtual void create_offspring(const double ind_per_km2);
+			/** \copydoc PopulationInterface::establish()
+			 * Establish with even sex ratio and *at least* as many 
+			 * individuals as given by \ref Hft::establishment_density.
+			 */
 			virtual void establish();
 			virtual const Hft& get_hft()const{
 				return create_cohort.get_hft();
@@ -124,6 +147,10 @@ namespace Fauna{
 		private:
 			typedef std::list<HerbivoreCohort> List;
 
+			/// Add newborn animals to the population either males or females.
+			/** \see \ref create_offspring() */
+			void create_offspring_by_sex(const Sex sex, double ind_per_km2);
+
 			/// Find a cohort in the list.
 			/**
 			 * \param age_years Age-class number (0=first year of life).
@@ -136,7 +163,10 @@ namespace Fauna{
 					const Sex sex);
 
 			const CreateHerbivoreCohort create_cohort;
-			const double dead_herbivore_threshold; // [ind/km²]
+			/// Minimum viable density for one cohort [ind/km²].
+			const double dead_herbivore_threshold; 
+			/// Offspring accumulated until above minimum threshold [ind/km²].
+			std::map<Sex, double> cumulated_offspring;
 			List list;
 	};
 	

@@ -250,7 +250,8 @@ void Simulator::simulate_day(const int day_of_year,
 		// ---------------------------------------------------------
 		// REPRODUCTION
 		// For each HFT, let the PopulationInterface object create herbivores.
-		// This will go into output next simulation cycle.
+		// These new herbivores will be counted in the output next simulation 
+		// cycle.
 		for (std::map<const Hft*, double>::iterator itr = total_offspring.begin();
 				itr != total_offspring.end(); 
 				itr++)

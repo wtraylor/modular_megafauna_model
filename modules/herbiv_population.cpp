@@ -25,41 +25,37 @@ IndividualPopulation::IndividualPopulation(
 	create_individual(create_individual)
 { }
 
+void IndividualPopulation::create_offspring_by_sex(
+		const Sex sex,
+		const double ind_per_km2)
+{
+	// Convert density to continuous individual count and add the 
+	// remainder of previous offspring creation.
+	const double ind_count_dbl = 
+		ind_per_km2 * create_individual.get_area_km2() 
+		+ incomplete_offspring[sex];
+	
+	// This is the discrete individual count:
+	const int ind_count = (int) ind_count_dbl;
+	
+	// Save the new remainder (decimal part) for next time.
+	incomplete_offspring[sex] = ind_count_dbl - ind_count;
+	
+	// Now create herbivore objects.
+	static const double AGE_DAYS = 0; // age in days
+	for (int i=1; i<=ind_count; i++)
+		list.push_back( create_individual(AGE_DAYS, SEX_MALE) );
+}
+
 void IndividualPopulation::create_offspring(const double ind_per_km2){
 	const int old_listsize = list.size();
 	if (ind_per_km2 < 0.0)
 		throw std::invalid_argument( "Fauna::IndividualPopulation::create() "
-				"ind_per_km2 < 0.0");
-
-	// convert double to discrete integer
-	const int ind_count = round(
-			ind_per_km2 * create_individual.get_area_km2());
-
-	int male_count = ind_count / 2; // floored integer division
-	int female_count = male_count;
-	assert( ind_count - (male_count+female_count) <= 1 );
-
-	// If the number is odd, we just create a male and female
-	// alternating so that on average the sex ratio remains even.
-	if (ind_count%2 == 1){
-		static Sex sex_of_odd_remainder = SEX_FEMALE;
-		if (sex_of_odd_remainder == SEX_FEMALE){
-			female_count++;
-			sex_of_odd_remainder = SEX_MALE; // switch for next time
-		} else {
-			male_count++;
-			sex_of_odd_remainder = SEX_FEMALE; // switch for next time
-		}
+				"Parameter `ind_per_km2` is negative.");
+	if (ind_per_km2 > 0.0){
+		create_offspring_by_sex(SEX_MALE,   ind_per_km2/2.0);
+		create_offspring_by_sex(SEX_FEMALE, ind_per_km2/2.0);
 	}
-
-	const int age_days = 0;
-
-	// create males and females
-	for (int i=1; i<=male_count; i++)
-		list.push_back( create_individual(age_days, SEX_MALE) );
-	for (int i=1; i<=female_count; i++)
-		list.push_back( create_individual(age_days, SEX_FEMALE) );
-	assert( list.size() == old_listsize + round(ind_count) );
 }
 
 void IndividualPopulation::establish(){
@@ -69,10 +65,6 @@ void IndividualPopulation::establish(){
 	if (get_hft().establishment_density == 0.0)
 		return;
 
-	/**
-	 * Establish with even sex ratio and *at least* as many 
-	 * individuals as given by \ref Hft::establishment_density.
-	 */
 	// determine number of individuals, assuming even sex ratio.
 	int ind_count = ceil(
 			get_hft().establishment_density * create_individual.get_area_km2());
@@ -134,6 +126,46 @@ CohortPopulation::CohortPopulation(
 	if (dead_herbivore_threshold < 0.0)
 		throw std::invalid_argument("Fauna::CohortPopulation::CohortPopulation() "
 				"dead_herbivore_threshold must be >=0.");
+	cumulated_offspring[SEX_MALE]   = 0.0;
+	cumulated_offspring[SEX_FEMALE] = 0.0;
+}
+
+void CohortPopulation::create_offspring_by_sex(const Sex sex, 
+		double ind_per_km2)
+{
+	assert(ind_per_km2 >= 0.0);
+
+	// Add offspring from previous calls that was then too low to be
+	// established.
+	ind_per_km2             += cumulated_offspring[sex];
+	cumulated_offspring[sex] = 0.0;
+
+	List::iterator found = find_cohort(0, sex);
+	if (found == list.end())
+	{ // no existing cohort
+
+		// Only create a new cohort if it is above the threshold.
+		if (ind_per_km2 > dead_herbivore_threshold)
+			list.push_back(create_cohort(ind_per_km2, 0, sex));
+		else // otherwise remember it for next time.
+			cumulated_offspring[sex] += ind_per_km2;
+
+	}
+	else{ // cohort exists already
+
+		// Only merge new offspring into existing cohort if the resulting
+		// density is viable (this new offspring would be “lost” otherwise.
+
+		if (found->get_ind_per_km2() + ind_per_km2
+				> dead_herbivore_threshold)
+		{
+			// create new temporary cohort object to merge into existing cohort
+			HerbivoreCohort new_cohort = create_cohort(ind_per_km2, 0, sex);
+			found->merge(new_cohort);
+		} else // otherwise remember it for next time.
+			cumulated_offspring[sex] += ind_per_km2;
+	}
+
 }
 
 void CohortPopulation::create_offspring(const double ind_per_km2){
@@ -142,26 +174,9 @@ void CohortPopulation::create_offspring(const double ind_per_km2){
 				"Fauna::CohortPopulation::create_offspring() "
 				"ind_per_km2 < 0.0");
 
-	List::iterator itr_male = find_cohort(0, SEX_MALE);
-	if (itr_male == list.end()) // no existing cohort
-		list.push_back(create_cohort(ind_per_km2/2.0, 0, SEX_MALE));
-	else{ // cohort exists already
-		// create new temporary cohort object to merge into
-		// existing cohort
-		HerbivoreCohort new_cohort = create_cohort(
-				ind_per_km2/2.0, 0, SEX_MALE);
-		itr_male->merge(new_cohort);
-	}
-
-	List::iterator itr_female = find_cohort(0, SEX_FEMALE);
-	if (itr_female == list.end()) // no existing cohort
-		list.push_back(create_cohort(ind_per_km2/2.0, 0, SEX_FEMALE));
-	else{ // cohort exists already
-		// create new temporary cohort object to merge into
-		// existing cohort
-		HerbivoreCohort new_cohort = create_cohort(
-				ind_per_km2/2.0, 0, SEX_FEMALE);
-		itr_female->merge(new_cohort);
+	if (ind_per_km2 != 0.0){
+		create_offspring_by_sex(SEX_MALE, ind_per_km2/2.0);
+		create_offspring_by_sex(SEX_FEMALE, ind_per_km2/2.0);
 	}
 }
 
@@ -190,15 +205,22 @@ void CohortPopulation::establish(){
 }
 
 CohortPopulation::List::iterator CohortPopulation::find_cohort(
-		const int age_years, const Sex sex){
-	for (List::iterator itr = list.begin(); itr!=list.end(); itr++)
-		if (itr->get_age_years() == age_years &&
+		const int age_years, const Sex sex)
+{
+	for (List::iterator itr = list.begin();
+			itr!=list.end();
+			itr++)
+	{
+		if ((int) itr->get_age_years() == age_years &&
 				itr->get_sex() == sex)
 			return itr;
+	}
 	return list.end(); // not found
 }
 
 std::vector<const HerbivoreInterface*> CohortPopulation::get_list()const{
+	// Here we cannot change this object, but we need to create a new list
+	// without the dead cohorts.
 	std::vector<const HerbivoreInterface*> result;
 	result.reserve(list.size());
 	for (List::const_iterator itr=list.begin(); 
@@ -211,6 +233,8 @@ std::vector<const HerbivoreInterface*> CohortPopulation::get_list()const{
 }
 
 std::vector<HerbivoreInterface*> CohortPopulation::get_list(){
+	// Here we can change this object and directly erase dead cohorts from
+	// the list.
 	std::vector<HerbivoreInterface*> result;
 	result.reserve(list.size());
 	List::iterator itr = list.begin();

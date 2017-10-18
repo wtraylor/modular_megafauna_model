@@ -9,6 +9,7 @@
 #define HERBIV_DIET_H
 
 #include "herbiv_forageclasses.h" // for ForageEnergy
+#include <cmath> // for fmin()
 
 namespace Fauna{
 
@@ -40,8 +41,11 @@ namespace Fauna{
 				const ForageEnergy& foragable_energy,
 				const double total_energy_needs){
 			ForageEnergy result;
-			// put all energy into grass.
-			result.set(FT_GRASS, foragable_energy[FT_GRASS]);
+			// Put all energy into grass, but don’t exceed total
+			// energy needs.
+			result.set(FT_GRASS, 
+					fmin(foragable_energy[FT_GRASS],
+						total_energy_needs));
 			return result;
 		}
 	};

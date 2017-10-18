@@ -14,20 +14,53 @@
 
 using namespace Fauna;
 
-ReproductionIllius2000::ReproductionIllius2000( 
+// ##################################################################
+// ######################### BreedingSeason #########################
+// ##################################################################
+
+BreedingSeason::BreedingSeason(
 		const int breeding_season_start,
-		const int breeding_season_length,
-		const double max_annual_increase):
-	max_annual_increase(max_annual_increase),
-	breeding_start(breeding_season_start),
-	breeding_length(breeding_season_length)
+		const int breeding_season_length):
+	start(breeding_season_start),
+	length(breeding_season_length)
 {
 	if (breeding_season_start < 0 || breeding_season_start >= 365)
-		throw std::invalid_argument("Fauna::ReproductionIllius2000::ReproductionIllius2000() "
-				"breeding_season_start out of range.");
+		throw std::invalid_argument("Fauna::BreedingSeason::BreedingSeason() "
+				"Parameter breeding_season_start out of range.");
 	if (breeding_season_length <= 0 || breeding_season_length > 365)
-		throw std::invalid_argument("Fauna::ReproductionIllius2000::ReproductionIllius2000() "
-				"breeding_season_length out of range.");
+		throw std::invalid_argument("Fauna::BreedingSeason::BreedingSeason() "
+				"Parameter breeding_season_length out of range.");
+}
+
+bool BreedingSeason::is_in_season(const int day)const{
+	if (day < 0 || day >= 365)
+		throw std::invalid_argument("Fauna::BreedingSeason::is_in_season() "
+				"Parameter `day` is out of range.");
+
+	// We are in breeding season if: 
+	// START ≤ day ≤ START+LENGTH || 
+	// START ≤ day+365 ≤ START+LENGTH  // season extending over year boundary
+	const int S=start;
+	const int L=length;
+	const int d=day;
+	return (S<=d && d<=S+L) || (S<=d+365 && d+365<=S+L); 
+}
+
+double BreedingSeason::annual_to_daily_rate(const double annual)const{
+	assert(length > 0);
+	return annual / (double)length;
+}
+
+// ##################################################################
+// ######################### ReproductionIllius2000 #################
+// ##################################################################
+
+ReproductionIllius2000::ReproductionIllius2000( 
+		BreedingSeason breeding_season,
+		const double max_annual_increase):
+	max_annual_increase(max_annual_increase),
+	breeding_season(breeding_season)
+{
 	if (max_annual_increase < 0.0)
 		throw std::invalid_argument("Fauna::ReproductionIllius2000::ReproductionIllius2000() "
 				"max_annual_increase below zero.");
@@ -42,17 +75,9 @@ double ReproductionIllius2000::get_offspring_density(
 	if (body_condition < 0.0 || body_condition > 1.0)
 		throw std::invalid_argument("Fauna::ReproductionIllius2000::get_offspring_density() "
 				"body_condition is out of range.");
-	assert(breeding_start >= 0 && breeding_start < 365);
-	assert(breeding_length > 0 && breeding_length <= 365);
 
-	// Check if we are out of breeding season
-	// We are in breeding season if: 
-	// START ≤ day ≤ START+LENGTH || 
-	// START ≤ day+365 ≤ START+LENGTH  // season extending over year boundary
-	const int S=breeding_start;
-	const int L=breeding_length;
-	const int d=day_of_year;
-	if ( !((S<=d && d<=S+L) || (S<=d+365 && d+365<=S+L)) )
+	// No reproduction if we are not in season.
+	if (!breeding_season.is_in_season(day_of_year))
 		return 0.0;
 
 	// Yes, we are in breeding season and just apply the formula.
@@ -68,11 +93,28 @@ double ReproductionIllius2000::get_offspring_density(
 	assert(annual <= max_annual_increase);
 	assert(annual >= 0.0);
 
-	// daily rate for each day in breeding season
-	assert(breeding_length > 0);
-	const double daily = annual / (double)breeding_length;
+	return breeding_season.annual_to_daily_rate(annual);
+}
 
-	assert(daily >= 0.0);
+// ##################################################################
+// ######################### ReproductionConstMax ###################
+// ##################################################################
 
-	return daily;
+ReproductionConstMax::ReproductionConstMax(
+					BreedingSeason breeding_season,
+					const double annual_increase):
+	breeding_season(breeding_season),
+	annual_increase(annual_increase)
+{
+	if (annual_increase < 0.0)
+		throw std::invalid_argument("Fauna::ReproductionConstMax::ReproductionConstMax() "
+				"Parameter `annual_increase` is below zero.");
+}
+
+double ReproductionConstMax::get_offspring_density(const int day)const
+{
+	if (breeding_season.is_in_season(day))
+		return breeding_season.annual_to_daily_rate(annual_increase);
+	else
+		return 0.0;
 }

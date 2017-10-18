@@ -18,8 +18,8 @@ using namespace Fauna;
 //============================================================
 
 // Definition of static constants.
-const double FatmassEnergyBudget::FACTOR_ANABOLISM  = 54.6;
-const double FatmassEnergyBudget::FACTOR_CATABOLISM = 39.3;
+const double FatmassEnergyBudget::FACTOR_ANABOLISM  = 54.6; // [MJ/kg]
+const double FatmassEnergyBudget::FACTOR_CATABOLISM = 39.3; // [MJ/kg]
 
 FatmassEnergyBudget::FatmassEnergyBudget(
 		const double initial_fatmass,
@@ -92,15 +92,17 @@ void FatmassEnergyBudget::metabolize_energy(double energy){
 	if (energy <= energy_needs){
 		energy_needs -= energy; // just meet immediate energy needs
 	} else {
-		/// If `energy` exceeds current energy needs, the surplus is
-		/// stored as fat (anabolism).
+
 		// meet immediate energy needs
 		energy -= energy_needs;
 		energy_needs = 0.0;
+
+		// store surplus as fat (anabolism)
 		const double fatmass_gain = energy / FACTOR_ANABOLISM;
 		if (fatmass + fatmass_gain > max_fatmass)
 			throw std::logic_error("Fauna::FatmassEnergyBudget::metabolize_energy() "
 					"Received energy exceeds maximum allowed fat anabolism.");
+
 		// increase fat reserves
 		fatmass += fatmass_gain;
 	}

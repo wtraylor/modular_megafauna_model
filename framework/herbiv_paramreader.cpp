@@ -132,7 +132,9 @@ void ParamReader::callback(const int callback, Pft* ppft){
 								"mortality_juvenile", req_str +
 								" and \"background\" in mortality_factors"));
 				}
-				if (current_hft.reproduction_model == RM_ILLIUS_2000){
+				if (current_hft.reproduction_model == RM_ILLIUS_2000 ||
+						current_hft.reproduction_model == RM_CONST_MAX)
+				{
 					mandatory_hft_params.push_back(MandatoryParam(
 								"breeding_season_length", req_str +
 								" and reproduction_model=illius_2000"));
@@ -384,11 +386,14 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	if (callback == CB_REPRODUCTION_MODEL) {
 		if (strparam == "ILLIUS_2000")
 			current_hft.reproduction_model = RM_ILLIUS_2000;
+		else if (strparam == "CONST_MAX")
+			current_hft.reproduction_model = RM_CONST_MAX;
+		// Add new reproduction models here.
 		else {
 			sendmessage("Error", std::string(
 					"Unknown value for reproduction_model "
 					"in HFT \""+current_hft.name+"\"; valid types: "
-					"\"illius_2000\"").c_str());
+					"\"illius_2000\", \"const_max\"").c_str());
 			plibabort();
 		}
 	}

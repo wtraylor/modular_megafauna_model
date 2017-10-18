@@ -88,7 +88,7 @@ namespace Fauna{
 			 * \param sex Gender of the herbivore.
 			 * \return New object instance.
 			 * \throw std::invalid_argument if `ind_per_km2<=0.0` or
-			 * `age_years<0.0`
+			 * `age_years<0`
 			 */
 			virtual HerbivoreCohort operator()(
 					const double ind_per_km2, const int age_years, Sex sex)const;

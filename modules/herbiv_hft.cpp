@@ -114,6 +114,27 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
+		if (params.herbivore_type == HT_COHORT && 
+				establishment_density/2.0 <= params.dead_herbivore_threshold){
+			stream << "establishment_density (" <<establishment_density<<")"
+				<< "must not be smaller than minimum viable population density"
+				<< " (dead_herbivore_threshold = "
+				<< params.dead_herbivore_threshold << " ind/km²)"
+				<< " for one sex in cohort mode." <<std::endl;
+			is_valid = false;
+		}
+
+		if (params.herbivore_type == HT_INDIVIDUAL && 
+				establishment_density <= 2.0/params.habitat_area_km2) {
+			stream << "establishment_density (" <<establishment_density<<")"
+				<< "must not be smaller than two individuals in a habitat"
+				<< " (habitat_area_km2 = "
+				<< params.habitat_area_km2 << " km²)" <<std::endl;
+			is_valid = false;
+		}
+
+
+
 		if (foraging_limits.empty()) {
 			stream << "Warning: No foraging limits defined."<<std::endl;
 			// still valid (for testing purpose)

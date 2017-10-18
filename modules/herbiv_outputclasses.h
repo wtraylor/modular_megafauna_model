@@ -53,6 +53,8 @@ namespace FaunaOut {
 		/** @{ \name Aggregation Functionality */
 		/// Aggregate data of this object with another one.
 		/** 
+		 * This does no calculations if the partners are the same object, or 
+		 * one of the weights is zero.
 		 * \param other The other object to be merged into this one.
 		 * \param this_weight Weight of this object in average building.
 		 * \param other_weight Weight of `other` in average building.
@@ -115,10 +117,10 @@ namespace FaunaOut {
 		/// Daily mortality rate [ind/ind/day].
 		std::map<Fauna::MortalityFactor, double> mortality;
 
-		/// Eaten forage [kgDM/ind/km²].
+		/// Eaten forage [kgDM/day/km²].
 		Fauna::ForageMass eaten_forage;
 
-		/// Intake of net energy in forage [MJ/ind/km²]
+		/// Intake of net energy in forage [MJ/day/km²]
 		Fauna::ForageEnergy energy_intake;
 
 		/** @} */ // Per-habitat variables
@@ -133,6 +135,9 @@ namespace FaunaOut {
 		 * result that are present in both objects (intersection).
 		 * All other map entries are deleted. This is necessary because
 		 * the statistical weight is the same for *all* variables.
+		 *
+		 * This does no calculations if the partners are the same object, or 
+		 * one of the weights is zero.
 		 *
 		 * \param other The other object to be merged into this one.
 		 * \param this_weight Weight of this object in average building.
@@ -205,15 +210,14 @@ namespace FaunaOut {
 		 * \ref datapoint_count is used to weigh the values in 
 		 * average-building.
 		 *
-		 * If the other object contains no data (\ref datapoint_count == 0),
-		 * this function does nothing.
-		 *
 		 * For herbivore data (\ref hft_data), the merge routine creates an
 		 * empty \ref HerbivoreData object as a ‘stub’ if it the HFT is found
 		 * in one of the merge partners, but not in the other one. This way, 
 		 * the averages are built correctly across habitats even if in one
 		 * habitat, there are no herbivores of one type.
 		 *
+		 * This does no calculations if the partners are the same object, or 
+		 * \ref datapoint_count is zero in one of the two objects.
 		 * \return This object after merging.
 		 *
 		 * \see \ref HerbivoreData::merge()

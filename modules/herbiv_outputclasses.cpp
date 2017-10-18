@@ -32,8 +32,17 @@ HabitatData& HabitatData::merge(const HabitatData& other,
 		throw std::invalid_argument("FaunaOut::HabitatData::merge() "
 				"Both objects have zero weight");
 
+	// If objects are identical, do nothing.
 	if (&other == this)
 		return *this;
+
+	// Don’t do any calculations if one partner is weighed with zero.
+	if (other_weight == 0.0)
+		return *this;
+	if (this_weight == 0.0){
+		*this = other; // copy all values
+		return *this;
+	} 
 
 	// Build average for each variable:
 	eaten_forage.merge(other.eaten_forage,
@@ -60,8 +69,17 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
 		throw std::invalid_argument("FaunaOut::HerbivoreData::merge() "
 				"Both objects have zero weight");
 
+	// If objects are identical, do nothing.
 	if (&other == this)
 		return *this;
+
+	// Don’t do any calculations if one partner is weighed with zero.
+	if (other_weight == 0.0)
+		return *this;
+	if (this_weight == 0.0){
+		*this = other; // copy all values
+		return *this;
+	} 
 
 	// ------------------------------------------------------------------
 	// PER INDIVIDUAL
@@ -94,6 +112,7 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
 		const MortalityFactor& mf = itr->first;
 		// find the mortality factor of the other object in this object.
 		MortMap::iterator found = this->mortality.find(mf);
+		// If we find it, we build the average.
 		if (found != this->mortality.end())
 			mort_intersect[mf] = average(
 					found->second, itr->second,
@@ -164,8 +183,18 @@ HerbivoreData HerbivoreData::create_datapoint(
 }
 
 CombinedData& CombinedData::merge(const CombinedData& other){
+	// If objects are identical, do nothing.
+	if (&other == this)
+		return *this;
+
+	// Don’t do any calculations if one partner is weighed with zero.
 	if (other.datapoint_count == 0)
 		return *this;
+	if (this->datapoint_count == 0){
+		*this = other; // copy all values
+		return *this;
+	} 
+
 	// ------------------------------------------------------------------
 	// HABITAT DATA
 	habitat_data.merge(other.habitat_data,

@@ -109,6 +109,8 @@ double GetStarvationMortalityIllius2000::operator()(
 
 //------------------------------------------------------------
 
+const double GetStarvationMortalityThreshold::DEFAULT_MIN_BODYFAT = 0.005;
+
 GetStarvationMortalityThreshold::GetStarvationMortalityThreshold(
 		const double min_bodyfat):
 	min_bodyfat(min_bodyfat)

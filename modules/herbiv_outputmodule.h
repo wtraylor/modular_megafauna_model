@@ -232,7 +232,9 @@ namespace GuessOutput {
 			TableFile TBL_EXPENDITURE;
 			TableFile TBL_INDDENS;
 			TableFile TBL_MASSDENS;
-			TableFile TBL_STARVATION;
+			TableFile TBL_MORT_BACKGROUND;
+			TableFile TBL_MORT_LIFESPAN;
+			TableFile TBL_MORT_STARVATION;
 			/** @} */ 
 
 			/** @{ \name HFT–Forage output tables.*/

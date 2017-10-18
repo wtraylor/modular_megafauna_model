@@ -93,8 +93,18 @@ HerbivoryOutput::HerbivoryOutput():
 			"Herbivore mass density.",
 			"kg/km²",
 			CS_HFT),
-	TBL_STARVATION(
-			"file_herbiv_starvation",
+	TBL_MORT_BACKGROUND(
+			"file_herbiv_mort_background",
+			"Daily herbivore background mortality.",
+			"ind/ind/day",
+			CS_HFT),
+	TBL_MORT_LIFESPAN(
+			"file_herbiv_mort_lifespan",
+			"Daily herbivore mortality through old age.",
+			"ind/ind/day",
+			CS_HFT),
+	TBL_MORT_STARVATION(
+			"file_herbiv_mort_starvation",
 			"Daily herbivore mortality through starvation.",
 			"ind/ind/day",
 			CS_HFT),
@@ -102,11 +112,6 @@ HerbivoryOutput::HerbivoryOutput():
 			"file_herbiv_eaten_ind",
 			"Forage eaten by herbivores per day.",
 			"kgDM/km²/day",
-			CS_HFT_FORAGE),
-	TBL_ENERGY_INTAKE(
-			"file_herbiv_energy_intake",
-			"Herbivore net energy intake from forage.",
-			"MJ/km²/day",
 			CS_HFT_FORAGE),
 	TBL_ENERGY_INTAKE(
 			"file_herbiv_energy_intake",
@@ -171,7 +176,9 @@ const std::vector<HerbivoryOutput::TableFile*> HerbivoryOutput::init_tablefiles(
 		list.push_back(&TBL_EXPENDITURE);
 		list.push_back(&TBL_INDDENS);
 		list.push_back(&TBL_MASSDENS);
-		list.push_back(&TBL_STARVATION);
+		list.push_back(&TBL_MORT_BACKGROUND);
+		list.push_back(&TBL_MORT_LIFESPAN);
+		list.push_back(&TBL_MORT_STARVATION);
 		list.push_back(&TBL_EATEN_HFT);
 	}
 	return list;
@@ -450,6 +457,32 @@ void HerbivoryOutput::write_datapoint(
 					herbidata.massdens);
 			// ** add new HFT variables here **
 
+			{ // BACKGROUND MORTALITY
+				// try to find the map entry
+				std::map<MortalityFactor, double>::const_iterator 
+					itr_background = herbidata.mortality.find(MF_BACKGROUND);
+				// add value if it was found
+				if (itr_background != herbidata.mortality.end())
+					output_rows.add_value(TBL_MORT_BACKGROUND.table,
+							itr_background->second);
+				else
+					output_rows.add_value(TBL_MORT_BACKGROUND.table,
+							NA_VALUE); 
+			}
+
+			{ // LIFESPAN MORTALITY
+				// try to find the map entry
+				std::map<MortalityFactor, double>::const_iterator 
+					itr_lifespan = herbidata.mortality.find(MF_LIFESPAN);
+				// add value if it was found
+				if (itr_lifespan != herbidata.mortality.end())
+					output_rows.add_value(TBL_MORT_LIFESPAN.table,
+							itr_lifespan->second);
+				else
+					output_rows.add_value(TBL_MORT_LIFESPAN.table,
+							NA_VALUE); 
+			}
+
 			{ // STARVATION MORTALITY
 				double starvation = 0.0;
 				// try to find the starvation mortality factors
@@ -470,7 +503,7 @@ void HerbivoryOutput::write_datapoint(
 						itr_starv2 == herbidata.mortality.end())
 					starvation = NA_VALUE;
 
-				output_rows.add_value(TBL_STARVATION.table, starvation);
+				output_rows.add_value(TBL_MORT_STARVATION.table, starvation);
 			}
 
 			// HFT-FORAGE TABLES

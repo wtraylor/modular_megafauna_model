@@ -74,7 +74,10 @@ namespace Fauna{
 					throw std::invalid_argument(
 							"Fauna::GetSimpleLifespanMortality::operator()() "
 							"age_days < 0");
-				return age_days >= lifespan_years*365;
+				if (age_days >= lifespan_years*365)
+					return 1.0; // all dead
+				else
+					return 0.0; // all survive
 			}
 		private:
 			int lifespan_years;
@@ -134,12 +137,15 @@ namespace Fauna{
 	 */
 	class GetStarvationMortalityThreshold{
 		public:
+			/// Default minimum body fat threshold [kg/kg].
+			static const double DEFAULT_MIN_BODYFAT;
+
 			/// Constructor
 			/**
 			 * \param min_bodyfat Minimum body fat threshold [kg/kg].
 			 * \throw std::invalid_argument If `min_bodyfat` not in [0,1).
 			 */
-			GetStarvationMortalityThreshold(const double min_bodyfat=0.001);
+			GetStarvationMortalityThreshold(const double min_bodyfat=DEFAULT_MIN_BODYFAT);
 
 			/// Get daily mortality.
 			/**

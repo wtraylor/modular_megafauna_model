@@ -66,6 +66,8 @@ namespace Fauna{
 
 			/// Update budget and fat mass by receiving energy (through feeding)
 			/** 
+			 * If `energy` exceeds current energy needs, the surplus is stored
+			 * as fat (anabolism).
 			 * \param energy Input energy [MJ/ind].
 			 * \throw std::invalid_argument If `energy<0.0`.
 			 * \throw std::logic_error if `energy` exceeds current
@@ -89,7 +91,7 @@ namespace Fauna{
 			static const double FACTOR_CATABOLISM;
 	};
 
-	/// Energy expenditure based on cattle from Taylor et al. (1981)
+	/// Energy expenditure [MJ/ind/day] based on cattle from Taylor et al. (1981)
 	/**
 	 * Taylor et al. (1981)\cite taylor_genetic_1981
 	 * Daily energy expenditure is given by

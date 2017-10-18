@@ -138,7 +138,7 @@ namespace Fauna{
 				ForageValues<tag> result(*this);
 				for (const_iterator i=begin(); i!=end(); i++) {
 					const double d = divisor.get(i->first);
-					if (d != 0) 
+					if (d != 0.0) 
 						result.set(i->first, i->second / d); // normal
 					else
 						result.set(i->first, na_value); // division by zero

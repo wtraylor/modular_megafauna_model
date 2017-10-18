@@ -249,6 +249,46 @@ TEST_CASE("Fauna::average()", ""){
 	CHECK( average(-1.0, 1.0) == Approx(0.0) );
 }
 
+TEST_CASE("Fauna::BreedingSeason", ""){
+	CHECK_THROWS( BreedingSeason(-1, 1) );
+	CHECK_THROWS( BreedingSeason(365, 1) );
+	CHECK_THROWS( BreedingSeason(0, 0) );
+	CHECK_THROWS( BreedingSeason(0, -1) );
+	CHECK_THROWS( BreedingSeason(0, 366) );
+
+	const int START = 100;
+	SECTION("check breeding season"){
+		const int LENGTH = 90;
+		const BreedingSeason b(START, LENGTH);
+		// within season
+		CHECK( b.is_in_season(START) > 0.0 );
+		CHECK( b.is_in_season(START+LENGTH) > 0.0 );
+
+		// before breeding season
+		CHECK( b.is_in_season(START-1) == 0.0 );
+
+		// after season
+		CHECK( b.is_in_season(START+LENGTH+1) == 0.0 );
+	}
+
+	SECTION("check breeding season extending over year boundary"){
+		const int LENGTH2 = 360;
+		const BreedingSeason b(START, LENGTH2);
+		const int END = (START+LENGTH2) % 365;
+		
+		// within season
+		CHECK( b.is_in_season(START) > 0.0 );
+		CHECK( b.is_in_season(END) > 0.0 );
+
+		// before breeding season
+		CHECK( b.is_in_season(START-1) == 0.0 );
+
+		// after season
+		CHECK( b.is_in_season(END+1) == 0.0 );
+	}
+
+}
+
 TEST_CASE("Fauna::CohortPopulation", "") {
 	// prepare parameters
 	Parameters params;
@@ -268,6 +308,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 	
 	// create cohort population
 	const double THRESHOLD = 0.1;
+	INFO( "THRESHOLD = " << THRESHOLD );
 	CohortPopulation pop(create_cohort, THRESHOLD);
 	REQUIRE( pop.get_list().empty() );
 	REQUIRE( population_lists_match( pop ) );
@@ -309,23 +350,35 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		}
 	}
 
-	SECTION("Offspring"){
-		const double DENS = 10.0; // [ind/km²]
+	SECTION("Offspring with enough density"){
+		// offspring density higher than minimum cohort size [ind/km²].
+		const double DENS = 10.0 * THRESHOLD; 
+		INFO( "DENS = " << DENS );
 		pop.create_offspring(DENS); 
+
 		// There should be only one age class with male and female
 		REQUIRE( pop.get_list().size() == 2 ); 
 		CHECK( population_lists_match(pop) );
 		// Does the total density match?
 		REQUIRE( get_total_pop_density(pop) == Approx(DENS) );
-		
+
+		// simulate one day
+		HerbivoreVector list = pop.get_list();
+		double offspring_dump; // ignored
+		for (HerbivoreVector::iterator itr = list.begin();
+				itr!=list.end();
+				itr++)
+			(*itr)->simulate_day(0, offspring_dump);
+
 		// add more offspring
 		pop.create_offspring(DENS);
+		// This must be in the same age class even though we advanced one day.
 		REQUIRE( pop.get_list().size() == 2 ); 
 		CHECK( population_lists_match(pop) );
 		REQUIRE( get_total_pop_density(pop) == Approx(2.0*DENS) );
 
 		// let the herbivores age (they are immortal)
-		for (int i=0; i<365; i++) {
+		for (int i=1; i<365; i++) {
 			HerbivoreVector::iterator itr;
 			HerbivoreVector list = pop.get_list();
 			double offspring_dump; // ignored
@@ -338,6 +391,55 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		CHECK( pop.get_list().size() == 4 );
 		CHECK( population_lists_match(pop) );
 		REQUIRE( get_total_pop_density(pop) == Approx(3.0*DENS) );
+	}
+
+	SECTION("Offspring of too low density"){
+		// male/female establishment density LOWER than minimum cohort size [ind/km²].
+		const double DENS = 1.9 * THRESHOLD; 
+		INFO( "DENS = " << DENS );
+		pop.create_offspring(DENS); 
+
+		// There should be nothing created because each cohort (male/female)
+		// would be lower than allowed minimum.
+		REQUIRE( pop.get_list().size() == 0 );
+		CHECK( population_lists_match(pop) );
+
+		// Now we add more so that the total newborn density is above 
+		// minimum.
+		REQUIRE( DENS*2.0 > THRESHOLD );
+		pop.create_offspring(DENS);
+
+		// Now there should be one age class with male and female
+		REQUIRE( pop.get_list().size() == 2 ); 
+		CHECK( population_lists_match(pop) );
+
+		// Does the total density match?
+		REQUIRE( get_total_pop_density(pop) == Approx(2.0 * DENS) );
+	}
+
+	SECTION("Offspring of too low density on existing cohort"){
+		// Now we add offspring on top of an existing viable age class
+		// of newborn herbivores.
+
+		// male/female establishment density GREATER than minimum cohort size [ind/km²].
+		const double DENS = 3.0 * THRESHOLD; 
+		INFO( "DENS = " << DENS );
+		pop.create_offspring(DENS); 
+
+		// A newborn age class should be created for male/female.
+		REQUIRE( pop.get_list().size() == 2 ); 
+		CHECK( population_lists_match(pop) );
+		REQUIRE( get_total_pop_density(pop) == Approx(DENS) );
+
+		// Now we add some marginal number
+		const double LOW_DENS = 1.5 * THRESHOLD;
+		INFO( "LOW_DENS = " << LOW_DENS );
+		pop.create_offspring(LOW_DENS);
+
+		// The new offspring should have been added to existing cohort.
+		REQUIRE( pop.get_list().size() == 2 ); 
+		CHECK( population_lists_match(pop) );
+		REQUIRE( get_total_pop_density(pop) == Approx(DENS + LOW_DENS) );
 	}
 
 	SECTION("Removal of dead cohorts at establishment"){
@@ -498,6 +600,8 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 	// Initialization
 	REQUIRE( budget.get_fatmass() == INIT_FATMASS );
 	REQUIRE( budget.get_energy_needs() == 0.0 );
+	REQUIRE( budget.get_max_anabolism_per_day() 
+			== Approx(54.6 * (MAX_FATMASS - INIT_FATMASS)) );
 
 	// exceptions
 	CHECK_THROWS( budget.metabolize_energy(-1.0) );
@@ -507,6 +611,13 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 	CHECK_THROWS( budget.set_max_fatmass(-1.0) );
 
 	const double ENERGY = 10.0; // MJ
+
+	SECTION("Set energy needs"){
+		budget.add_energy_needs(ENERGY);
+		REQUIRE( budget.get_energy_needs() == Approx(ENERGY) );
+		budget.add_energy_needs(ENERGY);
+		REQUIRE( budget.get_energy_needs() == Approx(2.0 * ENERGY) );
+	}
 
 	SECTION("Anabolism"){
 		budget.metabolize_energy(ENERGY);
@@ -1627,15 +1738,19 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 	// prepare creating object
 	CreateHerbivoreIndividual create_ind(&hft, &params);
 
+	IndividualPopulation pop(create_ind);
+
+	SECTION("Exceptions"){
+		CHECK_THROWS( pop.create_offspring(-1.0) );
+	}
+
 	SECTION("Create empty population"){
-		IndividualPopulation pop(create_ind);
 		REQUIRE( pop.get_list().empty() );
 		REQUIRE( population_lists_match( pop ) );
 		REQUIRE( pop.get_hft() == hft );
 	}
 
 	SECTION("Establishment"){
-		IndividualPopulation pop(create_ind);
 		pop.establish();
 		REQUIRE( !pop.get_list().empty() ); 
 		CHECK( population_lists_match(pop) );
@@ -1682,7 +1797,6 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 	}
 
 	SECTION("Establishment with odd number"){
-		IndividualPopulation pop(create_ind);
 		// Reduce establishment density by one individual.
 		// The population should round up to have even sex ratio.
 		hft.establishment_density -= 1.0/AREA; // [ind/km²]
@@ -1700,12 +1814,13 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 				<= Approx(hft.establishment_density+1.0/AREA) );
 	}
 
-	SECTION("Offspring"){
-		IndividualPopulation pop(create_ind);
-		const double IND_DENS = 2.0; // [ind/km²]
-		const int IND_COUNT = IND_DENS * AREA; // [ind]
+	SECTION("Complete offspring"){
+		// Here, we create a discrete number of individuals.
 
-		CHECK_THROWS( pop.create_offspring(-1.0) );
+		// Integer, even number of individuals
+		const int IND_COUNT = 10; // [ind]
+
+		const double IND_DENS = IND_COUNT / AREA;
 
 		pop.create_offspring(IND_DENS);
 		REQUIRE( pop.get_list().size() == IND_COUNT );
@@ -1717,6 +1832,38 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 		REQUIRE( pop.get_list().size() == 2*IND_COUNT );
 		CHECK( population_lists_match(pop) );
 		REQUIRE( get_total_pop_density(pop) == Approx(2.0*IND_DENS) );
+	}
+
+	SECTION("Incomplete offspring"){
+		// Here, we create offspring with non-integer individual counts.
+
+		// Try to create offspring. It shouldn’t create anything since there
+		// is no complete individual.
+		pop.create_offspring(.4 / AREA); // .4 individuals
+		REQUIRE( pop.get_list().size() == 0 );
+		CHECK( population_lists_match(pop) );
+		REQUIRE( get_total_pop_density(pop) == 0.0 );
+
+		// Try it again, but it should still not work.
+		pop.create_offspring(.4 / AREA); // .8 individuals
+		REQUIRE( pop.get_list().size() == 0 );
+		CHECK( population_lists_match(pop) );
+		REQUIRE( get_total_pop_density(pop) == 0.0 );
+
+		// Now we should get above a sum of 1.0, BUT males and females are
+		// created in parallel, so they shouldn’t be created until total
+		// offspring reaches a number of at least TWO individuals.
+		pop.create_offspring(.4 / AREA); // 1.2 individuals
+		REQUIRE( pop.get_list().size() == 0 );
+		CHECK( population_lists_match(pop) );
+		REQUIRE( get_total_pop_density(pop) == 0.0 );
+
+		// Finally, we have 2 individuals complete.
+		pop.create_offspring(.9 / AREA); // 2.1 individuals
+		REQUIRE( pop.get_list().size() == 2 );
+		CHECK( population_lists_match(pop) );
+		REQUIRE( get_total_pop_density(pop) == Approx(2.0/AREA) );
+
 	}
 
 }
@@ -1752,56 +1899,24 @@ TEST_CASE("Fauna::ReproductionIllius2000", "") {
 	const int LENGTH = 90;
 	const double OPT = 1.0; // optimal body condition
 
+	const BreedingSeason season(START, LENGTH);
+
 	// exceptions
 	SECTION("exceptions"){
-		CHECK_THROWS(ReproductionIllius2000(-1 , 1  , 1.0));
-		CHECK_THROWS(ReproductionIllius2000(365, 0  , 1.0));
-		CHECK_THROWS(ReproductionIllius2000(0  , 0  , 1.0));
-		CHECK_THROWS(ReproductionIllius2000(0  , -1 , 1.0));
-		CHECK_THROWS(ReproductionIllius2000(0  , 366, 1.0));
-		CHECK_THROWS(ReproductionIllius2000(0  , 363, -1.0));
-		ReproductionIllius2000 rep(START, LENGTH, INC);
+		CHECK_THROWS(ReproductionIllius2000(season, -1.0));
+		ReproductionIllius2000 rep(season, INC);
 		CHECK_THROWS( rep.get_offspring_density(-1, OPT) );
 		CHECK_THROWS( rep.get_offspring_density(365, OPT) );
 		CHECK_THROWS( rep.get_offspring_density(START, -0.1) );
 		CHECK_THROWS( rep.get_offspring_density(START, 1.1) );
 	}
 
-	SECTION("check breeding season"){
-		ReproductionIllius2000 rep(START, LENGTH, INC);
-
-		// within season
-		CHECK( rep.get_offspring_density(START, OPT) > 0.0 );
-		CHECK( rep.get_offspring_density(START+LENGTH, OPT) > 0.0 );
-
-		// before breeding season
-		CHECK( rep.get_offspring_density(START-1, OPT) == 0.0 );
-
-		// after season
-		CHECK( rep.get_offspring_density(START+LENGTH+1, OPT) == 0.0 );
-	}
-
-	SECTION("check breeding season extending over year boundary"){
-		const int LENGTH2 = 360;
-		ReproductionIllius2000 rep(START, LENGTH2, INC);
-		const int END = (START+LENGTH2) % 365;
-		
-		// within season
-		CHECK( rep.get_offspring_density(START, OPT) > 0.0 );
-		CHECK( rep.get_offspring_density(END, OPT) > 0.0 );
-
-		// before breeding season
-		CHECK( rep.get_offspring_density(START-1, OPT) == 0.0 );
-
-		// after season
-		CHECK( rep.get_offspring_density(END+1, OPT) == 0.0 );
-	}
 
 	SECTION("higher annual increase makes more offspring"){
 		const double INC2 = INC * 1.5;
 		REQUIRE( INC2 > INC );
-		ReproductionIllius2000 rep1(START, LENGTH, INC);
-		ReproductionIllius2000 rep2(START, LENGTH, INC2);
+		ReproductionIllius2000 rep1(season, INC);
+		ReproductionIllius2000 rep2(season, INC2);
 		CHECK( rep1.get_offspring_density(START, OPT)
 				< rep2.get_offspring_density(START, OPT));
 		CHECK( rep1.get_offspring_density(START, OPT) < INC );
@@ -1810,14 +1925,15 @@ TEST_CASE("Fauna::ReproductionIllius2000", "") {
 
 	SECTION("better body condition makes more offspring"){
 		const double BAD = OPT/2.0; // bad body condition
-		ReproductionIllius2000 rep(START, LENGTH, INC);
+		ReproductionIllius2000 rep(season, INC);
 		CHECK( rep.get_offspring_density(START, BAD)
 				<  rep.get_offspring_density(START, OPT) );
 	}
 
 	SECTION("one-day season length -> all offspring at once"){
 		const double BAD = OPT/2.0; // bad body condition
-		ReproductionIllius2000 rep(START, 1, INC);
+		BreedingSeason season_short(START, 1);
+		ReproductionIllius2000 rep(season_short, INC);
 		CHECK( rep.get_offspring_density(START, OPT) 
 				== Approx(INC).epsilon(0.05) );
 		CHECK( rep.get_offspring_density(START, BAD) < INC);
@@ -1829,7 +1945,7 @@ TEST_CASE("Fauna::ReproductionIllius2000", "") {
 	}
 
 	SECTION("Sum of offspring over year must be max. annual increase"){
-		ReproductionIllius2000 rep(START, LENGTH, INC);
+		ReproductionIllius2000 rep(season, INC);
 		// sum over whole year
 		double sum_year = 0.0;
 		for (int d=0; d<365; d++)
@@ -2076,11 +2192,17 @@ TEST_CASE("FaunaOut::HerbivoreData", ""){
 		d2.inddens = 2;
 		d1.expenditure = 1.0;
 		d2.expenditure = 2.0;
+		d1.mortality[MF_BACKGROUND] = .1;
+		d2.mortality[MF_BACKGROUND] = .2;
+		d1.mortality[MF_LIFESPAN]   = .5; 
+		// no lifespan mortality in d2
 
 		SECTION("equal weights") {
 			d1.merge(d2, 1.0, 1.0);
 			// simple average:
 			CHECK( d1.inddens == Approx(1.5) );
+			CHECK( d1.mortality[MF_BACKGROUND] == Approx(.15) );
+			CHECK( d1.mortality[MF_LIFESPAN] == 0.0 ); // was only in one datapoint
 			// average weighted by inddens:
 			CHECK( d1.expenditure == Approx((1.0+2.0*2.0)/3.0) );
 		}
@@ -2089,6 +2211,8 @@ TEST_CASE("FaunaOut::HerbivoreData", ""){
 			d1.merge(d2, 1.0, 2.0);
 			// simple average:
 			CHECK( d1.inddens == Approx((1.0 + 2.0*2.0)/(1.0 + 2.0)) );
+			CHECK( d1.mortality[MF_BACKGROUND] == Approx((.1 + 2.0*.2)/(1.0+2.0)) );
+			CHECK( d1.mortality[MF_LIFESPAN] == 0.0 ); // was only in one datapoint
 			// average weighted by inddens:
 			CHECK( d1.expenditure == Approx((1.0+2.0*2.0*2.0)/(1.0 + 2.0*2.0)) );
 		}

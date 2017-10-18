@@ -252,7 +252,7 @@ namespace Fauna{
 					const Digestibility& digestibility)const;
 
 			/// Calculate energy expenditure with given expenditure model.
-			/** \return Today’s energy needs [MJ/ind]*/
+			/** \return Today’s energy needs [MJ/ind/day]*/
 			double get_todays_expenditure()const;
 
 			/// Get the proportional offspring for today using selected model.

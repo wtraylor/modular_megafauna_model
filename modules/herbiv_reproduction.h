@@ -10,9 +10,35 @@
 
 namespace Fauna{
 
+	/// Helper class for reproduction within a breeding season.
+	class BreedingSeason{
+		public:
+			/// Constructor.
+			/**
+			 * \param breeding_season_start The day of the year (0=Jan 1st)
+			 * at which the breeding season starts.
+			 * \param breeding_season_length Length of the breeding season
+			 * in days [1--365].
+			 */
+			BreedingSeason(
+					const int breeding_season_start,
+					const int breeding_season_length);
+
+			/// Whether given day (0=Jan 1st) is in the breeding season.
+			/**
+			 * \throw std::invalid_argument If `day` is not in [0,364].
+			 */
+			bool is_in_season(const int day)const;
+
+			/// Convert an annual reproduction rate to a daily one in season.
+			double annual_to_daily_rate(const double annual)const;
+		private:
+			int start; // day of year (0=Jan 1st)
+			int length; // number of days
+	};
+
 	/// Reproduction model following Illius & O’Connor (2000)
 	/**
-	 *
 	 * The formula is derived from the model by 
 	 * Illius & O’Connor (2000) \cite illius_resource_2000.
 	 * Their variable names are used here:
@@ -43,26 +69,21 @@ namespace Fauna{
 	 * \note This reproduction model principle also used 
 	 * by Pachzelt et al. (2013) \cite pachzelt_coupling_2013 and 
 	 * Pachzelt et al. (2015) \cite pachzelt_potential_2015
+	 * \see \ref Fauna::ReproductionModel
 	 * \todo How does I&O determine the month?
 	 */
 	class ReproductionIllius2000{
 		public:
 			/// Constructor.
 			/**
-			 * \param breeding_season_start The day of the year (0=Jan 1st)
-			 * at which the breeding season starts.
-			 * \param breeding_season_length Length of the breeding season
-			 * in days [1--365].
 			 * \param max_annual_increase Highest possible (i.e. under
 			 * optimal nutrition) offspring count of one female on 
-			 * average. 1.0 means, a female begets one child every
+			 * average. A value of 1.0 means, a female begets one child every
 			 * year.
-			 * \throw std::invalid_argument if a parameter is out
-			 * of range.
+			 * \throw std::invalid_argument If `max_annual_increase` is negative.
 			 */
 			ReproductionIllius2000( 
-					const int breeding_season_start,
-					const int breeding_season_length,
+					BreedingSeason,
 					const double max_annual_increase);
 
 			/// Get the amount of offspring for one day in the year.
@@ -79,9 +100,37 @@ namespace Fauna{
 					const int day_of_year,
 					const double body_condition)const;
 		private:
-			int breeding_start; // day of year (0=Jan 1st)
-			int breeding_length;
-			double max_annual_increase;
+			BreedingSeason breeding_season; // const
+			double max_annual_increase; // const
+	};
+
+	/// Use a constant annual increase rate for herbivore reproduction.
+	/**
+	 * \see \ref Fauna::ReproductionModel
+	 */
+	class ReproductionConstMax{
+		public:
+			/// Constructor.
+			/**
+			 * \param annual_increase Constant annual offspring count for
+			 * one female.
+			 * \throw std::invalid_argument If `annual_increase` is negative.
+			 */
+			ReproductionConstMax(
+					BreedingSeason,
+					const double annual_increase);
+
+			/// Get the amount of offspring for one day in the year.
+			/**
+			 * \param day_of_year Day of year (0=Jan 1st).
+			 * \return The average number of children a female gives 
+			 * birth to at given day.
+			 * \throw std::invalid_argument If `day_of_year` not in [0,364].
+			 */
+			double get_offspring_density(const int day_of_year)const;
+		private:
+			BreedingSeason breeding_season; // const
+			double annual_increase; // const
 	};
 }
 

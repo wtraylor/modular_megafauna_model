@@ -63,7 +63,9 @@ HerbivoreBase::HerbivoreBase(
 }
 
 HerbivoreBase::HerbivoreBase( const Hft* hft, const Sex sex):
-	hft(hft), sex(sex), age_days(0)
+	hft(hft), 
+	sex(sex), 
+	age_days(0)
 {
 	// Check validity of parameters
 	if (hft == NULL)
@@ -180,15 +182,15 @@ void HerbivoreBase::eat(
 	// net energy in the forage [MJ/ind]
 	// Divide mass by energy content and set any forage with zero
 	// energy content to zero mass.
-	const ForageEnergy net_energy = 
-		kg_per_ind.divide_safely(get_net_energy_content( digestibility ), 0.0);
+	const ForageEnergy mj_per_ind = 
+		get_net_energy_content(digestibility) * kg_per_ind;
 
 	// send energy to energy model
-	get_energy_budget().metabolize_energy(net_energy.sum());
+	get_energy_budget().metabolize_energy(mj_per_ind.sum());
 
 	// Add to output
 	get_todays_output().eaten_forage  += kg_per_km2;
-	get_todays_output().energy_intake += net_energy * get_ind_per_km2();
+	get_todays_output().energy_intake += mj_per_ind;
 }
 
 double HerbivoreBase::get_bodyfat()const{
@@ -215,20 +217,22 @@ double HerbivoreBase::get_lean_bodymass()const{
 }
 
 ForageMass HerbivoreBase::get_max_foraging(
-		const HabitatForage& available_forage)const{
-
-
+		const HabitatForage& available_forage)const
+{ 
 	const Digestibility digestibility = available_forage.get_digestibility();
 
 	// set the maximum, and then let the foraging limit algorithms
 	// reduce the maximum by using fmin()
-	ForageMass result(DBL_MAX); // [kgDM/ind/day]
+	ForageMass result(10000); // [kgDM/ind/day]
+	// (Note that using DBL_MAX here does not work because converting it to
+	//  energy may result in INFINITY values.)
 
 	// Go through all forage intake limits
 	std::set<ForagingLimit>::const_iterator itr;
 	for (itr=get_hft().foraging_limits.begin(); 
-			itr!=get_hft().foraging_limits.end(); itr++) {
-
+			itr!=get_hft().foraging_limits.end();
+			itr++) 
+	{ 
 		if (*itr == FL_DIGESTION_ILLIUS_1992) {
 			// function object
 			GetDigestiveLimitIllius1992 get_digestive_limit(
@@ -279,7 +283,7 @@ ForageMass HerbivoreBase::get_forage_demands(
 
 	// ----------------- COMPOSE DIET -----------------------------
 
-	// energy demands for expenditure plus fat anabolism
+	// energy demands [MJ/ind] for expenditure plus fat anabolism
 	const double total_energy_demands =
 		get_energy_budget().get_energy_needs()
 		+ get_energy_budget().get_max_anabolism_per_day();
@@ -364,7 +368,7 @@ double HerbivoreBase::get_todays_expenditure()const{
 			return get_expenditure_taylor_1981(
 					get_bodymass(),
 					get_bodymass_adult());
-			// add more models here
+			// ADD MORE MODELS HERE
 		default:
 			throw std::logic_error("Fauna::HerbivoreBase::get_todays_expenditure() "
 					"Selected expenditure model is not implemented");
@@ -373,24 +377,35 @@ double HerbivoreBase::get_todays_expenditure()const{
 
 double HerbivoreBase::get_todays_offspring_proportion()const{
 	if (get_sex() == SEX_MALE ||
-			get_age_years() >= get_hft().maturity_age_sex) 
+			get_age_years() < get_hft().maturity_age_sex) 
 		return 0.0;
+
+	// Several models use a BreedingSeason object, so we create one right
+	// away.
+	const BreedingSeason breeding_season(get_hft().breeding_season_start,
+			get_hft().breeding_season_length);
 
 	// choose the model
 	if (get_hft().reproduction_model == RM_ILLIUS_2000){
-		const ReproductionIllius2000 illius_2000(
-				get_hft().breeding_season_start,
-				get_hft().breeding_season_length,
+		// create our model object
+		const ReproductionIllius2000 illius_2000( breeding_season,
 				get_hft().reproduction_max);
+		// get today’s value
 		return illius_2000.get_offspring_density(
 				get_today(), 
 				get_energy_budget().get_fatmass()/get_max_fatmass());
+	} 
+	else if (get_hft().reproduction_model == RM_CONST_MAX){
+		const ReproductionConstMax const_max( breeding_season,
+				get_hft().reproduction_max);
+		return const_max.get_offspring_density(get_today());
 		// ADD NEW MODELS HERE
 		// in new if statements
-	} else
-			throw std::logic_error(
-					"Fauna::HerbivoreBase::get_todays_offspring_proportion() "
-					"Reproduction model not implemented.");
+	} 
+	else
+		throw std::logic_error(
+				"Fauna::HerbivoreBase::get_todays_offspring_proportion() "
+				"Reproduction model not implemented.");
 
 }
 
@@ -424,7 +439,7 @@ void HerbivoreBase::simulate_day(const int day, double& offspring){
 	get_todays_output().expenditure = todays_expenditure;
 
 	/// - Calculate offspring.
-	offspring = get_todays_offspring_proportion()*get_ind_per_km2();
+	offspring = get_todays_offspring_proportion() * get_ind_per_km2();
 
 	/// - Apply mortality factor.
 	apply_mortality_factors_today();
@@ -516,7 +531,8 @@ HerbivoreCohort::HerbivoreCohort(
 		const Sex sex,
 		const double ind_per_km2
 		):
-	HerbivoreBase(hft, sex), ind_per_km2(ind_per_km2)
+	HerbivoreBase(hft, sex), // parent establishment constructor
+	ind_per_km2(ind_per_km2)
 {
 	if (ind_per_km2 < 0.0)
 		throw std::invalid_argument("Fauna::HerbivoreIndividual::HerbivoreIndividual() "
