@@ -8,7 +8,7 @@
 
 #include "config.h"
 #include "herbiv_paramreader.h"
-#include "guess.h"      // for Pft
+#include "guess.h"      // for Pft and Pftlist
 #include "guessstring.h" // for trim() and to_upper()
 #include "parameters.h" // read instruction file
 #include "plib.h"       // read instruction file
@@ -80,10 +80,10 @@ void ParamReader::check_all_params(bool& fatal, std::string& msg)const{
 	std::ostringstream msg_stream;
 
 	{ // GLOBAL PARAMETERS
-		std::string msg;
-		if (!params.is_valid(msg))
+		std::string tmp_msg;
+		if (!params.is_valid(tmp_msg))
 			fatal = true;
-		msg_stream << msg;
+		msg_stream << tmp_msg;
 	}
 
 	{ // HFT PARAMETERS
@@ -94,13 +94,13 @@ void ParamReader::check_all_params(bool& fatal, std::string& msg)const{
 				hft_itr != hftlist.end();
 				hft_itr++)
 		{
-			std::string msg;
-			if (!hft_itr->is_valid(params, msg))
+			std::string tmp_msg;
+			if (!hft_itr->is_valid(params, tmp_msg))
 				fatal = true;
 			// Print message even if HFT might be valid. Maybe the message is
 			// just a warning, but no fatal error.
-			if (!msg.empty())
-				 msg_stream << "HFT \"" << hft_itr->name << "\":" << msg;
+			if (!tmp_msg.empty())
+				 msg_stream << "HFT \"" << hft_itr->name << "\":" << tmp_msg;
 		}
 	}
 
@@ -108,6 +108,57 @@ void ParamReader::check_all_params(bool& fatal, std::string& msg)const{
 	msg = msg_stream.str();
 }
 
+void ParamReader::check_all_params(
+		Pftlist& pftlist, // is actually const, but container functions are not const.
+		bool& fatal, std::string& msg)const
+{
+	// Call other overloaded function.
+	check_all_params(fatal, msg);
+
+	//------------------------------------------------------------------
+	// We write into a string stream for convenience and convert it later
+	// to a std::string.
+	std::ostringstream msg_stream;
+
+	// Here, we check only the PFTs in addition.
+
+	// For each forage type: Whether at least one PFT is representing it.
+	std::set<Fauna::ForageType> edible_forage_types;
+
+	for (pftlist.firstobj();
+			pftlist.isobj;
+			pftlist.nextobj())
+	{
+		const Pft& pft = pftlist.getobj();
+		const PftParams& pft_params = pft.herbiv_params;
+		std::string tmp_msg;
+
+		// Check the individual PFT.
+		if (!pft_params.is_valid(params, tmp_msg))
+			fatal = true;
+		// Print message even if PFT might be valid. Maybe the message is
+		// just a warning, but no fatal error.
+		if (!tmp_msg.empty())
+			msg_stream << "PFT \"" << pft.name << "\":" << tmp_msg;
+
+		if (pft_params.forage_type != FT_INEDIBLE)
+			edible_forage_types.insert(pft_params.forage_type);
+	}
+
+	// Check if at least one edible forage type is there for the herbivores.
+	if (params.ifherbivory && 
+			hftlist.size() != 0 &&
+			edible_forage_types.empty())
+	{
+		msg_stream << "There is no edible forage for the herbivores. "
+			<< "Please define in at least one PFT an endible `forage_type`."
+			<< std::endl;
+		fatal = true;
+	}
+
+	// Append new messages
+	msg += msg_stream.str();
+}
 
 void ParamReader::callback(const int callback, Pft* ppft){
 
@@ -244,7 +295,16 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			// Check again the parameters of the herbivory module.
 			bool fatal;
 			std::string msg;
+
+#ifdef NO_GUESS_PARAMETERS
+			// Check parameters for test simulation independent of LPJ-GUESS.
+			// Here we disregard the PFTs.
 			check_all_params(fatal, msg);
+#else
+			// Check parameters including the PFTs of LPJ-GUESS.
+			check_all_params(pftlist, fatal, msg);
+#endif // NO_GUESS_PARAMETERS
+
 			if (fatal){
 				sendmessage("Error", std::string(
 							"Parameters of the herbivory module are not valid:\n"

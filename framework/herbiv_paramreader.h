@@ -13,6 +13,9 @@
 #include <list>                // for MandatoryParamList
 #include <string>              // for strparam
 
+// forward declarations
+class Pftlist;
+
 namespace Fauna {
 	// forward declarations
 	class Hft;
@@ -122,13 +125,23 @@ namespace Fauna {
 
 			/// Check both global and HFT parameters.
 			/**
-			 * \param[out] fatal Whether the simulation cannot run with given
-			 * parameters.
+			 * \param[out] fatal Returns true if the simulation cannot be run
+			 * with given parameters.
 			 * \param[out] msg Error and warning messages.
 			 * \see \ref Fauna::Hft::is_valid()
 			 * \see \ref Fauna::Parameters::is_valid()
 			 */
 			void check_all_params(bool& fatal, std::string& msg)const;
+
+			/** \copydoc check_all_params(bool&, std::string&)const
+			 * Each \ref Fauna::PftParams object in the list of PFTs is checked
+			 * and additionally, whether there is any edible forage defined.
+			 * \param[in] pftlist Lift of \ref Pft objects. The \ref Pftlist
+			 * object will not be changed.
+			 * \see \ref Fauna::PftParams::is_valid()
+			 */
+			void check_all_params(Pftlist& pftlist,
+					bool& fatal, std::string& msg)const;
 
 			/// Check with \ref itemparsed() through list of parameters
 			/** Prints error messages. 
