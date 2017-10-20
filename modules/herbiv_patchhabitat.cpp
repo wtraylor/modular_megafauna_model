@@ -60,10 +60,12 @@ HabitatForage PatchHabitat::get_available_forage() const {
 
 			// get forage mass
 			double indiv_mass = indiv.get_forage_mass(); // [kg/km²]
-			// avoid precision errors in extremely  low values.
-			if (negligible(indiv_mass))
+
+			// Avoid precision errors in extremely low values.
+			if (indiv_mass < 10)
 				indiv_mass = 0.0; 
 			assert( indiv_mass >= 0.0 );
+
 			// Digestibility: Build average, weighted by mass.
 			if (indiv_mass + result[ft].get_mass() > 0.0)
 				result[ft].set_digestibility(Fauna::average(
@@ -77,10 +79,27 @@ HabitatForage PatchHabitat::get_available_forage() const {
 			// GRASS SPECIFIC
 			if (ft == FT_GRASS){
 				if (indiv_mass > 0.0) {
+
+					// Maximum reasonable grass sward density [kgDM/km²].
+					static const double MAX_SWARD_DENS = 20 * 10000; // = 20 kg/m²
+
+					if (indiv.fpc <= 0.0)
+						throw std::logic_error(
+								"Fauna::PatchHabitat::get_available_forage() "
+								"The grass individual has positive leaf biomass "
+								"but its FPC is zero or negative.");
+
+					if (indiv_mass/indiv.fpc > MAX_SWARD_DENS)
+						throw std::logic_error(
+								"Fauna::PatchHabitat::get_available_forage() "
+								"The grass individual has positive leaf biomass "
+								"but its FPC is near zero. "
+								"This results in a preposterously high grass sward "
+								"density.");
+
 					// Build sum of FPCs
 					// We assume there is never any overlap of grass PFTs.
 					grass_fpc += indiv.fpc;
-					result.grass.set_fpc( grass_fpc );
 				}
 			}
 
@@ -89,12 +108,13 @@ HabitatForage PatchHabitat::get_available_forage() const {
 
 		}
 	}
+	result.grass.set_fpc( grass_fpc );
 
 	return result;
 }
 
 void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
-	// Call the base class function
+	// Call the base class function to register output.
 	Habitat::remove_eaten_forage(eaten_forage);
 
 	// sum of the current forage in the patch before eating [kg/km²]
@@ -117,7 +137,7 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	}
 
 	// The fraction of forage that is left after eating.
-	ForageFraction fraction_left;
+	ForageFraction fraction_left(1.0);
 
 	// iterate over all forage types
 	for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
@@ -135,7 +155,7 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 
 		// build fraction
 		assert( old_forage[*ft] != 0.0 );
-		fraction_left.set(*ft, eaten_forage[*ft] / old_forage[*ft]);
+		fraction_left.set(*ft, 1.0 - eaten_forage[*ft] / old_forage[*ft]);
 	}
 
 	// Reduce the forage of each plant individual
