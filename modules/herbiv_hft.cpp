@@ -116,7 +116,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 
 		if (params.herbivore_type == HT_COHORT && 
 				establishment_density/2.0 <= params.dead_herbivore_threshold){
-			stream << "establishment_density (" <<establishment_density<<")"
+			stream << "establishment_density (" <<establishment_density<<" ind/km²) "
 				<< "must not be smaller than minimum viable population density"
 				<< " (dead_herbivore_threshold = "
 				<< params.dead_herbivore_threshold << " ind/km²)"
@@ -126,10 +126,10 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 
 		if (params.herbivore_type == HT_INDIVIDUAL && 
 				establishment_density <= 2.0/params.habitat_area_km2) {
-			stream << "establishment_density (" <<establishment_density<<")"
+			stream << "establishment_density (" <<establishment_density<<" ind/km²) "
 				<< "must not be smaller than two individuals in a habitat"
 				<< " (habitat_area_km2 = "
-				<< params.habitat_area_km2 << " km²)" <<std::endl;
+				<< params.habitat_area_km2 << " km²)." <<std::endl;
 			is_valid = false;
 		}
 
