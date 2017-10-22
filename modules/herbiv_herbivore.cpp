@@ -15,6 +15,7 @@
 #include "herbiv_hft.h"
 #include "herbiv_mortality.h"
 #include "herbiv_reproduction.h"
+#include "herbiv_utils.h" // for get_random_fraction()
 #include <cfloat> // for DBL_MAX
 #include <stdexcept>
 
