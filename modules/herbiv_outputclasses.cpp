@@ -9,6 +9,7 @@
 #include "config.h"
 #include "herbiv_outputclasses.h"
 #include "herbiv_hft.h"
+#include "herbiv_utils.h" // for average()
 
 using namespace Fauna;
 using namespace FaunaOut;

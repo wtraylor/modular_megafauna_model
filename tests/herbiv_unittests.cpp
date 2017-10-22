@@ -21,6 +21,7 @@
 #include "herbiv_population.h"
 #include "herbiv_reproduction.h"
 #include "herbiv_testhabitat.h" 
+#include "herbiv_utils.h"
 #include <memory> // for std::auto_ptr
 #include <cmath>  // for exp() and pow()
 
@@ -1888,6 +1889,37 @@ TEST_CASE("Fauna::parse_comma_separated_param", "") {
 			== "abc" );
 	CHECK( *(++parse_comma_separated_param(" abc,    def").begin())
 			== "def" );
+}
+
+TEST_CASE("Fauna::PeriodAverage"){
+	CHECK_THROWS( PeriodAverage(-1) );
+	CHECK_THROWS( PeriodAverage(0) );
+
+	const int COUNT = 3;
+	PeriodAverage pa(COUNT);
+
+	CHECK_THROWS( pa.get_average() );
+
+	const double A = .1;
+	const double B = .2;
+	const double C = .4;
+	const double D = .5;
+	const double E = .6;
+
+	pa.add_value(A);
+	CHECK( pa.get_average() == A );
+
+	pa.add_value(B);
+	CHECK( pa.get_average() == Approx((A+B)/2.0) );
+
+	pa.add_value(C);
+	CHECK( pa.get_average() == Approx((A+B+C)/3.0) );
+
+	pa.add_value(D);
+	CHECK( pa.get_average() == Approx((B+C+D)/3.0) );
+
+	pa.add_value(E);
+	CHECK( pa.get_average() == Approx((C+D+E)/3.0) );
 }
 
 TEST_CASE("Fauna::ReproductionIllius2000", "") {
