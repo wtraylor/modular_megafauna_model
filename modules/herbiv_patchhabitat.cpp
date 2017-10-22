@@ -113,6 +113,20 @@ HabitatForage PatchHabitat::get_available_forage() const {
 	return result;
 }
 
+void PatchHabitat::init_day(const int today){
+	// Call parent function.
+	Habitat::init_day(today);
+
+	for (patch.vegetation.firstobj(); 
+			patch.vegetation.isobj;
+			patch.vegetation.nextobj()) 
+	{
+		Individual& indiv = patch.vegetation.getobj();
+
+		indiv.update_average_phenology();
+	}
+}
+
 void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	// Call the base class function to register output.
 	Habitat::remove_eaten_forage(eaten_forage);
@@ -173,3 +187,4 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 			indiv.reduce_forage_mass(fraction_left[ft]);
 	} 
 }
+

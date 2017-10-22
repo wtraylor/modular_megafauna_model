@@ -12,12 +12,16 @@
 
 // forward declarations
 class Patch;
-class Pft;
 
 namespace Fauna {
 	// forward declarations
-	class Parameters;
 	class GetDigestibility;
+
+	/// Number of days over which phenology is averaged in plant individuals.
+	/**
+	 * \see \ref Individual::get_average_phenology()
+	 */
+	const int PHEN_AVG_PERIOD = 30; // 1 month
 
 	/// Class with herbivore habitat functionality for an LPJ-GUESS \ref Patch.
 	/** 
@@ -52,6 +56,13 @@ namespace Fauna {
 		 */
 		virtual HabitatForage get_available_forage() const;
 
+		/// Update at the start of the day.
+		/**
+		 * Update average phenology in all plant individuals by calling
+		 * \ref Individual::update_average_phenology().
+		 */
+		virtual void init_day(const int today);
+
 		/** \copydoc Habitat::remove_eaten_forage()
 		 * \see \ref Individual::reduce_forage_mass()
 		 * \see \ref sec_herbiv_forageremoval
@@ -62,7 +73,6 @@ namespace Fauna {
 	private:
 		/// Reference to the patch.
 		Patch& patch;
-
 	};
 }
 #endif // HERBIV_PATCHHABITAT_H
