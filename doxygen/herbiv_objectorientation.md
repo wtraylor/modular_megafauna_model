@@ -112,7 +112,7 @@ The basic implementation is as follows:
 
 To get access to the instance or trigger the initial instantiation, use `MySingleton::get_instance();`.
 
-Wrapping global variables and free functions into a singleton class is good, but it is better to *avoid singletons all together* and instead follow the principle of [Inversion of Control](sec_inversion_of_control).
+Wrapping global variables and free functions into a singleton class is good, but it is better to *avoid singletons all together* and instead follow the principle of [Inversion of Control](\ref sec_inversion_of_control).
 A few classes in the herbivory module employ are built singleton in order to interact in a save manner with the existing LPJ-GUESS framework, namely the declaration of instruction file parameters.
 
 The following classes of the herbivory module are singleton:
