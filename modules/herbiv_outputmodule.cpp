@@ -327,7 +327,7 @@ void HerbivoryOutput::outdaily(Gridcell& gridcell){
 
 	// Use the more general function to do the rest
 	outdaily(gridcell.get_lon(), gridcell.get_lat(), 
-			date.day, date.year, simulation_units);
+			date.day, date.get_calendar_year(), simulation_units);
 }	
 
 void HerbivoryOutput::outdaily(
