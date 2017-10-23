@@ -14,6 +14,7 @@
 #include <set>       // for FORAGE_TYPES
 #include <stdexcept>
 #include <string>    // for forage type names
+#include "herbiv_utils.h" // for average()
 
 namespace Fauna{
 	class HerbivoreInterface; // for ForageDistribution
@@ -25,33 +26,6 @@ namespace Fauna{
 		/// Plants that are not edible for herbivores.
 		FT_INEDIBLE 
 	};
-
-	/// Build weighted average of two numbers.
-	/**
-	 * \throw std::invalid_argument If one weight is smaller than
-	 * zero.
-	 * \throw std::invalid_argument If the sum of weights is zero.
-	 * \throw std::invalid_argument If one weight is NAN or INFINITY.
-	 * \note `NAN` is checked by `weight_a != weight_a`, but this
-	 * might not work if compiled with `g++` with the option
-	 * `-fastmath`.
-	 */
-	inline double average(const double a, const double b,
-			const double weight_a=1.0, const double weight_b=1.0){
-		if (weight_a < 0.0 || weight_b < 0.0)
-			throw std::invalid_argument("Fauna::average() "
-					"Weight must be >=0.0");
-		if (weight_a != weight_a || weight_b != weight_b)
-			throw std::invalid_argument("Fauna::average() "
-					"Weight is NAN");
-		if (weight_a == INFINITY || weight_b == INFINITY)
-			throw std::invalid_argument("Fauna::average() "
-					"Weight is INFINITY");
-		if (weight_a + weight_b == 0.0)
-			throw std::invalid_argument("Fauna::average() "
-					"Sum of weights is zero.");
-		return (a*weight_a + b*weight_b) / (weight_a + weight_b);
-	}
 
 	/// Set with all enum entries of \ref ForageType.
 	/**

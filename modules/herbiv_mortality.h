@@ -8,25 +8,10 @@
 #ifndef HERBIV_MORTALITY_H
 #define HERBIV_MORTALITY_H
 
-#include <cstdlib> // for std::rand(), srand(), RAND_MAX
-#include <ctime>   // for time(), to init random seed
+#include "herbiv_utils.h" // for get_random_fraction()
 #include <stdexcept>
 
 namespace Fauna{
-	/// Get a random number in the interval [0,1]
-	/**
-	 * For stochastic mortality.
-	 *
-	 * This implementation simply uses the standard library 
-	 * function `rand()` with the current time as random seed.
-	 */
-	inline double get_random_fraction(){
-		// initialize random seed
-		srand (time(NULL));
-		return (double) rand() / RAND_MAX;
-	}
-
-
 
 	/// Function object to calculate constant herbivore background mortality.
 	class GetBackgroundMortality{
