@@ -66,7 +66,7 @@ This approach makes the system more modular and extensible.
 	hide members
 	hide methods
 	Framework ..> Client1 : <<create & call>>
-	Framework ..> Client2 : <<create & call>
+	Framework ..> Client2 : <<create & call>>
 @enduml
 
 Inversion of control is related to the
