@@ -57,6 +57,8 @@ std::auto_ptr<GetDigestibility> Simulator::create_digestibility_model()const{
 	switch (params.digestibility_model){
 		case DM_PFT_FIXED: 
 			return std::auto_ptr<GetDigestibility>(new PftDigestibility()); 
+		case DM_PFT_PACHZELT2013: 
+			return std::auto_ptr<GetDigestibility>(new DigestibilityPachzelt2013()); 
 		default: throw std::logic_error("Simulator::create_digestibility_model(): "
 								 "unknown digestibility model");
 	};

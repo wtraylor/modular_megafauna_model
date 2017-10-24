@@ -18,8 +18,10 @@ namespace Fauna {
 
 	/// Type of digestibility model, corresponding to one implementation of \ref Fauna::GetDigestibility
 	enum DigestibilityModelType{
-		/// \ref PftDigestibility : The fixed value \ref Fauna::PftParams::digestibility is taken.
-		DM_PFT_FIXED
+		/// Use \ref PftDigestibility.
+		DM_PFT_FIXED,
+		/// Use \ref DigestibilityPachzelt2013.
+		DM_PFT_PACHZELT2013
 	};
 
 	/// Parameter for selecting algorithm for forage distribution among herbivores

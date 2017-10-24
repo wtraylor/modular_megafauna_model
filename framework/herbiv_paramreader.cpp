@@ -324,6 +324,8 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	if (callback == CB_DIG_MODEL) {
 		if (strparam == "PFT_FIXED")
 			params.digestibility_model = DM_PFT_FIXED;
+		if (strparam == "PACHZELT_2013")
+			params.digestibility_model = DM_PFT_PACHZELT2013;
 		// add other digestibility models here
 		else {
 			sendmessage("Error",
