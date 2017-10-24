@@ -41,9 +41,12 @@ bool GuessOutput::is_first_day_of_month(int day){
 	return day == 0;
 }
 
-bool IncludeNoSpinup::operator()(const int year, 
-		const int day_of_year) const{
-	return year >= nyear_spinup;
+bool IncludeNoSpinup::operator()(
+		const int day_of_year,
+		const int simulation_year, 
+		const int calendar_year) const
+{
+	return simulation_year >= nyear_spinup;
 }
 
 REGISTER_OUTPUT_MODULE("herbivory", HerbivoryOutput)
@@ -326,33 +329,37 @@ void HerbivoryOutput::outdaily(Gridcell& gridcell){
 	} // stand loop
 
 	// Use the more general function to do the rest
-	outdaily(gridcell.get_lon(), gridcell.get_lat(), 
-			date.day, date.get_calendar_year(), simulation_units);
+	outdaily(gridcell.get_lon(),
+			gridcell.get_lat(), 
+			date.day, 
+			date.year,                // simulation_year
+			date.get_calendar_year(), // calendar_year
+			simulation_units);
 }	
 
 void HerbivoryOutput::outdaily(
 		const double longitude, const double latitude,
-		const int day, const int year,
+		const int day, const int simulation_year, const int calendar_year,
 		const std::vector<Fauna::SimulationUnit*>& simulation_units)
 {
 	if (day<0 || day>=365)
 		throw std::invalid_argument("GuessOutput::HerbivoryOutput::outdaily() "
 				"Parameter \"day\" is out of range.");
-	if (year < 0)
+	if (simulation_year < 0)
 		throw std::invalid_argument("GuessOutput::HerbivoryOutput::outdaily() "
-				"Parameter \"year\" is below zero.");
+				"Parameter \"simulation_year\" is below zero.");
 
 	if (!isactive) return;
 	assert(include_date.get() != NULL);
 
 	// Check if this day is included
-	if (!(*include_date)(day, year))
+	if (!(*include_date)(day, simulation_year, calendar_year))
 		return;
 
 	if ((interval == DAILY) ||
 			(interval == MONTHLY && is_first_day_of_month(day)) ||
 			(interval == ANNUAL && day==0) ||
-			(interval == DECADAL && year%10==0 && day==0))
+			(interval == DECADAL && simulation_year%10==0 && day==0))
 	{
 		FaunaOut::CombinedData datapoint;
 
@@ -368,7 +375,8 @@ void HerbivoryOutput::outdaily(
 			datapoint.merge(sim_unit.get_output().reset());
 		}
 		// WRITE OUTPUT
-		write_datapoint( longitude, latitude, day, year, datapoint );
+		// Use the calendar here.
+		write_datapoint( longitude, latitude, day, calendar_year, datapoint );
 	}
 }
 

@@ -36,21 +36,26 @@ namespace GuessOutput {
 		/// Check whether the date shall be included in the output.
 		/** 
 		 * \param day_of_year Day of year (0=Jan 1st).
-		 * \param year Simulation year (0=first year).
+		 * \param simulation_year Simulation year (0=first year).
+		 * \param calendar_year Calendar year
+		 * (compare \ref Date::get_calendar_year()).
 		 * \return True if the given year/date shall be included.
 		 * \note This is equivalent to the check in \ref outlimit() in 
 		 * \ref commonoutput.cpp, but implemented with the strategy
 		 * pattern.
 		 */
 		virtual bool operator()(
-				const int year, 
-				const int day_of_year) const {return true;}
+				const int day_of_year,
+				const int simulation_year, 
+				const int calendar_year) const {return true;}
 	};
 
 	/// Limits output to the time after \ref nyear_spinup.
 	struct IncludeNoSpinup: public IncludeDate{
-		virtual bool operator()(const int year, 
-				const int day_of_year) const;
+		virtual bool operator()(
+				const int day_of_year,
+				const int simulation_year, 
+				const int calendar_year) const;
 	};
 
 	/// Output module for the herbivory module.
@@ -101,14 +106,16 @@ namespace GuessOutput {
 			 * \param longitude Value for the longitude column.
 			 * \param latitude  Value for the latitude column.
 			 * \param day Day of the year (0=Jan 1st).
-			 * \param year Simulation year (starting with 0).
+			 * \param simulation_year Simulation year (starting with 0).
+			 * \param calendar_year Year to print out 
+			 * (compare \ref Date::get_calendar_year()).
 			 * \param simulation_units The group of habitats and
 			 * herbivores whose output is merged to one data point.
 			 * \throw std::invalid_argument If not `day` in [0,364] or
-			 * `year<0`
+			 * `simulation_year<0`
 			 */
 			void outdaily(const double longitude, const double latitude,
-					const int day, const int year,
+					const int day, const int simulation_year, const int calendar_year,
 					const std::vector<Fauna::SimulationUnit*>& simulation_units);
 
 			/// Write output for a \ref Gridcell.

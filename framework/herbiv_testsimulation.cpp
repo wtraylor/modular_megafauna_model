@@ -324,7 +324,9 @@ bool Framework::run(const Fauna::Parameters& global_params,
 				herbiv_out.outdaily(
 						group.get_lon(), // longitude (only for labelling)
 						group.get_lat(), // latitude  (only for labelling)
-						day_of_year, year,
+						day_of_year, 
+						year, // simulation_year
+						year, // calendar_year, the same as there is no calendar
 						group.get_vector());
 			} // end of habitat group loop
 
