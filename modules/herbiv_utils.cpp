@@ -15,6 +15,9 @@
 using namespace Fauna;
 
 namespace Fauna {
+	// Days within each month, assuming a 365 days year.
+	const int MONTH_LENGTH[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
 	//////////////////////////////////////////////////////////////////////
 	// Free Functions
 	//////////////////////////////////////////////////////////////////////
@@ -35,6 +38,30 @@ namespace Fauna {
 			throw std::invalid_argument("Fauna::average() "
 					"Sum of weights is zero.");
 		return (a*weight_a + b*weight_b) / (weight_a + weight_b);
+	}
+
+	int get_day_of_month(const int day_of_year){
+		if (day_of_year < 0)
+			throw std::invalid_argument("Fauna::get_day_of_month()"
+					"Parameter `day_of_year` is negative.");
+		if (day_of_year >= 365)
+			throw std::invalid_argument("Fauna::get_day_of_month()"
+					"Parameter `day_of_year` is greater than 364.");
+
+		int day_of_month = -1;
+		int month = 0;
+		for (int day=0; day <= day_of_year; day++) {
+			if (day_of_month >= MONTH_LENGTH[month]-1) {
+				day_of_month = 0;
+				month++;
+			} else
+				day_of_month++;
+		}	
+		assert(day_of_month >= 0);
+		assert(month >= 0);
+		assert(month <= 11);
+		assert(day_of_month < MONTH_LENGTH[month]);
+		return day_of_month;
 	}
 }
 

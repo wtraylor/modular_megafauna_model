@@ -985,6 +985,16 @@ TEST_CASE("Fauna::GetBackgroundMortality", "") {
 	CHECK( surviving_adults == Approx(1.0-ADULT) );
 }
 
+TEST_CASE("Fauna::get_day_of_month()"){
+	CHECK_THROWS( get_day_of_month(-1) );
+	CHECK_THROWS( get_day_of_month(365) );
+	// Just check some arbitrary dates
+	CHECK( get_day_of_month(0)      == 0  ); // Jan 1st
+	CHECK( get_day_of_month(364)    == 30 ); // Dec. 1st
+	CHECK( get_day_of_month(32)     == 1  ); // Feb. 2nd
+	CHECK( get_day_of_month(31+28)  == 0  ); // Mar. 1st
+}
+
 TEST_CASE("Fauna::GetDigestiveLimitIllius1992", "") {
 	CHECK_THROWS( GetDigestiveLimitIllius1992(-1.0, DT_RUMINANT) );
 	CHECK_THROWS( GetDigestiveLimitIllius1992(0.0, DT_RUMINANT) );

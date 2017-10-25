@@ -130,7 +130,12 @@ void HerbivoreBase::apply_mortality_factors_today(){
 			get_todays_output().mortality[MF_LIFESPAN] = mortality;
 		}
 
-		if (*itr == MF_STARVATION_ILLIUS2000) {
+		if (*itr == MF_STARVATION_ILLIUS2000 && 
+				get_day_of_month(get_today()) == 0) 
+		{
+			// We apply this starvation model only at the first day of every 
+			// month because it is designed for a monthly scheme.
+
 			static const GetStarvationMortalityIllius2000 starv_illius;
 			const double body_condition = get_fatmass()/get_max_fatmass();
 			const double mortality = starv_illius(body_condition);
