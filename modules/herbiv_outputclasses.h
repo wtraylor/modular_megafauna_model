@@ -184,7 +184,7 @@ namespace FaunaOut {
 
 	/// Output data for herbivores and habitat(s).
 	/** 
-	 * This can be data for one \ref SimulationUnit (possibly aggregated 
+	 * This can be data for one \ref Fauna::SimulationUnit (possibly aggregated 
 	 * over a period of time) or for a set of spatial units (aggregated over
 	 * time and space).
 	 * \see \ref sec_herbiv_outputclasses 

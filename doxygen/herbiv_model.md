@@ -32,7 +32,7 @@ Plant–Herbivore Interaction {#sec_herbiv_plantherbivore_interactions}
 
 ![](herbivory_fluxes.png "Carbon and nitrogen fluxes in the vegetation model caused by herbivory.")
 
-### Forage Removal {#sec_herbiv_forageremoval}
+### Feeding {#sec_herbiv_feeding}
 
 ### Nitrogen Excretion {#sec_herbiv_nitrogen_excretion}
 

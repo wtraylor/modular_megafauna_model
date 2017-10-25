@@ -55,7 +55,7 @@ namespace Fauna{
 		 * \cite pachzelt_coupling_2013, the grass forage density of the whole
 		 * patch (habitat) is used (not the sward density 
 		 * \ref GrassForage::get_sward_density()).
-		 * \see \ref half_max_intake_density
+		 * \see \ref Hft::half_max_intake_density
 		 */
 		FL_ILLIUS_OCONNOR_2000
 	};

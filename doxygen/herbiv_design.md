@@ -326,7 +326,7 @@ The table structure stays always the same (no month columns).
 - The functions are smaller and better maintainable.
 - The preprocessing of the data (building averages etc.) is done in the data-holding classes. 
 This approach honours the \ref sec_single_responsibility to some degree.
-- Functions inherited from \ref OutputModule, which use classes specific to the LPJ-GUESS vegetation model (\ref Gridcell), delegate to more generic functions. 
+- Functions inherited from \ref GuessOutput::OutputModule, which use classes specific to the LPJ-GUESS vegetation model (\ref Gridcell), delegate to more generic functions. 
 These are then also used by \ref FaunaSim::Framework, which is independent of the LPJ-GUESS vegetation.
 - As a substitute for \ref GuessOutput::outlimit(), the class \ref GuessOutput::IncludeDate has been introduced in order to observe the \ref sec_dependency_inversion and to avoid global variables.
   See also: \ref sec_herbiv_limit_output.

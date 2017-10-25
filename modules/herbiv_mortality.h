@@ -81,6 +81,8 @@ namespace Fauna{
 	 * simulation interval. That means that, all together, more
 	 * animals have died if the algorithm was applied 30 times *daily*
 	 * than if it had been applied 1 time *monthly.*
+	 * Since the model of Illius & O’Connor (2000) works on a monthly basis,
+	 * this class should also be called monthly.
 	 */
 	class GetStarvationMortalityIllius2000{
 		public:
