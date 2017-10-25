@@ -1300,6 +1300,21 @@ TEST_CASE("Fauna::HabitatForage", "") {
 	// the merge functions of ForageBase and its child classes.
 }
 
+TEST_CASE("Fauna::HalfMaxIntake"){
+	CHECK_THROWS( HalfMaxIntake(-1, 1) );
+	CHECK_THROWS( HalfMaxIntake(0, 1) );
+	CHECK_THROWS( HalfMaxIntake(1, 0) );
+	CHECK_THROWS( HalfMaxIntake(1, -1) );
+
+	const double V_HALF = 10.0; // half-saturation density
+	const double MAX_RATE = 200; // maximum intake rate
+	const HalfMaxIntake h(V_HALF, MAX_RATE);
+
+	CHECK_THROWS( h.get_intake_rate(-1) );
+	CHECK( h.get_intake_rate(0.0) == 0.0 );
+	CHECK( h.get_intake_rate(10.0) == Approx(MAX_RATE * 10.0 / (V_HALF+10.0)) );
+}
+
 TEST_CASE("Fauna::HerbivoreBase", "") {
 	// Since HerbivoreBase cannot be instantiated directly, we
 	// test the relevant functionality in HerbivoreBaseDummy.

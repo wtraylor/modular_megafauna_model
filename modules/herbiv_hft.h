@@ -41,7 +41,23 @@ namespace Fauna{
 	/// A factor limiting a herbivore’s daily forage intake.
 	enum ForagingLimit{
 		/// Foraging is limited by digestion, see \ref GetDigestiveLimitIllius1992
-		FL_DIGESTION_ILLIUS_1992
+		FL_DIGESTION_ILLIUS_1992,
+
+		/// Foraging is limited by a functional response towards digestion limit.
+		/**
+		 * Illius & O’Connor (2000) \cite illius_resource_2000 describe daily 
+		 * food intake rate as a Holling Type II functional response 
+		 * (compare \ref HalfMaxIntake).
+		 * As the maximum daily energy intake they choose the digestive
+		 * capacity (compare \ref GetDigestiveLimitIllius1992).
+		 *
+		 * Like in the model of Pachzelt et al. (2013) 
+		 * \cite pachzelt_coupling_2013, the grass forage density of the whole
+		 * patch (habitat) is used (not the sward density 
+		 * \ref GrassForage::get_sward_density()).
+		 * \see \ref half_max_intake_density
+		 */
+		FL_ILLIUS_OCONNOR_2000
 	};
 
 	/// How forage net energy content is calculated.
@@ -142,6 +158,14 @@ namespace Fauna{
 
 			/// Constraints for maximum daily forage intake.
 			std::set<ForagingLimit> foraging_limits;
+
+			/// Grass density [gDM/m²] where intake is half of its maximum.
+			/** 
+			 * Grass (sward) density at which intake rate reaches half 
+			 * of its maximum (in a Holling Type II functional response). 
+			 * Required by specific foraging limits.
+			 */
+			double half_max_intake_density;
 
 			/// Maximum age in years [1–∞).
 			int lifespan;

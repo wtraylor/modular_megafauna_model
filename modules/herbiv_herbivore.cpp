@@ -235,24 +235,52 @@ ForageMass HerbivoreBase::get_max_foraging(
 	{ 
 		if (*itr == FL_DIGESTION_ILLIUS_1992) {
 			// function object
-			GetDigestiveLimitIllius1992 get_digestive_limit(
+			const GetDigestiveLimitIllius1992 get_digestive_limit(
 					get_bodymass_adult(), get_hft().digestion_type);
 
-			// calculate the digestive limit
-			const ForageEnergy limit_MJ = 
-				get_digestive_limit( get_bodymass(), digestibility);
+			// calculate the digestive limit [MJ/day]
+			const ForageEnergy limit_mj = 
+				get_digestive_limit(get_bodymass(), digestibility);
 
-			// Convert from energy to mass
 			const ForageEnergyContent energy_content = 
 				get_net_energy_content( digestibility);
+
+			// Convert energy to kg dry matter
 			// kg * MJ/kg = kg; where zero values remain zero values even
 			// on division by zero.
-			const ForageMass limit_kg = 
-				limit_MJ.divide_safely(energy_content, 0.0);
+			const ForageMass limit_kg = limit_mj.divide_safely(
+					energy_content, 0.0);
 
-			// Set the maximum foraging limit
+			// Set the maximum foraging limit [kgDM/day]
 			result.min(limit_kg);
 
+		} else if (*itr == FL_ILLIUS_OCONNOR_2000) {
+			// create function object for maximum intake
+			const GetDigestiveLimitIllius1992 get_digestive_limit(
+					get_bodymass_adult(), get_hft().digestion_type);
+
+			// Create functional response with digestive limit as maximum.
+			const HalfMaxIntake half_max(
+					get_hft().half_max_intake_density*1000.0, // gDM/m² to kgDM/km²
+					get_digestive_limit(get_bodymass(), digestibility)[FT_GRASS]);
+
+			// Like Pachzelt (2013), we use the whole-habitat grass density,
+			// not the ‘sward density’.
+			const double grass_limit_mj = half_max.get_intake_rate(
+					available_forage.grass.get_mass()); // [MJ/day]
+
+			const ForageEnergyContent energy_content = 
+				get_net_energy_content( digestibility);
+
+			double grass_limit_kg;
+			if (energy_content[FT_GRASS] > 0.0)
+				grass_limit_kg = grass_limit_mj / energy_content[FT_GRASS];
+			else
+				grass_limit_kg = 0.0; // no energy ⇒ no feeding
+
+			// The Illius & O’Connor (2000) model applies only to grass, and
+			// hence we only constrain the grass part of `result`.
+			result.set(FT_GRASS, min(result[FT_GRASS], grass_limit_kg));
 		} else
 			// ADD MORE LIMITS HERE IN NEW IF-STATEMENTS
 			throw std::logic_error("Fauna::HerbivoreBase::get_forage_demands_ind() "
@@ -585,3 +613,6 @@ void HerbivoreCohort::merge(HerbivoreCohort& other){
 	other.ind_per_km2 = 0.0;
 }
 
+// REFERENCES
+// Illius, A. W. & O'Connor, T. G. (2000). Resource heterogeneity and ungulate population dynamics. Oikos, 89, 283-294.
+// Adrian Pachzelt, Anja Rammig, Steven Higgins & Thomas Hickler (2013). Coupling a physiological grazer population model with a generalized model for vegetation dynamics. Ecological Modelling, 263, 92 - 102.

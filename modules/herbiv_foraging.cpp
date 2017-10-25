@@ -11,6 +11,27 @@
 
 using namespace Fauna;
 
+HalfMaxIntake::HalfMaxIntake(
+					const double half_max_density,
+					const double max_intake):
+	half_max_density(half_max_density),
+	max_intake(max_intake)
+{
+	if (!(half_max_density > 0.0))
+		throw std::invalid_argument("Fauna::HalfMaxIntake::HalfMaxIntake() "
+				"Parameter `half_max_density` is not a positive number.");
+	if (!(max_intake > 0.0))
+		throw std::invalid_argument("Fauna::HalfMaxIntake::HalfMaxIntake() "
+				"Parameter `max_intake` is not a positive number.");
+}
+
+double HalfMaxIntake::get_intake_rate(const double density)const{
+	if (!(density >= 0.0))
+		throw std::invalid_argument("Fauna::HalfMaxIntake::get_intake_rate() "
+				"Parameter `density` must be zero or a positive number.");
+	return max_intake * density / (half_max_density + density);
+}
+
 GetDigestiveLimitIllius1992::GetDigestiveLimitIllius1992( 
 		const double bodymass_adult,
 		const DigestionType digestion_type):

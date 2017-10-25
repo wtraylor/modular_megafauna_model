@@ -220,6 +220,11 @@ void ParamReader::callback(const int callback, Pft* ppft){
 								"mortality_juvenile", req_str +
 								" and \"background\" in mortality_factors"));
 				}
+				if (current_hft.foraging_limits.count(FL_ILLIUS_OCONNOR_2000)){
+					mandatory_hft_params.push_back(MandatoryParam(
+								"half_max_intake_density", req_str +
+								" and \"illius_oconnor_2000\" in foraging_limits"));
+				}
 				if (current_hft.reproduction_model == RM_ILLIUS_2000 ||
 						current_hft.reproduction_model == RM_CONST_MAX)
 				{
@@ -394,6 +399,8 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		for (itr = token_list.begin(); itr != token_list.end(); itr++){
 			if (*itr == "DIGESTION_ILLIUS_1992") 
 				current_hft.foraging_limits.insert(FL_DIGESTION_ILLIUS_1992);
+			if (*itr == "ILLIUS_OCONNOR_2000") 
+				current_hft.foraging_limits.insert(FL_ILLIUS_OCONNOR_2000);
 			// add new foraging limits here
 			else {
 				sendmessage("Error", std::string(
@@ -698,6 +705,13 @@ void ParamReader::declare_parameters(
 				"Comma-separated list of constraints of herbivore forage intake. "
 				"Possible values: "
 				"\"digestion_illius_1992\"");
+
+		declareitem("half_max_intake_density",
+				&current_hft.half_max_intake_density,
+				0.0, DBL_MAX, // min, max
+				1,            // number of parameters
+				CB_NONE,
+				"Grass density [gDM/m²] where intake rate is half of its maximum.");
 
 		declareitem("lifespan",
 				&current_hft.lifespan,

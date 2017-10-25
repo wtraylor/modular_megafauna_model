@@ -30,6 +30,7 @@ Hft::Hft():
 	establishment_density(10.0),
 	digestion_type(DT_RUMINANT),
 	expenditure_model(EM_TAYLOR_1981),
+	half_max_intake_density(20),
 	lifespan(10),
 	maturity_age_phys_female(3),
 	maturity_age_phys_male(3),
@@ -133,16 +134,22 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-
-
 		if (foraging_limits.empty()) {
 			stream << "Warning: No foraging limits defined."<<std::endl;
 			// still valid (for testing purpose)
 		}
 
+		if (foraging_limits.count(FL_ILLIUS_OCONNOR_2000) &&
+				!(half_max_intake_density > 0.0)){
+			stream << "half_max_intake_density must be >0 "
+				"if `ILLIUS_OCONNOR_2000` is set as a foraging limit."
+				<< " (current value: "<<half_max_intake_density<<")"<<std::endl;
+			is_valid = false;
+		}
+
 		if (maturity_age_phys_female < 1) {
 			stream << "maturity_age_phys_female must be >=1"
-				<<" ("<<maturity_age_phys_female<<")"<<std::endl;
+				<<" (current value: "<<maturity_age_phys_female<<")"<<std::endl;
 			is_valid = false;
 		}
 
