@@ -19,8 +19,6 @@ outputdirectory "./"
 ifherbivory 1
 
 
-! The following example default parameters are taken from
-! Owen-Smith (2002)
 !////////////////////////////////////////////////////////////
 ! /// [Simulation Parameters] 
 
@@ -33,8 +31,9 @@ nhabitat_groups 1
 ! Number of habitats per group.
 nhabitats_per_group 1
 
-! Proportional daily grass decay rate. (0,∞)
-grass_decay 0.0014 ! = 0.01 g/(g week)
+! Proportional daily grass decay rate for each month of the year. (0,∞)
+! 0.0014 per day = 0.01 per week (Owen-Smith 2002)
+grass_decay 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 
 
 ! Fractional grass digestibility. (0,1]
 grass_digestibility 0.6 ! approximates mediocre green grass
@@ -42,19 +41,21 @@ grass_digestibility 0.6 ! approximates mediocre green grass
 ! Foliar Percentage Cover of the grass. [0,1]
 grass_fpc 0.8
 
-! Proportional daily grass growth rate. [0,∞)
-! A value of 0.1 means an increase of 10% every day.
-grass_growth 0.03 ! = 0.2 g/(g week)
+! Proportional maximum daily grass growth rate. [0,∞)
+! Example: A value of 0.1 means an increase of 10% every day.
+! 0.03 per day = 0.2 per week (Owen-Smith 2002)
+! No growth during dormant season from October to March (half of the year).
+grass_growth 0.0 0.0 0.0 0.03 0.03 0.03 0.03 0.03 0.03 0.0 0.0 0.0
 
 ! Initial grass biomass [kgDM/km²]. [0,∞) and <grass_saturation
-grass_init_mass  100000 ! = 100 g/m²
+grass_init_mass  100000 ! = 100 g/m² (Owen-Smith 2002)
 
 ! Ungrazable grass reserve [kgDM/km²]. [0,∞)
 ! Not available to grazers but necessary for regrowth
-grass_reserve     20000 ! =  20 g/m²
+grass_reserve     20000 ! =  20 g/m² (Owen-Smith 2002)
 
 ! Saturation grass biomass [kgDM/km²]. (0,∞) and >grass_init_mass
-grass_saturation 200000 ! = 200 g/m²
+grass_saturation 200000 ! = 200 g/m² (Owen-Smith 2002)
 
 ! /// [Simulation Parameters] 
 

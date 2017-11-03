@@ -8,11 +8,12 @@
 
 #include "config.h"
 #include "shell.h" // for dprintf()
-#include "plib.h" // for plib() and itemparsed()
+#include "plib.h" // for plib() and itemparsed() and declareitem()
 #include "parameters.h" // for declare_parameter()
 #include "herbiv_testsimulation.h"
 #include "herbiv_framework.h"
 #include "herbiv_paramreader.h"
+#include <cassert>
 #include <climits> // for INT_MAX
 #include <cfloat> // for DBL_MAX
 
@@ -34,6 +35,11 @@ namespace {
 			result.push_back(&*itr);
 		return result;
 	}
+
+	/// Helper to read parameter \ref LogisticGrass::Parameters::decay_monthly.
+	double param_monthly_grass_decay[12];
+	/// Helper to read parameter \ref LogisticGrass::Parameters::growth_monthly.
+	double param_monthly_grass_growth[12];
 }
 
 
@@ -125,7 +131,7 @@ std::auto_ptr<Habitat> Framework::create_habitat()const{
 			new SimpleHabitat(params.habitat));
 }
 
-void Framework::declare_parameters(){
+void Framework::plib_declare_parameters(){
 
 	static bool parameters_declared = false;
 
@@ -155,11 +161,12 @@ void Framework::declare_parameters(){
 				"Number of habitats per group.");
 		mandatory_parameters.push_back("nhabitats_per_group");
 
-		// Grass growth 
-		declare_parameter("grass_decay",
-				&params.habitat.grass.decay,
+		declareitem("grass_decay",
+				param_monthly_grass_decay,
 				0.0, DBL_MAX, // min, max
-				"Proportional daily grass decay rate.");
+				12, // value count
+				CB_NONE,
+				"12 proportional daily grass decay rates for each month.");
 		mandatory_parameters.push_back("grass_decay");
 
 		declare_parameter("grass_digestibility",
@@ -174,10 +181,12 @@ void Framework::declare_parameters(){
 				"Foliar Percentage Cover of the grass.");
 		mandatory_parameters.push_back("grass_fpc");
 
-		declare_parameter("grass_growth",
-				&params.habitat.grass.growth,
+		declareitem("grass_growth",
+				param_monthly_grass_growth,
 				0.0, DBL_MAX, // min, max
-				"Proportional daily grass growth rate.");
+				12, // value count
+				CB_NONE,
+				"12 proportional daily grass growth rates for each month.");
 		mandatory_parameters.push_back("grass_growth");
 
 		declare_parameter("grass_init_mass",
@@ -206,6 +215,7 @@ void Framework::plib_callback(int callback) {
 	// Simply check each global parameter in the list
 	if (callback == CB_CHECKGLOBAL) {
 		for (int i=0; i<mandatory_parameters.size(); i++) {
+			// Complain if a mandatory parameter is missing
 			const std::string& item = mandatory_parameters[i];
 			if (!itemparsed(item.c_str())){
 				dprintf("Error: %s was not defined in the instruction file.\n",
@@ -213,6 +223,16 @@ void Framework::plib_callback(int callback) {
 				fail();
 			} 	
 		}
+
+		// Copy the monthly array values to std::vector
+		params.habitat.grass.decay_monthly.clear();
+		params.habitat.grass.growth_monthly.clear();
+		for (int i=0; i<12; i++) {
+			params.habitat.grass.decay_monthly.push_back(param_monthly_grass_decay[i]);
+			params.habitat.grass.growth_monthly.push_back(param_monthly_grass_growth[i]);
+		}
+		assert( params.habitat.grass.decay_monthly.size()  == 12 );
+		assert( params.habitat.grass.growth_monthly.size() == 12 );
 	}
 }
 

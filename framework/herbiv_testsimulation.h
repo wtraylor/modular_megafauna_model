@@ -26,6 +26,9 @@ namespace FaunaSim{
 	 */
 	class Framework{
 		public:
+			/// Constructor.
+			Framework(){}
+
 			/// Get singleton instance of the class.
 			/** Creates the object on first call. */
 			static Framework& get_instance(){
@@ -44,16 +47,23 @@ namespace FaunaSim{
 			 */
 			bool run(const Fauna::Parameters& global_params, const Fauna::HftList& hftlist);
 
-			/// Check if all mandatory parameters have been read, terminates on error.
+			/// Parameter check (called from \ref parameters.cpp).
 			/**
+			 * Check if all mandatory parameters have been read, terminates on error.
 			 * This is a substitute for \ref plib_callback() in \ref parameters.cpp.
 			 * Uses \ref fail() to terminate.
 			 */
 			void plib_callback(int callback);
 
-			/// Declare instruction file parameters.
-			/** Fills \ref mandatory_parameters.*/
-			virtual void declare_parameters();
+			/// Declare instruction file parameters (called from \ref parameters.cpp).
+			/** 
+			 * Registers also mandatory parameters in \ref mandatory_parameters.
+			 * - \ref declare_parameter() from \ref parameters.h is used for
+			 *   regular parameters.
+			 * - \ref declareitem from \ref plib.h is used for items with multiple
+			 *   values.
+			 */
+			void plib_declare_parameters();
 		private:
 			/// Create a new habitat according to preferences.
 			std::auto_ptr<Habitat> create_habitat()const;
@@ -75,9 +85,6 @@ namespace FaunaSim{
 			/// Number of decimal places in output tables.
 			static const int COORDINATES_PRECISION;
 		
-			/// Constructor, declares parameters
-			Framework(){declare_parameters();}
-
 			/// Deleted copy constructor
 			Framework(Framework const&); //don’t implement, it’s deleted
 			/// Deleted assignment constructor

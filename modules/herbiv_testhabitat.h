@@ -27,10 +27,21 @@ namespace FaunaSim {
 		public:
 			/// Settings for grass growth
 			struct Parameters {
-				/// Proportional daily rate of grass decay (day^-1)
-				/** Owen-Smith (2002) gives a value of 0.01 week^-1, that is 1.01^(1/7)-1 = 0.0014
-				 * Illius & O'Connor 2000  give a value of 0.03 day^-1*/
-				double decay;
+
+				/// Constructor with arbitrary simple, *valid* values, but no growth.
+				Parameters():digestibility(0.1), fpc(0.1), 
+				init_mass(0.0), reserve(0.1), saturation(1.0){
+					decay_monthly.push_back(0.0);
+					growth_monthly.push_back(0.0);
+				}
+
+				/// Proportional daily rates of grass decay [day^-1]
+				/** 
+				 * This is a vector of *daily* decay rates for each month. When
+				 * the end of the vector is reached, the values are recycled.
+				 * A vector of length 12 creates the same behaviour every year.
+				 */
+				std::vector<double> decay_monthly;
 
 				/// Proportional digestibility of the grass [frac].
 				double digestibility;
@@ -39,8 +50,13 @@ namespace FaunaSim {
 				///        (Foliar Percentage Cover) [frac]
 				double fpc;
 
-				/// Proportional daily grass growth rate
-				double growth;
+				/// Proportional daily grass growth rates [day^-1]
+				/**
+				 * This is a vector of *daily* growth rates for each month. When
+				 * the end of the vector is reached, the values are recycled.
+				 * A vector of length 12 creates the same behaviour every year.
+				 */
+				std::vector<double> growth_monthly;
 
 				/// Initial available forage [kgDM/km²]
 				/** This should be smaller than \ref saturation */
@@ -55,10 +71,6 @@ namespace FaunaSim {
 				/** Owen-Smith (2002): 200 g/m²*/
 				double saturation;
 
-				/// Constructor with arbitrary simple values that are valid
-				Parameters():decay(0.0), digestibility(0.1), fpc(0.1), growth(0.0),
-				init_mass(0.0), reserve(0.1), saturation(1.0){}
-
 				/// Check if parameters are valid
 				/** 
 				 * \param[out] msg Possible warnings and error messages.
@@ -68,20 +80,14 @@ namespace FaunaSim {
 			};
 
 			/// Constructor
-			LogisticGrass(const LogisticGrass::Parameters& settings): 
-				settings(settings){
-					std::string msg;
-					if (!settings.is_valid(msg))
-						throw std::invalid_argument("FaunaSim::LogisticGrass::LogisticGrass() "
-								"Parameters are not valid: "+msg);
-					// initialize forage
-					forage.set_mass( settings.init_mass );
-					forage.set_digestibility( settings.digestibility );
-					forage.set_fpc( settings.fpc );
-				}
+			/**
+			 * \throw std::invalid_argument If `settings` are not valid.
+			 */
+			LogisticGrass(const LogisticGrass::Parameters& settings);
 
 			/// Perform grass growth and decay for one day.
-			/** \param day_of_year January 1st = 0 
+			/**
+			 * \param day_of_year January 1st = 0 
 			 * \throw std::invalid_argument if not `0<=day_of_year<=364`
 			 */
 			void grow_daily(const int day_of_year);
@@ -92,13 +98,20 @@ namespace FaunaSim {
 			/// Set the grass forage
 			void set_forage(const GrassForage& f) { forage = f; }
 
-		protected:
+		private:
 			/// Current forage
 			/** Excluding the reserve 
 			 * \ref LogisticGrass::Parameters::reserve. */
 			GrassForage forage;
 
 			LogisticGrass::Parameters settings;
+
+			/// The current simulation month, starting with zero.
+			/** We need this to address the current value in 
+			 * \ref Parameters::growth_monthly and
+			 * \ref Parameters::decay_monthly.
+			 */
+			int simulation_month;
 	};
 
 	/// A herbivore habitat independent of the LPJ-GUESS framework for testing.
