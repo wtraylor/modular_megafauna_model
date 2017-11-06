@@ -418,8 +418,12 @@ void HerbivoryOutput::write_datapoint(
 	{
 		output_rows.add_value(TBL_AVAILABLE_FORAGE.table, 
 				available_mass[*ft]);
-		output_rows.add_value(TBL_DIGESTIBILITY.table,
-				digestibility[*ft]);
+
+		if (available_mass[*ft] > 0.0)
+			output_rows.add_value(TBL_DIGESTIBILITY.table, digestibility[*ft]);
+		else
+			output_rows.add_value(TBL_DIGESTIBILITY.table, NA_VALUE);
+
 		output_rows.add_value(TBL_EATEN_FORAGE.table,
 				datapoint.habitat_data.eaten_forage[*ft]);
 	}
