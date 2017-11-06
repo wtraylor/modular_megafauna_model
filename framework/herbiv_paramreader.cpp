@@ -225,18 +225,18 @@ void ParamReader::callback(const int callback, Pft* ppft){
 								"half_max_intake_density", req_str +
 								" and \"illius_oconnor_2000\" in foraging_limits"));
 				}
-				if (current_hft.reproduction_model == RM_ILLIUS_2000 ||
+				if (current_hft.reproduction_model == RM_ILLIUS_OCONNOR_2000 ||
 						current_hft.reproduction_model == RM_CONST_MAX)
 				{
 					mandatory_hft_params.push_back(MandatoryParam(
 								"breeding_season_length", req_str +
-								" and reproduction_model=illius_2000"));
+								" and reproduction_model=illius_oconnor_2000"));
 					mandatory_hft_params.push_back(MandatoryParam(
 								"breeding_season_start", req_str +
-								" and reproduction_model=illius_2000"));
+								" and reproduction_model=illius_oconnor_2000"));
 					mandatory_hft_params.push_back(MandatoryParam(
 								"reproduction_max", req_str +
-								" and reproduction_model=illius_2000"));
+								" and reproduction_model=illius_oconnor_2000"));
 				}
 			}
 
@@ -510,8 +510,8 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	}
 
 	if (callback == CB_REPRODUCTION_MODEL) {
-		if (strparam == "ILLIUS_2000")
-			current_hft.reproduction_model = RM_ILLIUS_2000;
+		if (strparam == "ILLIUS_OCONNOR_2000")
+			current_hft.reproduction_model = RM_ILLIUS_OCONNOR_2000;
 		else if (strparam == "CONST_MAX")
 			current_hft.reproduction_model = RM_CONST_MAX;
 		// Add new reproduction models here.
@@ -519,7 +519,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			sendmessage("Error", std::string(
 					"Unknown value for reproduction_model "
 					"in HFT \""+current_hft.name+"\"; valid types: "
-					"\"illius_2000\", \"const_max\"").c_str());
+					"\"ILLIUS_OCONNOR_2000\", \"const_max\"").c_str());
 			plibabort();
 		}
 	}
@@ -710,7 +710,7 @@ void ParamReader::declare_parameters(
 				CB_FORAGING_LIMITS,
 				"Comma-separated list of constraints of herbivore forage intake. "
 				"Possible values: "
-				"\"digestion_illius_1992\"");
+				"\"digestion_illius_1992\", \"illius_oconnor_2000\"");
 
 		declareitem("half_max_intake_density",
 				&current_hft.half_max_intake_density,
@@ -793,7 +793,7 @@ void ParamReader::declare_parameters(
 				256, // max length of string
 				CB_REPRODUCTION_MODEL,
 				"Reproduction model for the HFT."
-				"Possible values: \"illius_2000\"");  
+				"Possible values: \"illius_oconnor_2000\", \"const_max\"");  
 
 		// let plib call function plib_callback() with given code
 		callwhendone(CB_CHECKHFT);

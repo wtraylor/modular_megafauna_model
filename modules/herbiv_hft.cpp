@@ -39,7 +39,7 @@ Hft::Hft():
 	mortality_juvenile(0.3),
 	net_energy_model(NE_DEFAULT),
 	reproduction_max(0.7),
-	reproduction_model(RM_ILLIUS_2000) 
+	reproduction_model(RM_ILLIUS_OCONNOR_2000) 
 {
 }
 
@@ -210,7 +210,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 
 		}
 
-		if (reproduction_model == RM_ILLIUS_2000){
+		if (reproduction_model == RM_ILLIUS_OCONNOR_2000){
 			if (reproduction_max <= 0.0) {
 				stream << "reproduction_max must be >0.0 ("
 					<<reproduction_max<<")"<<std::endl;

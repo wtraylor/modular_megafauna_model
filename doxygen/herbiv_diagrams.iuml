@@ -111,7 +111,7 @@
 	}
 	HerbivoreBase *-up-> "1" "Forage Energy"
 	package "Reproduction" <<rectangle>> {
-		class ReproductionIllius2000
+    class ReprIlliusOconnor2000
 	}
 	HerbivoreBase .up.> "1" "Reproduction"
 	package "Diet" <<rectangle>> {

@@ -72,7 +72,7 @@ namespace Fauna{
 	 * \see \ref Fauna::ReproductionModel
 	 * \todo How does I&O determine the month?
 	 */
-	class ReproductionIllius2000{
+	class ReprIlliusOconnor2000{
 		public:
 			/// Constructor.
 			/**
@@ -82,7 +82,7 @@ namespace Fauna{
 			 * year.
 			 * \throw std::invalid_argument If `max_annual_increase` is negative.
 			 */
-			ReproductionIllius2000( 
+			ReprIlliusOconnor2000( 
 					BreedingSeason,
 					const double max_annual_increase);
 

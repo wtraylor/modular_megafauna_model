@@ -85,8 +85,8 @@ namespace Fauna{
 	enum ReproductionModel{
 		/// Use class \ref ReproductionConstMax for reproduction.
 		RM_CONST_MAX,
-		/// Use class \ref ReproductionIllius2000 to calculate reproduction.
-		RM_ILLIUS_2000
+		/// Use class \ref ReprIlliusOconnor2000 to calculate reproduction.
+		RM_ILLIUS_OCONNOR_2000
 	};
 
 	/// One herbivore functional type (i.e. one species).

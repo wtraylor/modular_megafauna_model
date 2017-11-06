@@ -52,28 +52,28 @@ double BreedingSeason::annual_to_daily_rate(const double annual)const{
 }
 
 // ##################################################################
-// ######################### ReproductionIllius2000 #################
+// ######################### ReprIlliusOconnor2000 #################
 // ##################################################################
 
-ReproductionIllius2000::ReproductionIllius2000( 
+ReprIlliusOconnor2000::ReprIlliusOconnor2000( 
 		BreedingSeason breeding_season,
 		const double max_annual_increase):
 	max_annual_increase(max_annual_increase),
 	breeding_season(breeding_season)
 {
 	if (max_annual_increase < 0.0)
-		throw std::invalid_argument("Fauna::ReproductionIllius2000::ReproductionIllius2000() "
+		throw std::invalid_argument("Fauna::ReprIlliusOconnor2000::ReprIlliusOconnor2000() "
 				"max_annual_increase below zero.");
 }
 
-double ReproductionIllius2000::get_offspring_density(
+double ReprIlliusOconnor2000::get_offspring_density(
 		const int day_of_year,
 		const double body_condition)const{
 	if (day_of_year < 0 || day_of_year >= 365)
-		throw std::invalid_argument("Fauna::ReproductionIllius2000::get_offspring_density() "
+		throw std::invalid_argument("Fauna::ReprIlliusOconnor2000::get_offspring_density() "
 				"day_of_year is out of range.");
 	if (body_condition < 0.0 || body_condition > 1.0)
-		throw std::invalid_argument("Fauna::ReproductionIllius2000::get_offspring_density() "
+		throw std::invalid_argument("Fauna::ReprIlliusOconnor2000::get_offspring_density() "
 				"body_condition is out of range.");
 
 	// No reproduction if we are not in season.

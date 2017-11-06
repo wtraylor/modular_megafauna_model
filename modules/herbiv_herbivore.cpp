@@ -419,9 +419,9 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 			get_hft().breeding_season_length);
 
 	// choose the model
-	if (get_hft().reproduction_model == RM_ILLIUS_2000){
+	if (get_hft().reproduction_model == RM_ILLIUS_OCONNOR_2000){
 		// create our model object
-		const ReproductionIllius2000 illius_2000( breeding_season,
+		const ReprIlliusOconnor2000 illius_2000( breeding_season,
 				get_hft().reproduction_max);
 		// get today’s value
 		return illius_2000.get_offspring_density(
