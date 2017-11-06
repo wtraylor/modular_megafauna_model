@@ -258,8 +258,11 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			MandatoryParamList mandatory_global_params;
 
 			// Add mandatory parameters 
+#ifndef NO_GUESS_PARAMETERS
+			// digestibility model only applies to LPJ-GUESS.
 			mandatory_global_params.push_back(MandatoryParam(
 						"digestibility_model"));
+#endif
 			mandatory_global_params.push_back(MandatoryParam(
 						"forage_distribution"));
 			mandatory_global_params.push_back(MandatoryParam(
@@ -543,13 +546,16 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Minimum density [ind/km²] for a living herbivore cohort.");
 
+#ifndef NO_GUESS_PARAMETERS
+		// Digestibility model only applies to LPJ-GUESS runs.
 		declareitem("digestibility_model",
 				&strparam,
 				128, // max length of string
 				CB_DIG_MODEL,
 				"Digestibility model for herbivore forage. "
 				"Possible values: "
-				"\"pft_fixed\"");
+				"\"pft_fixed\", \"pachzelt_2013\"");
+#endif
 
 		declareitem("forage_distribution",
 				&strparam,
