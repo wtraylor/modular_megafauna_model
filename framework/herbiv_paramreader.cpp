@@ -399,7 +399,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		for (itr = token_list.begin(); itr != token_list.end(); itr++){
 			if (*itr == "DIGESTION_ILLIUS_1992") 
 				current_hft.foraging_limits.insert(FL_DIGESTION_ILLIUS_1992);
-			if (*itr == "ILLIUS_OCONNOR_2000") 
+			else if (*itr == "ILLIUS_OCONNOR_2000") 
 				current_hft.foraging_limits.insert(FL_ILLIUS_OCONNOR_2000);
 			// add new foraging limits here
 			else {
@@ -407,7 +407,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 							"Unknown foraging limit: \""
 							+*itr+"\". "
 							"Valid types: "
-							"\"digestion_illius_1992\"").c_str());
+							"\"digestion_illius_1992\", \"illius_oconnor_2000\"").c_str());
 				plibabort();
 			} 
 		}
