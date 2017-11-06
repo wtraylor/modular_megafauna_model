@@ -242,6 +242,7 @@ namespace GuessOutput {
 			TableFile TBL_MORT_BACKGROUND;
 			TableFile TBL_MORT_LIFESPAN;
 			TableFile TBL_MORT_STARVATION;
+			TableFile TBL_OFFSPRING;
 			/** @} */ 
 
 			/** @{ \name HFT–Forage output tables.*/

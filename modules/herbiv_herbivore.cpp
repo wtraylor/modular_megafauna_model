@@ -473,6 +473,7 @@ void HerbivoreBase::simulate_day(const int day, double& offspring){
 
 	/// - Calculate offspring.
 	offspring = get_todays_offspring_proportion() * get_ind_per_km2();
+	get_todays_output().offspring = offspring;
 
 	/// - Apply mortality factor.
 	apply_mortality_factors_today();

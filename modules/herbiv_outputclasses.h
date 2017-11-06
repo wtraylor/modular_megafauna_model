@@ -88,7 +88,8 @@ namespace FaunaOut {
 			energy_intake(0.0),
 			expenditure(0.0),
 			inddens(0.0),
-			massdens(0.0)
+			massdens(0.0),
+			offspring(0.0)
 		{}
 
 		//------------------------------------------------------------
@@ -116,6 +117,9 @@ namespace FaunaOut {
 
 		/// Daily mortality rate [ind/ind/day].
 		std::map<Fauna::MortalityFactor, double> mortality;
+
+		/// Newborns (offspring) per day [ind/km²/day].
+		double offspring;
 
 		/// Eaten forage [kgDM/day/km²].
 		Fauna::ForageMass eaten_forage;

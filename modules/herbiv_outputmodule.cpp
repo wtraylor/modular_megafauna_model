@@ -111,6 +111,11 @@ HerbivoryOutput::HerbivoryOutput():
 			"Daily herbivore mortality through starvation.",
 			"ind/ind/day",
 			CS_HFT),
+	TBL_OFFSPRING(
+			"file_herbiv_offspring",
+			"Offspring produced per day.",
+			"ind/km²/day",
+			CS_HFT),
 	TBL_EATEN_IND(
 			"file_herbiv_eaten_ind",
 			"Forage eaten by herbivore individuals per day.",
@@ -182,6 +187,7 @@ const std::vector<HerbivoryOutput::TableFile*> HerbivoryOutput::init_tablefiles(
 		list.push_back(&TBL_MORT_BACKGROUND);
 		list.push_back(&TBL_MORT_LIFESPAN);
 		list.push_back(&TBL_MORT_STARVATION);
+		list.push_back(&TBL_OFFSPRING);
 		list.push_back(&TBL_EATEN_IND);
 	}
 	return list;
@@ -463,6 +469,8 @@ void HerbivoryOutput::write_datapoint(
 					herbidata.inddens);
 			output_rows.add_value(TBL_MASSDENS.table, 
 					herbidata.massdens);
+			output_rows.add_value(TBL_OFFSPRING.table, 
+					herbidata.offspring);
 			// ** add new HFT variables here **
 
 			{ // BACKGROUND MORTALITY
