@@ -112,6 +112,7 @@
 	HerbivoreBase *-up-> "1" "Forage Energy"
 	package "Reproduction" <<rectangle>> {
     class ReprIlliusOconnor2000
+    class ReproductionConstMax
 	}
 	HerbivoreBase .up.> "1" "Reproduction"
 	package "Diet" <<rectangle>> {
@@ -125,7 +126,7 @@
 	HerbivoreBase  ..> "1" "Energy Expenditure"
 	package "Foraging Limits" <<rectangle>>  {
 		class GetDigestiveLimitIllius1992 <<functor>>
-		class GetHalfMaxForagingLimit     <<functor>>
+    class HalfMaxIntake     <<functor>>
 	} 
 	HerbivoreBase  ..> "*" "Foraging Limits"
 	package "Mortality" <<rectangle>> {
