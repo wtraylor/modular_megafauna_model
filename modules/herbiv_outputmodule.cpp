@@ -224,10 +224,25 @@ void HerbivoryOutput::init() {
 			itr != TABLEFILES.end(); itr++)
 	{
 		TableFile& tf = **itr;
-		create_output_table(
-				tf.table, 
-				tf.filename.c_str(),
-				get_columns(tf.column_selector));
+
+		// Only create HFT tables if there are any HFTs included.
+
+		assert(hftlist.get() != NULL);
+		if (hftlist->size() == 0 &&
+				(tf.column_selector == CS_HFT || tf.column_selector == CS_HFT_FORAGE))
+		{
+			// Create empty table if there are no HFTs
+			create_output_table(
+					tf.table,
+					"",
+					ColumnDescriptors());
+		} else {
+			// Create a table as usual
+			create_output_table(
+					tf.table, 
+					tf.filename.c_str(),
+					get_columns(tf.column_selector));
+		}
 	}
 }
 
