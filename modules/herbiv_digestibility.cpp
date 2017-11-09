@@ -48,15 +48,15 @@ double DigestibilityPachzelt2013::operator()(
 	const double frac_dead = 1.0 - frac_live;
 
 	// current live grass density [kgDM/m²]
-	const double dens_live = indiv.cmass_leaf * 2.0;
+	const double dens_live = indiv.cmass_leaf * 2.0 * frac_live;
 
 	// Crude protein content [fraction] after van Wijngaarden (1985), which
 	// takes grass density in gDM/m².
-	const double cpc = .20879 * pow((dens_live/1000.0), -0.1697);
+	const double cpc = .20879 * pow((dens_live*1000.0), -0.1697);
 	assert( cpc >= 0.0 );
 
 	// live grass digestibility [fraction] after Bredon & Wilson (1963)
-	double dig_live = 46.05 + 1.4152*cpc;
+	double dig_live = 0.4605 + 1.4152*cpc;
 	// keep value in boundaries:
 	dig_live = min(dig_live, DIG_LIVE_GRASS);
 	dig_live = max(dig_live, DIG_DEAD_GRASS);
