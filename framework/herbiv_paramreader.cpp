@@ -629,7 +629,7 @@ void ParamReader::declare_parameters(
 		// alphabetical order now
 		
 		declareitem("bodyfat_birth",
-				&current_hft.bodyfat_max,
+				&current_hft.bodyfat_birth,
 				DBL_MIN, DBL_MAX, // min, max
 				1,                // number of parameters
 				CB_NONE,
