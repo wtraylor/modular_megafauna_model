@@ -92,7 +92,7 @@ ForageMass GetForageDemands::get_max_digestion()const
 	if (get_hft().digestive_limit == DL_ILLIUS_GORDON_1992) {
 		// Check that we are only handling grass here. This should be
 		// already checked in Hft::is_valid().
-		assert(diet_composer == DC_PURE_GRAZER);
+		assert(get_hft().diet_composer == DC_PURE_GRAZER);
 
 		// function object
 		const GetDigestiveLimitIlliusGordon1992 get_digestive_limit(
@@ -139,7 +139,7 @@ ForageMass GetForageDemands::get_max_foraging()const
 		if (*itr == FL_ILLIUS_OCONNOR_2000) {
 			// Check that we are only handling grass here. This should be
 			// already checked in Hft::is_valid().
-			assert(diet_composer == DC_PURE_GRAZER);
+			assert(get_hft().diet_composer == DC_PURE_GRAZER);
 
 			// create function object for maximum intake
 			const GetDigestiveLimitIlliusGordon1992 get_digestive_limit(

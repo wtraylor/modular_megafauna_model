@@ -140,7 +140,6 @@ namespace Fauna{
 
 	private:
 			/// @{ \name Constants
-			DietComposer diet_composer;
 			const Hft* hft;
 			Sex sex;
 			/** @} */ // constants
