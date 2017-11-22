@@ -33,6 +33,7 @@ Hft::Hft():
 	digestive_limit(DL_NONE),
 	expenditure_model(EM_TAYLOR_1981),
 	digestion_bodymass_fraction(0.02),
+	gestation_months(8),
 	half_max_intake_density(20),
 	lifespan(10),
 	maturity_age_phys_female(3),
@@ -159,6 +160,12 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			stream << "half_max_intake_density must be >0 "
 				"if `ILLIUS_OCONNOR_2000` is set as a foraging limit."
 				<< " (current value: "<<half_max_intake_density<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (gestation_months <= 0) {
+			stream << "`gestation_months` must be a positive number."
+				<< " (current value: "<<gestation_months<<")"<<std::endl;
 			is_valid = false;
 		}
 

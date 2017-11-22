@@ -203,6 +203,8 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				mandatory_hft_params.push_back(MandatoryParam(
 							"foraging_limits", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
+							"gestation_months", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
 							"net_energy_model", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
 							"maturity_age_phys_female", req_str));
@@ -757,6 +759,13 @@ void ParamReader::declare_parameters(
 				"Comma-separated list of constraints of herbivore forage intake. "
 				"Possible values: "
 				"\"bodymass_fraction\", \"digestion_illius_1992\", \"illius_oconnor_2000\"");
+
+		declareitem("gestation_months",
+				&current_hft.gestation_months,
+				1, INT_MAX, // min, max
+				1,          // number of parameters
+				CB_NONE,
+				"Duration of pregnancy in months.");
 
 		declareitem("half_max_intake_density",
 				&current_hft.half_max_intake_density,

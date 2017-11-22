@@ -182,6 +182,9 @@ namespace Fauna{
 			/// Constraints for maximum daily forage procurement.
 			std::set<ForagingLimit> foraging_limits;
 
+			/// Duration of pregnancy [number of months].
+			int gestation_months;
+
 			/// Grass density [gDM/m²] where intake is half of its maximum.
 			/** 
 			 * Grass (sward) density at which intake rate reaches half 
