@@ -57,6 +57,8 @@ namespace Fauna{
 	 * - 50% of adults will breed when F/F_max=0.3
 	 * - 95% will breed when F/F_max=0.5
 	 *
+	 * \image html doxygen/herbiv_reproduction_illiusoconnor2000.png 
+	 *
 	 * The annual rate is then converted to a daily rate over the
 	 * breeding season length:
 	 * \f[
@@ -134,6 +136,39 @@ namespace Fauna{
 			BreedingSeason breeding_season; // const
 			double annual_increase; // const
 	};
+
+  /// Reproduction rate increases linearly with fat reserves up to maximum.
+  /**
+   */
+  class ReproductionLinear{
+    public:
+      /// Constructor
+      /**
+			 * \param max_annual_increase Maximum annual offspring count for
+			 * one female under full fat reserves.
+			 * \param breeding_season When parturition occurs.
+			 * \throw std::invalid_argument If `max_annual_increase` is negative.
+       */
+      ReproductionLinear(
+          BreedingSeason breeding_season,
+          const double max_annual_increase);
+
+			/// Get the amount of offspring for one day in the year.
+			/**
+			 * \param day_of_year Day of year (0=Jan 1st).
+			 * \param body_condition Current fat mass divided by
+			 * potential maximum fat mass [kg/kg].
+			 * \return The average number of children a female gives birth to at 
+       * given day.
+			 * \throw std::invalid_argument If `day_of_year` not in [0,364]
+			 * or `body_condition` not in [0,1].
+			 */
+			double get_offspring_density(const int day_of_year,
+					const double body_condition)const;
+    private:
+			BreedingSeason breeding_season; // const
+      double max_annual_increase; // const
+  };
 }
 
 #endif // HERBIV_REPRODUCTION_H

@@ -233,7 +233,9 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 
 		}
 
-		if (reproduction_model == RM_ILLIUS_OCONNOR_2000){
+		if (reproduction_model == RM_ILLIUS_OCONNOR_2000 ||
+				reproduction_model == RM_CONST_MAX ||
+				reproduction_model == RM_LINEAR){
 			if (reproduction_max <= 0.0) {
 				stream << "reproduction_max must be >0.0 ("
 					<<reproduction_max<<")"<<std::endl;

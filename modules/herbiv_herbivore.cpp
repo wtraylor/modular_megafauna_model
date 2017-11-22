@@ -379,15 +379,21 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 		// get today’s value
 		return illius_2000.get_offspring_density(
 				get_today(), 
-				get_energy_budget().get_fatmass()/get_max_fatmass());
+				get_energy_budget().get_fatmass() / get_max_fatmass());
 	} 
 	else if (get_hft().reproduction_model == RM_CONST_MAX){
 		const ReproductionConstMax const_max( breeding_season,
 				get_hft().reproduction_max);
 		return const_max.get_offspring_density(get_today());
-		// ADD NEW MODELS HERE
-		// in new if statements
 	} 
+	else if (get_hft().reproduction_model == RM_LINEAR){
+		const ReproductionLinear linear( breeding_season,
+				get_hft().reproduction_max);
+		return linear.get_offspring_density(get_today(),
+				get_energy_budget().get_fatmass() / get_max_fatmass());
+	}
+	// ADD NEW MODELS HERE
+	// in new if statements
 	else
 		throw std::logic_error(
 				"Fauna::HerbivoreBase::get_todays_offspring_proportion() "

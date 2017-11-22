@@ -113,6 +113,7 @@
 	package "Reproduction" <<rectangle>> {
     class ReprIlliusOconnor2000
     class ReproductionConstMax
+    class ReproductionLinear
 	}
 	HerbivoreBase .up.> "1" "Reproduction"
 	package "Diet" <<rectangle>> {

@@ -100,7 +100,9 @@ namespace Fauna{
 		/// Use class \ref ReproductionConstMax for reproduction.
 		RM_CONST_MAX,
 		/// Use class \ref ReprIlliusOconnor2000 to calculate reproduction.
-		RM_ILLIUS_OCONNOR_2000
+		RM_ILLIUS_OCONNOR_2000,
+		/// Use class \ref ReproductionLinear for reproduction.
+		RM_LINEAR
 	};
 
 	/// One herbivore functional type (i.e. one species).
