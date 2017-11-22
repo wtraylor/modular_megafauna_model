@@ -215,7 +215,7 @@ namespace Fauna{
 			/// Class-internal read/write access to current output.
 			FaunaOut::HerbivoreData& get_todays_output();
 
-		private: 
+		private: // private member functions
 			/// Calculate mortality according to \ref Hft::mortality_factors.
 			/** Calls \ref apply_mortality(), which is implemented by 
 			 * child classes.*/
@@ -273,6 +273,13 @@ namespace Fauna{
 			 */
 			double get_todays_offspring_proportion()const;
 
+		private: // private member variables
+			/// @{ \name Constants
+			const Hft* hft; // initialize first!
+			Sex sex;
+			std::auto_ptr<GetNetEnergyContentInterface> net_energy_content;
+			/** @} */ // constants
+
 			/// @{ \name State Variables
 			int age_days;
 			// use auto_ptr to reduce dependencies:
@@ -281,16 +288,16 @@ namespace Fauna{
 			/** @} */ // state variables
 
 			/// @{ \name Helper Classes
+			/// Body condition over the past x months (only females).
+			/** Body condition is current fat mass / max. fat mass. The record
+			 * spans the lenght of a potential pregnancy, counting back from 
+			 * current day. This object is empty for male herbivores. */
+			PeriodAverage body_condition_gestation;
+
 			// use auto_ptr to reduce dependencies:
 			std::auto_ptr<FaunaOut::HerbivoreData> current_output;
 			std::auto_ptr<GetForageDemands> get_forage_demands_per_ind;
 			/** @} */ // Helper Classes
-
-			/// @{ \name Constants
-			const Hft* hft;
-			Sex sex;
-			std::auto_ptr<GetNetEnergyContentInterface> net_energy_content;
-			/** @} */ // constants
 	};
 
 	/// One herbivore individual

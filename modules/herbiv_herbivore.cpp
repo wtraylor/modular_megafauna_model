@@ -32,7 +32,8 @@ HerbivoreBase::HerbivoreBase(
 	hft(hft), // can be NULL
 	sex(sex), // always valid
 	age_days(age_days),
-	today(-1) // not initialized yet; call simulate_day() first
+	today(-1), // not initialized yet; call simulate_day() first
+	body_condition_gestation(get_hft().gestation_months * 30)
 {
 	// Check validity of parameters
 	if (hft == NULL)
@@ -74,7 +75,8 @@ HerbivoreBase::HerbivoreBase( const Hft* hft, const Sex sex):
 	sex(sex), 
 	age_days(0),
 	current_output(new FaunaOut::HerbivoreData),
-	get_forage_demands_per_ind(new GetForageDemands(hft, sex))
+	get_forage_demands_per_ind(new GetForageDemands(hft, sex)),
+	body_condition_gestation(get_hft().gestation_months * 30)
 {
 	// Check validity of parameters
 	if (hft == NULL)
@@ -101,7 +103,8 @@ HerbivoreBase::HerbivoreBase(const HerbivoreBase& other):
 	// Create new object instances for std::auto_ptr objects:
 	energy_budget(new FatmassEnergyBudget(other.get_energy_budget())),
 	current_output(new FaunaOut::HerbivoreData),
-	get_forage_demands_per_ind(new GetForageDemands(other.hft, other.sex))
+	get_forage_demands_per_ind(new GetForageDemands(other.hft, other.sex)),
+	body_condition_gestation(get_hft().gestation_months * 30)
 {
 }
 
@@ -371,15 +374,17 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 	const BreedingSeason breeding_season(get_hft().breeding_season_start,
 			get_hft().breeding_season_length);
 
+	// Use the average body condition (fat mass/maximum fat mass) over the
+	// last months of pregnancy.
+	const double body_condition = body_condition_gestation.get_average();
+
 	// choose the model
 	if (get_hft().reproduction_model == RM_ILLIUS_OCONNOR_2000){
 		// create our model object
 		const ReprIlliusOconnor2000 illius_2000( breeding_season,
 				get_hft().reproduction_max);
 		// get today’s value
-		return illius_2000.get_offspring_density(
-				get_today(), 
-				get_energy_budget().get_fatmass() / get_max_fatmass());
+		return illius_2000.get_offspring_density( get_today(), body_condition);
 	} 
 	else if (get_hft().reproduction_model == RM_CONST_MAX){
 		const ReproductionConstMax const_max( breeding_season,
@@ -389,8 +394,7 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 	else if (get_hft().reproduction_model == RM_LINEAR){
 		const ReproductionLinear linear( breeding_season,
 				get_hft().reproduction_max);
-		return linear.get_offspring_density(get_today(),
-				get_energy_budget().get_fatmass() / get_max_fatmass());
+		return linear.get_offspring_density(get_today(), body_condition);
 	}
 	// ADD NEW MODELS HERE
 	// in new if statements
@@ -398,7 +402,6 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 		throw std::logic_error(
 				"Fauna::HerbivoreBase::get_todays_offspring_proportion() "
 				"Reproduction model not implemented.");
-
 }
 
 
@@ -422,6 +425,10 @@ void HerbivoreBase::simulate_day(const int day, double& offspring){
 	
 	/// - Increase age.
 	age_days++;
+
+	/// - Update records.
+	if (get_sex() == SEX_FEMALE) // (males don’t need this for reproduction)
+		body_condition_gestation.add_value(get_fatmass() / get_max_fatmass());
 
 	/// - Update maximum fat mass in \ref Fauna::FatmassEnergyBudget.
 	get_energy_budget().set_max_fatmass(get_max_fatmass());
