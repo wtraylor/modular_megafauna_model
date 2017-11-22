@@ -7,13 +7,13 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 #include "config.h"
-#include "herbiv_diet.h"
 #include "herbiv_energetics.h" // for FatmassEnergyBudget
 #include "herbiv_forageenergy.h" // for GetNetEnergyContentInterface
 #include "herbiv_foraging.h"
 #include "herbiv_herbivore.h"
 #include "herbiv_hft.h"
 #include "herbiv_mortality.h"
+#include "herbiv_outputclasses.h" // HerbivoreData
 #include "herbiv_reproduction.h"
 #include <cfloat> // for DBL_MAX
 #include <stdexcept>
@@ -29,9 +29,10 @@ HerbivoreBase::HerbivoreBase(
 		const double body_condition,
 		const Hft* hft, 
 		const Sex sex):
-	age_days(age_days),
 	hft(hft), // can be NULL
-	sex(sex) // always valid
+	sex(sex), // always valid
+	age_days(age_days),
+	today(-1) // not initialized yet; call simulate_day() first
 {
 	// Check validity of parameters
 	if (hft == NULL)
@@ -60,30 +61,47 @@ HerbivoreBase::HerbivoreBase(
 			new FatmassEnergyBudget(
 				body_condition * get_max_fatmass(),// initial fat mass
 				get_max_fatmass())); // maximum fat mass
+
+	// Create other object instances for std::auto_ptr 
+	current_output = std::auto_ptr<FaunaOut::HerbivoreData>(
+			new FaunaOut::HerbivoreData());
+	get_forage_demands_per_ind = std::auto_ptr<GetForageDemands>(
+			new GetForageDemands(hft, sex));
 }
 
 HerbivoreBase::HerbivoreBase( const Hft* hft, const Sex sex):
 	hft(hft), 
 	sex(sex), 
-	age_days(0)
+	age_days(0),
+	current_output(new FaunaOut::HerbivoreData),
+	get_forage_demands_per_ind(new GetForageDemands(hft, sex))
 {
 	// Check validity of parameters
 	if (hft == NULL)
 		throw std::invalid_argument("Fauna::HerbivoreBase::HerbivoreBase() "
 				"hft is NULL.");
+
 	// Create energy budget (validity check inside that class)
 	energy_budget = std::auto_ptr<FatmassEnergyBudget>(
 			new FatmassEnergyBudget(
 				get_hft().bodyfat_birth * get_hft().bodymass_birth,// initial fat mass
 				get_max_fatmass())); // maximum fat mass
+
+	// Create other object instances for std::auto_ptr 
+	current_output = std::auto_ptr<FaunaOut::HerbivoreData>(
+			new FaunaOut::HerbivoreData());
+	get_forage_demands_per_ind = std::auto_ptr<GetForageDemands>(
+			new GetForageDemands(hft, sex));
 }
 
 HerbivoreBase::HerbivoreBase(const HerbivoreBase& other):
 	age_days(other.age_days),
-	// create new energy budget instance
-	energy_budget(new FatmassEnergyBudget(other.get_energy_budget())),
 	hft(other.hft),
-	sex(other.sex)
+	sex(other.sex),
+	// Create new object instances for std::auto_ptr objects:
+	energy_budget(new FatmassEnergyBudget(other.get_energy_budget())),
+	current_output(new FaunaOut::HerbivoreData),
+	get_forage_demands_per_ind(new GetForageDemands(other.hft, other.sex))
 {
 }
 
@@ -161,16 +179,31 @@ void HerbivoreBase::apply_mortality_factors_today(){
 	apply_mortality(mortality_sum);
 }
 
-ComposeDietInterface& HerbivoreBase::compose_diet()const{
+ForageFraction HerbivoreBase::compose_diet(
+		const HabitatForage& available_forage,
+		const double energy_demand)const
+{
+	// Initialize result with zeros.
+	ForageFraction result;
+
 	switch (get_hft().diet_composer){
 		case DC_PURE_GRAZER:
-			static PureGrazerDiet pure_grazer;
-			return pure_grazer;
-			// add new diets here
+			// We put 100% into grass here.
+			result.set(FT_GRASS, 1.0);
+
+			// *add new diet algorithms here*
 		default:
 			throw std::logic_error("Fauna::HerbivoreBase::compose_diet() "
 					"Selected diet composer not implemented.");
 	}
+
+	// Check if the diet makes sense: The total must be 1.0, but we leave
+	// some rounding error margin.
+	if (result.sum() > 1.0 || result.sum() < 0.9999)
+		throw std::logic_error("Fauna::HerbivoreBase::compose_diet() "
+				"The selected diet algorithm produced forage type fractions"
+				" that don’t sum up to 1.0 (100%). Please check if it is "
+				"implemented correctly.");
 }
 
 void HerbivoreBase::eat(				
@@ -221,119 +254,30 @@ double HerbivoreBase::get_lean_bodymass()const{
 	return get_potential_bodymass() * (1.0-get_hft().bodyfat_max);
 }
 
-ForageMass HerbivoreBase::get_max_foraging(
-		const HabitatForage& available_forage)const
-{ 
-	const Digestibility digestibility = available_forage.get_digestibility();
-
-	// set the maximum, and then let the foraging limit algorithms
-	// reduce the maximum by using fmin()
-	ForageMass result(10000); // [kgDM/ind/day]
-	// (Note that using DBL_MAX here does not work because converting it to
-	//  energy may result in INFINITY values.)
-
-	// Go through all forage intake limits
-	std::set<ForagingLimit>::const_iterator itr;
-	for (itr=get_hft().foraging_limits.begin(); 
-			itr!=get_hft().foraging_limits.end();
-			itr++) 
-	{ 
-		if (*itr == FL_DIGESTION_ILLIUS_1992) {
-			// function object
-			const GetDigestiveLimitIllius1992 get_digestive_limit(
-					get_bodymass_adult(), get_hft().digestion_type);
-
-			// calculate the digestive limit [MJ/day]
-			const ForageEnergy limit_mj = 
-				get_digestive_limit(get_bodymass(), digestibility);
-
-			const ForageEnergyContent energy_content = 
-				get_net_energy_content( digestibility);
-
-			// Convert energy to kg dry matter
-			// kg * MJ/kg = kg; where zero values remain zero values even
-			// on division by zero.
-			const ForageMass limit_kg = limit_mj.divide_safely(
-					energy_content, 0.0);
-
-			// Set the maximum foraging limit [kgDM/day]
-			result.min(limit_kg);
-
-		} else if (*itr == FL_ILLIUS_OCONNOR_2000) {
-			// create function object for maximum intake
-			const GetDigestiveLimitIllius1992 get_digestive_limit(
-					get_bodymass_adult(), get_hft().digestion_type);
-
-			// Create functional response with digestive limit as maximum.
-			const HalfMaxIntake half_max(
-					get_hft().half_max_intake_density*1000.0, // gDM/m² to kgDM/km²
-					get_digestive_limit(get_bodymass(), digestibility)[FT_GRASS]);
-
-			// Like Pachzelt (2013), we use the whole-habitat grass density,
-			// not the ‘sward density’.
-			const double grass_limit_mj = half_max.get_intake_rate(
-					available_forage.grass.get_mass()); // [MJ/day]
-
-			const ForageEnergyContent energy_content = 
-				get_net_energy_content( digestibility);
-
-			double grass_limit_kg;
-			if (energy_content[FT_GRASS] > 0.0)
-				grass_limit_kg = grass_limit_mj / energy_content[FT_GRASS];
-			else
-				grass_limit_kg = 0.0; // no energy ⇒ no feeding
-
-			// The Illius & O’Connor (2000) model applies only to grass, and
-			// hence we only constrain the grass part of `result`.
-			result.set(FT_GRASS, min(result[FT_GRASS], grass_limit_kg));
-		} else
-			// ADD MORE LIMITS HERE IN NEW IF-STATEMENTS
-			throw std::logic_error("Fauna::HerbivoreBase::get_forage_demands_ind() "
-					"One of the selected foraging limits is not implemented.");
-	}
-	return result;
-}
-
 ForageMass HerbivoreBase::get_forage_demands(
-		const HabitatForage& available_forage)const{
+		const HabitatForage& available_forage)const
+{
+	assert( get_forage_demands_per_ind.get() != NULL );
 
-	// ----------------- PREPARE VARIABLES ------------------------
-
-	const Digestibility digestibility = available_forage.get_digestibility();
-
-	const ForageEnergyContent energy_content = 
-		get_net_energy_content(digestibility); // [MJ/kg]
-
-	// ----------------- HOW MUCH CAN BE FORAGED? -----------------
-
-	// for each forage type independently: the mass that an 
-	// individual could forage (not regarding energy needs) [kg/ind]
-	const ForageMass foragable_mass =
-		HerbivoreBase::get_max_foraging(available_forage);
-
-	// energy equivalent to foragable_mass [MJ/ind]
-	const ForageEnergy foragable_energy = foragable_mass * energy_content; 
-
-	// ----------------- COMPOSE DIET -----------------------------
+	// Prepare GetForageDemands helper object.
+	get_forage_demands_per_ind->init_today(
+			get_today(),
+			available_forage,
+			get_net_energy_content(available_forage.get_digestibility()),
+			get_bodymass());
 
 	// energy demands [MJ/ind] for expenditure plus fat anabolism
 	const double total_energy_demands =
 		get_energy_budget().get_energy_needs()
 		+ get_energy_budget().get_max_anabolism_per_day();
 
-	// compose the diet according to preferences
-	const ForageEnergy diet_energy = compose_diet()(
-			foragable_energy,
-			total_energy_demands);
+	// Use helper object GetForageDemands to calculate per individual.
+	const ForageMass demand_ind =
+		(*get_forage_demands_per_ind)(total_energy_demands);
 
-	// now convert energy back to mass
-	// Any forage type with zero energy content will get zero mass.
-	const	ForageMass diet_mass = 
-		diet_energy.divide_safely(energy_content, 0.0); // [kg/ind]
-
-	// Finally: Convert the demand per individual [kg/ind]
-	// to demand per area [kg/km²]
-	return diet_mass * get_ind_per_km2();
+	// Convert the demand per individual [kgDM/ind]
+	// to demand per area [kgDM/km²]
+	return demand_ind * get_ind_per_km2();
 }
 
 double HerbivoreBase::get_kg_per_km2() const{
@@ -395,6 +339,15 @@ double HerbivoreBase::get_potential_bodymass()const{
 	} 
 }
 
+int HerbivoreBase::get_today()const {
+	if (today == -1) // initial value from constructor
+		throw std::logic_error("Fauna::HerbivoreBase::get_today() "
+				"Current day not yet initialized. Has `simulate_day()` "
+				"been called first?");
+	assert(today>=0 && today<365);
+	return today;
+}
+
 double HerbivoreBase::get_todays_expenditure()const{
 	switch (get_hft().expenditure_model){
 		case EM_TAYLOR_1981:
@@ -440,6 +393,17 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 				"Fauna::HerbivoreBase::get_todays_offspring_proportion() "
 				"Reproduction model not implemented.");
 
+}
+
+
+const FaunaOut::HerbivoreData& HerbivoreBase::get_todays_output()const{
+	assert( current_output.get() != NULL );
+	return *current_output;
+}
+
+FaunaOut::HerbivoreData& HerbivoreBase::get_todays_output(){
+	assert( current_output.get() != NULL );
+	return *current_output;
 }
 
 void HerbivoreBase::simulate_day(const int day, double& offspring){

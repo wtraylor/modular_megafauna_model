@@ -14,6 +14,9 @@
 #include <ctime>   // for time(), to init random seed
 
 namespace Fauna{
+	/// The sex of a herbivore
+	enum Sex {SEX_FEMALE, SEX_MALE};
+
 	/// Build weighted average of two numbers.
 	/**
 	 * \throw std::invalid_argument If one weight is smaller than

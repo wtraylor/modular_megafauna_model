@@ -385,6 +385,79 @@ namespace Fauna{
 	/// Map defining which herbivore gets what to eat [kgDM/km²].
 	typedef std::map<HerbivoreInterface*, ForageMass> ForageDistribution;
 
+	/** @{ \name Overload operator * as non-member. */
+
+	/// Multiply forage fractions with coefficient, allowing numbers >0.
+	/**
+	 * Note that this function takes the double value on the left side 
+	 * whereas the member function ForageValues<>::operator*() takes the
+	 * double value as the right operand and returns a ForageValues<> object
+	 * of the same template, which doesn’t allow numbers exceeding 1.0 in
+	 * case of the ForageFraction (=ForageValues<ZERO_TO_ONE>) class.
+	 */
+	inline ForageValues<POSITIVE_AND_ZERO> operator*(
+			const double lhs,
+			const ForageFraction& rhs)
+	{ 
+		ForageValues<POSITIVE_AND_ZERO> result;
+		for (ForageFraction::const_iterator i=rhs.begin();
+				i!=rhs.end();
+				i++) 
+			result.set(i->first, i->second * lhs);
+		return result;
+	}
+
+	inline ForageValues<POSITIVE_AND_ZERO> operator*(
+			const ForageFraction& lhs,
+			const ForageValues<POSITIVE_AND_ZERO>& rhs)
+	{ 
+		ForageValues<POSITIVE_AND_ZERO> result;
+		for (ForageFraction::const_iterator i=rhs.begin();
+				i!=rhs.end();
+				i++) 
+			result.set(i->first, i->second * lhs[i->first]);
+		return result;
+	}
+
+	inline ForageValues<POSITIVE_AND_ZERO> operator*(
+			const ForageValues<POSITIVE_AND_ZERO>& lhs,
+			const ForageFraction& rhs)
+	{ return operator*(rhs, lhs); }
+	/** @} */
+
+
+	/// Convert forage fractions (in [0,1]) into values in [0,∞].
+	ForageValues<POSITIVE_AND_ZERO> foragefractions_to_foragevalues(
+			const ForageFraction& fractions);
+
+	/// Convert forage values to fractional values.
+	/**
+	 * \param values The object to convert.
+	 * \param tolerance By how much a value can exceed 1.0 and still be
+	 * set to 1.0. E.g. `tolerance == 0.1` means that any values from
+	 * 1.0 to 1.1 will be set to 1.0.
+	 * \return Forage fractional values within [0,1].
+	 * \throw std::invalid_argument If one number in `values` exceeds
+	 * `1.0 + tolerance`.
+	 * \throw std::invalid_argument If `tolerance < 0.0`.
+	 */
+	ForageFraction foragevalues_to_foragefractions(
+			const ForageValues<POSITIVE_AND_ZERO> values,
+			const double tolerance);
+
+	/// Convert forage energy to mass keeping the energy-wise proportions.
+	/**
+	 * \param mj_per_kg Energy content of the forage [MJ/kgDM].
+	 * \param mj_proportions Energy-wise proportions [MJ/MJ]. This doesn’t
+	 * need to add up to 1.0.
+	 * \return Mass-wise proportions [kgDM/kgDM] whose sum equals the sum of
+	 * `mj_proportions`. When converting back from mass to energy, the
+	 * proportion relative to each other will be like in `mj_proportions`.
+	 */
+	ForageFraction convert_mj_to_kg_proportionally(
+			const ForageEnergyContent& mj_per_kg,
+			const ForageFraction& mj_proportions);
+
 	// ---------------------------------------------------------------
 
 	/// Base class for herbivore forage in a habitat.

@@ -80,10 +80,11 @@ namespace Fauna{
 			 * optimal nutrition) offspring count of one female on 
 			 * average. A value of 1.0 means, a female begets one child every
 			 * year.
+			 * \param breeding_season When parturition occurs.
 			 * \throw std::invalid_argument If `max_annual_increase` is negative.
 			 */
 			ReprIlliusOconnor2000( 
-					BreedingSeason,
+					BreedingSeason breeding_season,
 					const double max_annual_increase);
 
 			/// Get the amount of offspring for one day in the year.
@@ -114,10 +115,11 @@ namespace Fauna{
 			/**
 			 * \param annual_increase Constant annual offspring count for
 			 * one female.
+			 * \param breeding_season When parturition occurs.
 			 * \throw std::invalid_argument If `annual_increase` is negative.
 			 */
 			ReproductionConstMax(
-					BreedingSeason,
+					BreedingSeason breeding_season,
 					const double annual_increase);
 
 			/// Get the amount of offspring for one day in the year.

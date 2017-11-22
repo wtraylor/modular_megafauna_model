@@ -952,6 +952,128 @@ TEST_CASE("Fauna::ForageValues", "") {
 		CHECK( a.min(b) == b.min(a) );
 		CHECK( a.min(b) == a );
 	}
+
+	//------------------------------------------------------------------
+	// FREE FUNCTIONS
+
+	SECTION("operator*(ForageFraction, double)"){
+		ForageFraction ff;
+		double i = 1.0;
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			ff.set(*ft, 1.0/++i);
+
+		double d = 123.4;
+		const ForageValues<POSITIVE_AND_ZERO> result = d * ff;
+		
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			CHECK( result[*ft] == ff[*ft] * d );
+	}
+
+	SECTION("operator*(ForageFraction, ForageValues<POSITIVE_AND_ZERO>"){
+		ForageFraction ff;
+		double i = 1.0;
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			ff.set(*ft, 1.0/++i);
+
+		ForageValues<POSITIVE_AND_ZERO> fv;
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			fv.set(*ft, ++i);
+
+		const ForageValues<POSITIVE_AND_ZERO> result = ff * fv;
+
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			CHECK( result[*ft] == ff[*ft] * fv[*ft] );
+	}
+
+	SECTION("foragevalues_to_foragefractions()"){
+		// `tolerance` mustn’t be negative
+		CHECK_THROWS( foragevalues_to_foragefractions(
+					ForageValues<POSITIVE_AND_ZERO>(), -.1) );
+
+		ForageValues<POSITIVE_AND_ZERO> fv;
+		SECTION("All numbers below 1.0"){
+			double i = 1;
+			// create some numbers between 0 and 1
+			for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+					ft != FORAGE_TYPES.end(); ft++)
+				fv.set(*ft, 1.0 / (++i) );
+			const ForageFraction ff = foragevalues_to_foragefractions(fv, 0.0);
+
+			for (ForageFraction::const_iterator i = ff.begin();
+					i != ff.end(); i++)
+				CHECK( i->second == fv[i->first] );
+		}
+
+		SECTION("Numbers with tolerance"){
+			const double TOLERANCE = .1;
+			fv.set(FT_GRASS, 1.0 + TOLERANCE);
+			const ForageFraction ff = 
+				foragevalues_to_foragefractions(fv, TOLERANCE);
+
+			CHECK( ff[FT_GRASS] == 1.0 );
+		}
+
+		SECTION("Exception exceeding tolerance"){
+			const double TOLERANCE = .1;
+			fv.set(FT_GRASS, 1.0 + TOLERANCE + .001);
+			CHECK_THROWS( foragevalues_to_foragefractions(fv, TOLERANCE) );
+		}
+	}
+
+	SECTION("foragefractions_to_foragevalues()"){
+		ForageFraction ff;
+		double i = 1;
+		// create some numbers between 0 and 1
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			ff.set(*ft, 1.0 / (++i) );
+
+		const ForageValues<POSITIVE_AND_ZERO> fv =
+			foragefractions_to_foragevalues(ff);
+
+		for (ForageValues<POSITIVE_AND_ZERO>::const_iterator i = fv.begin();
+				i != fv.end(); i++)
+			CHECK( i->second == ff[i->first] );
+	}
+
+	SECTION("convert_mj_to_kg_proportionally()"){
+		// set some arbitrary energy content
+		double i = 31.0;
+		ForageEnergyContent energy_content;
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			energy_content.set(*ft, i++);
+
+		// set some arbitrary proportions
+		ForageFraction prop_mj; // energy proportions
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			prop_mj.set(*ft, 1.0 / (++i) );
+
+		// calculate mass proportions
+		const ForageFraction prop_kg = 
+			convert_mj_to_kg_proportionally(energy_content, prop_mj);
+
+		// CHECK RESULTS
+
+		CHECK( prop_kg.sum() == Approx(prop_mj.sum()) );
+
+		// convert mass back to energy
+		ForageMass mj = prop_kg * energy_content;
+		const double mj_total = mj.sum();
+
+		// The relation between each energy component towards the total
+		// energy must stay the same. 
+		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++)
+			CHECK( mj[*ft]             / mj.sum()
+					== Approx(prop_mj[*ft] / prop_mj.sum()) );
+	}
 }
 
 TEST_CASE("Fauna::GetBackgroundMortality", "") {
@@ -995,16 +1117,52 @@ TEST_CASE("Fauna::get_day_of_month()"){
 	CHECK( get_day_of_month(31+28)  == 0  ); // Mar. 1st
 }
 
-TEST_CASE("Fauna::GetDigestiveLimitIllius1992", "") {
-	CHECK_THROWS( GetDigestiveLimitIllius1992(-1.0, DT_RUMINANT) );
-	CHECK_THROWS( GetDigestiveLimitIllius1992(0.0, DT_RUMINANT) );
+TEST_CASE("Fauna::get_max_intake_as_total_mass()"){
+	double i = 1.0;
+	ForageEnergyContent energy_content;
+	for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+			ft != FORAGE_TYPES.end(); ft++)
+		energy_content.set(*ft, i++);
+
+	// set some arbitrary proportions
+	ForageFraction prop_mj; // energy proportions
+	for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
+			ft != FORAGE_TYPES.end(); ft++)
+		prop_mj.set(*ft, 1.0 / (++i) );
+
+	// exception
+	CHECK_THROWS( 
+			get_max_intake_as_total_mass(prop_mj, energy_content, -1) );
+
+	const double KG_TOTAL = 10.0;
+
+	const ForageMass result = 
+		get_max_intake_as_total_mass(prop_mj, energy_content, KG_TOTAL);
+
+	CHECK( result.sum() == Approx(KG_TOTAL) );
+
+	// convert mass back to energy
+	ForageMass mj = result * energy_content;
+	const double mj_total = mj.sum();
+
+	// The relation between each energy component towards the total
+	// energy must stay the same. 
+	for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+			ft != FORAGE_TYPES.end(); ft++)
+		CHECK( mj[*ft]             / mj.sum()
+				== Approx(prop_mj[*ft] / prop_mj.sum()) );
+}
+
+TEST_CASE("Fauna::GetDigestiveLimitIlliusGordon1992", "") {
+	CHECK_THROWS( GetDigestiveLimitIlliusGordon1992(-1.0, DT_RUMINANT) );
+	CHECK_THROWS( GetDigestiveLimitIlliusGordon1992(0.0, DT_RUMINANT) );
 
 	const Digestibility digestibility(0.5);
 
 	SECTION("exceptions"){
 		const Digestibility digestibility(0.5);
 		const double AD = 100.0;
-		GetDigestiveLimitIllius1992 rum(AD, DT_RUMINANT);
+		GetDigestiveLimitIlliusGordon1992 rum(AD, DT_RUMINANT);
 		CHECK_THROWS( rum(AD+1, digestibility) );
 		CHECK_THROWS( rum(0.0, digestibility) );
 		CHECK_THROWS( rum(-1.0, digestibility) );
@@ -1013,8 +1171,8 @@ TEST_CASE("Fauna::GetDigestiveLimitIllius1992", "") {
 	SECTION("check some example numbers"){
 		const double ADULT = 40.0; // adult weight, [kg]
 		const double CURRENT = 20.0; // current weight [kg]
-		GetDigestiveLimitIllius1992 rum(ADULT, DT_RUMINANT);
-		GetDigestiveLimitIllius1992 hind(ADULT, DT_HINDGUT);
+		GetDigestiveLimitIlliusGordon1992 rum(ADULT, DT_RUMINANT);
+		GetDigestiveLimitIlliusGordon1992 hind(ADULT, DT_HINDGUT);
 
 		SECTION("...for grass"){
 			const double d = digestibility[FT_GRASS];
@@ -1032,9 +1190,9 @@ TEST_CASE("Fauna::GetDigestiveLimitIllius1992", "") {
 
 	SECTION("pre-adult has less capacity"){
 		const double ADULT = 100.0;
-		GetDigestiveLimitIllius1992 rum(ADULT, DT_RUMINANT);
+		GetDigestiveLimitIlliusGordon1992 rum(ADULT, DT_RUMINANT);
 		CHECK( rum(ADULT/2, digestibility) < rum(ADULT, digestibility) );
-		GetDigestiveLimitIllius1992 hind(ADULT, DT_HINDGUT);
+		GetDigestiveLimitIlliusGordon1992 hind(ADULT, DT_HINDGUT);
 		CHECK( hind(ADULT/2, digestibility) < hind(ADULT, digestibility) );
 	}
 
@@ -1042,10 +1200,10 @@ TEST_CASE("Fauna::GetDigestiveLimitIllius1992", "") {
 		const double AD1 = 100.0;
 		const double AD2 = AD1 * 1.4;
 		const Digestibility DIG(.5);
-		CHECK( GetDigestiveLimitIllius1992(AD1, DT_HINDGUT)(AD1, DIG)
-				<  GetDigestiveLimitIllius1992(AD2, DT_HINDGUT)(AD2, DIG));
-		CHECK( GetDigestiveLimitIllius1992(AD1, DT_RUMINANT)(AD1, DIG)
-				<  GetDigestiveLimitIllius1992(AD2, DT_RUMINANT)(AD2, DIG));
+		CHECK( GetDigestiveLimitIlliusGordon1992(AD1, DT_HINDGUT)(AD1, DIG)
+				<  GetDigestiveLimitIlliusGordon1992(AD2, DT_HINDGUT)(AD2, DIG));
+		CHECK( GetDigestiveLimitIlliusGordon1992(AD1, DT_RUMINANT)(AD1, DIG)
+				<  GetDigestiveLimitIlliusGordon1992(AD2, DT_RUMINANT)(AD2, DIG));
 	}
 
 	SECTION("higher digestibility brings higher capacity"){
@@ -1053,7 +1211,7 @@ TEST_CASE("Fauna::GetDigestiveLimitIllius1992", "") {
 		const Digestibility DIG1(.8);
 		const Digestibility DIG2(.9);
 		{ // RUMINANT
-			const GetDigestiveLimitIllius1992 rumi(ADULT, DT_RUMINANT);
+			const GetDigestiveLimitIlliusGordon1992 rumi(ADULT, DT_RUMINANT);
 
 			INFO("Ruminant, digestibility="<<DIG1[FT_GRASS]);
 			INFO("grass: "<<rumi(ADULT,DIG1)[FT_GRASS]);
@@ -1064,7 +1222,7 @@ TEST_CASE("Fauna::GetDigestiveLimitIllius1992", "") {
 			CHECK( rumi(ADULT, DIG1) < rumi(ADULT, DIG2) );
 		}
 		{ // HINDGUT
-			const GetDigestiveLimitIllius1992 hind(ADULT, DT_HINDGUT);
+			const GetDigestiveLimitIlliusGordon1992 hind(ADULT, DT_HINDGUT);
 
 			INFO("Hindgut, digestibility="<<DIG1[FT_GRASS]);
 			INFO("grass: "<<hind(ADULT,DIG1)[FT_GRASS]);
@@ -1079,11 +1237,40 @@ TEST_CASE("Fauna::GetDigestiveLimitIllius1992", "") {
 	SECTION("zero digestibility => zero energy"){
 		const double ADULT = 100.0;
 		const Digestibility ZERO(0.0);
-		CHECK( GetDigestiveLimitIllius1992(ADULT, DT_HINDGUT)(ADULT, ZERO)
+		CHECK( GetDigestiveLimitIlliusGordon1992(ADULT, DT_HINDGUT)(ADULT, ZERO)
 				== 0.0 );
-		CHECK( GetDigestiveLimitIllius1992(ADULT, DT_RUMINANT)(ADULT, ZERO)
+		CHECK( GetDigestiveLimitIlliusGordon1992(ADULT, DT_RUMINANT)(ADULT, ZERO)
 				== 0.0 );
 	}
+}
+
+TEST_CASE("Fauna::GetForageDemands"){
+	// constructor exceptions
+	CHECK_THROWS( GetForageDemands(NULL, SEX_MALE) );
+
+	const Parameters params;
+	const Hft hft = create_hfts(1, params)[0];
+
+	GetForageDemands gfd(&hft, SEX_FEMALE);
+
+	// exceptions because not initialized
+	CHECK_THROWS( gfd(1.0) );
+
+	HabitatForage avail; // available forage
+	const ForageEnergyContent ENERGY_CONTENT(1.0); // [MJ/kgDM]
+	const double BODYMASS = hft.bodymass_female; // [kg/ind]
+
+	// exceptions during initialization
+	CHECK_THROWS( gfd.init_today(
+				1,  // day
+				avail,
+				ENERGY_CONTENT,
+				-1) ); // body mass
+
+	// initialize
+	gfd.init_today(0, avail, ENERGY_CONTENT, BODYMASS);
+
+	CHECK_THROWS( gfd(-1.0) );
 }
 
 TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {
@@ -2338,22 +2525,6 @@ TEST_CASE("FaunaSim::LogisticGrass", "") {
 		for (int i=0; i<1000000; i++) 
 			grass.grow_daily(i%365);
 		CHECK( grass.get_forage().get_mass() == Approx(grass_settings.saturation) );
-	}
-
-	SECTION("Neutral grass growth"){
-		// growth equals decay
-		grass_settings.growth_monthly.push_back(0.1);
-		grass_settings.decay_monthly.push_back(0.1);
-
-		LogisticGrass grass(grass_settings);
-
-		// Let the grass grow for one day and check it’s greater
-
-		const GrassForage before = grass.get_forage();
-		grass.grow_daily(day);
-		const GrassForage after = grass.get_forage();
-
-		CHECK( after.get_mass() == Approx(before.get_mass()) );
 	}
 
 	SECTION("Negative grass growth"){

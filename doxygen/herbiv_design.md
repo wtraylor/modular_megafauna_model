@@ -96,8 +96,9 @@ All these classes inherit from \ref Fauna::ForageBase.
 Any type-specific properties are defined by \ref Fauna::Habitat::get_available_forage().
 They can be used for example in algorithms of 
 [forage distribution](\ref Fauna::DistributeForage),
-[diet composition](\ref Fauna::ComposeDietInterface), or
-[foraging limits](\ref herbiv_foraging.h).
+[diet composition](\ref Fauna::GetForageDemands::get_diet_composition),
+[digestion limits](\ref Fauna::GetForageDemands::get_max_digestion), or
+[foraging limits](\ref Fauna::GetForageDemands::get_max_foraging).
 
 @startuml "Forage classes in the herbivory module."
 	!include herbiv_diagrams.iuml!forage_classes
@@ -128,9 +129,9 @@ The herbivore class itself can be seen as a mere framework (compare \ref sec_inv
 - Its **energy needs**, defined by \ref Fauna::Hft::expenditure_model.
 The herbivore is self-responsible to call the implementation of the given expenditure model.
 (A strategy pattern would not work here as different expenditure models need to know different variables.)
+- How much the herbivore **is able to digest** is limited by a single algorithm defined in \ref Fauna::Hft::digestive_limit.
 - How much the herbivore **is able to forage** can be constrained by various factors which are defined as a set of \ref Fauna::Hft::foraging_limits.
-- The **diet composition** (i.e. feeding preferences in a scenario with multiple forage types) is controlled by a [strategy](\ref sec_strategy) object that implements \ref Fauna::ComposeDietInterface.
-HerbivoreBase instantiates the object itself according to \ref Fauna::Hft::diet_composer.
+- The **diet composition** (i.e. feeding preferences in a scenario with multiple forage types) is controlled by a the model selected in \ref Fauna::Hft::diet_composer, whose implementation may be called in \ref Fauna::GetForageDemands::get_diet_composition().
 - How much **net energy** the herbivore is able to gain from feeding on forage is calculated by an implementation of \ref Fauna::GetNetEnergyContentInterface 
 ([constructor injection](\ref sec_inversion_of_control)).
 - **Death** of herbivores is controlled by a set of \ref Fauna::Hft::mortality_factors. 

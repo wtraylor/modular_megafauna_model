@@ -59,17 +59,33 @@ population class.
 A foraging limit constrains the daily uptake of forage mass by a herbivore individual.
 Foraging limits are implemented as functors (without using the [strategy design pattern](\ref sec_strategy), though).
 Which ones are activated is defined by \ref Fauna::Hft::foraging_limits.
-They are called in \ref Fauna::HerbivoreBase::get_max_foraging().
+They are called in \ref Fauna::GetForageDemands::get_max_foraging().
 
 - Add a new enum entry in \ref Fauna::ForagingLimit.
 - Parameters:
 	+ In \ref Fauna::ParamReader::callback() add a string identifier for your implementation under `CB_FORAGING_LIMITS` (also in the error message).
 	+ Add that identifier in the help message under \ref Fauna::ParamReader::declare_parameters().
 	+ Document your option in the example instruction file `data/ins/herbivores.ins`.
-- Implement your foraging limit (preferably as a function object in the file \ref herbiv_foraging.h). 
+- Implement your foraging limit (preferably as a function object in the file \ref herbiv_foraging.h, but you can do as you wish). 
 Make sure that an exception is thrown if it is called with an unknown forage type.
-- Call your implementation in \ref Fauna::HerbivoreBase::get_max_foraging().
+- Call your implementation in \ref Fauna::GetForageDemands::get_max_foraging().
 - Update the UML diagram in \ref sec_herbiv_herbivorebase.
+
+### How to add a new digestive limit {#sec_herbiv_new_digestive_limit}
+On top of foraging limitations, the daily forage uptake can be constrained by maximum digestive throughput.
+The implementation is almost parallel to a [foraging limit](\ref sec_herbiv_new_foraging_limit).
+You can choose 
+
+- Add a new enum entry in \ref Fauna::DigestiveLimit.
+- Parameters:
+	+ In \ref Fauna::ParamReader::callback() add a string identifier for your implementation under `CB_DIGESTIVE_LIMIT` (also in the error message).
+	+ Add that identifier in the help message under \ref Fauna::ParamReader::declare_parameters().
+	+ Document your option in the example instruction file `data/ins/herbivores.ins`.
+- Implement your digestive limit algorithm as a free function or an object.
+Make sure that an exception is thrown if it is called with an unknown forage type.
+- Call your implementation in \ref Fauna::GetForageDemands::get_max_digestion().
+- Update the UML diagram in \ref sec_herbiv_herbivorebase.
+
 
 ### How to add a new reproduction model {#sec_herbiv_new_reproduction_model}
 A reproduction model defines the offspring per female individual for each simulation day.
@@ -85,15 +101,15 @@ A reproduction model defines the offspring per female individual for each simula
 
 ### How to add a new diet composer {#sec_herbiv_new_diet}
 In a scenario with multiple forage types, the herbivore decides what to include in its diet.
-This decision is modelled by an implementation of the [strategy](\ref sec_strategy) class interface \ref Fauna::ComposeDietInterface.
-You can implement your own model by deriving a class from the interface.
+This decision is modelled by an implementation of a so called “diet composer model”: \ref Fauna::DietComposer.
+You can implement your own model as a new class or a simple function; just call it in \ref Fauna::GetForageDemands::get_diet_composition().
 
 - Parameters:
 	+ Create a new enum entry in \ref Fauna::DietComposer.
 	+ Parse the parameter in \ref Fauna::ParamReader::callback() under `CB_DIET_COMPOSER` and expand the error message with your string identifier.
 	+ Add your string identifier to the help output in \ref Fauna::ParamReader::declare_parameters().
 	+ Document your model in the comments of the example instruction file: `data/ins/herbivores.ins`.
-- Call your model in \ref Fauna::HerbivoreBase::compose_diet().
+- Call your model in \ref Fauna::GetForageDemands::get_diet_composition().
 - Update the UML diagram in \ref sec_herbiv_herbivorebase.
 
 ### How to add a new mortality factor {#sec_herbiv_new_mortality}
@@ -130,7 +146,7 @@ Forage Tutorials {#sec_herbiv_tutor_forage}
 - Extend \ref Fauna::GetNetEnergyContentDefault.
 
 - Herbivores
-	+ Check all foraging limits (\ref herbiv_foraging.h) whether they need to be expanded.
+	+ Check all foraging and digestion limits (\ref herbiv_foraging.h) whether they need to be expanded.
 	+ Check also all models for net energy content (\ref herbiv_forageenergy.h).
 	+ Probably you will need to implement [a new diet composer](\ref sec_herbiv_new_diet) or adjust existing ones.
 

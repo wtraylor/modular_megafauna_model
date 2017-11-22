@@ -116,17 +116,26 @@
 	}
 	HerbivoreBase .up.> "1" "Reproduction"
 	package "Diet" <<rectangle>> {
-		interface ComposeDietInterface <<strategy>>
-		ComposeDietInterface <|-- PureGrazerDiet
+		enum DietComposer{
+		  DC_PURE_GRAZER
+		}
 	}
 	HerbivoreBase  .up.> "1" "Diet"
 	package "Energy Expenditure" <<rectangle>>  {
 		annotation "get_expenditure_taylor_1981()"
 	}
 	HerbivoreBase  ..> "1" "Energy Expenditure"
+    package "Digestive Limit" <<rectangle>>  {
+    enum DigestiveLimit{
+      DL_NONE,
+      DL_BODYMASS_FRACTION,
+      DL_ILLIUS_GORDON_1992
+	} 
+    HerbivoreBase  ..> "*" "Digestive Limit"
 	package "Foraging Limits" <<rectangle>>  {
-		class GetDigestiveLimitIllius1992 <<functor>>
-    class HalfMaxIntake     <<functor>>
+    enum ForagingLimit{
+      FL_ILLIUS_OCONNOR_2000
+    }
 	} 
 	HerbivoreBase  ..> "*" "Foraging Limits"
 	package "Mortality" <<rectangle>> {

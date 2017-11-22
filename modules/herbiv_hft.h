@@ -32,16 +32,27 @@ namespace Fauna{
 		DT_RUMINANT 
 	};
 
+	/// Algorithm to calculate the daily digestive capacity of a herbivore.
+	enum DigestiveLimit{
+		/// No digestive limit.
+		DL_NONE,
+
+		/// Dry-matter ingestion is limited to a constant fraction of 
+		/// live herbivore body mass.
+		DL_BODYMASS_FRACTION,
+
+		/// Limit digestive limit with \ref GetDigestiveLimitIlliusGordon1992.
+		DL_ILLIUS_GORDON_1992
+	};
+
 	/// Algorithm to calculate a herbivore’s daily energy needs.
 	enum ExpenditureModel{
 		/// Formula for cattle, see \ref get_expenditure_taylor_1981.
 		EM_TAYLOR_1981
 	};
 
-	/// A factor limiting a herbivore’s daily forage intake.
+	/// A factor limiting a herbivore’s daily forage harvesting.
 	enum ForagingLimit{
-		/// Foraging is limited by digestion, see \ref GetDigestiveLimitIllius1992
-		FL_DIGESTION_ILLIUS_1992,
 
 		/// Foraging is limited by a functional response towards digestion limit.
 		/**
@@ -49,11 +60,14 @@ namespace Fauna{
 		 * food intake rate as a Holling Type II functional response 
 		 * (compare \ref HalfMaxIntake).
 		 * As the maximum daily energy intake they choose the digestive
-		 * capacity (compare \ref GetDigestiveLimitIllius1992).
+		 * capacity (compare \ref GetDigestiveLimitIlliusGordon1992).
 		 *
 		 * Like in the model of Pachzelt et al. (2013) 
-		 * \cite pachzelt_coupling_2013, the grass forage density of the whole
-		 * patch (habitat) is used (not the sward density 
+		 * \cite pachzelt_coupling_2013, the grass forage density of the 
+		 * whole patch (habitat) is used (not the sward density 
+		 *
+		 * \note This model for maximum foraging works only for pure grazers
+		 * (⇒ \ref DC_PURE_GRAZER).
 		 * \ref GrassForage::get_sward_density()).
 		 * \see \ref Hft::half_max_intake_density
 		 */
@@ -150,13 +164,20 @@ namespace Fauna{
 			/// Type of digestion (ruminant or hindgut fermenter)
 			DigestionType digestion_type;
 
+			/// Constraints for maximum daily forage intake.
+			DigestiveLimit digestive_limit;
+
 			/// Habitat population density for initial establishment [ind/km²]
 			double establishment_density;
 
 			/// Energy expenditure model for herbivores.
 			ExpenditureModel expenditure_model;
 
-			/// Constraints for maximum daily forage intake.
+			/// Max dry-matter intake as fraction of body mass.
+			/** Only relevant for \ref DL_BODYMASS_FRACTION. */
+			double digestion_bodymass_fraction;
+
+			/// Constraints for maximum daily forage procurement.
 			std::set<ForagingLimit> foraging_limits;
 
 			/// Grass density [gDM/m²] where intake is half of its maximum.

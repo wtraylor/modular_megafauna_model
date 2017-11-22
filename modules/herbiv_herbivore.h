@@ -10,13 +10,18 @@
 
 #include <memory>                 // for std::auto_ptr
 #include "herbiv_forageclasses.h" // for ForageMass
-#include "herbiv_outputclasses.h" // for FaunaOut::HerbivoreData
+#include "herbiv_utils.h"         // for Sex
+
+// Forward declarations
+namespace FaunaOut{
+	class HerbivoreData;
+}
 
 namespace Fauna{
 
 	// Forward declaration of classes in the same namespace
-	class ComposeDietInterface;
 	class FatmassEnergyBudget;
+	class GetForageDemands;
 	class GetNetEnergyContentInterface;
 	class Hft;
 
@@ -54,6 +59,9 @@ namespace Fauna{
 		/// Get the forage the herbivore would like to eat today.
 		/**
 		 * Call this after \ref simulate_day().
+		 * \note This may be called multiple times a day in order to allow
+		 * switching to another forage type!
+		 *
 		 * \param available_forage Available forage in the habitat
 		 * [kgDM/km²].
 		 * \return Dry matter forage *per m²* that the herbivore 
@@ -77,21 +85,20 @@ namespace Fauna{
 		/// Simulate daily events.
 		/** 
 		 * Call this before \ref get_forage_demands().
-		 * \param[in] day current day of year, 0=Jan. 1st
-		 * \param[out] offspring Number of newborn today [ind/km²]
+		 * \param[in] day Current day of year, 0=Jan. 1st.
+		 * \param[out] offspring Number of newborn today [ind/km²].
 		 * \throw std::invalid_argument If `day` not in [0,364].
 		 */
 		virtual void simulate_day(const int day,
 				double& offspring) = 0;
 	};
 
-	/// The sex of a herbivore
-	enum Sex {SEX_FEMALE, SEX_MALE};
-	
-
 	/// Abstract base class for herbivores.
 	/**
 	 * Calculations are generally performed *per* individual.
+	 *
+	 * \note Several member variables are declared as std::auto_ptr. This
+	 * is done in order to reduce header includes here.
 	 * \see \ref sec_herbiv_herbivoredesign
 	 */
 	class HerbivoreBase: public HerbivoreInterface{
@@ -108,9 +115,7 @@ namespace Fauna{
 				return *hft;
 			}
 			virtual double get_kg_per_km2() const;
-			virtual const FaunaOut::HerbivoreData& get_todays_output()const{
-				return current_output;
-			};
+			virtual const FaunaOut::HerbivoreData& get_todays_output()const;
 			virtual void simulate_day(const int day, double& offspring);
 		public:
 			/// Current age in days.
@@ -144,10 +149,9 @@ namespace Fauna{
 			double get_potential_bodymass()const;
 
 			/// Current day of the year, as set in \ref simulate_day().
-			int get_today()const{
-				assert(today>=0 && today<365);
-				return today;
-			}
+			/** \throw std::logic_error If current day not yet set by an
+			 * initial call to \ref simulate_day(). */
+			int get_today()const;
 
 			/// The sex of the herbivore
 			Sex get_sex()const{return sex;}
@@ -185,8 +189,8 @@ namespace Fauna{
 			HerbivoreBase& operator=(const HerbivoreBase& other);
 
 			/// Destructor
-			// std::auto_ptr cleans up itself, no need to do implement
-			// anything in the destructor
+			// Note that std::auto_ptr cleans up itself, no need to do
+			// implement anything in the destructor.
 			~HerbivoreBase(){} 
 
 			/// Apply a fractional mortality.
@@ -209,9 +213,7 @@ namespace Fauna{
 			/**@}*/
 
 			/// Class-internal read/write access to current output.
-			FaunaOut::HerbivoreData& get_todays_output(){
-				return current_output;
-			}
+			FaunaOut::HerbivoreData& get_todays_output();
 
 		private: 
 			/// Calculate mortality according to \ref Hft::mortality_factors.
@@ -219,28 +221,32 @@ namespace Fauna{
 			 * child classes.*/
 			void apply_mortality_factors_today();
 
-			/// The \ref ComposeDietInterface selected by \ref Hft::diet_composer.
-			/** \return Reference to the function object to define
-			 * diet composition 
-			 * \throw std::logic_error if \ref Hft::diet_composer not
+			/// Compose diet from different forage types according to parameters.
+			/** 
+			 * \ref Hft::diet_composer defines the algorithm used to put 
+			 * together the fractions of different forage types in the preferred
+			 * diet for each day.
+			 * Note that this function may be called several times a day in
+			 * cases of food scarcity, when the available forage needs to be
+			 * split among herbivores according to their needs
+			 * (see \ref DistributeForage).
+			 * This allows for switching to another, less preferred, forage
+			 * type if the first choice is not available anymore.
+			 *
+			 * \param available_forage The total forage currently in the habitat.
+			 * This is being shared with all other herbivores in the same 
+			 * habitat.
+			 * \param energy_demand The ‘hunger’ today: What would be eaten if
+			 * resources are unlimited [MJ/ind].
+			 * \return The fractional composition of the diet for today. The
+			 * sum is always 1.0, e.g. 60% grass + 40% browse = 100% total.
+			 * \throw std::logic_error If \ref Hft::diet_composer not
 			 * implemented.
+			 * \throw std::logic_error If the selected algorithm does not
+			 * produce a sum of fractions that equals 1.0 (100%).
 			 */
-			ComposeDietInterface& compose_diet()const;
-
-			/// Get the amount of forage the herbivore would be able to forage [kgDM/day/ind]
-			/**
-			 * Each forage type is calculated independently: is if the
-			 * herbivore would only eat *one* type of forage.
-			 * All foraging limits (\ref Hft::foraging_limits) are 
-			 * considered.
-			 * \param available_forage forage in the habitat
-			 * \return maximum potentially foraged dry matter of 
-			 * each forage type [kgDM/day/ind]
-			 * \throw std::logic_error if a \ref ForagingLimit is not
-			 * implemented
-			 */
-			ForageMass get_max_foraging(
-					const HabitatForage& available_forage)const;
+			ForageFraction compose_diet(const HabitatForage& available_forage,
+					const double energy_demand)const;
 
 			/// Forage net energy content given by the selected algorithm \ref Hft::net_energy_model.
 			/** 
@@ -269,11 +275,16 @@ namespace Fauna{
 
 			/// @{ \name State Variables
 			int age_days;
+			// use auto_ptr to reduce dependencies:
 			std::auto_ptr<FatmassEnergyBudget> energy_budget;
 			int today;
 			/** @} */ // state variables
 
-			FaunaOut::HerbivoreData current_output;
+			/// @{ \name Helper Classes
+			// use auto_ptr to reduce dependencies:
+			std::auto_ptr<FaunaOut::HerbivoreData> current_output;
+			std::auto_ptr<GetForageDemands> get_forage_demands_per_ind;
+			/** @} */ // Helper Classes
 
 			/// @{ \name Constants
 			const Hft* hft;

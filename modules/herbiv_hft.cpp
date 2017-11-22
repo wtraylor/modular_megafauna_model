@@ -28,8 +28,11 @@ Hft::Hft():
 	breeding_season_length(60),
 	breeding_season_start(120),
 	establishment_density(10.0),
+	diet_composer(DC_PURE_GRAZER),
 	digestion_type(DT_RUMINANT),
+	digestive_limit(DL_NONE),
 	expenditure_model(EM_TAYLOR_1981),
+	digestion_bodymass_fraction(0.02),
 	half_max_intake_density(20),
 	lifespan(10),
 	maturity_age_phys_female(3),
@@ -109,6 +112,11 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
+		if (digestive_limit == DL_NONE) {
+			stream << "Warning: No digestive limit defined."<<std::endl;
+			// the HFT is still valid (e.g. for testing purpose)
+		}
+
 		if (establishment_density <= 0.0) {
 			stream << "establishment_density must be >=0.0 ("
 				<<establishment_density<<")"<<std::endl;
@@ -136,7 +144,14 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 
 		if (foraging_limits.empty()) {
 			stream << "Warning: No foraging limits defined."<<std::endl;
-			// still valid (for testing purpose)
+			// the HFT is still valid (e.g. for testing purpose)
+		}
+
+		if (foraging_limits.count(FL_ILLIUS_OCONNOR_2000) &&
+				diet_composer != DC_PURE_GRAZER) {
+			stream << "`ILLIUS_OCONNOR_2000` is set as a foraging limit and"
+				"requires a pure grass diet." << std::endl;
+			is_valid = false;
 		}
 
 		if (foraging_limits.count(FL_ILLIUS_OCONNOR_2000) &&
@@ -144,6 +159,14 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			stream << "half_max_intake_density must be >0 "
 				"if `ILLIUS_OCONNOR_2000` is set as a foraging limit."
 				<< " (current value: "<<half_max_intake_density<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (digestive_limit == DL_BODYMASS_FRACTION &&
+				!(digestion_bodymass_fraction > 0.0 && digestion_bodymass_fraction < 1.0)){
+			stream << "`digestion_bodymass_fraction` must be in interval (0,1) "
+				"if `bodymass_fraction` is set as a digestive limit."
+				<< " (current value: "<<digestion_bodymass_fraction<<")"<<std::endl;
 			is_valid = false;
 		}
 

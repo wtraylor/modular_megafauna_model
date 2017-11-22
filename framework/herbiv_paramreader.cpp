@@ -195,9 +195,13 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				mandatory_hft_params.push_back(MandatoryParam(
 							"digestion_type", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
+							"digestive_limit", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
 							"establishment_density", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
 							"expenditure_model", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"foraging_limits", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
 							"net_energy_model", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
@@ -219,6 +223,11 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					mandatory_hft_params.push_back(MandatoryParam(
 								"mortality_juvenile", req_str +
 								" and \"background\" in mortality_factors"));
+				}
+				if (current_hft.digestive_limit == DL_BODYMASS_FRACTION){
+					mandatory_hft_params.push_back(MandatoryParam(
+								"digestion_bodymass_fraction", req_str +
+								" and \"bodymass_fraction\" is digestive limit."));
 				}
 				if (current_hft.foraging_limits.count(FL_ILLIUS_OCONNOR_2000)){
 					mandatory_hft_params.push_back(MandatoryParam(
@@ -369,15 +378,33 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		} 
 	}
 
+	if (callback == CB_DIGESTIVE_LIMIT) {
+		if (strparam == "NONE")
+			current_hft.digestive_limit = DL_NONE;
+		else if (strparam == "BODYMASS_FRACTION")
+			current_hft.digestive_limit = DL_BODYMASS_FRACTION;
+		else if (strparam == "ILLIUS_GORDON_1992")
+			current_hft.digestive_limit = DL_ILLIUS_GORDON_1992;
+		// add new digestive limits here
+		else {
+			sendmessage("Error", std::string(
+						"Unknown digestive limit: \""
+						+strparam+"\". "
+						"Valid types: "
+						"\"none\", \"bodymass_fraction\", \"illius_gordon_1992\"").c_str());
+			plibabort();
+		} 
+	}
+
 	if (callback == CB_EXPENDITURE_MODEL) {
 		if (strparam == "TAYLOR_1981")
 			current_hft.expenditure_model = EM_TAYLOR_1981;
 		// add other models here
 		else {
 			sendmessage("Error", std::string(
-					"Unknown expenditure model"
-					"in HFT \""+current_hft.name+"\"; valid types: "
-					"\"taylor_1981\"").c_str()); // add more here
+						"Unknown expenditure model"
+						"in HFT \""+current_hft.name+"\"; valid types: "
+						"\"taylor_1981\"").c_str()); // add more here
 			plibabort();
 		}
 	} 
@@ -400,9 +427,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				
 		std::list<std::string>::const_iterator itr;
 		for (itr = token_list.begin(); itr != token_list.end(); itr++){
-			if (*itr == "DIGESTION_ILLIUS_1992") 
-				current_hft.foraging_limits.insert(FL_DIGESTION_ILLIUS_1992);
-			else if (*itr == "ILLIUS_OCONNOR_2000") 
+			if (*itr == "ILLIUS_OCONNOR_2000") 
 				current_hft.foraging_limits.insert(FL_ILLIUS_OCONNOR_2000);
 			// add new foraging limits here
 			else {
@@ -410,7 +435,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 							"Unknown foraging limit: \""
 							+*itr+"\". "
 							"Valid types: "
-							"\"digestion_illius_1992\", \"illius_oconnor_2000\"").c_str());
+							"\"illius_oconnor_2000\"").c_str());
 				plibabort();
 			} 
 		}
@@ -421,10 +446,12 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			ppft->herbiv_params.forage_type = FT_INEDIBLE;
 		else if (strparam == to_upper(get_forage_type_name(FT_GRASS))) 
 			ppft->herbiv_params.forage_type = FT_GRASS;
+		// ** add new forage types here **
 		else {
-			sendmessage("Error",
-					"Unknown forage type; valid types: "
-					"\"inedible\", \"grass\"");
+			sendmessage("Error", std::string(
+					"Unknown forage type: \"" + strparam + "\". "
+					"Valid types: "
+					"\"inedible\", \"grass\"").c_str());
 			plibabort();
 		}
 	}
@@ -689,6 +716,14 @@ void ParamReader::declare_parameters(
 				CB_DIGESTION_TYPE,
 				"Digestion type: \"ruminant\", \"hindgut\"");
 
+		declareitem("digestive_limit",
+				&strparam,
+				256, // max length of string
+				CB_DIGESTIVE_LIMIT,
+				"Digestive constraint for daily herbivore food intake."
+				"Possible values: "
+				"\"none\", \"bodymass_fraction\", \"illius_gordon_1992\"");
+
 		declareitem("establishment_density",
 				&current_hft.establishment_density,
 				DBL_MIN, DBL_MAX, // min, max
@@ -704,13 +739,21 @@ void ParamReader::declare_parameters(
 				"Possible values: "
 				"\"taylor_1981\", "); 
 
+		declareitem("digestion_bodymass_fraction",
+				&current_hft.digestion_bodymass_fraction,
+				0.000001, 0.999, // min, max
+				1,                // number of parameters
+				CB_NONE,
+				"Total maximum daily dry-matter intake as fraction of body mass "
+				"[kgDM/kg].");
+
 		declareitem("foraging_limits",
 				&strparam,
 				256, // max length of string
 				CB_FORAGING_LIMITS,
 				"Comma-separated list of constraints of herbivore forage intake. "
 				"Possible values: "
-				"\"digestion_illius_1992\", \"illius_oconnor_2000\"");
+				"\"bodymass_fraction\", \"digestion_illius_1992\", \"illius_oconnor_2000\"");
 
 		declareitem("half_max_intake_density",
 				&current_hft.half_max_intake_density,
