@@ -32,17 +32,23 @@ bool PftParams::is_valid(const Parameters& params,
 		is_valid = false;
 	}
 
-	if (params.digestibility_model == DM_PFT_FIXED &&
-			forage_type != FT_INEDIBLE) {
-		if (digestibility <= 0.0){
-			stream << "digestibility <= 0.0" << std::endl;
-			is_valid = false;
-		}
-		if (digestibility > 1.0){
-			stream << "digestibility > 1.0" << std::endl;
-			is_valid = false;
+	if (forage_type != FT_INEDIBLE) {
+
+		if (params.digestibility_model == DM_PFT_FIXED) {
+			if (digestibility <= 0.0){
+				stream << "digestibility <= 0.0" << std::endl;
+				is_valid = false;
+			}
+			if (digestibility > 1.0){
+				stream << "digestibility > 1.0" << std::endl;
+				is_valid = false;
+			}
 		}
 
+		if (inaccessible_forage < 0.0){
+			stream << "inaccessible_forage < 0.0" << std::endl;
+			is_valid = false;
+		}
 	}
 
 	// convert stream to string

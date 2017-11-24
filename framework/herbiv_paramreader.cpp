@@ -872,7 +872,15 @@ void ParamReader::declare_parameters(
 				DBL_MIN, 1.0, // min, max
 				1,            // number of parameters
 				CB_NONE,
-				"Herbivory: Fractional digestibility of herbivore forage for ruminants");
+				"Herbivory: Fractional digestibility of herbivore forage for ruminants.");
+
+		declareitem("inaccessible_forage",
+				&ppft->herbiv_params.inaccessible_forage,
+				0.0, DBL_MAX, // min, max
+				1,            // number of parameters
+				CB_NONE,
+				"Herbivory: Carbon mass of edible plant compartment that is "
+				"inaccessible for herbivores [kgC/m²].");
 
 		declareitem("forage_type",
 				&strparam,

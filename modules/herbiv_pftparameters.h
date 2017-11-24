@@ -37,6 +37,12 @@ namespace Fauna {
 		 */
 		double digestibility;
 
+		/// Carbon mass inaccessible to herbivores [kgC/m²].
+		/** 
+		 * This is per plant individual and for the edible compartment of the
+		 * plant: For grass, this refers to \ref Individual::cmass_leaf.*/
+		double inaccessible_forage;
+
 		/// Forage type of this plant type.
 		/** Use \ref Fauna::FT_INEDIBLE to exclude it from being eaten.*/
 		Fauna::ForageType forage_type;
@@ -52,7 +58,9 @@ namespace Fauna {
 		PftParams(const Pft& pft):pft(pft),
 		c_in_dm_forage(0.5),
 		digestibility(0.5),
-		forage_type(FT_INEDIBLE){}
+		forage_type(FT_INEDIBLE),
+		inaccessible_forage(0.0)
+		{}
 
 		/// Check if the parameters are valid
 		/**
