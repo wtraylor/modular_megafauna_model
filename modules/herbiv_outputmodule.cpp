@@ -116,15 +116,25 @@ HerbivoryOutput::HerbivoryOutput():
 			"Offspring produced per day.",
 			"ind/km²/day",
 			CS_HFT),
-	TBL_EATEN_IND(
+	TBL_EATEN_PER_IND(
 			"file_herbiv_eaten_ind",
 			"Forage eaten by herbivore individuals per day.",
 			"kgDM/ind/day",
 			CS_HFT_FORAGE),
-	TBL_ENERGY_INTAKE(
-			"file_herbiv_energy_intake",
-			"Herbivore net energy intake from forage.",
+	TBL_EATEN_PER_MASS(
+			"file_herbiv_eaten_per_mass",
+			"Forage eaten per day per herbivore mass.",
+			"kgDM/kg/day",
+			CS_HFT_FORAGE),
+	TBL_ENERGY_INTAKE_PER_IND(
+			"file_herbiv_energy_intake_per_ind",
+			"Herbivore net energy intake from forage per individual.",
 			"MJ/ind/day",
+			CS_HFT_FORAGE),
+	TBL_ENERGY_INTAKE_PER_MASS(
+			"file_herbiv_energy_intake_per_mass",
+			"Herbivore net energy intake from forage per herbivore mass.",
+			"MJ/kg/day",
 			CS_HFT_FORAGE),
 	TABLEFILES(init_tablefiles())
 {
@@ -179,7 +189,8 @@ const std::vector<HerbivoryOutput::TableFile*> HerbivoryOutput::init_tablefiles(
 		list.push_back(&TBL_AVAILABLE_FORAGE);
 		list.push_back(&TBL_DIGESTIBILITY);
 		list.push_back(&TBL_EATEN_FORAGE);
-		list.push_back(&TBL_ENERGY_INTAKE);
+		list.push_back(&TBL_ENERGY_INTAKE_PER_IND);
+		list.push_back(&TBL_ENERGY_INTAKE_PER_MASS);
 		list.push_back(&TBL_BODYFAT);
 		list.push_back(&TBL_EXPENDITURE);
 		list.push_back(&TBL_INDDENS);
@@ -188,7 +199,8 @@ const std::vector<HerbivoryOutput::TableFile*> HerbivoryOutput::init_tablefiles(
 		list.push_back(&TBL_MORT_LIFESPAN);
 		list.push_back(&TBL_MORT_STARVATION);
 		list.push_back(&TBL_OFFSPRING);
-		list.push_back(&TBL_EATEN_IND);
+		list.push_back(&TBL_EATEN_PER_IND);
+		list.push_back(&TBL_EATEN_PER_MASS);
 	}
 	return list;
 }
@@ -548,10 +560,14 @@ void HerbivoryOutput::write_datapoint(
 			for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
 					ft!=FORAGE_TYPES.end(); ft++)
 			{
-				output_rows.add_value(TBL_EATEN_IND.table,
-						herbidata.eaten_forage[*ft]);
-				output_rows.add_value(TBL_ENERGY_INTAKE.table,
-						herbidata.energy_intake[*ft]);
+				output_rows.add_value(TBL_EATEN_PER_IND.table,
+						herbidata.eaten_forage_per_ind[*ft]);
+				output_rows.add_value(TBL_EATEN_PER_MASS.table,
+						herbidata.eaten_forage_per_mass[*ft]);
+				output_rows.add_value(TBL_ENERGY_INTAKE_PER_IND.table,
+						herbidata.energy_intake_per_ind[*ft]);
+				output_rows.add_value(TBL_ENERGY_INTAKE_PER_MASS.table,
+						herbidata.energy_intake_per_mass[*ft]);
 				// ** add new HFT-Forage variables here
 			}
 		} else {

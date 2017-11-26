@@ -230,8 +230,10 @@ void HerbivoreBase::eat(
 	get_energy_budget().metabolize_energy(mj_per_ind.sum());
 
 	// Add to output
-	get_todays_output().eaten_forage  += kg_per_ind;
-	get_todays_output().energy_intake += mj_per_ind;
+	get_todays_output().eaten_forage_per_ind   += kg_per_ind;
+	get_todays_output().eaten_forage_per_mass  += kg_per_ind / get_bodymass();
+	get_todays_output().energy_intake_per_ind  += mj_per_ind;
+	get_todays_output().energy_intake_per_mass += mj_per_ind / get_bodymass();
 }
 
 double HerbivoreBase::get_bodyfat()const{

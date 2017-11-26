@@ -45,7 +45,7 @@ namespace FaunaOut {
 		Fauna::HabitatForage available_forage;
 
 		/// Forage mass [kgDM/km²/day] eaten by herbivores.
-		/** This equals the sum of \ref HerbivoreData::eaten_forage over
+		/** This equals the sum of \ref HerbivoreData::eaten_forage_per_ind over
 		 * all HFTs */
 		Fauna::ForageMass eaten_forage;
 
@@ -84,8 +84,10 @@ namespace FaunaOut {
 		HerbivoreData():
 			age_years(0.0),
 			bodyfat(0.0),
-			eaten_forage(0.0),
-			energy_intake(0.0),
+			eaten_forage_per_ind(0.0),
+			eaten_forage_per_mass(0.0),
+			energy_intake_per_ind(0.0),
+			energy_intake_per_mass(0.0),
 			expenditure(0.0),
 			inddens(0.0),
 			massdens(0.0),
@@ -121,11 +123,17 @@ namespace FaunaOut {
 		/// Newborns (offspring) per day [ind/km²/day].
 		double offspring;
 
-		/// Eaten forage [kgDM/day/km²].
-		Fauna::ForageMass eaten_forage;
+		/// Eaten forage per individual [kgDM/ind/day].
+		Fauna::ForageMass eaten_forage_per_ind;
 
-		/// Intake of net energy in forage [MJ/day/km²]
-		Fauna::ForageEnergy energy_intake;
+		/// Eaten forage per body mass [kgDM/kg/day].
+		Fauna::ForageMass eaten_forage_per_mass;
+
+		/// Intake of net energy in forage per individual [MJ/ind/day]
+		Fauna::ForageEnergy energy_intake_per_ind;
+
+		/// Intake of net energy in forage per herbivore mass [MJ/kg/day]
+		Fauna::ForageEnergy energy_intake_per_mass;
 
 		/** @} */ // Per-habitat variables
 
