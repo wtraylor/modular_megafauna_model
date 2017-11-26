@@ -9,6 +9,7 @@
 #include "config.h"
 #include "herbiv_patchhabitat.h"
 #include "herbiv_digestibility.h"
+#include "herbiv_snowdepth.h"
 #include "guess.h"
 #include "assert.h"
 
@@ -20,13 +21,18 @@ using namespace Fauna;
 
 PatchHabitat::PatchHabitat(
 				Patch& patch, 
-				std::auto_ptr<GetDigestibility> digestibility_model):
+				std::auto_ptr<GetDigestibility> digestibility_model,
+				std::auto_ptr<GetSnowDepth> snow_depth_model):
 	patch(patch), 
-	get_digestibility(digestibility_model)
+	get_digestibility(digestibility_model),
+	get_snow_depth(snow_depth_model)
 {
 	if (this->get_digestibility.get() == NULL)
 		throw std::invalid_argument("Fauna::PatchHabitat::PatchHabitat() "
 				"Parameter \"digestibility_model\" is NULL.");
+	if (this->get_snow_depth.get() == NULL)
+		throw std::invalid_argument("Fauna::PatchHabitat::PatchHabitat() "
+				"Parameter \"snow_depth_model\" is NULL.");
 }
 
 HabitatForage PatchHabitat::get_available_forage() const {
@@ -124,6 +130,12 @@ HabitatForage PatchHabitat::get_available_forage() const {
   result.grass.set_fpc( grass_fpc );
 
 	return result;
+}
+
+HabitatEnvironment PatchHabitat::get_environment() const{
+	HabitatEnvironment env;
+	env.snow_depth = (*get_snow_depth)(patch);
+	return env;
 }
 
 void PatchHabitat::init_day(const int today){

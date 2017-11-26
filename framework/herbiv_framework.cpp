@@ -9,11 +9,13 @@
 #include "config.h"
 #include "herbiv_framework.h"
 #include "herbiv_digestibility.h" // for GetDigestibility
+#include "herbiv_environment.h"   // for HabitatEnvironment
 #include "herbiv_habitat.h"       // for Habitat and Population
 #include "herbiv_herbivore.h"     // for HerbivoreInterface
 #include "herbiv_hft.h"           // for Hft and HftList
 #include "herbiv_parameters.h"    // for Fauna::Parameters
-#include "herbiv_population.h"   // for HftPopulationsMap and PopulationInterface
+#include "herbiv_population.h"    // for HftPopulationsMap and PopulationInterface
+#include "herbiv_snowdepth.h"     // for GetSnowDepth implementations
 #include <stdexcept>              // for std::logic_error, std::invalid_argument
 
 using namespace Fauna;
@@ -60,7 +62,7 @@ std::auto_ptr<GetDigestibility> Simulator::create_digestibility_model()const{
 		case DM_PFT_PACHZELT2013: 
 			return std::auto_ptr<GetDigestibility>(new DigestibilityPachzelt2013()); 
 		default: throw std::logic_error("Simulator::create_digestibility_model(): "
-								 "unknown digestibility model");
+								 "Digestibility model not implemented.");
 	};
 }
 
@@ -72,6 +74,15 @@ std::auto_ptr<DistributeForage> Simulator::create_distribute_forage(){
 		default:
 			throw std::logic_error("Fauna::Simulator::distribute_forage(): "
 					"chosen forage distribution algorithm not implemented");
+	};
+}
+
+std::auto_ptr<GetSnowDepth> Simulator::create_snow_depth_model()const{
+	switch (params.snow_depth_model){
+		case SD_TEN_TO_ONE: 
+			return std::auto_ptr<GetSnowDepth>(new SnowDepthTenToOne()); 
+		default: throw std::logic_error("Simulator::create_snow_depth_model(): "
+								 "Snow depth model not implemented.");
 	};
 }
 
@@ -121,8 +132,11 @@ void Simulator::simulate_day(const int day_of_year,
 	// Habitat and herbivore output for this day.
 	FaunaOut::CombinedData todays_datapoint;
 
-	// The habitat to simulate
+	// The habitat to simulate.
 	Habitat& habitat = simulation_unit.get_habitat();
+
+	// The current abiotic conditions.
+	const HabitatEnvironment environment = habitat.get_environment();
 
 	// all populations in the habitat (one for each HFT)
 	HftPopulationsMap& populations = simulation_unit.get_populations();
@@ -190,7 +204,7 @@ void Simulator::simulate_day(const int day_of_year,
 				double offspring = 0.0;
 
 				// Let the herbivores do their simulation.
-				herbivore.simulate_day(day_of_year, offspring);
+				herbivore.simulate_day(day_of_year, environment, offspring);
 
 				// Gather the offspring.
 				total_offspring[&herbivore.get_hft()] += offspring;

@@ -561,66 +561,69 @@ namespace Fauna{
 	};
 
 	/// All values for large herbivore forage in a \ref Habitat.
-	struct HabitatForage {
-		/// Constructor with zero values
-		HabitatForage(){}
+	class HabitatForage {
+		public:
+			/// Constructor with zero values
+			HabitatForage(){}
 
-		/// The grass forage in the habitat.
-		GrassForage grass;
+			// TODO: Move this member variable to private and implement a getter.
+			/// The grass forage in the habitat.
+			GrassForage grass;
 
-		// ADD NEW FORAGE TYPES (E.G. BROWSE) HERE.
+			// ADD NEW FORAGE TYPES (E.G. BROWSE) HERE.
 
-		/// Get digestibility [fractional] for all edible forage types.
-		/** If mass is zero, digestibility is undefined.*/
-		Digestibility get_digestibility()const;
+			/// Get digestibility [fractional] for all edible forage types.
+			/** If mass is zero, digestibility is undefined.*/
+			Digestibility get_digestibility()const;
 
-		/// Get dry matter mass [kgDM/km²] for all edible forage types.
-		ForageMass get_mass()const;
+			/// Get dry matter mass [kgDM/km²] for all edible forage types.
+			ForageMass get_mass()const;
 
-		/// Total forage in the habitat.
-		/** Digestibility is weighted average, forage mass is sum.
-		 * If mass is zero, digestibility is also zero.*/
-		ForageBase get_total() const;
+			/// Total forage in the habitat.
+			/** Digestibility is weighted average, forage mass is sum.
+			 * If mass is zero, digestibility is also zero.*/
+			ForageBase get_total() const;
 
-		/// \copydoc ForageValues::merge()
-		HabitatForage& merge(const HabitatForage& other,
-				const double this_weight, const double other_weight);
+			/// \copydoc ForageValues::merge()
+			HabitatForage& merge(const HabitatForage& other,
+					const double this_weight, const double other_weight);
 
-		/// Reference to forage object by forage type.
-		/** 
-		 * \param ft Forage type.
-		 * \return Polymorphic reference to forage class object.
-		 * If `ft==FT_INEDIBLE` a zero-value object is returned.
-		 * \throw std::logic_error if `ft` is not implemented. */
-		const ForageBase& operator[](const ForageType ft)const{
-			switch (ft){
-				case FT_GRASS: return grass;
-				// ADD NEW FORAGE TYPES HERE.
-				case FT_INEDIBLE: 
-											 static ForageBase empty;
-											 return empty;
-				default: throw std::logic_error((std::string)
-										 "Fauna::HabitatForage::operator[]()const "
-										 "Forage type \"" +
-										 get_forage_type_name(ft) + "\" "
-										 "is not implemented.");
+			/// Reference to forage object by forage type.
+			/** 
+			 * \param ft Forage type.
+			 * \return Polymorphic reference to forage class object.
+			 * If `ft==FT_INEDIBLE` a zero-value object is returned.
+			 * \throw std::logic_error if `ft` is not implemented. */
+			const ForageBase& operator[](const ForageType ft)const{
+				switch (ft){
+					case FT_GRASS: return grass;
+												 // ADD NEW FORAGE TYPES HERE.
+					case FT_INEDIBLE: 
+												 static ForageBase empty;
+												 return empty;
+					default: throw std::logic_error((std::string)
+											 "Fauna::HabitatForage::operator[]()const "
+											 "Forage type \"" +
+											 get_forage_type_name(ft) + "\" "
+											 "is not implemented.");
+				}
 			}
-		}
 
-		/** \copydoc operator[]() */
-		ForageBase& operator[](const ForageType ft){
-			switch (ft){
-				case FT_GRASS: return grass;
-				// ADD NEW FORAGE TYPES HERE.
-				case FT_INEDIBLE: 
-											 static ForageBase empty;
-											 return empty;
-				default: throw std::logic_error("Fauna::HabitatForage::operator[]() "
-										 "Forage type \"" +
-										 get_forage_type_name(ft) + "\" "
-										 "is not implemented.");
+			/** \copydoc operator[]() */
+			ForageBase& operator[](const ForageType ft){
+				switch (ft){
+					case FT_GRASS: return grass;
+												 // ADD NEW FORAGE TYPES HERE.
+					case FT_INEDIBLE: 
+												 static ForageBase empty;
+												 return empty;
+					default: throw std::logic_error("Fauna::HabitatForage::operator[]() "
+											 "Forage type \"" +
+											 get_forage_type_name(ft) + "\" "
+											 "is not implemented.");
+				}
 			}
-		}
+		private:
 	};
 }
 #endif //HERBIV_FORAGECLASSES_H

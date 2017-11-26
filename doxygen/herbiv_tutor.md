@@ -174,21 +174,30 @@ Forage net energy content is implemented with the [strategy design pattern](\ref
 - Update the UML diagram in \ref sec_herbiv_herbivorebase and the diagram above.
 
 ### How to add a new forage distribution algorithm {#sec_herbiv_new_forage_distribution}
-- Derive a new class from \ref Fauna::DistributeForage and
-  implement your algorithm.
+- Derive a new class from \ref Fauna::DistributeForage and implement your algorithm.
 
-- Return a reference to an object of your class in
-  \ref Fauna::Simulator::create_distribute_forage().
+- Return a reference to an object of your class in \ref Fauna::Simulator::create_distribute_forage().
 
-- Add an identifier in \ref Fauna::ForageDistributionAlgorithm and
-  add your string identifier in \ref Fauna::ParamReader::callback()
-	under `CB_FORAGE_DISTRIBUTION`.
+- Add an identifier in \ref Fauna::ForageDistributionAlgorithm and add your string identifier in \ref Fauna::ParamReader::callback() under `CB_FORAGE_DISTRIBUTION`.
 
-- Don’t forget to add your identifier as possible values in
-  the message output in \ref Fauna::ParamReader::declare_parameters()
-	and \ref Fauna::ParamReader::callback(), as well as in the
-	example instruction file `data/ins/herbivores.ins`.
+- Don’t forget to add your identifier as possible values in the message output in \ref Fauna::ParamReader::declare_parameters() and \ref Fauna::ParamReader::callback(), as well as in the example instruction file `data/ins/herbivores.ins`.
 
+LPJ-GUESS–Herbivory Interface {#sec_herbiv_tutor_guess_herbivory_interface}
+---------------------------------------------------------------------------
+
+### How to add a new snow depth model {#sec_herbiv_new_snow_depth_model}
+LPJ-GUESS accounts for snow as snow water equivalent (SWE, see \ref Soil::snowpack).
+A snow depth model converts that into the actual snow depth for the herbivory module.
+
+- Implement your algorithm by deriving a new [function class](\ref sec_functors) from \ref Fauna::GetSnowDepth.
+
+- Declare a new enum item in \ref Fauna::SnowDepthModel as an identifier for your model.
+
+- Create an instance of your class in \ref Fauna::Simulator::create_snow_depth_model().
+
+- Add your string identifier in \ref Fauna::ParamReader::callback() under `CB_SNOW_DEPTH_MODEL`.
+
+- Don’t forget to add your identifier as a possible value in the message output in \ref Fauna::ParamReader::declare_parameters() and \ref Fauna::ParamReader::callback(), as well as in the example instruction file `data/ins/herbivores.ins`.
 
 Parameters Tutorials {#sec_herbiv_tutor_parameters}
 ---------------------------------------------------
@@ -259,6 +268,9 @@ Output Tutorials {#sec_herbiv_output_tutor}
 	+ For herbivore data, you need to add it to \ref FaunaOut::HerbivoreData::create_datapoint(). If your value is *per individual*, you don’ TODO
 	+ Assign a value to the variable somewhere in daily simulation.
 - Map this container variable to the `TableFile` by actually writing output in \ref GuessOutput::HerbivoryOutput::write_datapoint().
+
+\note In the case of variables for the whole habitat (not specific to forage type, HFTs etc.), use the existing `TableFile` object `TBL_HABITAT`. 
+Add your new variable as a column to the table in \ref GuessOutput::HerbivoryOutput::get_columns() and add the value in \ref GuessOutput::HerbivoryOutput::write_datapoint(), *in the same order as the columns*.
 
 \note If you want to add a variable that is not *per herbivore mass*, you would have to use mass density as weight.
 

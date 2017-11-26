@@ -60,7 +60,9 @@ namespace GuessOutput {
 
 	/// Output module for the herbivory module.
 	/** 
-	 * If \ref deactivate() is called, all public methods will not
+	 * For an overview on all output files and variables, please look at
+	 * `data/ins/herbiv_output.ins`.
+	 * \note If \ref deactivate() is called, all public methods will not
 	 * do anything anymore.
 	 * \see \ref sec_herbiv_output (in particular \ref sec_herbiv_outputmodule)
 	 * \see \ref sec_herbiv_new_output
@@ -225,7 +227,7 @@ namespace GuessOutput {
 			const std::vector<TableFile*> TABLEFILES;
 
 			/** @{ \name Habitat output tables. */
-			// more to come, e.g. snow depth
+			TableFile TBL_HABITAT;
 			/** */
 
 			/** @{ \name Forage output tables. */

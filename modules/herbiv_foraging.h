@@ -126,6 +126,12 @@ namespace Fauna{
 			 * initial call to \ref init_today(). */
 			int get_today()const;
 
+	private:
+			/// @{ \name Constants
+			Hft const * hft;
+			Sex sex;
+			/** @} */ // constants
+
 	private: 
 			/// @{ \name State Variables
 			HabitatForage available_forage;
@@ -137,12 +143,6 @@ namespace Fauna{
 			ForageMass max_intake;              // [kgDM/ind/day]
 			int today;                          // 0 = January 1st
 			/** @} */ // State Variables
-
-	private:
-			/// @{ \name Constants
-			const Hft* hft;
-			Sex sex;
-			/** @} */ // constants
 	};
 
 	/// Ingestion rate as Holling’s Type II functional response.

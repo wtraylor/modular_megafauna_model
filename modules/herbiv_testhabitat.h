@@ -119,8 +119,13 @@ namespace FaunaSim {
 		public:
 			/// Simulation parameters for a \ref SimpleHabitat object.
 			struct Parameters {
-				/// Parameters for logistic grass growth
+				/// Parameters for logistic grass growth.
 				LogisticGrass::Parameters grass;
+
+				/// Snow depth [cm] for each month.
+				/** When the end of the vector is reached, the values are recycled.
+				 * A vector of length 12 creates the same behaviour every year. */
+				std::vector<double> snow_depth_monthly;
 			};
 
 			/// Constructor with simulation settings.
@@ -129,15 +134,19 @@ namespace FaunaSim {
 			 * model.
 			 */
 			SimpleHabitat( const SimpleHabitat::Parameters settings):
-				grass(settings.grass){}
+				settings(settings), 
+				grass(settings.grass), 
+				simulation_month(0),
+				snow_depth(0.0){}
 
-			// ------ Fauna::Habitat implementations ----
+		public: // ------ Fauna::Habitat implementations ----
 			virtual void init_day(const int today); 
 			virtual HabitatForage get_available_forage() const{
 				HabitatForage result;
 				result.grass = grass.get_forage();
 				return result;
 			}
+			virtual HabitatEnvironment get_environment()const;
 			virtual void remove_eaten_forage(const ForageMass& eaten_forage);
 
 		protected:
@@ -147,8 +156,18 @@ namespace FaunaSim {
 				grass.grow_daily(day_of_year);
 			}
 		private:
+			SimpleHabitat::Parameters settings;
+
+			/// Snow depth in cm, as read from \ref Parameters::snow_depth_monthly.
+			double snow_depth;
+
 			/// Grass in the habitat
 			LogisticGrass grass;
+
+			/// The current simulation month, starting with zero.
+			/** We need this to address the current value in 
+			 * \ref Parameters::snow_depth_monthly. */
+			int simulation_month;
 	};
 
 	/// A set of \ref Fauna::SimulationUnit objects.

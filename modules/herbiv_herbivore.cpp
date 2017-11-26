@@ -7,7 +7,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 #include "config.h"
-#include "herbiv_energetics.h" // for FatmassEnergyBudget
+#include "herbiv_energetics.h"   // for FatmassEnergyBudget
+#include "herbiv_environment.h"  // for HabitatEnvironment
 #include "herbiv_forageenergy.h" // for GetNetEnergyContentInterface
 #include "herbiv_foraging.h"
 #include "herbiv_herbivore.h"
@@ -29,16 +30,13 @@ HerbivoreBase::HerbivoreBase(
 		const double body_condition,
 		const Hft* hft, 
 		const Sex sex):
-	hft(hft), // can be NULL
+	hft(check_hft_pointer(hft)), // can be NULL
 	sex(sex), // always valid
 	age_days(age_days),
 	today(-1), // not initialized yet; call simulate_day() first
 	body_condition_gestation(get_hft().gestation_months * 30)
 {
 	// Check validity of parameters
-	if (hft == NULL)
-		throw std::invalid_argument("Fauna::HerbivoreBase::HerbivoreBase() "
-				"hft is NULL.");
 	if (age_days == 0)
 		throw std::invalid_argument("Fauna::HerbivoreBase::HerbivoreBase() "
 				"Establishment constructor called with age_days==0. "
@@ -71,18 +69,13 @@ HerbivoreBase::HerbivoreBase(
 }
 
 HerbivoreBase::HerbivoreBase( const Hft* hft, const Sex sex):
-	hft(hft), 
+	hft(check_hft_pointer(hft)), 
 	sex(sex), 
 	age_days(0),
 	current_output(new FaunaOut::HerbivoreData),
 	get_forage_demands_per_ind(new GetForageDemands(hft, sex)),
 	body_condition_gestation(get_hft().gestation_months * 30)
 {
-	// Check validity of parameters
-	if (hft == NULL)
-		throw std::invalid_argument("Fauna::HerbivoreBase::HerbivoreBase() "
-				"hft is NULL.");
-
 	// Create energy budget (validity check inside that class)
 	energy_budget = std::auto_ptr<FatmassEnergyBudget>(
 			new FatmassEnergyBudget(
@@ -100,25 +93,46 @@ HerbivoreBase::HerbivoreBase(const HerbivoreBase& other):
 	age_days(other.age_days),
 	hft(other.hft),
 	sex(other.sex),
-	// Create new object instances for std::auto_ptr objects:
+	body_condition_gestation(get_hft().gestation_months * 30),
+	// Create new object instances for std::auto_ptr with copy construction:
 	energy_budget(new FatmassEnergyBudget(other.get_energy_budget())),
-	current_output(new FaunaOut::HerbivoreData),
-	get_forage_demands_per_ind(new GetForageDemands(other.hft, other.sex)),
-	body_condition_gestation(get_hft().gestation_months * 30)
+	current_output(new FaunaOut::HerbivoreData(other.get_todays_output())),
+	get_forage_demands_per_ind(new GetForageDemands(other.hft, other.sex))
 {
 }
 
 HerbivoreBase& HerbivoreBase::operator=(const HerbivoreBase& other){
 	if (this != &other){
-		age_days = other.age_days;
-		// Create a new copy of FatmassEnergyBudget and release the
-		// old one.
+		hft                      = other.hft;
+		age_days                 = other.age_days;
+		body_condition_gestation = other.body_condition_gestation;
+		sex                      = other.sex;
+
+		// Create a new copies of auto_ptr objects.
+		// The old ones will be automatically released.
+		// For those objects where there is no copy constructor available,
+		// we call operator=() to assign values from `other`.
 		energy_budget = std::auto_ptr<FatmassEnergyBudget>(
-			new FatmassEnergyBudget(other.get_energy_budget()));
-		hft = other.hft;
-		sex = other.sex;
+				new FatmassEnergyBudget(other.get_energy_budget()));
+
+		get_forage_demands_per_ind = std::auto_ptr<GetForageDemands>(
+				new GetForageDemands(hft, sex));
+		*get_forage_demands_per_ind = *other.get_forage_demands_per_ind;
+
+		current_output = std::auto_ptr<FaunaOut::HerbivoreData>(
+				new FaunaOut::HerbivoreData());
+		*current_output = *other.current_output;
 	}
 	return *this; 
+}
+
+Hft const* HerbivoreBase::check_hft_pointer(const Hft* _hft){
+	// Exception error message is like from a constructor because that’s 
+	// where this function gets called.
+	if (_hft == NULL)
+		throw std::invalid_argument("Fauna::HerbivoreBase::HerbivoreBase() "
+				"Parameter `hft` is NULL.");
+	return _hft;
 }
 
 void HerbivoreBase::apply_mortality_factors_today(){
@@ -249,6 +263,14 @@ double HerbivoreBase::get_bodymass_adult() const{
 		return get_hft().bodymass_male; 
 	else
 		return get_hft().bodymass_female;
+}
+
+const HabitatEnvironment& HerbivoreBase::get_environment()const{
+	if (environment.get() == NULL)
+		throw std::logic_error("Fauna::HerbivoreBase::get_environment() "
+				"Member variable `environment` is NULL. `simulate_day()` "
+				"must be called first.");
+	return *environment;
 }
 
 double HerbivoreBase::get_fatmass() const{
@@ -406,7 +428,6 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 				"Reproduction model not implemented.");
 }
 
-
 const FaunaOut::HerbivoreData& HerbivoreBase::get_todays_output()const{
 	assert( current_output.get() != NULL );
 	return *current_output;
@@ -417,10 +438,17 @@ FaunaOut::HerbivoreData& HerbivoreBase::get_todays_output(){
 	return *current_output;
 }
 
-void HerbivoreBase::simulate_day(const int day, double& offspring){
+void HerbivoreBase::simulate_day(const int day,
+		const HabitatEnvironment& _environment,
+		double& offspring){
 	if (day < 0 || day >= 365)
 		throw std::invalid_argument("Fauna::HerbivoreBase::simulate_day() "
 				"Argument \"day\" out of range.");
+
+	// Create a new HabitatEnvironment object in the auto_ptr object by
+	// copy-construction from the function parameter.
+	environment = 
+		std::auto_ptr<HabitatEnvironment>(new HabitatEnvironment(_environment));
 
 	/// - Set current day.
 	today = day;

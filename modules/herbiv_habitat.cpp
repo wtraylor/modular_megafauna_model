@@ -16,7 +16,8 @@ void Habitat::init_day(const int today){
 				"Parameter \"today\" is out of range.");
 	day_of_year = today;
 
-	/// - Initialize new output.
+	// Initialize new output.
 	get_todays_output().reset();
 	get_todays_output().available_forage = get_available_forage();
+	get_todays_output().environment      = get_environment();
 }

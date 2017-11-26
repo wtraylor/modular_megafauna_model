@@ -23,6 +23,7 @@ namespace Fauna{
 	class FatmassEnergyBudget;
 	class GetForageDemands;
 	class GetNetEnergyContentInterface;
+	class HabitatEnvironment;
 	class Hft;
 
 	/// Interface of a herbivore of a specific \ref Hft.
@@ -86,10 +87,12 @@ namespace Fauna{
 		/** 
 		 * Call this before \ref get_forage_demands().
 		 * \param[in] day Current day of year, 0=Jan. 1st.
+		 * \param[in] environment Current environmental conditions in the habitat.
 		 * \param[out] offspring Number of newborn today [ind/km²].
 		 * \throw std::invalid_argument If `day` not in [0,364].
 		 */
 		virtual void simulate_day(const int day,
+				const HabitatEnvironment& environment,
 				double& offspring) = 0;
 	};
 
@@ -116,7 +119,8 @@ namespace Fauna{
 			}
 			virtual double get_kg_per_km2() const;
 			virtual const FaunaOut::HerbivoreData& get_todays_output()const;
-			virtual void simulate_day(const int day, double& offspring);
+			virtual void simulate_day(const int day, 
+					const HabitatEnvironment& environment, double& offspring);
 		public:
 			/// Current age in days.
 			int get_age_days()const{return age_days;} 
@@ -212,6 +216,13 @@ namespace Fauna{
 			}
 			/**@}*/
 
+			/// Current abiotic conditions in the habitat.
+			/**
+			 * \throw std::logic_error If \ref simulate_day() hasn’t been called
+			 * yet to set the \ref HabitatEnvironment object.
+			 */
+			const HabitatEnvironment& get_environment()const;
+
 			/// Class-internal read/write access to current output.
 			FaunaOut::HerbivoreData& get_todays_output();
 
@@ -220,6 +231,15 @@ namespace Fauna{
 			/** Calls \ref apply_mortality(), which is implemented by 
 			 * child classes.*/
 			void apply_mortality_factors_today();
+
+			/// Check whether the HFT pointer is NULL and throws an exception.
+			/** This helper function is only neededd because an exception for a
+			 * NULL pointer must be thrown from the constructor. But in the
+			 * initialization list there are objects that need the HFT for their
+			 * own constructor. Therefore, the HFT pointer must be checked in a
+			 * function first, before the HerbivoreBase constructor function body.
+			 * \throw std::invalid_argument If HFT pointer is NULL. */
+			Hft const* check_hft_pointer(const Hft*);
 
 			/// Compose diet from different forage types according to parameters.
 			/** 
@@ -275,7 +295,7 @@ namespace Fauna{
 
 		private: // private member variables
 			/// @{ \name Constants
-			const Hft* hft; // initialize first!
+			Hft const * hft; // pointer to const Hft; initialized first!
 			Sex sex;
 			std::auto_ptr<GetNetEnergyContentInterface> net_energy_content;
 			/** @} */ // constants
@@ -284,6 +304,7 @@ namespace Fauna{
 			int age_days;
 			// use auto_ptr to reduce dependencies:
 			std::auto_ptr<FatmassEnergyBudget> energy_budget;
+			std::auto_ptr<HabitatEnvironment> environment; // set in simulate_day()
 			int today;
 			/** @} */ // state variables
 

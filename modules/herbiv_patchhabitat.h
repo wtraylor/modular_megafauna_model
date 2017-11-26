@@ -16,6 +16,7 @@ class Patch;
 namespace Fauna {
 	// forward declarations
 	class GetDigestibility;
+	class GetSnowDepth;
 
 	/// Number of days over which phenology is averaged in plant individuals.
 	/**
@@ -42,12 +43,18 @@ namespace Fauna {
 		 * \param patch The one-to-one relationship to the patch
 		 * \param digestibility_model Strategy object for
 		 * calculating the digestibility of forage (constructor
-		 * injection)
+		 * injection).
+		 * \param snow_depth_model Strategy object for
+		 * calculating the snow depth in the patch (constructor
+		 * injection).
 		 * \see \ref sec_inversion_of_control
+		 * \throw std::invalid_argument If `digestibility_model` or
+		 * `snow_depth_model` is a NULL pointer.
 		 */
 		PatchHabitat( 
 				Patch& patch, 
-				std::auto_ptr<GetDigestibility> digestibility_model);
+				std::auto_ptr<GetDigestibility> digestibility_model,
+				std::auto_ptr<GetSnowDepth> snow_depth_model);
 
 	public: // ----- Fauna::Habitat implementation -----
 		/** \copydoc Habitat::get_available_forage()
@@ -55,6 +62,12 @@ namespace Fauna {
 		 * \see \ref Individual::get_forage_mass()
 		 */
 		virtual HabitatForage get_available_forage() const;
+
+		/** \copybrief Habitat::get_environment()
+		 * - Snow: Calculated from \ref Soil::snowpack, employing the given
+		 *   \ref SnowDepthModel algorithm.
+		 */
+		virtual HabitatEnvironment get_environment() const;
 
 		/// Update at the start of the day.
 		/**
@@ -70,6 +83,7 @@ namespace Fauna {
 		virtual void remove_eaten_forage(const ForageMass& eaten_forage);
 	protected:
 		std::auto_ptr<GetDigestibility> get_digestibility;
+		std::auto_ptr<GetSnowDepth> get_snow_depth;
 	private:
 		/// Reference to the patch.
 		Patch& patch;

@@ -9,6 +9,7 @@
 #ifndef HERBIV_OUTPUT_H
 #define HERBIV_OUTPUT_H
 
+#include "herbiv_environment.h" // for HabitatEnvironment
 #include "herbiv_forageclasses.h"
 #include "herbiv_hft.h" // for MortalityFactor
 
@@ -48,6 +49,9 @@ namespace FaunaOut {
 		/** This equals the sum of \ref HerbivoreData::eaten_forage_per_ind over
 		 * all HFTs */
 		Fauna::ForageMass eaten_forage;
+
+		/// Abiotic conditions in the habitat.
+		Fauna::HabitatEnvironment environment;
 
 		//------------------------------------------------------------
 		/** @{ \name Aggregation Functionality */

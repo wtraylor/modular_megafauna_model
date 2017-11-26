@@ -76,6 +76,15 @@ In order to minimize dependencies, PatchHabitat objects are not created by the c
 
 ![](herbiv_patchhabitat_foragereduction.png "Proportional forage removal by Fauna::PatchHabitat")
 
+#### Abiotic Environment {#sec_herbiv_abiotic_environment}
+
+The container \ref Fauna::HabitatEnvironment contains informationen about the current abiotic conditions in a habitat. The are constant within the habitat and for one day.
+
+**Snow:** LPJ-GUESS calculates snow pack as snow water equivalent (\ref Soil::snowpack).
+The herbivory module needs the effective depth of the snow that is covering the ground.
+A “snow depth model” translates snow water equivalent to snow depth.
+New algorithms for snow density can also be implemented: \ref sec_herbiv_new_snow_depth_model.
+
 Forage Classes {#sec_herbiv_forageclasses}
 ------------------------------------------
 

@@ -20,7 +20,7 @@ namespace Fauna{
 
 	/// Model to define a herbivore’s diet in a multi-forage scenario.
 	enum DietComposer{
-		/// Eat exclusively grass, using \ref PureGrazerDiet.
+		/// Eat exclusively grass.
 		DC_PURE_GRAZER
 	};
 

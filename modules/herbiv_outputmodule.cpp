@@ -61,6 +61,11 @@ HerbivoryOutput::HerbivoryOutput():
 	precision(4),
 	include_date(new IncludeDate()),
 	// Output variables in the order of declaration in the header:
+	TBL_HABITAT(
+			"file_herbiv_habitat",
+			"Various whole-habitat variables.",
+			"",
+			CS_HABITAT),
 	TBL_AVAILABLE_FORAGE(
 			"file_herbiv_available_forage",
 			"Available forage in the habitats.",
@@ -186,6 +191,7 @@ const std::vector<HerbivoryOutput::TableFile*> HerbivoryOutput::init_tablefiles(
 	std::vector<HerbivoryOutput::TableFile*> list;
 	// initialize the vector on first call
 	if (list.empty()){
+		list.push_back(&TBL_HABITAT);
 		list.push_back(&TBL_AVAILABLE_FORAGE);
 		list.push_back(&TBL_DIGESTIBILITY);
 		list.push_back(&TBL_EATEN_FORAGE);
@@ -301,7 +307,11 @@ ColumnDescriptors HerbivoryOutput::get_columns(
 		case CS_HABITAT:
 			// In this special case, there is no fixed/independent
 			// variable that would define the captions.
-			captions.push_back("value");
+			// Each observational variable is simply one column.
+			// Take care to add the column captions in the same order as you add
+			// values!
+			captions.push_back("snow_depth");
+			// ** Add new habitat variables here **
 			break;
 	}
 
@@ -432,8 +442,10 @@ void HerbivoryOutput::write_datapoint(
 			output_channel, longitude, latitude, 
 			year, day);
 
-	// HABITAT TABLES
-	// ... more to come
+	// HABITAT TABLE
+	// Add the values in the same order as in get_columns()!
+	output_rows.add_value(TBL_HABITAT.table, 
+			datapoint.habitat_data.environment.snow_depth);
 
 	// FORAGE TABLES
 	const ForageMass available_mass   = 

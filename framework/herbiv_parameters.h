@@ -38,6 +38,12 @@ namespace Fauna {
 		HT_INDIVIDUAL
 	};
 
+	/// How to convert snow water equivalent to snow depth.
+	enum SnowDepthModel{
+		/// Assume a constant 10:1 ratio of snow water equivalent to snow depth.
+		SD_TEN_TO_ONE
+	};
+
 	/// Parameters for the herbivory module.
 	struct Parameters{
 		// alphabetical order
@@ -67,15 +73,19 @@ namespace Fauna {
 		/// Whether herbivory is enabled.
 		bool ifherbivory;
 
+		/// How to convert snow water equivalent from LPJ-GUESS to snow depth.
+		SnowDepthModel snow_depth_model;
+
 		/// Constructor with default (valid!) settings
 		Parameters(): // alphabetical order
-			habitat_area_km2(100.0),
 			dead_herbivore_threshold(0.1),
 			forage_distribution(FD_EQUALLY),
 			free_herbivory_years(0),
+			habitat_area_km2(100.0),
 			herbivore_establish_interval(30),
 			herbivore_type(HT_COHORT),
-			ifherbivory(false)
+			ifherbivory(false),
+			snow_depth_model(SD_TEN_TO_ONE)
 		{
 			// Make sure that the default values are implemented
 			// correctly

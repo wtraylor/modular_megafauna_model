@@ -8,6 +8,7 @@
 
 #include "catch.hpp" 
 #include "herbiv_energetics.h"
+#include "herbiv_environment.h"
 #include "herbiv_foraging.h" 
 #include "herbiv_forageclasses.h" 
 #include "herbiv_forageenergy.h"
@@ -42,6 +43,7 @@ namespace {
 	class DummyHabitat: public Habitat{
 		public:
 			virtual HabitatForage get_available_forage() const { return HabitatForage(); }
+			virtual HabitatEnvironment get_environment() const { return HabitatEnvironment();}
 			int get_day_public()const{return get_day();}
 	};
 
@@ -78,6 +80,7 @@ namespace {
 			}
 
 			virtual void simulate_day(const int day,
+					const HabitatEnvironment&,
 					double& offspring){offspring=0.0;}
 		public:
 			const ForageMass& get_demand()const{return demand;}
@@ -366,10 +369,11 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		// simulate one day
 		HerbivoreVector list = pop.get_list();
 		double offspring_dump; // ignored
+		HabitatEnvironment env; // ignored
 		for (HerbivoreVector::iterator itr = list.begin();
 				itr!=list.end();
 				itr++)
-			(*itr)->simulate_day(0, offspring_dump);
+			(*itr)->simulate_day(0, env, offspring_dump);
 
 		// add more offspring
 		pop.create_offspring(DENS);
@@ -383,8 +387,9 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 			HerbivoreVector::iterator itr;
 			HerbivoreVector list = pop.get_list();
 			double offspring_dump; // ignored
+			HabitatEnvironment env; // ignored
 			for (itr=list.begin(); itr!=list.end(); itr++)
-				(*itr)->simulate_day(i, offspring_dump);
+				(*itr)->simulate_day(i, env, offspring_dump);
 		}
 		// now they should have grown older, and if we add more
 		// offspring, there should be new age classes
@@ -1791,8 +1796,9 @@ TEST_CASE("Fauna::HerbivoreIndividual", "") {
 		HerbivoreIndividual ind(AGE, BC_DEAD, &hft, SEX_MALE, AREA);
 
 		// after one simulation day it should be dead
-		double offspring_dump;
-		ind.simulate_day(0, offspring_dump);
+		double offspring_dump; // ignored
+		HabitatEnvironment env; // ignored
+		ind.simulate_day(0, env, offspring_dump);
 		CHECK( ind.is_dead() );
 	}
 	// NOTE: We cannot test mortality because it is a stochastic
@@ -1983,7 +1989,8 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 			const double AREA=10.0;
 			HerbivoreIndividual dead(AGE, BC, &hft, SEX_FEMALE, AREA);
 			double offspring_dump;
-			dead.simulate_day(0, offspring_dump);
+			HabitatEnvironment env;
+			dead.simulate_day(0, env, offspring_dump);
 			REQUIRE( dead.is_dead() );
 
 			// copy assign it to every ind. in the list

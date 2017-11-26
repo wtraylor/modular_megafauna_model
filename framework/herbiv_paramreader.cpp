@@ -271,9 +271,11 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 			// Add mandatory parameters 
 #ifndef NO_GUESS_PARAMETERS
-			// digestibility model only applies to LPJ-GUESS.
+			// The following parameters only apply to LPJ-GUESS.
 			mandatory_global_params.push_back(MandatoryParam(
 						"digestibility_model"));
+			mandatory_global_params.push_back(MandatoryParam(
+						"snow_depth_model"));
 #endif
 			mandatory_global_params.push_back(MandatoryParam(
 						"forage_distribution"));
@@ -555,6 +557,9 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			plibabort();
 		}
 	}
+
+	if (callback == CB_SNOW_DEPTH_MODEL) {
+	}
 }
 
 void ParamReader::declare_parameters(
@@ -579,7 +584,7 @@ void ParamReader::declare_parameters(
 				"Minimum density [ind/km²] for a living herbivore cohort.");
 
 #ifndef NO_GUESS_PARAMETERS
-		// Digestibility model only applies to LPJ-GUESS runs.
+		// The following models are only needed in LPJ-GUESS.
 		declareitem("digestibility_model",
 				&strparam,
 				128, // max length of string
@@ -587,6 +592,13 @@ void ParamReader::declare_parameters(
 				"Digestibility model for herbivore forage. "
 				"Possible values: "
 				"\"pft_fixed\", \"pachzelt_2013\"");
+		declareitem("snow_depth_model",
+				&strparam,
+				128, // max length of string
+				CB_SNOW_DEPTH_MODEL,
+				"Algorithm to convert snow water equivalent to snow depth. "
+				"Possible values: "
+				"\"10_to_1\"");
 #endif
 
 		declareitem("forage_distribution",

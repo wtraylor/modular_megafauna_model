@@ -18,6 +18,7 @@ namespace Fauna{
 	// Forward declarations
 	class DistributeForage;
 	class GetDigestibility;
+	class GetSnowDepth;
 	class FeedHerbivores;
 	class Habitat;
 	class HerbivoreInterface;
@@ -118,11 +119,17 @@ namespace Fauna{
 			 */
 			Simulator(const Parameters& params, const HftList& hftlist);
 
-			/// Construct a digestibility model object according to parameters
+			/// Construct a digestibility model object for LPJ-GUESS according to parameters
 			/** \throw std::logic_error if 
 			 * \ref Parameters::digestibility_model is not implemented.
-			 * \return Pointer to newly constructed object */
+			 * \return Pointer to newly constructed object. */
 			std::auto_ptr<GetDigestibility> create_digestibility_model()const;
+
+			/// Construct a snow depth model object for LPJ-GUESS according to parameters
+			/** \throw std::logic_error if 
+			 * \ref Parameters::snow_depth_model is not implemented.
+			 * \return Pointer to newly constructed object. */
+			std::auto_ptr<GetSnowDepth> create_snow_depth_model()const;
 
 			/// Instantiate populations for one \ref Habitat.
 			/** \throw std::logic_error if \ref Parameters::herbivore_type
