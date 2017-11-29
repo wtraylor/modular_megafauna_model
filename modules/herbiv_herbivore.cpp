@@ -282,16 +282,26 @@ double HerbivoreBase::get_lean_bodymass()const{
 }
 
 ForageMass HerbivoreBase::get_forage_demands(
-		const HabitatForage& available_forage)const
+		const HabitatForage& available_forage)
 {
 	assert( get_forage_demands_per_ind.get() != NULL );
 
-	// Prepare GetForageDemands helper object.
-	get_forage_demands_per_ind->init_today(
-			get_today(),
-			available_forage,
-			get_net_energy_content(available_forage.get_digestibility()),
-			get_bodymass());
+	// Prepare GetForageDemands helper object if not yet done today.
+	if (!get_forage_demands_per_ind->is_day_initialized(this->get_today()))
+	{
+		// Net energy content [MJ/kgDM]
+		const ForageEnergyContent net_energy_content = 
+			get_net_energy_content(available_forage.get_digestibility());
+
+		get_forage_demands_per_ind->init_today(
+				get_today(),
+				available_forage,
+				net_energy_content,
+				get_bodymass());
+
+		// Update output
+		get_todays_output().energy_content.operator=(net_energy_content);
+	}
 
 	// energy demands [MJ/ind] for expenditure plus fat anabolism
 	const double total_energy_demands =

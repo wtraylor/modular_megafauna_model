@@ -131,6 +131,11 @@ HerbivoryOutput::HerbivoryOutput():
 			"Forage eaten per day per herbivore mass.",
 			"kgDM/kg/day",
 			CS_HFT_FORAGE),
+	TBL_ENERGY_CONTENT(
+			"file_herbiv_energy_content",
+			"Net energy content of available forage.",
+			"MJ/kgDM",
+			CS_HFT_FORAGE),
 	TBL_ENERGY_INTAKE_PER_IND(
 			"file_herbiv_energy_intake_per_ind",
 			"Herbivore net energy intake from forage per individual.",
@@ -195,6 +200,7 @@ const std::vector<HerbivoryOutput::TableFile*> HerbivoryOutput::init_tablefiles(
 		list.push_back(&TBL_AVAILABLE_FORAGE);
 		list.push_back(&TBL_DIGESTIBILITY);
 		list.push_back(&TBL_EATEN_FORAGE);
+		list.push_back(&TBL_ENERGY_CONTENT);
 		list.push_back(&TBL_ENERGY_INTAKE_PER_IND);
 		list.push_back(&TBL_ENERGY_INTAKE_PER_MASS);
 		list.push_back(&TBL_BODYFAT);
@@ -576,6 +582,8 @@ void HerbivoryOutput::write_datapoint(
 						herbidata.eaten_forage_per_ind[*ft]);
 				output_rows.add_value(TBL_EATEN_PER_MASS.table,
 						herbidata.eaten_forage_per_mass[*ft]);
+				output_rows.add_value(TBL_ENERGY_CONTENT.table,
+						herbidata.energy_content[*ft]);
 				output_rows.add_value(TBL_ENERGY_INTAKE_PER_IND.table,
 						herbidata.energy_intake_per_ind[*ft]);
 				output_rows.add_value(TBL_ENERGY_INTAKE_PER_MASS.table,

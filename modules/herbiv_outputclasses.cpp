@@ -136,6 +136,7 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
 	// Delegate average building to class ForageValues.
 	eaten_forage_per_ind.merge(other.eaten_forage_per_ind, this_weight, other_weight);
 	eaten_forage_per_mass.merge(other.eaten_forage_per_mass, this_weight, other_weight);
+	energy_content.merge(other.energy_content, this_weight, other_weight);
 	energy_intake_per_ind.merge(other.energy_intake_per_ind, this_weight, other_weight);
 	energy_intake_per_mass.merge(other.energy_intake_per_mass, this_weight, other_weight);
 
@@ -172,6 +173,7 @@ HerbivoreData HerbivoreData::create_datapoint(
 				result.inddens, other.inddens);
 		result.eaten_forage_per_ind.merge(other.eaten_forage_per_ind);
 		result.eaten_forage_per_mass.merge(other.eaten_forage_per_mass);
+		result.energy_content.merge(other.energy_content);
 		result.energy_intake_per_ind.merge(other.energy_intake_per_ind);
 		result.energy_intake_per_mass.merge(other.energy_intake_per_mass);
 

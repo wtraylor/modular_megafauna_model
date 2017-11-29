@@ -69,7 +69,7 @@ namespace Fauna{
 		 * would eat without any food competition [kgDM/km²].
 		 */
 		virtual ForageMass get_forage_demands(
-				const HabitatForage& available_forage)const=0;
+				const HabitatForage& available_forage)=0;
 
 		/// Get the herbivore functional type
 		virtual const Hft& get_hft()const = 0;
@@ -112,7 +112,7 @@ namespace Fauna{
 					const Digestibility& digestibility);
 			virtual double get_bodymass() const; 
 			virtual ForageMass get_forage_demands(
-					const HabitatForage& available_forage)const;
+					const HabitatForage& available_forage);
 			virtual const Hft& get_hft()const{
 				assert(hft!=NULL);
 				return *hft;

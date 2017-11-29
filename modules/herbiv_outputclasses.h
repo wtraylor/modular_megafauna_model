@@ -90,6 +90,7 @@ namespace FaunaOut {
 			bodyfat(0.0),
 			eaten_forage_per_ind(0.0),
 			eaten_forage_per_mass(0.0),
+			energy_content(0.0),
 			energy_intake_per_ind(0.0),
 			energy_intake_per_mass(0.0),
 			expenditure(0.0),
@@ -132,6 +133,9 @@ namespace FaunaOut {
 
 		/// Eaten forage per body mass [kgDM/kg/day].
 		Fauna::ForageMass eaten_forage_per_mass;
+
+		/// Net energy content of available forage [MJ/kgDM].
+		Fauna::ForageEnergyContent energy_content;
 
 		/// Intake of net energy in forage per individual [MJ/ind/day]
 		Fauna::ForageEnergy energy_intake_per_ind;
