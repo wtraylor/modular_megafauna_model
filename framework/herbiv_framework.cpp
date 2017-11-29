@@ -59,6 +59,8 @@ std::auto_ptr<GetDigestibility> Simulator::create_digestibility_model()const{
 	switch (params.digestibility_model){
 		case DM_PFT_FIXED: 
 			return std::auto_ptr<GetDigestibility>(new PftDigestibility()); 
+		case DM_NPP: 
+			return std::auto_ptr<GetDigestibility>(new DigestibilityFromNPP()); 
 		case DM_PFT_PACHZELT2013: 
 			return std::auto_ptr<GetDigestibility>(new DigestibilityPachzelt2013()); 
 		default: throw std::logic_error("Simulator::create_digestibility_model(): "
@@ -215,6 +217,17 @@ void Simulator::simulate_day(const int day_of_year,
 
 			// available forage in the habitat [kgDM/km²]
 			HabitatForage available_forage = habitat.get_available_forage();
+
+			// Set any marginally small values to zero in order to avoid errors
+			// caused by rounding inaccuracy.
+			static const double NEGLIGIBLE_FORAGE_MASS = 10000; // [kgDM/km²] ٍ= 10 g/m²
+			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+					ft != FORAGE_TYPES.end();
+					ft++)
+				if (available_forage[*ft].get_mass() <= NEGLIGIBLE_FORAGE_MASS)
+					available_forage[*ft].set_mass(0.0);
+			
+			// Remember forage mass before feeding.
 			const ForageMass old_forage = available_forage.get_mass();
 
 			// call function object

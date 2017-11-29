@@ -346,13 +346,15 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	if (callback == CB_DIG_MODEL) {
 		if (strparam == "PFT_FIXED")
 			params.digestibility_model = DM_PFT_FIXED;
-		if (strparam == "PACHZELT_2013")
+		else if (strparam == "NPP")
+			params.digestibility_model = DM_NPP;
+		else if (strparam == "PACHZELT_2013")
 			params.digestibility_model = DM_PFT_PACHZELT2013;
 		// add other digestibility models here
 		else {
 			sendmessage("Error",
 					"Unknown digestibility model; valid types: "
-					"\"pft_fixed\"");
+					"\"npp\", \"pachzelt_2013\", \"pft_fixed\"");
 			plibabort();
 		}
 	} 
@@ -527,10 +529,17 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 			// add parameters to the list
 			
-			if (params.digestibility_model == DM_PFT_FIXED) {
+			if (params.digestibility_model == DM_PFT_FIXED ||
+					params.digestibility_model == DM_NPP) {
 				mandatory_pft_params.push_back(MandatoryParam(
 							"digestibility",
-							"digestibility_model=PFT_FIXED"));
+							"digestibility_model=PFT_FIXED|NPP"));
+			}
+
+			if (params.digestibility_model == DM_NPP) {
+				mandatory_pft_params.push_back(MandatoryParam(
+							"digestibility_dead",
+							"digestibility_model=NPP"));
 			}
 
 			// check through the list
@@ -591,7 +600,7 @@ void ParamReader::declare_parameters(
 				CB_DIG_MODEL,
 				"Digestibility model for herbivore forage. "
 				"Possible values: "
-				"\"pft_fixed\", \"pachzelt_2013\"");
+				"\"npp\", \"pft_fixed\", \"pachzelt_2013\"");
 		declareitem("snow_depth_model",
 				&strparam,
 				128, // max length of string
@@ -884,7 +893,14 @@ void ParamReader::declare_parameters(
 				DBL_MIN, 1.0, // min, max
 				1,            // number of parameters
 				CB_NONE,
-				"Herbivory: Fractional digestibility of herbivore forage for ruminants.");
+				"Herbivory: Fractional digestibility of herbivore forage (constant or fresh).");
+
+		declareitem("digestibility_dead",
+				&ppft->herbiv_params.digestibility_dead,
+				DBL_MIN, 1.0, // min, max
+				1,            // number of parameters
+				CB_NONE,
+				"Herbivory: Fractional digestibility of dead herbivore forage.");
 
 		declareitem("inaccessible_forage",
 				&ppft->herbiv_params.inaccessible_forage,

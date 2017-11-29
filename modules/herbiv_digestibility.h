@@ -8,6 +8,9 @@
 #ifndef HERBIV_DIGESTIBILITY_H
 #define HERBIV_DIGESTIBILITY_H
 
+#include <deque>
+#include <map>
+
 // Forward declarations of LPJ-GUESS classes
 class Individual;
 
@@ -92,6 +95,67 @@ namespace Fauna {
        */
       virtual double operator()(const Individual&) const;
   };
+
+  /// Digestibility model using daily NPP to weigh in fresh & old forage.
+  /**
+    * This model assumes that there is a linear decrease of forage quality
+    * over time from the day of production, starting with a digestibility
+    * of “fresh” biomass (\ref PftParams::digestibility) down to a
+    * digestibility of “dead” biomass (\ref PftParams::digestibility_dead).
+    * This process of senescence takes a certain amount of days
+    * (“attrition period”).
+    *
+    * Each plant individual is thought to be composed of fresher and
+    * older forage. The proportions are defined by a record of daily NPP
+    * (\ref Individual::dnpp_record). Even though not all net primary
+    * production is allocated into edible plant compartments, it is valid
+    * to use daily NPP for weighing the proportions when one broadly
+    * assumes a constant fraction of NPP allocated to edible plant material.
+    *
+    * In order to accurately reflect how much older forage is present and
+    * remove any old biomass from the weighted average that is not there
+    * anymore, the values in \ref Individual::dnpp_record need to be
+    * reduced proportionally (see \ref Individual::update_dnpp_record()).
+    * This way, fresh forage after fire, feeding, or disturbance weighs in
+    * more, increasing average digestbility.
+    * \see \ref sec_herbiv_digestibility
+   */
+  class DigestibilityFromNPP : public GetDigestibility{
+    public:
+			/// Number of days for forage to go from “fresh” to “dead” state.
+			static const int ATTRITION_PERIOD = 365;
+
+      /// \copydoc GetDigestibility::operator()()
+      /**
+       * \return Digestibility as described in class documentation.
+       * \see \ref get_digestibility_from_dnpp()
+       */
+      virtual double operator()(const Individual&) const;
+
+      // TODO
+      /// Calculate average digestibility from daily NPP record.
+			/**
+       * \param weights The proportional weight of the fraction of biomass
+       * for each age (days). Each deque entry represents the biomass that
+       * has grown on the specific day in the past, counting back. 
+       * `weights[0]` is forage grown today, `weights[1]` is forage from
+       * yesterday and so on.
+       * The digestibility of each portion is given by a linear decrease
+       * from “fresh” to “dead” over the time of \ref ATTRITION_PERIOD.
+       * \param dig_fresh Fractional digestbility of biomass from today.
+       * \param dig_dead Fractional digestbility of biomass from
+       * \ref ATTRITION_PERIOD days ago.
+			 * \returns The weighted average digestibility.
+			 * Zero if `weights.size() == 0`.
+			 * \throw std::logic_error If `dig_dead` > `dig_fresh`.
+       * \throw std::invalid_argument If `dead_fresh` or `dig_dead` is not
+       * in interval [0,1].
+       * \throw std::invalid_argument If any entry in `weights` is negative.
+			 */
+			static double get_digestibility_from_dnpp(
+					const std::deque<double>& weights,
+					const double dig_fresh, const double dig_dead);
+	};
 
 }
 #endif // HERBIV_DIGESTIBILITY_H

@@ -20,6 +20,8 @@ namespace Fauna {
 	enum DigestibilityModelType{
 		/// Use \ref PftDigestibility.
 		DM_PFT_FIXED,
+		/// Use \ref DigestibilityFromNPP.
+		DM_NPP,
 		/// Use \ref DigestibilityPachzelt2013.
 		DM_PFT_PACHZELT2013
 	};

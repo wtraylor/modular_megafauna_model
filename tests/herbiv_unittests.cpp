@@ -7,6 +7,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 #include "catch.hpp" 
+#include "herbiv_digestibility.h"
 #include "herbiv_energetics.h"
 #include "herbiv_environment.h"
 #include "herbiv_foraging.h" 
@@ -455,6 +456,54 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		CHECK( population_lists_match(pop) );
 		CHECK( pop.get_list().empty() );
 	}
+}
+
+TEST_CASE("Fauna::DigestibilityFromNPP"){
+	static const double FRESH = .7; // fresh digestibility
+	static const double DEAD  = .4; // dead digestibility
+	std::deque<double> dnpp; // daily NPP [kgC/m²/day]
+
+	// Exception: dead > fresh digestibility
+	CHECK_THROWS( DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, DEAD, FRESH) );
+
+	// Empty DNPP record ⇒ zero digestibility
+	CHECK( DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, FRESH, DEAD)
+			== 0.0 );
+
+	// Create a few NPP values and calculate digestibility “manually”.
+	dnpp.push_front(.4);
+	dnpp.push_front(.5);
+	dnpp.push_front(.7);
+	dnpp.push_front(.4);
+	const double sum = .4 + .5 + .7 + .4;
+	const double dig = 
+		(.4 * FRESH +
+		 .5 * FRESH - (FRESH-DEAD) * 1.0/DigestibilityFromNPP::ATTRITION_PERIOD    +
+		 .7 * FRESH - (FRESH-DEAD) * 2.0/DigestibilityFromNPP::ATTRITION_PERIOD    +
+		 .4 * FRESH - (FRESH-DEAD) * 3.0/DigestibilityFromNPP::ATTRITION_PERIOD) /
+		sum;
+
+	REQUIRE( DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, FRESH, DEAD)
+			== Approx(dig) );
+
+	// Adding new zero values shouldn’t change the result.
+	dnpp.push_front(0.0);
+	dnpp.push_front(0.0);
+	REQUIRE( DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, FRESH, DEAD)
+			== Approx(dig) );
+
+	// Adding values beyond the time frame in question shouldn’t change the 
+	// result either.
+	// First, fill the deque with zeros up until the ATTRITION_PERIOD is all
+	// covered.
+	for (int i = dnpp.size(); i < DigestibilityFromNPP::ATTRITION_PERIOD; i++)
+		dnpp.push_front(0.0);
+	// Second, add some values that would change the result
+	dnpp.push_front(1.0);
+	dnpp.push_front(2.0);
+	// Now, the result should still be the same.
+	REQUIRE( DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, FRESH, DEAD)
+			== Approx(dig) );
 }
 
 TEST_CASE("Fauna::DistributeForageEqually", "") {

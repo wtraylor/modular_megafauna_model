@@ -72,8 +72,17 @@ dynamics.
 A solution for that is yet to be found.
 
 
-### Digestibivity ### {#sec_herbiv_digestibility}
+### Digestibility ### {#sec_herbiv_digestibility}
+<!--
+Everything: In vitro digestibility
+Compare phenology digestibility with NPP-driven digestibility.
 
+-->
+Assumptions of the NPP-driven digestibility model (\ref Fauna::DigestibilityFromNPP):
+- Constant proportion of NPP allocated to leaves.
+- Linear decrease in forage quality.
+- Turnover is constant over the year.
+- Fraction of biomass older than 1 year is negligible.
 
 Reproduction {#sec_herbiv_reproduction}
 ---------------------------------------

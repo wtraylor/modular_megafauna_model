@@ -63,3 +63,71 @@ double DigestibilityPachzelt2013::operator()(
 
 	return dig_live * frac_live + DIG_DEAD_GRASS * frac_dead;
 }
+
+// ----------------------------------------------------------------------
+// DigestibilityFromNPP
+// ----------------------------------------------------------------------
+
+double DigestibilityFromNPP::operator()(const Individual& indiv) const{
+	return get_digestibility_from_dnpp(
+			indiv.get_dnpp_record(), 
+			indiv.pft.herbiv_params.digestibility, // fresh
+			indiv.pft.herbiv_params.digestibility_dead); // dead
+}
+
+double DigestibilityFromNPP::get_digestibility_from_dnpp(
+		const std::deque<double>& weights,
+		const double dig_fresh, const double dig_dead)
+{
+	if (dig_dead > dig_fresh)
+		throw std::invalid_argument(
+				"Fauna::DigestibilityFromNPP::get_digestibility_from_dnpp() "
+				"Digestibility for dead forage must not be greater than for fresh "
+				"forage.");
+	if (dig_fresh < 0.0 || dig_fresh > 1.0)
+		throw std::invalid_argument(
+				"Fauna::DigestibilityFromNPP::get_digestibility_from_dnpp() "
+				"Parameter `dig_fresh` out of range.");
+	if (dig_dead < 0.0 || dig_dead > 1.0)
+		throw std::invalid_argument(
+				"Fauna::DigestibilityFromNPP::get_digestibility_from_dnpp() "
+				"Parameter `dig_dead` out of range.");
+
+	if (weights.size() == 0)
+		return 0.0;
+
+	double result   = 0.0; // digestibility value being calculated
+	int    count    = 0;   // number of data points (days)
+	double dnpp_sum = 0.0; // sum of all daily NPP values in the result
+
+	// Iterate through all daily NPP values.
+	for (std::deque<double>::const_iterator itr = weights.begin();
+			itr != weights.end() && count <= ATTRITION_PERIOD; 
+			itr++)
+	{
+		if (*itr < 0.0)
+			throw std::invalid_argument(
+					"Fauna::DigestibilityFromNPP::get_digestibility_from_dnpp() "
+					"One entry in parameter `weights` is negative.");
+
+		// Digestibility of the forage that has been produced at the day in the
+		// record that is `count` days in the past.
+		const double dig = dig_fresh - 
+			(dig_fresh-dig_dead) * (double)count / ATTRITION_PERIOD;
+
+		// Build sum of products of digestibility and NPP.
+		result += dig * *itr;
+
+		dnpp_sum += *itr;
+		count++;
+	}
+
+	// TODO
+	result = result / (dnpp_sum);
+	result = max(dig_dead, result);
+
+	assert(result >= dig_dead);
+	assert(result <= dig_fresh);
+
+	return result;
+}

@@ -34,13 +34,29 @@ bool PftParams::is_valid(const Parameters& params,
 
 	if (forage_type != FT_INEDIBLE) {
 
-		if (params.digestibility_model == DM_PFT_FIXED) {
+		if (params.digestibility_model == DM_PFT_FIXED ||
+				params.digestibility_model == DM_NPP) {
 			if (digestibility <= 0.0){
 				stream << "digestibility <= 0.0" << std::endl;
 				is_valid = false;
 			}
 			if (digestibility > 1.0){
 				stream << "digestibility > 1.0" << std::endl;
+				is_valid = false;
+			}
+		}
+
+		if (params.digestibility_model == DM_NPP) {
+			if (digestibility_dead <= 0.0){
+				stream << "digestibility_dead <= 0.0" << std::endl;
+				is_valid = false;
+			}
+			if (digestibility_dead > 1.0){
+				stream << "digestibility_dead > 1.0" << std::endl;
+				is_valid = false;
+			}
+			if (digestibility_dead > digestibility) {
+				stream << "digestibility_dead > digestibility" << std::endl;
 				is_valid = false;
 			}
 		}

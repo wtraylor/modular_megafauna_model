@@ -48,6 +48,11 @@ namespace Fauna{
 					const ForageEnergyContent& energy_content,
 					const double bodymass);
 
+			/// Whether the given day has been initialized with \ref init_today().
+			bool is_day_initialized(const int day)const{
+				return day == this->today;
+			}
+
 			/// Calculate current forage demands.
 			/**
 			 * Call this only after \ref init_today().
@@ -125,7 +130,6 @@ namespace Fauna{
 			/** \throw std::logic_error If current day not yet set by an
 			 * initial call to \ref init_today(). */
 			int get_today()const;
-
 	private:
 			/// @{ \name Constants
 			Hft const * hft;

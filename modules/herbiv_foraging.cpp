@@ -173,6 +173,15 @@ ForageMass GetForageDemands::get_max_foraging()const
 	return result;
 }
 
+int GetForageDemands::get_today()const {
+	if (today == -1) // initial value from constructor
+		throw std::logic_error("Fauna::GetForageDemands::get_today() "
+				"Current day not yet initialized. Has `init_today()` "
+				"been called first?");
+	assert(today>=0 && today<365);
+	return today;
+}
+
 void GetForageDemands::init_today(
 		const int day,
 		const HabitatForage& _available_forage,
@@ -211,15 +220,6 @@ void GetForageDemands::init_today(
 
 	// Reduce maximum intake by digestive limits.
 	max_intake.min(get_max_digestion());
-}
-
-int GetForageDemands::get_today()const{
-	if (today == -1) // initial value from constructor
-		throw std::logic_error("Fauna::GetForageDemands::get_today() "
-				"Current day not yet initialized. Has `init_today()` "
-				"been called first?");
-	assert(today>=0 && today<365);
-	return today;
 }
 
 ForageMass GetForageDemands::operator()(const double _energy_needs)

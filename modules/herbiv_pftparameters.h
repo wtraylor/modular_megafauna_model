@@ -29,13 +29,21 @@ namespace Fauna {
 		 */
 		double c_in_dm_forage;
 
-		/// Fractional digestibility of herbivore forage for ruminants
+		/// Fractional digestibility of herbivore forage (fresh or constant).
 		/** 
 		 * Does not need to be defined if \ref forage_type is 
 		 * \ref Fauna::FT_INEDIBLE.
 		 * \see sec_herbiv_digestibility
 		 */
 		double digestibility;
+
+		/// Fractional digestibility of herbivore forage when it is dead.
+		/** 
+		 * Does not need to be defined if \ref forage_type is 
+		 * \ref Fauna::FT_INEDIBLE.
+		 * \see sec_herbiv_digestibility
+		 */
+		double digestibility_dead;
 
 		/// Carbon mass inaccessible to herbivores [kgC/m²].
 		/** 
@@ -57,7 +65,8 @@ namespace Fauna {
 		 * they might depend on global parameters. */
 		PftParams(const Pft& pft):pft(pft),
 		c_in_dm_forage(0.5),
-		digestibility(0.5),
+		digestibility(0.6),
+		digestibility_dead(0.4),
 		forage_type(FT_INEDIBLE),
 		inaccessible_forage(0.0)
 		{}
