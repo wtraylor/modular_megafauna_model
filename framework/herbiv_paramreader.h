@@ -161,8 +161,15 @@ namespace Fauna {
 			Parameters params;
 			bool completed;
 
-			/// Holds the currently parsed string parameter
+			/** @{ \name Temporary storage for parameters. */
+
+			/// Holds two integer numbers.
+			int integer_pair[2];
+
+			/// Holds the currently parsed string parameter.
 			std::string strparam;
+
+			/** @} */ // Temporyar storage for parameters
 
 			ParamReader():completed(false) {}                     // hide constructor
 			ParamReader(ParamReader const&);    // deleted copy constructor

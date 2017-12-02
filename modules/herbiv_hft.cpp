@@ -27,6 +27,7 @@ Hft::Hft():
 	bodymass_female(50.0),
 	breeding_season_length(60),
 	breeding_season_start(120),
+	establishment_age_range(std::pair<int, int>(1, 5)),
 	establishment_density(10.0),
 	diet_composer(DC_PURE_GRAZER),
 	digestion_type(DT_RUMINANT),
@@ -118,19 +119,45 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			// the HFT is still valid (e.g. for testing purpose)
 		}
 
+		if (establishment_age_range.first < 0 ||
+				establishment_age_range.second < 0) {
+			stream << "establishment_age_range must be 2 positive numbers ("
+				<<establishment_age_range.first << ", "
+				<<establishment_age_range.second<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (establishment_age_range.first  >= lifespan ||
+				establishment_age_range.second >= lifespan) {
+			stream << "establishment_age_range must be smaller than `lifespan` ("
+				<<establishment_age_range.first << ", "
+				<<establishment_age_range.second<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (establishment_age_range.first  > establishment_age_range.second) {
+			stream << "First number of `establishment_age_range` must be smaller "
+				<< " the second number ("
+				<<establishment_age_range.first << ", "
+				<<establishment_age_range.second<<")"<<std::endl;
+			is_valid = false;
+		}
+
 		if (establishment_density <= 0.0) {
 			stream << "establishment_density must be >=0.0 ("
 				<<establishment_density<<")"<<std::endl;
 			is_valid = false;
 		}
 
+		const double establishment_cohort_count =
+			(2 * (establishment_age_range.second - establishment_age_range.first + 1));
 		if (params.herbivore_type == HT_COHORT && 
-				establishment_density/2.0 <= params.dead_herbivore_threshold){
+				establishment_density/establishment_cohort_count <= params.dead_herbivore_threshold){
 			stream << "establishment_density (" <<establishment_density<<" ind/km²) "
 				<< "must not be smaller than minimum viable population density"
 				<< " (dead_herbivore_threshold = "
 				<< params.dead_herbivore_threshold << " ind/km²)"
-				<< " for one sex in cohort mode." <<std::endl;
+				<< " for one sex and age in cohort mode." <<std::endl;
 			is_valid = false;
 		}
 

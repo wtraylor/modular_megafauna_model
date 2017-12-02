@@ -197,6 +197,8 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				mandatory_hft_params.push_back(MandatoryParam(
 							"digestive_limit", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
+							"establishment_age_range", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
 							"establishment_density", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
 							"expenditure_model", req_str));
@@ -401,6 +403,11 @@ void ParamReader::callback(const int callback, Pft* ppft){
 						"\"none\", \"bodymass_fraction\", \"illius_gordon_1992\"").c_str());
 			plibabort();
 		} 
+	}
+
+	if (callback == CB_ESTABLISHMENT_AGE_RANGE) {
+		current_hft.establishment_age_range.first  = integer_pair[0];
+		current_hft.establishment_age_range.second = integer_pair[1];
 	}
 
 	if (callback == CB_EXPENDITURE_MODEL) {
@@ -749,6 +756,13 @@ void ParamReader::declare_parameters(
 				"Digestive constraint for daily herbivore food intake."
 				"Possible values: "
 				"\"none\", \"bodymass_fraction\", \"illius_gordon_1992\"");
+
+		declareitem("establishment_age_range",
+				integer_pair,
+				0, INT_MAX, // min, max
+				2,                // number of parameters
+				CB_ESTABLISHMENT_AGE_RANGE,
+				"Youngest and oldest age [years] for herbivore establishment.");
 
 		declareitem("establishment_density",
 				&current_hft.establishment_density,

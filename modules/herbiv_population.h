@@ -45,14 +45,11 @@ namespace Fauna{
 
 		/// Create a set of new herbivores to establish a population.
 		/**
-		 * - The new herbivores’ age matches
-		 *   \ref Hft::maturity_age_phys_female and
-		 *   \ref Hft::maturity_age_phys_male, respectively.
+		 * - The age of new herbivores is evenly distributed in the range
+		 *   \ref Hft::establishment_age_range.
 		 * - The sex ratio is even.
-		 * - Initial density matches \ref Hft::establishment_density
-		 *   as close as possible, but with at least two individuals
-		 *   per habitat (if in individual mode and 
-		 *   \ref Hft::establishment_density > 0.0).
+		 * - Total density matches \ref Hft::establishment_density
+		 *   as closely as possible.
 		 * \throw std::logic_error If this population is not empty.
 		 */
 		virtual void establish()=0;

@@ -65,23 +65,41 @@ void IndividualPopulation::establish(){
 	if (get_hft().establishment_density == 0.0)
 		return;
 
-	// determine number of individuals, assuming even sex ratio.
+	// determine total number of individuals, assuming even sex ratio.
 	int ind_count = ceil(
 			get_hft().establishment_density * create_individual.get_area_km2());
-	// make the number even
-	ind_count += ind_count%2;
-	// produce at least two individuals
-	ind_count = max(ind_count, 2);
 
-	// establishment as mature adults
-	const int age_days_male   = get_hft().maturity_age_phys_male * 365;
-	const int age_days_female = get_hft().maturity_age_phys_female * 365;
+	// Now distribute the number of individuals as evenly as possible over
+	// the age range that is defined in the HFT.
+	
+	const int age_class_count = 
+		get_hft().establishment_age_range.second - 
+		get_hft().establishment_age_range.first + 1;
+	assert( age_class_count > 0 );
 
-	// add new objects to the list
-	for (int i=1; i<=ind_count/2; i++){
-		list.push_back( create_individual(age_days_male, SEX_MALE) );
-		list.push_back( create_individual(age_days_female, SEX_FEMALE) );
+	const int ind_count_per_age = ind_count / age_class_count;
+	int ind_count_remainder     = ind_count % age_class_count;
+	assert( ind_count_per_age * age_class_count + ind_count_remainder == ind_count );
+
+	for (int age_years = get_hft().establishment_age_range.first;
+			age_years <= get_hft().establishment_age_range.second;
+			age_years++)
+	{
+		int count = ind_count_per_age;
+		if (ind_count_remainder > 0){
+			count++;
+			ind_count_remainder--;
+		}
+
+		// add new objects to the list, alternate male and female with odd and
+		// even numbers
+		for (int i = 1; i <= count; i++){
+			list.push_back( create_individual(
+						age_years * 365, 
+						i%2 == 0 ? SEX_FEMALE : SEX_MALE) );
+		}
 	}
+	assert( ind_count_remainder == 0 );
 }
 
 std::vector<const HerbivoreInterface*> IndividualPopulation::get_list()const{
@@ -189,19 +207,31 @@ void CohortPopulation::establish(){
 
 	assert(list.empty());
 
-	// Since the list is empty, we can simply create new cohorts
-	// without needing to check if the age-class already exists.
-	// add males
-	list.push_back(create_cohort(
-				get_hft().establishment_density/2.0, // [ind/km²]
-				get_hft().maturity_age_phys_male,
-				SEX_MALE));
-	// add females
-	list.push_back(create_cohort(
-				get_hft().establishment_density/2.0, // [ind/km²]
-				get_hft().maturity_age_phys_female,
-				SEX_FEMALE));
+	// We create one male and one female for each age specified in the HFT.
 
+	const double cohort_count = 
+		2 * (get_hft().establishment_age_range.second
+		- get_hft().establishment_age_range.first + 1);
+
+	for (int age = get_hft().establishment_age_range.first;
+			age <= get_hft().establishment_age_range.second;
+			age++)
+	{
+		// Since the list is empty, we can simply create new cohorts
+		// without needing to check if the age-class already exists.
+
+		// add males
+		list.push_back(create_cohort(
+					get_hft().establishment_density / cohort_count, // [ind/km²]
+					age,
+					SEX_MALE));
+
+		// add females
+		list.push_back(create_cohort(
+					get_hft().establishment_density / cohort_count, // [ind/km²]
+					age,
+					SEX_FEMALE));
+	}
 }
 
 CohortPopulation::List::iterator CohortPopulation::find_cohort(

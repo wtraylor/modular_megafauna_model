@@ -64,7 +64,7 @@ namespace {
 			virtual double get_bodymass() const{return bodymass;}
 
 			virtual ForageMass get_forage_demands(
-					const HabitatForage& available_forage)const{
+					const HabitatForage& available_forage){
 				return demand;
 			}
 
@@ -323,16 +323,35 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 
 	SECTION("Establishment"){
 		REQUIRE( pop.get_list().empty() ); // empty before
-		pop.establish();
-		REQUIRE( !pop.get_list().empty() ); // filled afterwards
-		REQUIRE( population_lists_match(pop) );
-		
-		// There should be only one age class with male and female
-		REQUIRE( pop.get_list().size() == 2 ); 
 
-		// Does the total density match?
-		REQUIRE( get_total_pop_density(pop) 
-				== Approx(hft.establishment_density) );
+		SECTION("Establish one age class"){
+			hft.establishment_age_range.first = hft.establishment_age_range.second = 4;
+			pop.establish();
+			REQUIRE( !pop.get_list().empty() ); // filled afterwards
+			REQUIRE( population_lists_match(pop) );
+
+			// There should be only one age class with male and female
+			REQUIRE( pop.get_list().size() == 2 ); 
+
+			// Does the total density match?
+			REQUIRE( get_total_pop_density(pop) 
+					== Approx(hft.establishment_density) );
+		}
+
+		SECTION("Establish several age classes"){
+			hft.establishment_age_range.first  = 3;
+			hft.establishment_age_range.second = 6;
+			pop.establish();
+			REQUIRE( !pop.get_list().empty() ); // filled afterwards
+			REQUIRE( population_lists_match(pop) );
+
+			// There should be 2 cohorts per year in the age range.
+			REQUIRE( pop.get_list().size() == 4 * 2 ); 
+
+			// Does the total density match?
+			REQUIRE( get_total_pop_density(pop) 
+					== Approx(hft.establishment_density) );
+		}
 
 		SECTION("Removal of dead cohorts with mortality"){
 			// we will kill all herbivores in the list with a copy 
@@ -450,6 +469,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 	}
 
 	SECTION("Removal of dead cohorts at establishment"){
+		hft.establishment_age_range.first = hft.establishment_age_range.second = 3;
 		// establish in very low density
 		hft.establishment_density = THRESHOLD / 2.0;
 		pop.establish();
@@ -1926,8 +1946,11 @@ TEST_CASE("Fauna::HftPopulationsMap", "") {
 	hfts[0].name = "hft1";
 	hfts[1].name = "hft2";
 	hfts[2].name = "hft3";
-	for (int i=0; i<NPOP; i++)
+	for (int i=0; i<NPOP; i++){
 		hfts[i].establishment_density = (double) i;
+		// have only one age class established:
+		hfts[i].establishment_age_range.first = hfts[i].establishment_age_range.second;
+	}
 
 	// create some populations with establishment_density
 	DummyPopulation* pops[NPOP];
@@ -2063,24 +2086,6 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 			CHECK( const_list.size() == 0 );
 		}
 
-	}
-
-	SECTION("Establishment with odd number"){
-		// Reduce establishment density by one individual.
-		// The population should round up to have even sex ratio.
-		hft.establishment_density -= 1.0/AREA; // [ind/km²]
-		pop.establish();
-		REQUIRE( !pop.get_list().empty() ); 
-		CHECK( population_lists_match(pop) );
-		// Do we have the exact number of individuals?
-		CHECK( pop.get_list().size() == ESTABLISH_COUNT ); 
-
-		// Does the total density match?
-		// 1 ind. should be created extra, but not more
-		CHECK( get_total_pop_density(pop) 
-				>= Approx(hft.establishment_density) );
-		CHECK( get_total_pop_density(pop) 
-				<= Approx(hft.establishment_density+1.0/AREA) );
 	}
 
 	SECTION("Complete offspring"){

@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <utility> // for std::pair
 
 namespace Fauna{
 
@@ -169,13 +170,16 @@ namespace Fauna{
 			/// Constraints for maximum daily forage intake.
 			DigestiveLimit digestive_limit;
 
-			/// Habitat population density for initial establishment [ind/km²]
+			/// Youngest and oldest age [years] for herbivore establishment.
+			std::pair<int, int> establishment_age_range;
+
+			/// Total population density for establishment in one habitat [ind/km²]
 			double establishment_density;
 
 			/// Energy expenditure model for herbivores.
 			ExpenditureModel expenditure_model;
 
-			/// Max dry-matter intake as fraction of body mass.
+			/// Max dry-matter intake as fraction of body mass [kgDM/kg].
 			/** Only relevant for \ref DL_BODYMASS_FRACTION. */
 			double digestion_bodymass_fraction;
 
