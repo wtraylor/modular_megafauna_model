@@ -388,7 +388,7 @@ void HerbivoryOutput::outdaily(Gridcell& gridcell){
 
 void HerbivoryOutput::outdaily(
 		const double longitude, const double latitude,
-		const int day, const int simulation_year, const int calendar_year,
+		int day, const int simulation_year, int calendar_year,
 		const std::vector<Fauna::SimulationUnit*>& simulation_units)
 {
 	if (day<0 || day>=365)
@@ -423,9 +423,28 @@ void HerbivoryOutput::outdaily(
 			// AGGREGATE DATA
 			datapoint.merge(sim_unit.get_output().reset());
 		}
+
+		// ADJUST OUTPUT DATE TO THE MIDDLE OF THE AVERAGE
+		set_date_to_period_center(day, calendar_year);
+
 		// WRITE OUTPUT
-		// Use the calendar here.
+		// Use the calendar year here.
 		write_datapoint( longitude, latitude, day, calendar_year, datapoint );
+	}
+}
+
+void HerbivoryOutput::set_date_to_period_center(int& day, int& year)const{
+	switch (interval){
+		case DAILY: break;
+		case MONTHLY: day -= 30/2; break;
+		case ANNUAL:  day -= 365/2; break;
+		case DECADAL: day -= 10 * 365/2; break;
+	};
+	// If we stepped back into one of the previous years, the `year` variable
+	// is decremented and the `day` variable set to a positive number.
+	if (day < 0){
+		year += day / 365 - 1;
+		day  = 365 + (day % 365);
 	}
 }
 
@@ -481,7 +500,7 @@ void HerbivoryOutput::write_datapoint(
 	{
 		const Hft& hft = *itr_hft;
 
-		// See if we find the HFT in the datapoint•
+		// See if we find the HFT in the datapoint.
 		//
 		// Here it is important to remember that HerbivoryOutput
 		// has its own *copy* of an HftList. Therefore, we need to
@@ -490,6 +509,7 @@ void HerbivoryOutput::write_datapoint(
 
 		const FaunaOut::HerbivoreData* pherbidata = NULL;
 
+		// iterate through the data set and find the HFT we want to look at.
 		for (std::map<const Hft*, FaunaOut::HerbivoreData>::const_iterator 
 				itr2 = datapoint.hft_data.begin();
 				itr2 != datapoint.hft_data.end();

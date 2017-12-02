@@ -103,6 +103,11 @@ namespace GuessOutput {
 			/** 
 			 * Depending on \ref interval, for each day, each month,
 			 * etc., one row if data is added to the output tables.
+			 *
+			 * The date (day & year) that is printed out is set back to the 
+			 * center of the time period that is being averaged. This way, 
+			 * plotting the data will be visually accurate.
+			 *
 			 * \note This function is independent of any global LPJ-GUESS
 			 * variables (except for \ref Date::ndaymonth).
 			 * \param longitude Value for the longitude column.
@@ -117,7 +122,7 @@ namespace GuessOutput {
 			 * `simulation_year<0`
 			 */
 			void outdaily(const double longitude, const double latitude,
-					const int day, const int simulation_year, const int calendar_year,
+					int day, const int simulation_year, int calendar_year,
 					const std::vector<Fauna::SimulationUnit*>& simulation_units);
 
 			/// Write output for a \ref Gridcell.
@@ -195,6 +200,17 @@ namespace GuessOutput {
 				CS_HFT_FORAGE
 			};
 			ColumnDescriptors get_columns(const ColumnSelector);
+
+			/// Set day and year back into the center of the interval that is averaged.
+			/**
+			 * \warning This function does not claim to be wholly accurate. 
+			 * Month length is approximated as 30 days and year length is 365
+			 * days.
+			 * \param[in,out] day Day of the year (0: January 1st)
+			 * \param[in,out] year Simulation or calendar year.
+			 * \see \ref interval
+			 */
+			void set_date_to_period_center(int& day, int& year)const;
 
 		private: // tables
 			/// File and table descriptor for one output variable.
