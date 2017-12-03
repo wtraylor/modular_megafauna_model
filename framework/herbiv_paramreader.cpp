@@ -238,6 +238,11 @@ void ParamReader::callback(const int callback, Pft* ppft){
 								"half_max_intake_density", req_str +
 								" and \"illius_oconnor_2000\" in foraging_limits"));
 				}
+				if (current_hft.mortality_factors.count(MF_STARVATION_ILLIUS2000)){
+					mandatory_hft_params.push_back(MandatoryParam(
+								"bodyfat_deviation", req_str +
+								" and \"starvation_illius_2000\" in mortality_factors"));
+				}
 				if (current_hft.reproduction_model == RM_ILLIUS_OCONNOR_2000 ||
 						current_hft.reproduction_model == RM_CONST_MAX ||
 						current_hft.reproduction_model == RM_LINEAR)
@@ -694,6 +699,13 @@ void ParamReader::declare_parameters(
 				1,                // number of parameters
 				CB_NONE,
 				"Body mass [kg] at birth for both sexes.");
+
+		declareitem("bodyfat_deviation",
+				&current_hft.bodyfat_deviation,
+				0.0, 1.0, // min, max
+				1,                // number of parameters
+				CB_NONE,
+				"Standard deviation of body condition within a herbivore cohort/population.");
 
 		declareitem("bodyfat_max",
 				&current_hft.bodyfat_max,

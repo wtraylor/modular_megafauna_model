@@ -143,6 +143,15 @@ namespace Fauna{
 			/// Proportional fat mass at birth [kg/kg].
 			double bodyfat_birth; 
 
+			/// Standard deviation in body condition for \ref GetStarvationMortalityIllius2000.
+			/**
+			 * Body condition is the proportion of current body fat relative to
+			 * physiological maximum.
+			 * For herbivore individuals, the standard deviation refers to the 
+			 * whole population. In cohort mode, it refers only to one cohort.
+			 */
+			double bodyfat_deviation;
+
 			/// Maximum proportional fat mass [kg/kg].
 			double bodyfat_max;
 

@@ -146,3 +146,7 @@ namespace Fauna{
 }
 
 #endif // HERBIV_MORTALITY_H
+
+// REFERENCES
+// Illius, A. W., and T. G. O’Connor. 2000. “Resource Heterogeneity and Ungulate Population Dynamics.” Oikos 89 (2). Munksgaard:283–94. https://doi.org/10.1034/j.1600-0706.2000.890209.x.
+// Ledger, H. P. 1968. “Body Composition as a Basis for a Comparative Study of Some East African Mammals.” In Symp. Zool. Soc. Lond, 21:289–310.

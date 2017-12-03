@@ -21,6 +21,7 @@ Hft::Hft():
 	// SIMULATION PARAMETERS:
 	// add more initializiations in alphabetical order
 	bodyfat_birth(0.1),
+	bodyfat_deviation(0.125),
 	bodyfat_max(0.3),
 	bodymass_birth(5.0),
 	bodymass_male(60.0),
@@ -82,6 +83,12 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		if (bodyfat_birth > bodyfat_max) {
 			stream << "bodyfat_birth must not exceed bodyfat_max ("
 				<<bodyfat_birth<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (bodyfat_deviation < 0.0 || bodyfat_deviation > 1.0){
+			stream << "bodyfat_deviation is out of bounds. (Current value: "
+				<<bodyfat_deviation << ")" << std::endl;
 			is_valid = false;
 		}
 
