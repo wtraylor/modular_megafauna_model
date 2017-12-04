@@ -166,6 +166,9 @@ namespace Fauna {
 			/// Holds two integer numbers.
 			int integer_pair[2];
 
+			/// Holds two double floating-point numbers.
+			double double_pair[2];
+
 			/// Holds the currently parsed string parameter.
 			std::string strparam;
 

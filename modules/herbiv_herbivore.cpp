@@ -399,9 +399,8 @@ double HerbivoreBase::get_todays_expenditure()const{
 			itr++)
 	{
 		if (*itr == EC_ALLOMETRIC) {
-			assert( get_hft().expenditure_allometric_coefficient > 0.0 );
-			result += get_hft().expenditure_allometric_coefficient *
-				pow(get_bodymass(), get_hft().expenditure_allometric_exponent);
+			assert( get_hft().expenditure_allometry.coefficient > 0.0 );
+			result += get_hft().expenditure_allometry.calc(get_bodymass());
 		}
 		else if (*itr == EC_TAYLOR_1981) {
 			result += get_expenditure_taylor_1981(
@@ -413,6 +412,7 @@ double HerbivoreBase::get_todays_expenditure()const{
 				"Fauna::HerbivoreBase::get_todays_expenditure() "
 				"Expenditure component not implemented.");
 	}
+	assert( result >= 0.0 );
 	return result;
 }
 

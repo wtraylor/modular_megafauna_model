@@ -8,6 +8,7 @@
 #ifndef HERBIV_HFT_H
 #define HERBIV_HFT_H
 
+#include <cmath> // for pow()
 #include <set> // for mortality_factors
 #include <string>
 #include <vector>
@@ -19,6 +20,27 @@ namespace Fauna{
 	// forward declarations
 	class Parameters;
 
+	/// Coefficient and exponent for an allometric relationship.
+	/**
+	 * The allometric relationship:
+	 * \f[
+	 * x = c * M^e
+	 * \f]
+	 * - $c$ = \ref coefficient
+	 * - $e$ = \ref exponent
+	 */
+	struct AllometryParameters{
+		AllometryParameters(const double coefficient, const double exponent):
+			coefficient(coefficient), exponent(exponent){}
+		double coefficient;
+		double exponent;
+
+		/// Calculate the result of the formula.
+		double calc(const double M)const{
+			return coefficient * pow(M, exponent);
+		}
+	};
+
 	/// Model to define a herbivore’s diet in a multi-forage scenario.
 	enum DietComposer{
 		/// Eat exclusively grass.
@@ -27,9 +49,9 @@ namespace Fauna{
 
 	/// Digestion type of a herbivore.
 	enum DigestionType{
-		/// Hindgut fermenter (caecalid)
+		/// Hindgut fermenter (colonic caecalid)
 		DT_HINDGUT, 
-		/// Ruminant
+		/// Ruminant forgut fermenter
 		DT_RUMINANT 
 	};
 
@@ -38,8 +60,7 @@ namespace Fauna{
 		/// No digestive limit.
 		DL_NONE,
 
-		/// Dry-matter ingestion is limited to a constant fraction of 
-		/// live herbivore body mass.
+		/// Dry-matter ingestion is limited to a fraction of live herbivore body mass.
 		DL_BODYMASS_FRACTION,
 
 		/// Limit digestive limit with \ref GetDigestiveLimitIlliusGordon1992.
@@ -196,11 +217,8 @@ namespace Fauna{
 			/// Total population density for establishment in one habitat [ind/km²]
 			double establishment_density;
 
-			/// Coefficient for allometric expeniture component: \ref EC_ALLOMETRIC.
-			double expenditure_allometric_coefficient;
-
-			/// Exponent for allometric expeniture component: \ref EC_ALLOMETRIC.
-			double expenditure_allometric_exponent;
+			/// Parameters for allometric expenditure component: \ref EC_ALLOMETRIC.
+			AllometryParameters expenditure_allometry;
 
 			/// Energy expenditure components, summing up to actual expenditure.
 			std::set<ExpenditureComponent> expenditure_components;

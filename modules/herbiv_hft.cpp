@@ -33,8 +33,7 @@ Hft::Hft():
 	diet_composer(DC_PURE_GRAZER),
 	digestion_type(DT_RUMINANT),
 	digestive_limit(DL_NONE),
-	expenditure_allometric_coefficient(0.005),
-	expenditure_allometric_exponent(0.75),
+	expenditure_allometry(0.005, 0.75),
 	digestion_bodymass_fraction(0.02),
 	gestation_months(8),
 	half_max_intake_density(20),
@@ -185,11 +184,11 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		}
 
 		if (expenditure_components.count(EC_ALLOMETRIC) &&
-				expenditure_allometric_coefficient < 0.0) {
+				expenditure_allometry.coefficient < 0.0) {
 			stream << "Coefficient for allometric expenditure must not be "
 				"negative. That would result in negative expenditure values. "
 				"Current value: expenditure_allometric_coefficient = "
-				<< expenditure_allometric_coefficient << std::endl;
+				<< expenditure_allometry.coefficient << std::endl;
 			is_valid = false;
 		}
 

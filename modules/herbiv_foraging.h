@@ -269,7 +269,6 @@ namespace Fauna{
 			DigestionType digestion_type; // constant
 	};
 
-
 	/// Get maximum intake for each forage type limited by total mass.
 	/**
 	 * \param mj_proportions Diet composition in energy proportions [MJ/MJ].
