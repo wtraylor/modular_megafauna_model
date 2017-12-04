@@ -135,8 +135,8 @@ That’s why individual herbivores can only be simulated if an absolute habitat 
 ### HerbivoreBase {#sec_herbiv_herbivorebase} ### 
 The herbivore class itself can be seen as a mere framework (compare \ref sec_inversion_of_control) that integrates various compartments:
 - The herbivore’s own **energy budget**: \ref Fauna::FatmassEnergyBudget.
-- Its **energy needs**, defined by \ref Fauna::Hft::expenditure_model.
-The herbivore is self-responsible to call the implementation of the given expenditure model.
+- Its **energy needs**, defined by \ref Fauna::Hft::expenditure_components.
+The herbivore is self-responsible to call the implementation of the given expenditure models.
 (A strategy pattern would not work here as different expenditure models need to know different variables.)
 - How much the herbivore **is able to digest** is limited by a single algorithm defined in \ref Fauna::Hft::digestive_limit.
 - How much the herbivore **is able to forage** can be constrained by various factors which are defined as a set of \ref Fauna::Hft::foraging_limits.

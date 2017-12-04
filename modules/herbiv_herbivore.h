@@ -277,8 +277,9 @@ namespace Fauna{
 			ForageEnergyContent get_net_energy_content(
 					const Digestibility& digestibility)const;
 
-			/// Calculate energy expenditure with given expenditure model.
-			/** \return Today’s energy needs [MJ/ind/day]*/
+			/// Calculate energy expenditure as sum of given expenditure components.
+			/** \return Today’s energy needs [MJ/ind/day]
+			 * \see \ref Hft::expenditure_components */
 			double get_todays_expenditure()const;
 
 			/// Get the proportional offspring for today using selected model.

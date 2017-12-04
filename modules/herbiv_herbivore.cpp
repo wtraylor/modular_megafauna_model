@@ -387,16 +387,33 @@ int HerbivoreBase::get_today()const {
 }
 
 double HerbivoreBase::get_todays_expenditure()const{
-	switch (get_hft().expenditure_model){
-		case EM_TAYLOR_1981:
-			return get_expenditure_taylor_1981(
-					get_bodymass(),
+	// Sum of all expenditure components [MJ/ind/day]
+	double result = 0.0;
+
+	// Iterate through all selected expenditure components and sum up the
+	// results of their algorithsms.
+
+	for (std::set<ExpenditureComponent>::const_iterator 
+			itr = get_hft().expenditure_components.begin();
+			itr != get_hft().expenditure_components.end();
+			itr++)
+	{
+		if (*itr == EC_ALLOMETRIC) {
+			assert( get_hft().expenditure_allometric_coefficient > 0.0 );
+			result += get_hft().expenditure_allometric_coefficient *
+				pow(get_bodymass(), get_hft().expenditure_allometric_exponent);
+		}
+		else if (*itr == EC_TAYLOR_1981) {
+			result += get_expenditure_taylor_1981(
+					get_bodymass(), 
 					get_bodymass_adult());
-			// ADD MORE MODELS HERE
-		default:
-			throw std::logic_error("Fauna::HerbivoreBase::get_todays_expenditure() "
-					"Selected expenditure model is not implemented");
-	};
+		}
+		// ** Add new expenditure components in else-if statements here. **
+		else throw std::logic_error(
+				"Fauna::HerbivoreBase::get_todays_expenditure() "
+				"Expenditure component not implemented.");
+	}
+	return result;
 }
 
 double HerbivoreBase::get_todays_offspring_proportion()const{

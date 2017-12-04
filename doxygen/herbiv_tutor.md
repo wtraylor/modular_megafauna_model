@@ -45,11 +45,11 @@ population class.
 	!include herbiv_diagrams.iuml!new_herbivore_type
 @enduml
 
-### How to add a new energy expenditure model {#sec_herbiv_new_expenditure_model}
-- Add a new entry in \ref Fauna::ExpenditureModel.
+### How to add a new energy expenditure component {#sec_herbiv_new_expenditure_component}
+- Add a new entry in \ref Fauna::ExpenditureComponent.
 - Parameters:
-	+ Add new possible string value for the HFT parameter `expenditure_model` in \ref Fauna::ParamReader::declare_parameters().
-	+ Adjust \ref Fauna::ParamReader::callback() under `callback == CB_EXPENDITURE_MODEL`.
+	+ Add new possible string value for the HFT parameter `expenditure_components` in \ref Fauna::ParamReader::declare_parameters().
+	+ Adjust \ref Fauna::ParamReader::callback() under `callback == CB_EXPENDITURE_COMPONENTS`.
 	+ Expand the comment in the instruction file `data/ins/herbivores.ins`.
 - Implement your algorithm as a free function or a class. See \ref herbiv_energetics.h for examples.
 - Call your model in \ref Fauna::HerbivoreBase::get_todays_expenditure().

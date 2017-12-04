@@ -201,7 +201,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				mandatory_hft_params.push_back(MandatoryParam(
 							"establishment_density", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
-							"expenditure_model", req_str));
+							"expenditure_components", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
 							"foraging_limits", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
@@ -232,6 +232,14 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					mandatory_hft_params.push_back(MandatoryParam(
 								"digestion_bodymass_fraction", req_str +
 								" and \"bodymass_fraction\" is digestive limit."));
+				}
+				if (current_hft.expenditure_components.count(EC_ALLOMETRIC)) {
+					mandatory_hft_params.push_back(MandatoryParam(
+								"expenditure_allometric_coefficient", req_str +
+								" and \"allometric\" is an expenditure component."));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"expenditure_allometric_exponent", req_str +
+								" and \"allometric\" is an expenditure component."));
 				}
 				if (current_hft.foraging_limits.count(FL_ILLIUS_OCONNOR_2000)){
 					mandatory_hft_params.push_back(MandatoryParam(
@@ -415,16 +423,25 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		current_hft.establishment_age_range.second = integer_pair[1];
 	}
 
-	if (callback == CB_EXPENDITURE_MODEL) {
-		if (strparam == "TAYLOR_1981")
-			current_hft.expenditure_model = EM_TAYLOR_1981;
-		// add other models here
-		else {
-			sendmessage("Error", std::string(
-						"Unknown expenditure model"
-						"in HFT \""+current_hft.name+"\"; valid types: "
-						"\"taylor_1981\"").c_str()); // add more here
-			plibabort();
+	if (callback == CB_EXPENDITURE_COMPONENTS) {
+		const std::list<std::string> token_list = 
+			parse_comma_separated_param(strparam);
+
+		std::list<std::string>::const_iterator itr;
+		for (itr = token_list.begin(); itr != token_list.end(); itr++){
+			if (*itr == "TAYLOR_1981") 
+				current_hft.expenditure_components.insert(EC_TAYLOR_1981);
+			if (*itr == "ALLOMETRIC") 
+				current_hft.expenditure_components.insert(EC_ALLOMETRIC);
+			// add new expenditure components here
+			else {
+				sendmessage("Error", std::string(
+							"Unknown expenditure component: \""
+							+*itr+"\". "
+							"Valid types: "
+							"\"allometric\", \"taylor_1981\"").c_str()); // add more here
+				plibabort();
+			} 
 		}
 	} 
 
@@ -783,13 +800,13 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Habitat population density for initial establishment [ind/km²].");
 
-		declareitem("expenditure_model",
+		declareitem("expenditure_components",
 				&strparam,
 				128, // max length of string
-				CB_EXPENDITURE_MODEL,
-				"Energy expenditure model for herbivores."
+				CB_EXPENDITURE_COMPONENTS,
+				"Comma-separated list of energy expenditure model for herbivores."
 				"Possible values: "
-				"\"taylor_1981\", "); 
+				"\"taylor_1981\", \"allometric\""); 
 
 		declareitem("digestion_bodymass_fraction",
 				&current_hft.digestion_bodymass_fraction,

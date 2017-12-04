@@ -47,9 +47,20 @@ namespace Fauna{
 	};
 
 	/// Algorithm to calculate a herbivore’s daily energy needs.
-	enum ExpenditureModel{
-		/// Formula for cattle, see \ref get_expenditure_taylor_1981.
-		EM_TAYLOR_1981
+	enum ExpenditureComponent{
+		/// Simple exponential expenditure function based on current body mass.
+		/**
+		 * \f[
+		 * E = c * M^e
+		 * \f]
+		 * - $E$: Daily energy expenditure [MJ/ind/day]
+		 * - $c$: Coefficient \ref expenditure_allometric_coefficient
+		 * - $M$: Current body mass [kg/ind]
+		 * - $e$: Allometric exponent \ref expenditure_allometric_exponent
+		 */
+		EC_ALLOMETRIC,
+		/// Formula for field metabolic rate in cattle, see \ref get_expenditure_taylor_1981.
+		EC_TAYLOR_1981
 	};
 
 	/// A factor limiting a herbivore’s daily forage harvesting.
@@ -185,8 +196,14 @@ namespace Fauna{
 			/// Total population density for establishment in one habitat [ind/km²]
 			double establishment_density;
 
-			/// Energy expenditure model for herbivores.
-			ExpenditureModel expenditure_model;
+			/// Coefficient for allometric expeniture component: \ref EC_ALLOMETRIC.
+			double expenditure_allometric_coefficient;
+
+			/// Exponent for allometric expeniture component: \ref EC_ALLOMETRIC.
+			double expenditure_allometric_exponent;
+
+			/// Energy expenditure components, summing up to actual expenditure.
+			std::set<ExpenditureComponent> expenditure_components;
 
 			/// Max dry-matter intake as fraction of body mass [kgDM/kg].
 			/** Only relevant for \ref DL_BODYMASS_FRACTION. */

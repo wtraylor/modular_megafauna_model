@@ -33,7 +33,8 @@ Hft::Hft():
 	diet_composer(DC_PURE_GRAZER),
 	digestion_type(DT_RUMINANT),
 	digestive_limit(DL_NONE),
-	expenditure_model(EM_TAYLOR_1981),
+	expenditure_allometric_coefficient(0.005),
+	expenditure_allometric_exponent(0.75),
 	digestion_bodymass_fraction(0.02),
 	gestation_months(8),
 	half_max_intake_density(20),
@@ -47,6 +48,7 @@ Hft::Hft():
 	reproduction_max(0.7),
 	reproduction_model(RM_ILLIUS_OCONNOR_2000) 
 {
+	expenditure_components.insert(EC_ALLOMETRIC);
 }
 
 bool Hft::is_valid(const Parameters& params, std::string& msg) const{
@@ -122,7 +124,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		}
 
 		if (digestive_limit == DL_NONE) {
-			stream << "Warning: No digestive limit defined."<<std::endl;
+			stream << "No digestive limit defined."<<std::endl;
 			// the HFT is still valid (e.g. for testing purpose)
 		}
 
@@ -177,8 +179,22 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
+		if (expenditure_components.empty()) {
+			stream << "No energy expenditure components defined." << std::endl;
+			is_valid = false;
+		}
+
+		if (expenditure_components.count(EC_ALLOMETRIC) &&
+				expenditure_allometric_coefficient < 0.0) {
+			stream << "Coefficient for allometric expenditure must not be "
+				"negative. That would result in negative expenditure values. "
+				"Current value: expenditure_allometric_coefficient = "
+				<< expenditure_allometric_coefficient << std::endl;
+			is_valid = false;
+		}
+
 		if (foraging_limits.empty()) {
-			stream << "Warning: No foraging limits defined."<<std::endl;
+			stream << "No foraging limits defined."<<std::endl;
 			// the HFT is still valid (e.g. for testing purpose)
 		}
 
@@ -230,7 +246,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		}
 
 		if (mortality_factors.empty()) {
-			stream << "Warning: No mortality factors defined."<<std::endl;
+			stream << "No mortality factors defined."<<std::endl;
 			// it is still valid (mainly for testing purposes)
 		}
 
