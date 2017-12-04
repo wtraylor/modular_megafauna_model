@@ -34,7 +34,7 @@ Hft::Hft():
 	digestion_type(DT_RUMINANT),
 	digestive_limit(DL_NONE),
 	expenditure_allometry(0.005, 0.75),
-	digestion_bodymass_fraction(0.02),
+	digestive_limit_allometry(0.047, 0.76),
 	gestation_months(8),
 	half_max_intake_density(20),
 	lifespan(10),
@@ -218,11 +218,11 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-		if (digestive_limit == DL_BODYMASS_FRACTION &&
-				!(digestion_bodymass_fraction > 0.0 && digestion_bodymass_fraction < 1.0)){
-			stream << "`digestion_bodymass_fraction` must be in interval (0,1) "
-				"if `bodymass_fraction` is set as a digestive limit."
-				<< " (current value: "<<digestion_bodymass_fraction<<")"<<std::endl;
+		if (digestive_limit == DL_ALLOMETRIC &&
+				digestive_limit_allometry.coefficient < 0.0){
+			stream << "Coefficient in `digestive_limit_allometry` must not be negative "
+				"if `allometric` is set as a digestive limit."
+				<< " (current value: "<<digestive_limit_allometry.coefficient<<")"<<std::endl;
 			is_valid = false;
 		}
 

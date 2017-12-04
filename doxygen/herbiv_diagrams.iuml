@@ -132,7 +132,7 @@
     package "Digestive Limit" <<rectangle>>  {
     enum DigestiveLimit{
       DL_NONE,
-      DL_BODYMASS_FRACTION,
+      DL_ALLOMETRIC,
       DL_ILLIUS_GORDON_1992
     } 
     HerbivoreBase  ..> "*" "Digestive Limit"

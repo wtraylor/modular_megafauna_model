@@ -277,7 +277,7 @@ namespace Fauna{
 	 * \return The maximum intake for each forage type [kgDM/day] while
 	 * retaining the given relative energy proportions.
 	 * \throw std::invalid_argument If `kg_total < 0.0`.
-	 * \see \ref DL_BODYMASS_FRACTION
+	 * \see \ref DL_ALLOMETRIC
 	 */
 	ForageMass get_max_intake_as_total_mass(
 			const ForageFraction& mj_proportions,

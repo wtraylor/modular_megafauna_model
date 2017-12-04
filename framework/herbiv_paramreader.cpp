@@ -228,10 +228,10 @@ void ParamReader::callback(const int callback, Pft* ppft){
 								"mortality_juvenile", req_str +
 								" and \"background\" in mortality_factors"));
 				}
-				if (current_hft.digestive_limit == DL_BODYMASS_FRACTION){
+				if (current_hft.digestive_limit == DL_ALLOMETRIC){
 					mandatory_hft_params.push_back(MandatoryParam(
-								"digestion_bodymass_fraction", req_str +
-								" and \"bodymass_fraction\" is digestive limit."));
+								"digestive_limit_allometry", req_str +
+								" and \"allometric\" is digestive limit."));
 				}
 				if (current_hft.expenditure_components.count(EC_ALLOMETRIC)) {
 					mandatory_hft_params.push_back(MandatoryParam(
@@ -397,11 +397,16 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		} 
 	}
 
+	if (callback == CB_DIGESTION_LIMIT_ALLOMETRY) {
+		current_hft.digestive_limit_allometry.coefficient = double_pair[0];
+		current_hft.digestive_limit_allometry.exponent    = double_pair[1];
+	}
+
 	if (callback == CB_DIGESTIVE_LIMIT) {
 		if (strparam == "NONE")
 			current_hft.digestive_limit = DL_NONE;
-		else if (strparam == "BODYMASS_FRACTION")
-			current_hft.digestive_limit = DL_BODYMASS_FRACTION;
+		else if (strparam == "ALLOMETRIC")
+			current_hft.digestive_limit = DL_ALLOMETRIC;
 		else if (strparam == "ILLIUS_GORDON_1992")
 			current_hft.digestive_limit = DL_ILLIUS_GORDON_1992;
 		// add new digestive limits here
@@ -410,7 +415,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 						"Unknown digestive limit: \""
 						+strparam+"\". "
 						"Valid types: "
-						"\"none\", \"bodymass_fraction\", \"illius_gordon_1992\"").c_str());
+						"\"none\", \"allometric\", \"illius_gordon_1992\"").c_str());
 			plibabort();
 		} 
 	}
@@ -420,7 +425,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		current_hft.establishment_age_range.second = integer_pair[1];
 	}
 
-	if (callback == CB_EXPENDITURE_COMPONENTS) {
+	if (callback == CB_EXPENDITURE_ALLOMETRY) {
 		current_hft.expenditure_allometry.coefficient = double_pair[0];
 		current_hft.expenditure_allometry.exponent    = double_pair[1];
 	}
@@ -433,7 +438,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		for (itr = token_list.begin(); itr != token_list.end(); itr++){
 			if (*itr == "TAYLOR_1981") 
 				current_hft.expenditure_components.insert(EC_TAYLOR_1981);
-			if (*itr == "ALLOMETRIC") 
+			else if (*itr == "ALLOMETRIC") 
 				current_hft.expenditure_components.insert(EC_ALLOMETRIC);
 			// add new expenditure components here
 			else {
@@ -786,7 +791,7 @@ void ParamReader::declare_parameters(
 				CB_DIGESTIVE_LIMIT,
 				"Digestive constraint for daily herbivore food intake."
 				"Possible values: "
-				"\"none\", \"bodymass_fraction\", \"illius_gordon_1992\"");
+				"\"none\", \"allometric\", \"illius_gordon_1992\"");
 
 		declareitem("establishment_age_range",
 				integer_pair,
@@ -817,13 +822,12 @@ void ParamReader::declare_parameters(
 				"Possible values: "
 				"\"taylor_1981\", \"allometric\""); 
 
-		declareitem("digestion_bodymass_fraction",
-				&current_hft.digestion_bodymass_fraction,
-				0.000001, 0.999, // min, max
-				1,                // number of parameters
-				CB_NONE,
-				"Total maximum daily dry-matter intake as fraction of body mass "
-				"[kgDM/kg].");
+		declareitem("digestive_limit_allometry",
+				double_pair,
+				0.0, DBL_MAX, // min, max
+				2,            // number of parameters
+				CB_DIGESTION_LIMIT_ALLOMETRY,
+				"Allometric coefficient and exponent for foraging limit \"allometric\".");
 
 		declareitem("foraging_limits",
 				&strparam,
@@ -831,7 +835,7 @@ void ParamReader::declare_parameters(
 				CB_FORAGING_LIMITS,
 				"Comma-separated list of constraints of herbivore forage intake. "
 				"Possible values: "
-				"\"bodymass_fraction\", \"digestion_illius_1992\", \"illius_oconnor_2000\"");
+				"\"allometric\", \"digestion_illius_1992\", \"illius_oconnor_2000\"");
 
 		declareitem("gestation_months",
 				&current_hft.gestation_months,

@@ -30,8 +30,10 @@ namespace Fauna{
 	 * - $e$ = \ref exponent
 	 */
 	struct AllometryParameters{
+		/// Constructor.
 		AllometryParameters(const double coefficient, const double exponent):
 			coefficient(coefficient), exponent(exponent){}
+
 		double coefficient;
 		double exponent;
 
@@ -49,9 +51,9 @@ namespace Fauna{
 
 	/// Digestion type of a herbivore.
 	enum DigestionType{
-		/// Hindgut fermenter (colonic caecalid)
+		/// Hindgut fermenter (colonic caecalid).
 		DT_HINDGUT, 
-		/// Ruminant forgut fermenter
+		/// Ruminant forgut fermenter.
 		DT_RUMINANT 
 	};
 
@@ -61,7 +63,8 @@ namespace Fauna{
 		DL_NONE,
 
 		/// Dry-matter ingestion is limited to a fraction of live herbivore body mass.
-		DL_BODYMASS_FRACTION,
+		/** \see Hft::digestive_limit_allometry */
+		DL_ALLOMETRIC,
 
 		/// Limit digestive limit with \ref GetDigestiveLimitIlliusGordon1992.
 		DL_ILLIUS_GORDON_1992
@@ -211,6 +214,9 @@ namespace Fauna{
 			/// Constraints for maximum daily forage intake.
 			DigestiveLimit digestive_limit;
 
+			/// Allometric coefficient and exponent for \ref DL_ALLOMETRIC.
+			AllometryParameters digestive_limit_allometry;
+
 			/// Youngest and oldest age [years] for herbivore establishment.
 			std::pair<int, int> establishment_age_range;
 
@@ -222,10 +228,6 @@ namespace Fauna{
 
 			/// Energy expenditure components, summing up to actual expenditure.
 			std::set<ExpenditureComponent> expenditure_components;
-
-			/// Max dry-matter intake as fraction of body mass [kgDM/kg].
-			/** Only relevant for \ref DL_BODYMASS_FRACTION. */
-			double digestion_bodymass_fraction;
 
 			/// Constraints for maximum daily forage procurement.
 			std::set<ForagingLimit> foraging_limits;

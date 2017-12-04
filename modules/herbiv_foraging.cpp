@@ -81,11 +81,11 @@ ForageMass GetForageDemands::get_max_digestion()const
 	}
 
 	
-	if (get_hft().digestive_limit == DL_BODYMASS_FRACTION) {
+	if (get_hft().digestive_limit == DL_ALLOMETRIC) {
 		return get_max_intake_as_total_mass(
 				diet_composition,
 				energy_content,
-				bodymass * get_hft().digestion_bodymass_fraction);
+				get_hft().digestive_limit_allometry.calc(bodymass));
 	}
 
 
