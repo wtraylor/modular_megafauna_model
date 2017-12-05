@@ -687,6 +687,13 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 
 	const double ENERGY = 10.0; // MJ
 
+	SECTION("force_body_condition()"){
+		CHECK_THROWS( budget.force_body_condition(-.1) );
+		CHECK_THROWS( budget.force_body_condition(1.1) );
+		budget.force_body_condition(0.3);
+		CHECK( budget.get_fatmass() / budget.get_max_fatmass() == Approx(0.3) );
+	}
+
 	SECTION("Set energy needs"){
 		budget.add_energy_needs(ENERGY);
 		REQUIRE( budget.get_energy_needs() == Approx(ENERGY) );
@@ -1398,32 +1405,55 @@ TEST_CASE("Fauna::GetSimpleLifespanMortality", "") {
 	CHECK( get_mort((LIFESPAN+1)*365) == 1.0 );
 }
 
-TEST_CASE("Fauna::GetStarvationMortalityIllius2000", "") {
-	CHECK_THROWS( GetStarvationMortalityIllius2000(-0.1) );
-	CHECK_THROWS( GetStarvationMortalityIllius2000(1.1) );
+TEST_CASE("Fauna::GetStarvationIlliusOConnor2000", "") {
+	CHECK_THROWS( GetStarvationIlliusOConnor2000(-0.1) );
+	CHECK_THROWS( GetStarvationIlliusOConnor2000(1.1) );
+
+	double new_bc, new_bc1, new_bc2, new_bc3; // variables to store new body condition
 
 	SECTION("default standard deviation"){
-		const GetStarvationMortalityIllius2000 get_mort;
-		CHECK_THROWS( get_mort(-1.0) );
-		CHECK_THROWS( get_mort(1.1) );
+		const GetStarvationIlliusOConnor2000 get_mort(0.125);
+		CHECK_THROWS( get_mort(-1.0, new_bc) );
+		CHECK_THROWS( get_mort(1.1, new_bc) );
 
 		// With full fat reserves there shouldn’t be any considerable
 		// mortality
-		CHECK( get_mort(1.0) == Approx(0.0) );
+		CHECK( get_mort(1.0, new_bc) == Approx(0.0) );
+		CHECK( new_bc == Approx(1.0) );
 
 		// Mortality increases with lower body condition.
-		CHECK( get_mort(0.1) > get_mort(0.2) );
+		const double mort1 = get_mort(.01, new_bc1);
+		const double mort2 = get_mort(.02, new_bc2);
+		CHECK( mort1 > mort2 );
+		CHECK( new_bc1 > 0.01 );
+		CHECK( new_bc2 > 0.02 );
+
+		// The change in body condition peaks around a body condition of 0.02
+		// if standard deviation i 0.125
+		INFO( "new_bc1 = "<<new_bc1 );
+		INFO( "mort1 = " << mort1 );
+		INFO( "new_bc2 = "<<new_bc2 );
+		INFO( "mort2 = " << mort2 );
+		CHECK( new_bc1-.01 < new_bc2-.02 );
+		get_mort(.03, new_bc3);
+		CHECK( new_bc3 > .03 );
+		CHECK( new_bc2-.02 > new_bc3-.03 );
 
 		// Because of the symmetry of the normal distribution,
 		// only half of the population actually falls below zero
 		// fat reserves if the average is zero.
-		CHECK( get_mort(0.0) == Approx(0.5) );
+		CHECK( get_mort(0.0, new_bc) == Approx(0.5) );
+		// ... but the average body condition does not increase
+		CHECK( new_bc == Approx(0.0) );
 	}
 
 	SECTION("compare standard deviations"){
-		const GetStarvationMortalityIllius2000 get_mort1(0.1);
-		const GetStarvationMortalityIllius2000 get_mort2(0.2);
-		CHECK( get_mort1(0.1) < get_mort2(0.1) );
+		const GetStarvationIlliusOConnor2000 get_mort1(0.1);
+		const GetStarvationIlliusOConnor2000 get_mort2(0.3);
+		const double mort1 = get_mort1(.1, new_bc1);
+		const double mort2 = get_mort2(.2, new_bc2);
+		CHECK( mort1 < mort2 );
+		CHECK( new_bc1 < new_bc2 );
 	}
 }
 

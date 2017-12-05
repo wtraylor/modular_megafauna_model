@@ -572,7 +572,7 @@ void HerbivoryOutput::write_datapoint(
 				double starvation = 0.0;
 				// try to find the starvation mortality factors
 				std::map<MortalityFactor, double>::const_iterator 
-					itr_starv1 = herbidata.mortality.find(MF_STARVATION_ILLIUS2000);
+					itr_starv1 = herbidata.mortality.find(MF_STARVATION_ILLIUS_OCONNOR_2000);
 				std::map<MortalityFactor, double>::const_iterator 
 					itr_starv2 = herbidata.mortality.find(MF_STARVATION_THRESHOLD);
 

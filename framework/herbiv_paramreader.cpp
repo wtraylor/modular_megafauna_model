@@ -100,7 +100,7 @@ void ParamReader::check_all_params(bool& fatal, std::string& msg)const{
 			// Print message even if HFT might be valid. Maybe the message is
 			// just a warning, but no fatal error.
 			if (!tmp_msg.empty())
-				 msg_stream << "HFT \"" << hft_itr->name << "\":" << tmp_msg;
+				 msg_stream << "HFT \"" << hft_itr->name << "\": " << tmp_msg;
 		}
 	}
 
@@ -243,10 +243,10 @@ void ParamReader::callback(const int callback, Pft* ppft){
 								"half_max_intake_density", req_str +
 								" and \"illius_oconnor_2000\" in foraging_limits"));
 				}
-				if (current_hft.mortality_factors.count(MF_STARVATION_ILLIUS2000)){
+				if (current_hft.mortality_factors.count(MF_STARVATION_ILLIUS_OCONNOR_2000)){
 					mandatory_hft_params.push_back(MandatoryParam(
 								"bodyfat_deviation", req_str +
-								" and \"starvation_illius_2000\" in mortality_factors"));
+								" and \"starvation_illius_oconnor_2000\" in mortality_factors"));
 				}
 				if (current_hft.reproduction_model == RM_ILLIUS_OCONNOR_2000 ||
 						current_hft.reproduction_model == RM_CONST_MAX ||
@@ -522,8 +522,8 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				current_hft.mortality_factors.insert(MF_BACKGROUND);
 			else if (*itr == "LIFESPAN") 
 				current_hft.mortality_factors.insert(MF_LIFESPAN);
-			else if (*itr == "STARVATION_ILLIUS_2000") 
-				current_hft.mortality_factors.insert(MF_STARVATION_ILLIUS2000);
+			else if (*itr == "STARVATION_ILLIUS_OCONNOR_2000") 
+				current_hft.mortality_factors.insert(MF_STARVATION_ILLIUS_OCONNOR_2000);
 			else if (*itr == "STARVATION_THRESHOLD") 
 				current_hft.mortality_factors.insert(MF_STARVATION_THRESHOLD);
 			// add new mortality factors here
@@ -534,7 +534,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 							"Valid types: "
 							"\"background\", "
 							"\"lifespan\", "
-							"\"starvation_illius_2000\", "
+							"\"starvation_illius_oconnor_2000\", "
 							"\"starvation_threshold\"").c_str());
 				plibabort();
 			} 
@@ -895,7 +895,7 @@ void ParamReader::declare_parameters(
 				"\"background\", "
 				"\"lifespan\", "
 				"\"starvation_threshold\", "
-				"\"starvation_illius_2000\" (only for cohorts)");  
+				"\"starvation_illius_oconnor_2000\" (only for cohorts)");  
 
 		declareitem("mortality_juvenile",
 				&current_hft.mortality_juvenile,

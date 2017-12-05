@@ -144,7 +144,7 @@
 	HerbivoreBase  ..> "*" "Foraging Limits"
 	package "Mortality" <<rectangle>> {
 		class GetBackgroundMortality           <<functor>>
-		class GetStarvationMortalityIllius2000 <<functor>>
+		class GetStarvationIlliusOConnor2000 <<functor>>
 		class GetStarvationMortalityThreshold  <<functor>>
 		class GetSimpleLifespanMortality       <<functor>>
 	}

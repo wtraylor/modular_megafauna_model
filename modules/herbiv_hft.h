@@ -78,9 +78,9 @@ namespace Fauna{
 		 * E = c * M^e
 		 * \f]
 		 * - $E$: Daily energy expenditure [MJ/ind/day]
-		 * - $c$: Coefficient \ref expenditure_allometric_coefficient
+		 * - $c$: Coefficient \ref expenditure_allometry.coefficient
 		 * - $M$: Current body mass [kg/ind]
-		 * - $e$: Allometric exponent \ref expenditure_allometric_exponent
+		 * - $e$: Allometric exponent \ref expenditure_allometry.exponent
 		 */
 		EC_ALLOMETRIC,
 		/// Formula for field metabolic rate in cattle, see \ref get_expenditure_taylor_1981.
@@ -125,8 +125,8 @@ namespace Fauna{
 		/** \see \ref Fauna::GetSimpleLifespanMortality */
 		MF_LIFESPAN,
 		/// Starvation death following Illius & O’Connor (2000).
-		/** \see \ref Fauna::GetStarvationMortalityIllius2000 */
-		MF_STARVATION_ILLIUS2000,
+		/** \see \ref Fauna::GetStarvationIlliusOConnor2000 */
+		MF_STARVATION_ILLIUS_OCONNOR_2000,
 		/// Starvation death at a minimum bodyfat threshold.
 		MF_STARVATION_THRESHOLD
 	};
@@ -178,7 +178,7 @@ namespace Fauna{
 			/// Proportional fat mass at birth [kg/kg].
 			double bodyfat_birth; 
 
-			/// Standard deviation in body condition for \ref GetStarvationMortalityIllius2000.
+			/// Standard deviation in body condition for \ref GetStarvationIlliusOConnor2000.
 			/**
 			 * Body condition is the proportion of current body fat relative to
 			 * physiological maximum.

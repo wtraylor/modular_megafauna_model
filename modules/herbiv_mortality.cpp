@@ -63,17 +63,19 @@ GetSimpleLifespanMortality::GetSimpleLifespanMortality(
 
 //------------------------------------------------------------
 
-GetStarvationMortalityIllius2000::GetStarvationMortalityIllius2000(
-	const double fat_standard_deviation	):
-	fat_standard_deviation(fat_standard_deviation)
+GetStarvationIlliusOConnor2000::GetStarvationIlliusOConnor2000(
+	const double fat_standard_deviation,
+	const bool shift_body_condition):
+	fat_standard_deviation(fat_standard_deviation),
+	shift_body_condition(shift_body_condition)
 {
 	if (fat_standard_deviation < 0.0 || fat_standard_deviation > 1.0)
 		throw std::invalid_argument(
-				"Fauna::GetStarvationMortalityIllius2000::GetStarvationMortalityIllius2000() "
+				"Fauna::GetStarvationIlliusOConnor2000::GetStarvationIlliusOConnor2000() "
 				"fat_standard_deviation not in interval [0,1]");
 }
 
-double GetStarvationMortalityIllius2000::cumulative_normal_distribution(double x){
+double GetStarvationIlliusOConnor2000::cumulative_normal_distribution(double x){
     // constants
     static const double a1 =  0.254829592;
     static const double a2 = -0.284496736;
@@ -95,15 +97,35 @@ double GetStarvationMortalityIllius2000::cumulative_normal_distribution(double x
 
     return 0.5*(1.0 + sign*y);}
 
-double GetStarvationMortalityIllius2000::operator()(
-		const double body_condition)const{
+double GetStarvationIlliusOConnor2000::operator()(
+		const double body_condition,
+		double& new_body_condition)const
+{
 	if (body_condition < 0.0 || body_condition > 1.0)
 		throw std::invalid_argument(
-				"Fauna::GetStarvationMortalityIllius2000::operator()() "
+				"Fauna::GetStarvationIlliusOConnor2000::operator()() "
 				"body_condition is not in interval [0,1].");
+
 	const double result = cumulative_normal_distribution(
 			-body_condition / fat_standard_deviation);
+
 	assert(result >= 0.0);
+	assert(result <= 0.501); // Mortality is .5 when body condition is zero.
+
+	if (shift_body_condition &&
+			result + 2.0*body_condition != 0.0){ // avoid division by zero
+		new_body_condition = body_condition * 
+			(2.0*body_condition + 2.0*result) /
+			(2.0*body_condition +     result);
+		// keep it from exceeding 1.0
+		new_body_condition = min(1.0, new_body_condition);
+	}
+	else
+		new_body_condition = body_condition;
+
+	assert( new_body_condition >= body_condition);
+	assert( new_body_condition <= 1.0 );
+
 	return result;
 }
 

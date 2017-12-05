@@ -43,6 +43,15 @@ namespace Fauna{
 			/// Burn fat reserves and reduce unmet energy needs.
 			void catabolize_fat();
 
+			/// Set the proportional fat reserves.
+			/**
+			 * \param body_condition Current fat mass divided by potential
+			 * maximum fat mass.
+			 * \throw std::invalid_argument If `body_condition` not in interval
+			 * [0,1]
+			 */
+			void force_body_condition(const double body_condition);
+
 			/// Current energy needs [MJ/ind]
 			double get_energy_needs()const{return energy_needs;}
 

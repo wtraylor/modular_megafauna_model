@@ -313,6 +313,14 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		// add more checks in alphabetical order
 	}
 
+	if (params.herbivore_type == HT_INDIVIDUAL){
+		if (mortality_factors.count(MF_STARVATION_ILLIUS_OCONNOR_2000)){
+			stream << "Mortality factor `starvation_illius_oconnor_2000` "
+				"is not meant for individual mode." << std::endl;
+			is_valid = false;
+		}
+	}
+
 	// convert stream to string
 	msg = stream.str();
 

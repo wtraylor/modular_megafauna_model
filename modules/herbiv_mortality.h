@@ -76,7 +76,36 @@ namespace Fauna{
 	 * > Mortality occurs in the proportion of animals in the tail 
 	 * > of this distribution that projects below zero.”
 	 *
-	 * \note This only makes sense for herbivore cohorts.
+	 * \section sec_shift_body_condition Shift Body Condition
+	 *
+	 * \note The following extension to the mortality model is by Wolfgang 
+	 * Pappa and *not* from Illius & O’Connor (2000).
+	 *
+	 * When the herbivores with a “negative body condition” die, the cohort
+	 * mean would increase. To account for that, the switch 
+	 * `shift_body_condition` can be turned on in the constructor.
+	 * This will change the body condition \f$b\f$ to the following new value
+	 * \f$b_{new}\f$:
+	 * \f[
+	 * b_{new} = b * \frac{2b + 2d}{2b + d}
+	 * \f]
+	 * \f$d\f$ is the fraction that died.
+	 *
+	 * **Idea:**
+	 * The mean body condition \f$b\f$ is thought to be given by the following
+	 * weighted mean with two “tails” on either side of the normal
+	 * distribution, one below zero and one symmetrically on the other side
+	 * (at body condition \f$2b\f$).
+	 * \f[
+	 * b = \frac{d * 0 + 2b * b + d * 2b}{d + 2b + d}
+	 * \f]
+	 * When the fraction below zero is taken away, the weighted average
+	 * changes accordingly:
+	 * \f[
+	 * b_{new} = \frac{2b * b + d * 2b}{2b + d} = b * \frac{2b + 2d}{2b + d}
+	 * \f]
+	 *
+	 * \note This class only makes sense for herbivore cohorts.
 	 * \warning The cumulative effects of this algorithm change with
 	 * simulation interval. That means that, all together, more
 	 * animals have died if the algorithm was applied 30 times *daily*
@@ -84,7 +113,7 @@ namespace Fauna{
 	 * Since the model of Illius & O’Connor (2000) works on a monthly basis,
 	 * this class should also be called monthly.
 	 */
-	class GetStarvationMortalityIllius2000{
+	class GetStarvationIlliusOConnor2000{
 		public:
 			/// Constructor
 			/**
@@ -94,26 +123,36 @@ namespace Fauna{
 			 * The default standard deviation is 12.5\%, taken from
 			 * Illius & O’Connor (2000)\cite illius_resource_2000,
 			 * who are citing Ledger (1968)\cite ledger_body_1968.
+			 * \param shift_body_condition Whether to shift body condition up to
+			 * compensate for dead herbivores (see class documentation).
 			 * \throw std::invalid_argument If `fat_standard_deviation`
 			 * not in interval [0,1].
 			 */
-			GetStarvationMortalityIllius2000(
-					const double fat_standard_deviation = .0125);
+			GetStarvationIlliusOConnor2000(
+					const double fat_standard_deviation = .0125,
+					const bool shift_body_condition = true);
 
 			/// Get today’s mortality.
 			/**
-			 * \param body_condition Current fat mass divided by
+			 * \param[in] body_condition Current fat mass divided by
 			 * potential maximum fat mass [kg/kg].
+			 * \param[out] new_body_condition Updated body mean body condition
+			 * in the cohort after starved individuals are ‘removed’. If
+			 * `shift_body_condition` in the constructor is turned off, this
+			 * equals `body_condition` without change.
 			 * \return Fractional [0,1] daily mortality due to starvation.
 			 * \throw std::invalid_argument If `body_condition` is not
 			 * in interval [0,1].
 			 */
-			double operator()(const double body_condition)const;
+			double operator()(const double body_condition, 
+					double& new_body_condition)const;
 		private:
-			double fat_standard_deviation;
+			double fat_standard_deviation; // const
+			bool shift_body_condition;
+
 			/// Function Φ (phi)
 			/** Implementation by John D. Cook:
-			 * https://www.johndcook.com/blog/cpp_phi/*/
+			 * <https://www.johndcook.com/blog/cpp_phi/>*/
 			static double cumulative_normal_distribution(double x);
 	};
 

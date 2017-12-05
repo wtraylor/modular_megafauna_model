@@ -65,6 +65,14 @@ void FatmassEnergyBudget::catabolize_fat(){
 	energy_needs = 0.0;
 }
 
+void FatmassEnergyBudget::force_body_condition(const double body_condition){
+	if (body_condition > 1.0 || body_condition < 0.0)
+		throw std::invalid_argument(
+				"Fauna::FatmassEnergyBudget::force_body_condition() "
+				"Parameter `body_condition` out of bounds.");
+	fatmass = get_max_fatmass() * body_condition;
+}
+
 double FatmassEnergyBudget::get_max_anabolism_per_day()const{
 	return (max_fatmass-fatmass) * FACTOR_ANABOLISM;
 }
