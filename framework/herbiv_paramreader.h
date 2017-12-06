@@ -172,9 +172,13 @@ namespace Fauna {
 			/// Holds the currently parsed string parameter.
 			std::string strparam;
 
-			/** @} */ // Temporyar storage for parameters
+			/** @} */ // Temporary storage for parameters
 
-			ParamReader():completed(false) {}                     // hide constructor
+			/// Constructor (hidden from the outside
+			ParamReader():completed(false) {
+				current_hft.expenditure_components.clear();
+			} 
+
 			ParamReader(ParamReader const&);    // deleted copy constructor
 			void operator=(ParamReader const&); // deleted assignment constructor
 	};
