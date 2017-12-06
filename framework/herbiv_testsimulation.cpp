@@ -36,6 +36,8 @@ namespace {
 		return result;
 	}
 
+	/// Helper to read parameter \ref LogisticGrass::Parameters::digestibility.
+	double param_grass_digestibility[12];
 	/// Helper to read parameter \ref LogisticGrass::Parameters::decay_monthly.
 	double param_monthly_grass_decay[12];
 	/// Helper to read parameter \ref LogisticGrass::Parameters::growth_monthly.
@@ -171,10 +173,12 @@ void Framework::plib_declare_parameters(){
 				"12 proportional daily grass decay rates for each month.");
 		mandatory_parameters.push_back("grass_decay");
 
-		declare_parameter("grass_digestibility",
-				&params.habitat.grass.digestibility,
+		declareitem("grass_digestibility",
+				param_grass_digestibility,
 				DBL_MIN, 1.0, // min, max
-				"Fractional grass digestibility.");
+				12,           // value count
+				CB_NONE,
+				"12 fractional grass digestibility values, for each month.");
 		mandatory_parameters.push_back("grass_digestibility");
 
 		declare_parameter("grass_fpc",
@@ -186,7 +190,7 @@ void Framework::plib_declare_parameters(){
 		declareitem("grass_growth",
 				param_monthly_grass_growth,
 				0.0, DBL_MAX, // min, max
-				12, // value count
+				12,           // value count
 				CB_NONE,
 				"12 proportional daily grass growth rates for each month.");
 		mandatory_parameters.push_back("grass_growth");
@@ -236,14 +240,17 @@ void Framework::plib_callback(int callback) {
 
 		// Copy the monthly array values to std::vector
 		params.habitat.grass.decay_monthly.clear();
+		params.habitat.grass.digestibility.clear();
 		params.habitat.grass.growth_monthly.clear();
 		params.habitat.snow_depth_monthly.clear();
 		for (int i=0; i<12; i++) {
 			params.habitat.grass.decay_monthly.push_back(param_monthly_grass_decay[i]);
+			params.habitat.grass.digestibility.push_back(param_grass_digestibility[i]);
 			params.habitat.grass.growth_monthly.push_back(param_monthly_grass_growth[i]);
 			params.habitat.snow_depth_monthly.push_back(param_monthly_snow_depth[i]);
 		}
 		assert( params.habitat.grass.decay_monthly.size()  == 12 );
+		assert( params.habitat.grass.digestibility.size()  == 12 );
 		assert( params.habitat.grass.growth_monthly.size() == 12 );
 		assert( params.habitat.snow_depth_monthly.size()   == 12 );
 	}

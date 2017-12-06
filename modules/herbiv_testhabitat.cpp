@@ -37,14 +37,23 @@ bool LogisticGrass::Parameters::is_valid(std::string& msg)const{
 			is_valid = false;
 		}
 
-	if (digestibility < 0.0){
-		stream << "digestibility < 0.0" << std::endl;
+	if (digestibility.empty()){
+		stream << "`digestibility` contains no values" << std::endl;
 		is_valid = false;
 	}
 
-	if (digestibility > 1.0){
-		stream << "digestibility > 1.0" << std::endl;
-		is_valid = false;
+	for (std::vector<double>::const_iterator itr = decay_monthly.begin();
+			itr != decay_monthly.end();
+			itr++)
+	{
+		if (*itr < 0.0){
+			stream << "One monthly value in digestibility < 0.0" << std::endl;
+			is_valid = false;
+		}
+		if (*itr > 1.0){
+			stream << "One monthly value in digestibility > 1.0" << std::endl;
+			is_valid = false;
+		}
 	}
 
 	if (fpc < 0.0){
@@ -110,7 +119,8 @@ LogisticGrass::LogisticGrass(const LogisticGrass::Parameters& settings):
 				"Parameters are not valid: "+msg);
 	// initialize forage
 	forage.set_mass( settings.init_mass );
-	forage.set_digestibility( settings.digestibility );
+	assert( !settings.digestibility.empty() );
+	forage.set_digestibility( settings.digestibility[0] );
 	if (forage.get_mass() > 0.0)
 		forage.set_fpc( settings.fpc );
 	else
@@ -169,8 +179,12 @@ void LogisticGrass::grow_daily(const int day_of_year){
 	else
 		forage.set_fpc( 0.0 );
 
-	forage.set_digestibility(settings.digestibility);
+	// Get the vector address for the current digestibility value.
+	assert( !settings.digestibility.empty() );
+	const int digestibility_id = simulation_month % settings.digestibility.size();
+	assert( digestibility_id >= 0 && digestibility_id < settings.digestibility.size() );
 
+	forage.set_digestibility(settings.digestibility[digestibility_id]);
 }
 
 //============================================================

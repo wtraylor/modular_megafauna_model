@@ -29,8 +29,9 @@ namespace FaunaSim {
 			struct Parameters {
 
 				/// Constructor with arbitrary simple, *valid* values, but no growth.
-				Parameters():digestibility(0.1), fpc(0.1), 
+				Parameters():fpc(0.1), 
 				init_mass(0.0), reserve(0.1), saturation(1.0){
+					digestibility.push_back(.5);
 					decay_monthly.push_back(0.0);
 					growth_monthly.push_back(0.0);
 				}
@@ -44,7 +45,12 @@ namespace FaunaSim {
 				std::vector<double> decay_monthly;
 
 				/// Proportional digestibility of the grass [frac].
-				double digestibility;
+				/** 
+				 * This is a vector of digestibility values for each month. When
+				 * the end of the vector is reached, the values are recycled.
+				 * A vector of length 12 creates the same behaviour every year.
+				 */
+				std::vector<double> digestibility;
 
 				/// \brief Percentage of habitat covered with grass 
 				///        (Foliar Percentage Cover) [frac]
