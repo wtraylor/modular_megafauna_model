@@ -107,12 +107,17 @@ void FatmassEnergyBudget::metabolize_energy(double energy){
 
 		// store surplus as fat (anabolism)
 		const double fatmass_gain = energy / FACTOR_ANABOLISM;
-		if (fatmass + fatmass_gain > max_fatmass)
+
+		// Check if fat mass gain is too high, but allow for some rounding
+		// errors.
+		if (fatmass + fatmass_gain > 1.001 * max_fatmass)
 			throw std::logic_error("Fauna::FatmassEnergyBudget::metabolize_energy() "
 					"Received energy exceeds maximum allowed fat anabolism.");
 
 		// increase fat reserves
-		fatmass += fatmass_gain;
+		// If fat mass gain exceeds maximum fat mass (rounding errors), only
+		// increase up to the maximum.
+		fatmass = min(fatmass + fatmass_gain, max_fatmass);
 	}
 }
 
