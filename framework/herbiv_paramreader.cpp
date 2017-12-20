@@ -834,7 +834,7 @@ void ParamReader::declare_parameters(
 
 		declareitem("digestive_limit_allometry",
 				double_pair,
-				0.0, DBL_MAX, // min, max
+				-DBL_MAX, DBL_MAX, // min, max
 				2,            // number of parameters
 				CB_DIGESTION_LIMIT_ALLOMETRY,
 				"Allometric coefficient and exponent for foraging limit \"allometric\".");
