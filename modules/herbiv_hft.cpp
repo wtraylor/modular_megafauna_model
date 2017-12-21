@@ -226,6 +226,15 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
+		if (digestive_limit == DL_FIXED_FRACTION &&
+				(digestive_limit_fixed <= 0.0 || digestive_limit_fixed >= 1.0)){
+			stream << "Body mass fraction `digestive_limit_fixed` must be in "
+				"interval (0,1) "
+				"if `fixed_fraction` is set as a digestive limit."
+				<< " (current value: "<<digestive_limit_fixed<<")"<<std::endl;
+			is_valid = false;
+		}
+
 		if (maturity_age_phys_female < 1) {
 			stream << "maturity_age_phys_female must be >=1"
 				<<" (current value: "<<maturity_age_phys_female<<")"<<std::endl;

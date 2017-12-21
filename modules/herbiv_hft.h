@@ -66,6 +66,10 @@ namespace Fauna{
 		/** \see Hft::digestive_limit_allometry */
 		DL_ALLOMETRIC,
 
+		/// Dry-matter ingestion is limited to a fixed fraction of live body mass. 
+		/** \see Hft::digestive_limit_fixed */
+		DL_FIXED_FRACTION,
+
 		/// Limit digestive limit with \ref GetDigestiveLimitIlliusGordon1992.
 		DL_ILLIUS_GORDON_1992
 	};
@@ -216,6 +220,9 @@ namespace Fauna{
 
 			/// Allometric coefficient and exponent for \ref DL_ALLOMETRIC.
 			AllometryParameters digestive_limit_allometry;
+
+			/// Constant fraction of body mass for \ref DL_FIXED_FRACTION.
+			double digestive_limit_fixed;
 
 			/// Youngest and oldest age [years] for herbivore establishment.
 			std::pair<int, int> establishment_age_range;

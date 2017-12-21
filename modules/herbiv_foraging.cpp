@@ -80,16 +80,21 @@ ForageMass GetForageDemands::get_max_digestion()const
 		return ForageMass(100000); 
 	}
 
-	
-	if (get_hft().digestive_limit == DL_ALLOMETRIC) {
+	else if (get_hft().digestive_limit == DL_ALLOMETRIC) {
 		return get_max_intake_as_total_mass(
 				diet_composition,
 				energy_content,
 				get_hft().digestive_limit_allometry.calc(bodymass));
 	}
 
+	else if (get_hft().digestive_limit == DL_FIXED_FRACTION) {
+		return get_max_intake_as_total_mass(
+				diet_composition,
+				energy_content,
+				get_hft().digestive_limit_fixed * bodymass);
+	}
 
-	if (get_hft().digestive_limit == DL_ILLIUS_GORDON_1992) {
+	else if (get_hft().digestive_limit == DL_ILLIUS_GORDON_1992) {
 		// Check that we are only handling grass here. This should be
 		// already checked in Hft::is_valid().
 		assert(get_hft().diet_composer == DC_PURE_GRAZER);
@@ -111,6 +116,7 @@ ForageMass GetForageDemands::get_max_digestion()const
 		// Set the maximum foraging limit [kgDM/ind/day]
 		return limit_kg;
 	} 
+
 	// ** add new digestive constraints in new else-if statements here **
 	else {
 		throw std::logic_error(

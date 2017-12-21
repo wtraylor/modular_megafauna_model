@@ -123,19 +123,20 @@
 	}
 	HerbivoreBase  .up.> "1" "Diet"
 	package "Energy Expenditure" <<rectangle>>  {
-    enum DigestiveLimit{
+    enum ExpenditureComponent{
       EC_ALLOMETRIC,
       EC_TAYLOR_1981
     } 
 	}
-	HerbivoreBase  ..> "1" "Energy Expenditure"
+	HerbivoreBase  ..> "*" "Energy Expenditure"
     package "Digestive Limit" <<rectangle>>  {
     enum DigestiveLimit{
       DL_NONE,
       DL_ALLOMETRIC,
+      DL_FIXED_FRACTION,
       DL_ILLIUS_GORDON_1992
     } 
-    HerbivoreBase  ..> "*" "Digestive Limit"
+  HerbivoreBase  ..> "1" "Digestive Limit"
 	package "Foraging Limits" <<rectangle>>  {
     enum ForagingLimit{
       FL_ILLIUS_OCONNOR_2000

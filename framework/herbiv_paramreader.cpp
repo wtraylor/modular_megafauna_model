@@ -240,6 +240,11 @@ void ParamReader::callback(const int callback, Pft* ppft){
 									"digestive_limit_allometry", req_str +
 									" and \"allometric\" is digestive limit."));
 					}
+					if (current_hft.digestive_limit == DL_FIXED_FRACTION){
+						mandatory_hft_params.push_back(MandatoryParam(
+									"digestive_limit_fixed", req_str +
+									" and \"fixed_fraction\" is digestive limit."));
+					}
 					if (current_hft.expenditure_components.count(EC_ALLOMETRIC)) {
 						mandatory_hft_params.push_back(MandatoryParam(
 									"expenditure_allometry", req_str +
@@ -416,6 +421,8 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			current_hft.digestive_limit = DL_NONE;
 		else if (strparam == "ALLOMETRIC")
 			current_hft.digestive_limit = DL_ALLOMETRIC;
+		else if (strparam == "FIXED_FRACTION")
+			current_hft.digestive_limit = DL_FIXED_FRACTION;
 		else if (strparam == "ILLIUS_GORDON_1992")
 			current_hft.digestive_limit = DL_ILLIUS_GORDON_1992;
 		// add new digestive limits here
@@ -801,7 +808,8 @@ void ParamReader::declare_parameters(
 				CB_DIGESTIVE_LIMIT,
 				"Digestive constraint for daily herbivore food intake."
 				"Possible values: "
-				"\"none\", \"allometric\", \"illius_gordon_1992\"");
+				"\"none\", \"allometric\", \"fixed_fraction\", "
+				"\"illius_gordon_1992\"");
 
 		declareitem("establishment_age_range",
 				integer_pair,
@@ -837,7 +845,14 @@ void ParamReader::declare_parameters(
 				-DBL_MAX, DBL_MAX, // min, max
 				2,            // number of parameters
 				CB_DIGESTION_LIMIT_ALLOMETRY,
-				"Allometric coefficient and exponent for foraging limit \"allometric\".");
+				"Allometric coefficient and exponent for digestive limit \"allometric\".");
+
+		declareitem("digestive_limit_fixed",
+				&current_hft.digestive_limit_fixed,
+				DBL_MIN, 1.0, // min, max
+				1,            // number of parameters
+				CB_NONE,
+				"Digestive limit as body mass fraction for digestive limit \"fixed_fraction\".");
 
 		declareitem("foraging_limits",
 				&strparam,
