@@ -73,7 +73,8 @@ namespace Fauna {
 		public:
 			/// Constructor
 			GetNetEnergyContentDefault(const DigestionType digestion_type):
-				digestion_efficiency( digestion_type==DT_RUMINANT ? 1.0 : DIGESTION_EFFICIENCY_HINDGUTS )
+				digestion_efficiency( digestion_type == DT_RUMINANT ?
+						1.0 : DIGESTION_EFFICIENCY_HINDGUTS )
 						{}
 
 			/// Metabolizable energy coefficient of grass [MJ/kgDM]

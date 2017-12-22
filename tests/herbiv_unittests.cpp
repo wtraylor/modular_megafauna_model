@@ -495,6 +495,8 @@ TEST_CASE("Fauna::DigestibilityFromNPP"){
 	dnpp.push_front(.5);
 	dnpp.push_front(.7);
 	dnpp.push_front(.4);
+
+	// Calculate ‘manually’
 	const double sum = .4 + .5 + .7 + .4;
 	const double dig = 
 		(.4 * FRESH +
@@ -503,27 +505,32 @@ TEST_CASE("Fauna::DigestibilityFromNPP"){
 		 .4 * FRESH - (FRESH-DEAD) * 3.0/DigestibilityFromNPP::ATTRITION_PERIOD) /
 		sum;
 
-	REQUIRE( DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, FRESH, DEAD)
-			== Approx(dig) );
+	// Calculate with function
+	const double dig_from_function 
+		= DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, FRESH, DEAD);
 
-	// Adding new zero values shouldn’t change the result.
-	dnpp.push_front(0.0);
-	dnpp.push_front(0.0);
+	REQUIRE( dig_from_function == Approx(dig).epsilon(.05) );
+
+	// Adding new zero values *in the back* shouldn’t change the result
+	// because new entries with zero weight won’t change the average. All
+	// other values are unchanged since we added to the *back* of the deque.
+	dnpp.push_back(0.0);
+	dnpp.push_back(0.0);
 	REQUIRE( DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, FRESH, DEAD)
-			== Approx(dig) );
+			== Approx(dig_from_function) );
 
 	// Adding values beyond the time frame in question shouldn’t change the 
 	// result either.
 	// First, fill the deque with zeros up until the ATTRITION_PERIOD is all
 	// covered.
 	for (int i = dnpp.size(); i < DigestibilityFromNPP::ATTRITION_PERIOD; i++)
-		dnpp.push_front(0.0);
+		dnpp.push_back(0.0);
 	// Second, add some values that would change the result
-	dnpp.push_front(1.0);
-	dnpp.push_front(2.0);
+	dnpp.push_back(1.0);
+	dnpp.push_back(2.0);
 	// Now, the result should still be the same.
 	REQUIRE( DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, FRESH, DEAD)
-			== Approx(dig) );
+			== Approx(dig_from_function) );
 }
 
 TEST_CASE("Fauna::DistributeForageEqually", "") {
@@ -1366,7 +1373,7 @@ TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {
 	CHECK( ne_hindgut(DIG1) > ne_hindgut(DIG2) );
 
 	// hindguts have lower efficiency
-	CHECK( ne_ruminant(DIG1) > ne_hindgut(DIG2) );
+	CHECK( ne_ruminant(DIG1) > ne_hindgut(DIG1) );
 
 	// Check some absolute numbers
 	{ // grass for ruminants
@@ -1412,32 +1419,33 @@ TEST_CASE("Fauna::GetStarvationIlliusOConnor2000", "") {
 	double new_bc, new_bc1, new_bc2, new_bc3; // variables to store new body condition
 
 	SECTION("default standard deviation"){
-		const GetStarvationIlliusOConnor2000 get_mort(0.125);
+		const GetStarvationIlliusOConnor2000 get_mort(0.125, 
+        true);// yes, shift body condition
 		CHECK_THROWS( get_mort(-1.0, new_bc) );
 		CHECK_THROWS( get_mort(1.1, new_bc) );
 
 		// With full fat reserves there shouldn’t be any considerable
 		// mortality
 		CHECK( get_mort(1.0, new_bc) == Approx(0.0) );
-		CHECK( new_bc == Approx(1.0) );
+		CHECK( new_bc                == Approx(1.0) );
 
 		// Mortality increases with lower body condition.
 		const double mort1 = get_mort(.01, new_bc1);
-		const double mort2 = get_mort(.02, new_bc2);
+		const double mort2 = get_mort(.1, new_bc2);
 		CHECK( mort1 > mort2 );
 		CHECK( new_bc1 > 0.01 );
-		CHECK( new_bc2 > 0.02 );
+		CHECK( new_bc2 > 0.1 );
 
-		// The change in body condition peaks around a body condition of 0.02
-		// if standard deviation i 0.125
+		// The change in body condition peaks around a body condition of 0.1
+		// if standard deviation is 0.125
 		INFO( "new_bc1 = "<<new_bc1 );
 		INFO( "mort1 = " << mort1 );
 		INFO( "new_bc2 = "<<new_bc2 );
 		INFO( "mort2 = " << mort2 );
-		CHECK( new_bc1-.01 < new_bc2-.02 );
-		get_mort(.03, new_bc3);
-		CHECK( new_bc3 > .03 );
-		CHECK( new_bc2-.02 > new_bc3-.03 );
+		CHECK( new_bc1-.01 < new_bc2-.1 );
+		get_mort(.2, new_bc3);
+		CHECK( new_bc3 > .2 );
+		CHECK( new_bc2-.1 > new_bc3-.2 );
 
 		// Because of the symmetry of the normal distribution,
 		// only half of the population actually falls below zero
@@ -2567,7 +2575,7 @@ TEST_CASE("FaunaSim::LogisticGrass", "") {
 		LogisticGrass grass(grass_settings);
 		CHECK( grass.get_forage().get_mass() == Approx(grass_settings.init_mass) );
 		CHECK( grass.get_forage().get_digestibility()
-				== Approx(grass_settings.digestibility));
+				== Approx(grass_settings.digestibility[0]));
 		CHECK( grass.get_forage().get_fpc()
 				== Approx(grass_settings.fpc));
 
@@ -2694,7 +2702,6 @@ TEST_CASE("FaunaSim::SimpleHabitat", "") {
 	SimpleHabitat::Parameters settings;
 	settings.grass.init_mass     = 1.0;
 	settings.grass.saturation    = 3.0;
-	settings.grass.digestibility = 0.5;
 
 	// create a habitat with some populations
 	const Fauna::Parameters params;
@@ -2707,7 +2714,7 @@ TEST_CASE("FaunaSim::SimpleHabitat", "") {
 		CHECK( habitat.get_available_forage().grass.get_mass() 
 			== Approx(settings.grass.init_mass) );
 		CHECK( habitat.get_available_forage().grass.get_digestibility()
-			== Approx(settings.grass.digestibility) );
+			== Approx(settings.grass.digestibility[0]) );
 	}
 
 	SECTION("Remove forage"){
