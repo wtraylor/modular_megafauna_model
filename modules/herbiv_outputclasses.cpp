@@ -187,11 +187,22 @@ HerbivoreData HerbivoreData::create_datapoint(
 		result.expenditure = average(
 				result.expenditure, other.expenditure,
 				result.inddens, other.inddens);
+
 		result.eaten_forage_per_ind.merge(other.eaten_forage_per_ind);
 		result.eaten_forage_per_mass.merge(other.eaten_forage_per_mass);
 		merge_energy_content(result.energy_content, other.energy_content);
 		result.energy_intake_per_ind.merge(other.energy_intake_per_ind);
 		result.energy_intake_per_mass.merge(other.energy_intake_per_mass);
+
+		// Include *all* mortality factors.
+		for (MortMap::const_iterator itr = other.mortality.begin();
+				itr != other.mortality.end();
+				itr++)
+		{
+			result.mortality[itr->first] = average(
+					result.mortality[itr->first], itr->second,
+					result.inddens, other.inddens);
+		}
 
 		// ------------------------------------------------------------------
 		// SUM building for per-area and per-habitat variables
@@ -199,13 +210,6 @@ HerbivoreData HerbivoreData::create_datapoint(
 		result.massdens  += other.massdens;
 		result.offspring += other.offspring;
 
-		// Include *all* mortality factors.
-		for (MortMap::const_iterator itr = other.mortality.begin();
-				itr != other.mortality.end();
-				itr++)
-		{
-			result.mortality[itr->first] += itr->second;
-		}
 	}
 
 	return result;
