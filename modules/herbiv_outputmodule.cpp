@@ -603,7 +603,9 @@ void HerbivoryOutput::write_datapoint(
 				output_rows.add_value(TBL_EATEN_PER_MASS.table,
 						herbidata.eaten_forage_per_mass[*ft]);
 				output_rows.add_value(TBL_ENERGY_CONTENT.table,
-						herbidata.energy_content[*ft]);
+						herbidata.energy_content[*ft] != 0.0 ?
+						herbidata.energy_content[*ft] :
+						NAN);
 				output_rows.add_value(TBL_ENERGY_INTAKE_PER_IND.table,
 						herbidata.energy_intake_per_ind[*ft]);
 				output_rows.add_value(TBL_ENERGY_INTAKE_PER_MASS.table,

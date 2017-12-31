@@ -199,6 +199,17 @@ namespace FaunaOut {
 		static HerbivoreData create_datapoint(
 				const std::vector<HerbivoreData> data);
 
+		/// Build weighted mean for net energy content, not counting zero values.
+		/** Don’t count zero net energy, which results from zero available forage.
+		 * We need to check every forage type and build average only if energy
+		 * content in `obj2` is not zero.
+		 * \see \ref Fauna::average()
+		 */
+		static void merge_energy_content(
+				Fauna::ForageEnergyContent& obj1,
+				const Fauna::ForageEnergyContent& obj2,
+				const double weight1=1.0, const double weight2=1.0);
+
 		/** @} */ // Aggregation Functionality
 	};
 

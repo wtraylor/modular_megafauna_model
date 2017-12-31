@@ -136,11 +136,27 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
 	// Delegate average building to class ForageValues.
 	eaten_forage_per_ind.merge(other.eaten_forage_per_ind, this_weight, other_weight);
 	eaten_forage_per_mass.merge(other.eaten_forage_per_mass, this_weight, other_weight);
-	energy_content.merge(other.energy_content, this_weight, other_weight);
 	energy_intake_per_ind.merge(other.energy_intake_per_ind, this_weight, other_weight);
 	energy_intake_per_mass.merge(other.energy_intake_per_mass, this_weight, other_weight);
 
+	merge_energy_content(this->energy_content, other.energy_content,
+			this_weight, other_weight);
+
 	return *this;
+}
+
+void HerbivoreData::merge_energy_content(
+		Fauna::ForageEnergyContent& obj1,
+		const Fauna::ForageEnergyContent& obj2,
+		const double weight1, const double weight2)
+{
+	for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+			ft != FORAGE_TYPES.end();
+			ft++)
+	{
+		if (obj2.get(*ft) != 0.0)
+			obj1.set(*ft, average( obj1[*ft], obj2[*ft], weight1, weight2));
+	}
 }
 
 HerbivoreData HerbivoreData::create_datapoint(
@@ -173,7 +189,7 @@ HerbivoreData HerbivoreData::create_datapoint(
 				result.inddens, other.inddens);
 		result.eaten_forage_per_ind.merge(other.eaten_forage_per_ind);
 		result.eaten_forage_per_mass.merge(other.eaten_forage_per_mass);
-		result.energy_content.merge(other.energy_content);
+		merge_energy_content(result.energy_content, other.energy_content);
 		result.energy_intake_per_ind.merge(other.energy_intake_per_ind);
 		result.energy_intake_per_mass.merge(other.energy_intake_per_mass);
 
