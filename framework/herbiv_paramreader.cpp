@@ -612,14 +612,23 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		// Add new reproduction models here.
 		else {
 			sendmessage("Error", std::string(
-					"Unknown value for reproduction_model "
+					"Unknown value for `reproduction_model` "
 					"in HFT \""+current_hft.name+"\"; valid types: "
-					"\"ILLIUS_OCONNOR_2000\", \"const_max\", \"linear\"").c_str());
+					"\"illius_oconnor_2000\", \"const_max\", \"linear\"").c_str());
 			plibabort();
 		}
 	}
 
 	if (callback == CB_SNOW_DEPTH_MODEL) {
+		if (strparam == "10_TO_1")
+			params.snow_depth_model = SD_TEN_TO_ONE;
+		else {
+			sendmessage("Error", std::string(
+					"Unknown value for `snow_depth_model` "
+					"in HFT \""+current_hft.name+"\"; valid types: "
+					"\"10_to_1\"").c_str());
+			plibabort();
+		}
 	}
 }
 
