@@ -546,26 +546,24 @@ void HerbivoryOutput::write_datapoint(
 				// try to find the map entry
 				std::map<MortalityFactor, double>::const_iterator 
 					itr_background = herbidata.mortality.find(MF_BACKGROUND);
-				// add value if it was found
+				// add value if it was found, otherwise add zero
 				if (itr_background != herbidata.mortality.end())
 					output_rows.add_value(TBL_MORT_BACKGROUND.table,
 							itr_background->second);
 				else
-					output_rows.add_value(TBL_MORT_BACKGROUND.table,
-							NA_VALUE); 
+					output_rows.add_value(TBL_MORT_BACKGROUND.table, 0.0);
 			}
 
 			{ // LIFESPAN MORTALITY
 				// try to find the map entry
 				std::map<MortalityFactor, double>::const_iterator 
 					itr_lifespan = herbidata.mortality.find(MF_LIFESPAN);
-				// add value if it was found
+				// add value if it was found, otherwise add zero
 				if (itr_lifespan != herbidata.mortality.end())
 					output_rows.add_value(TBL_MORT_LIFESPAN.table,
 							itr_lifespan->second);
 				else
-					output_rows.add_value(TBL_MORT_LIFESPAN.table,
-							NA_VALUE); 
+					output_rows.add_value(TBL_MORT_LIFESPAN.table, 0.0);
 			}
 
 			{ // STARVATION MORTALITY
@@ -583,10 +581,10 @@ void HerbivoryOutput::write_datapoint(
 					starvation += itr_starv2->second;
 
 				// If *all* starvation mortality factors were not found,
-				// insert a “missing value”.
+				// insert zero.
 				if (itr_starv1 == herbidata.mortality.end() &&
 						itr_starv2 == herbidata.mortality.end())
-					starvation = NA_VALUE;
+					starvation = 0.0;
 
 				output_rows.add_value(TBL_MORT_STARVATION.table, starvation);
 			}

@@ -165,25 +165,32 @@ void HerbivoreBase::apply_mortality_factors_today(){
 			get_todays_output().mortality[MF_LIFESPAN] = mortality;
 		}
 
-		if (*itr == MF_STARVATION_ILLIUS_OCONNOR_2000 && 
-				get_day_of_month(get_today()) == 0) 
+		if (*itr == MF_STARVATION_ILLIUS_OCONNOR_2000) 
 		{
 			// We apply this starvation model only at the first day of every 
 			// month because it is designed for a monthly scheme.
 
-			static const GetStarvationIlliusOConnor2000 starv_illius(
-					get_hft().bodyfat_deviation,
-					false); // Whether to shift body condition (deactivated feature)
+			double mortality            = 0.0;
 			const double body_condition = get_fatmass()/get_max_fatmass();
+			double new_body_condition   = body_condition;
 
-      double new_body_condition = body_condition;
-			const double mortality = starv_illius(body_condition, new_body_condition);
+			if (get_day_of_month(get_today()) == 0) {
+				static const GetStarvationIlliusOConnor2000 starv_illius(
+						get_hft().bodyfat_deviation,
+						false); // Whether to shift body condition (deactivated feature)
 
+				// Call the function object and obtain mortality and new body
+				// condition.
+				mortality = starv_illius(body_condition, new_body_condition);
+			}
+
+			// Apply the changes to the herbivore object
 			mortality_sum += mortality;
+			if (new_body_condition != body_condition)
+				get_energy_budget().force_body_condition(new_body_condition);
+
 			// output:
 			get_todays_output().mortality[MF_STARVATION_ILLIUS_OCONNOR_2000] = mortality;
-
-      get_energy_budget().force_body_condition(new_body_condition);
 		}
 
 		if (*itr == MF_STARVATION_THRESHOLD) {
