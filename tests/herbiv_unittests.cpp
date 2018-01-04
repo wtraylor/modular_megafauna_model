@@ -2523,7 +2523,7 @@ TEST_CASE("FaunaOut::HerbivoreData", ""){
 		// averages weighted by inddens:
 		CHECK( datapoint.expenditure == Approx((1.0+2.0*2.0+3.0*3.0)/6.0) );
 		CHECK( datapoint.mortality[MF_BACKGROUND]
-				== Approx(.6) );
+				== Approx((.1 + .2*2.0 + .3*3.0) / 6.0) );
 		// this mortality factor was only present in one item:
 		CHECK( datapoint.mortality[MF_LIFESPAN]
 				== Approx(.5) );
