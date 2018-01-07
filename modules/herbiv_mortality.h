@@ -71,41 +71,54 @@ namespace Fauna{
 	/// Function object to calculate herbivore mortality after Illius & O’Connor (2000)
 	/**
 	 * After Illius & O'Connor (2000)\cite illius_resource_2000 :
-	 * > “Mean body fat is assumed to be normally distributed with 
-	 * > standard deviation σ (sigma). 
-	 * > Mortality occurs in the proportion of animals in the tail 
-	 * > of this distribution that projects below zero.”
+   * <BLOCKQUOTE>
+	 * “Mean body fat is assumed to be normally distributed with 
+	 * standard deviation σ (sigma). 
+	 * Mortality occurs in the proportion of animals in the tail 
+	 * of this distribution that projects below zero.”
+   * </BLOCKQUOTE>
+   *
+   * \image html herbiv_starvation_illius_oconnor_2000.png "Starvation mortality after Illius & O’Connor (2000). The red area indicates the dying part of the cohort. SD = standard deviation."
 	 *
-	 * \section sec_shift_body_condition Shift Body Condition
-	 *
+   * <H1> Shift Body Condition </H1>	 
+   *
 	 * \note The following extension to the mortality model is by Wolfgang 
 	 * Pappa and *not* from Illius & O’Connor (2000).
 	 *
 	 * When the herbivores with a “negative body condition” die, the cohort
 	 * mean would increase. To account for that, the switch 
 	 * `shift_body_condition` can be turned on in the constructor.
-	 * This will change the body condition \f$b\f$ to the following new value
-	 * \f$b_{new}\f$:
+	 * This will change the body condition `b` to the following new value
+	 * `b_new`.
+   *
 	 * \f[
 	 * b_{new} = b * \frac{2b + 2d}{2b + d}
 	 * \f]
+   *
 	 * \f$d\f$ is the fraction that died.
 	 *
-	 * **Idea:**
+	 * <H2> Idea </H2>
+   *
 	 * The mean body condition \f$b\f$ is thought to be given by the following
 	 * weighted mean with two “tails” on either side of the normal
 	 * distribution, one below zero and one symmetrically on the other side
 	 * (at body condition \f$2b\f$).
+   *
 	 * \f[
 	 * b = \frac{d * 0 + 2b * b + d * 2b}{d + 2b + d}
 	 * \f]
+   *
 	 * When the fraction below zero is taken away, the weighted average
 	 * changes accordingly:
+   *
 	 * \f[
 	 * b_{new} = \frac{2b * b + d * 2b}{2b + d} = b * \frac{2b + 2d}{2b + d}
 	 * \f]
+   *
+   * \image html herbiv_starvation_body_condition_shift.png "Shift in body condition after removing the dead fraction of the cohort. Standard deviation = 0.125"
 	 *
 	 * \note This class only makes sense for herbivore cohorts.
+   *
 	 * \warning The cumulative effects of this algorithm change with
 	 * simulation interval. That means that, all together, more
 	 * animals have died if the algorithm was applied 30 times *daily*
