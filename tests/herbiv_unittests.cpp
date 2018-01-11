@@ -689,8 +689,9 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 	CHECK_THROWS( budget.metabolize_energy(-1.0) );
 	CHECK_THROWS( budget.metabolize_energy(1000000.0) );
 	CHECK_THROWS( budget.add_energy_needs(-1.0) );
-	CHECK_THROWS( budget.set_max_fatmass(INIT_FATMASS/2.0) );
-	CHECK_THROWS( budget.set_max_fatmass(-1.0) );
+	CHECK_THROWS( budget.set_max_fatmass(INIT_FATMASS/2.0, .1) );
+	CHECK_THROWS( budget.set_max_fatmass(-1.0, .1) );
+	CHECK_THROWS( budget.set_max_fatmass(INIT_FATMASS, -.1) );
 
 	const double ENERGY = 10.0; // MJ
 
@@ -715,6 +716,21 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 		// Check the number with coefficient of Blaxter (1989)
 		CHECK( budget.get_fatmass() ==
 				Approx(INIT_FATMASS + ENERGY/54.6) );
+	}
+
+	SECTION("Anabolism Limit"){
+		const double anabolism_unlimited = budget.get_max_anabolism_per_day();
+
+		// Setting maximum gain to zero means no limits.
+		budget.set_max_fatmass(MAX_FATMASS, 0.0);
+		CHECK( budget.get_max_anabolism_per_day() == Approx(anabolism_unlimited) );
+
+		// Set maximum gain to half of the gap towards maximum fat mass.
+		const double MAX_GAIN = (MAX_FATMASS-INIT_FATMASS)/2.0;
+		budget.set_max_fatmass(MAX_FATMASS, MAX_GAIN);
+		
+		CHECK( budget.get_max_anabolism_per_day() ==
+				Approx(anabolism_unlimited / 2.0) );
 	}
 
 	SECTION("Catabolism"){

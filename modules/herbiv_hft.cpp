@@ -23,6 +23,7 @@ Hft::Hft():
 	bodyfat_birth(0.1),
 	bodyfat_deviation(0.125),
 	bodyfat_max(0.3),
+	bodyfat_max_daily_gain(0.0), // = no limit
 	bodymass_birth(5.0),
 	bodymass_male(60.0),
 	bodymass_female(50.0),
@@ -96,6 +97,19 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		if (bodyfat_max <= 0.0 || bodyfat_max >= 1.0) {
 			stream << "bodyfat_max must be between 0.0 and 1.0"
 				<<bodyfat_max<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (bodyfat_max_daily_gain < 0) {
+			stream << "`bodyfat_max_daily_gain` must be >= 0"
+				<<" ("<<bodyfat_max_daily_gain<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (bodyfat_max_daily_gain > bodyfat_max) {
+			stream << "`bodyfat_max_daily_gain` cannot be greater than `bodyfat_max`."
+				<< "Note that a value of zero indicates no limits. "
+				<<" (current value: "<<bodyfat_max_daily_gain<<")"<<std::endl;
 			is_valid = false;
 		}
 

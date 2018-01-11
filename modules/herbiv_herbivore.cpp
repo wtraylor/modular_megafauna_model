@@ -501,8 +501,10 @@ void HerbivoreBase::simulate_day(const int day,
 	if (get_sex() == SEX_FEMALE) // (males don’t need this for reproduction)
 		body_condition_gestation.add_value(get_fatmass() / get_max_fatmass());
 
-	/// - Update maximum fat mass in \ref Fauna::FatmassEnergyBudget.
-	get_energy_budget().set_max_fatmass(get_max_fatmass());
+	/// - Update maximum fat mass and gain in \ref Fauna::FatmassEnergyBudget.
+	get_energy_budget().set_max_fatmass(
+			get_max_fatmass(), // max. absolute fat mass
+			get_hft().bodyfat_max_daily_gain * get_bodymass()); // max. possible gain today
 
 	/// - Add new output.
 	get_todays_output().reset();

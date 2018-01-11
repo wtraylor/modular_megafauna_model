@@ -210,8 +210,6 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					mandatory_hft_params.push_back(MandatoryParam(
 								"expenditure_components", req_str));
 					mandatory_hft_params.push_back(MandatoryParam(
-								"foraging_limits", req_str));
-					mandatory_hft_params.push_back(MandatoryParam(
 								"gestation_months", req_str));
 					mandatory_hft_params.push_back(MandatoryParam(
 								"net_energy_model", req_str));
@@ -763,6 +761,13 @@ void ParamReader::declare_parameters(
 				1,                // number of parameters
 				CB_NONE,
 				"Maximum proportional fat mass [kg/kg].");
+
+		declareitem("bodyfat_max_daily_gain",
+				&current_hft.bodyfat_max_daily_gain,
+				0, 1.0, // min, max
+				1,          // number of parameters
+				CB_NONE,
+				"Maximum body fat gain rate [kg/kg/day].");
 
 		declareitem("bodymass_birth",
 				&current_hft.bodymass_birth,

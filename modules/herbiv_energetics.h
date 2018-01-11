@@ -84,15 +84,21 @@ namespace Fauna{
 			 */
 			void metabolize_energy(double energy);
 
-			/// Set the maximum allowed fat mass [kg/ind]
-			/** \throw std::logic_error if `maximum` is smaller than 
+			/// Set the maximum allowed fat mass [kg/ind] and fat gain [kg/ind/day].
+			/** 
+			 * \param max_fatmass Current maximum fat mass [kg/ind].
+			 * \param max_gain Maximum fat mass gain [kg/ind/day]. A value of 
+			 * zero indicates no limit.
+			 * \throw std::logic_error if `max_fatmass` is smaller than 
 			 * current fat mass 
-			 * \throw std::invalid_argument if `maximum<=0.0`*/
-			void set_max_fatmass(const double maximum);
+			 * \throw std::invalid_argument If `max_fatmass<=0.0` or 
+			 * if `max_gain < 0`.*/
+			void set_max_fatmass(const double max_fatmass, const double max_gain);
 		private:
-			double energy_needs;   // MJ/ind
-			double fatmass;        // kg/ind
-			double max_fatmass;    // kg/ind
+			double energy_needs;     // MJ/ind
+			double fatmass;          // kg/ind
+			double max_fatmass;      // kg/ind
+			double max_fatmass_gain; // kg/ind/day
 
 			/// Metabolic coefficient for anabolism [MJ/kg] (Blaxter 1989)\cite blaxter_energy_1989
 			static const double FACTOR_ANABOLISM;

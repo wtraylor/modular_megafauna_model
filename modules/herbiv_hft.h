@@ -194,6 +194,10 @@ namespace Fauna{
 			/// Maximum proportional fat mass [kg/kg].
 			double bodyfat_max;
 
+			/// Maximum rate of fat mass gain in kg fat per kg body mass per day.
+			/** A value of zero indicates no limit. */
+			double bodyfat_max_daily_gain;
+
 			/// Body mass [kg] at birth for both sexes.
 			int bodymass_birth; 
 
