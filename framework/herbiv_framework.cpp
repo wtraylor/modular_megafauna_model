@@ -153,8 +153,12 @@ void Simulator::simulate_day(const int day_of_year,
 
 		// ---------------------------------------------------------
 		// ESTABLISHMENT
-		// If we have reached the end of one establishment cycle.
-		if (days_since_last_establishment > params.herbivore_establish_interval)
+		// If we have to do initial establishment or if we have reached the end
+		// of an ‘establishment interval’. Note that re-establishment is only
+		// activated if the interval length is positive.
+		if (!simulation_unit.is_initial_establishment_done() ||
+				(days_since_last_establishment > params.herbivore_establish_interval &&
+				 params.herbivore_establish_interval > 0))
 		{
 			// iterate through HFT populations
 			for (HftPopulationsMap::iterator itr_p = populations.begin();
@@ -168,6 +172,7 @@ void Simulator::simulate_day(const int day_of_year,
 					pop.establish();
 			}
 			days_since_last_establishment = 0;
+			simulation_unit.set_initial_establishment_done();
 		}
 
 		// ---------------------------------------------------------
@@ -308,7 +313,8 @@ SimulationUnit::SimulationUnit( std::auto_ptr<Habitat> _habitat,
 		std::auto_ptr<HftPopulationsMap> _populations):
 	// move ownership to private auto_ptr objects
 	habitat(_habitat),
-	populations(_populations)
+	populations(_populations),
+	initial_establishment_done(false)
 {
 	if (habitat.get() == NULL)
 		throw std::invalid_argument("Fauna::SimulationUnit::SimulationUnit() "

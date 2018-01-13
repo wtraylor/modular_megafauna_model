@@ -693,7 +693,7 @@ void ParamReader::declare_parameters(
 
 		declareitem("herbivore_establish_interval",
 				&(params.herbivore_establish_interval),
-				1, INT_MAX, // min, max
+				0, INT_MAX, // min, max
 				1,          // number of parameters
 				CB_NONE,
 				"Number of days between herbivore establishment.");

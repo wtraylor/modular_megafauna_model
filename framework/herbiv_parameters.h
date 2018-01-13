@@ -84,7 +84,7 @@ namespace Fauna {
 			forage_distribution(FD_EQUALLY),
 			free_herbivory_years(0),
 			habitat_area_km2(100.0),
-			herbivore_establish_interval(30),
+			herbivore_establish_interval(365),
 			herbivore_type(HT_COHORT),
 			ifherbivory(false),
 			snow_depth_model(SD_TEN_TO_ONE)

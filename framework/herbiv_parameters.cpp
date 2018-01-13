@@ -21,8 +21,8 @@ bool Parameters::is_valid(std::string& messages)const{
 	//------------------------------------------------------------
 	// add new checks in alphabetical order
 
-	if (herbivore_establish_interval <= 0){
-		stream << "herbivore_establish_interval must be >0" << std::endl;
+	if (herbivore_establish_interval < 0){
+		stream << "herbivore_establish_interval must be >=0" << std::endl;
 		is_valid = false;
 	}
 

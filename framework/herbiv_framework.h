@@ -90,6 +90,12 @@ namespace Fauna{
 				return *populations;
 			}
 
+			/// Whether the flag for initial establishment has been set.
+			bool is_initial_establishment_done()const{return initial_establishment_done;}
+
+			/// Set the flag that initial establishment has been performed.
+			void set_initial_establishment_done(){initial_establishment_done = true;}
+
 			/// @{ \brief Get temporally aggregated habitat and herbivore output. 
 			FaunaOut::CombinedData& get_output(){ return current_output; }
 			const FaunaOut::CombinedData& get_output()const{
@@ -99,6 +105,7 @@ namespace Fauna{
 		private:
 			FaunaOut::CombinedData current_output;
 			std::auto_ptr<Habitat> habitat;
+			bool initial_establishment_done;
 			std::auto_ptr<HftPopulationsMap> populations;
 	};
 
