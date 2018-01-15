@@ -41,14 +41,6 @@ bool GuessOutput::is_first_day_of_month(int day){
 	return day == 0;
 }
 
-bool IncludeNoSpinup::operator()(
-		const int day_of_year,
-		const int simulation_year, 
-		const int calendar_year) const
-{
-	return simulation_year >= nyear_spinup;
-}
-
 REGISTER_OUTPUT_MODULE("herbivory", HerbivoryOutput)
 
 // define and initialize static variable
@@ -59,7 +51,6 @@ HerbivoryOutput::HerbivoryOutput():
 	interval(ANNUAL),
 	isactive(true),
 	precision(4),
-	include_date(new IncludeDate()),
 	// Output variables in the order of declaration in the header:
 	TBL_HABITAT(
 			"file_herbiv_habitat",
@@ -351,6 +342,10 @@ ColumnDescriptors HerbivoryOutput::get_columns(
 	return result;
 }
 
+bool HerbivoryOutput::is_today_included()const{
+	return date.year >= nyear_spinup;
+}
+
 void HerbivoryOutput::outdaily(Gridcell& gridcell){
 	if (!isactive) return;
 
@@ -398,12 +393,10 @@ void HerbivoryOutput::outdaily(
 		throw std::invalid_argument("GuessOutput::HerbivoryOutput::outdaily() "
 				"Parameter \"simulation_year\" is below zero.");
 
-	if (!isactive) return;
-	assert(include_date.get() != NULL);
-
-	// Check if this day is included
-	if (!(*include_date)(day, simulation_year, calendar_year))
+	// Check if this day is included. If not, we skip all output cal
+	if (!is_today_included())
 		return;
+
 
 	if ((interval == DAILY) ||
 			(interval == MONTHLY && is_first_day_of_month(day)) ||

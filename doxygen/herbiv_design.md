@@ -338,7 +338,7 @@ The table structure stays always the same (no month columns).
 This approach honours the \ref sec_single_responsibility to some degree.
 - Functions inherited from \ref GuessOutput::OutputModule, which use classes specific to the LPJ-GUESS vegetation model (\ref Gridcell), delegate to more generic functions. 
 These are then also used by \ref FaunaSim::Framework, which is independent of the LPJ-GUESS vegetation.
-- As a substitute for \ref GuessOutput::outlimit(), the class \ref GuessOutput::IncludeDate has been introduced in order to observe the \ref sec_dependency_inversion and to avoid global variables.
+- As a substitute for `outlimit()` in \ref commonoutput.cpp, the function \ref GuessOutput::HerbivoryOutput::is_today_included() has been introduced in order to reduce calculations and improve code tidyness.
   See also: \ref sec_herbiv_limit_output.
 - The \ref GuessOutput::OutputModuleRegistry instantiates the class. There is only one global instance, but there is no direct way to access that global instance like in the [Singleton design pattern](\ref sec_singleton).
 	To circumvent this restriction (instead of working with a lot of `static` members) the function [get_instance()](\ref GuessOutput::HerbivoryOutput::get_instance()) has been introduced.

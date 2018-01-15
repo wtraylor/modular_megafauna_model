@@ -276,8 +276,8 @@ Add your new variable as a column to the table in \ref GuessOutput::HerbivoryOut
 
 ### How to limit output to a specific time period {#sec_herbiv_limit_output}
 
-Declare in any header file a class derived from \ref GuessOutput::IncludeDate and implement the virtual member function.
-In the \ref framework() function call \ref GuessOutput::HerbivoryOutput::set_include_date() passing a persistent instantiation of your class.
+Adjust the return value of \ref GuessOutput::HerbivoryOutput::is_today_included() to your needs.
+For comparison, see the local function `outlimit()` in \ref commonoutput.cpp.
 
 \see \ref sec_herbiv_output
 

@@ -26,38 +26,6 @@ namespace FaunaOut{
 
 namespace GuessOutput {
 
-	/// Abstract functor strategy class to limit herbivory output to a specific time.
-	/**
-	 * This base class includes everything.
-	 * \see \ref sec_herbiv_limit_output 
-	 * \see \ref sec_strategy
-	 */
-	struct IncludeDate{
-		/// Check whether the date shall be included in the output.
-		/** 
-		 * \param day_of_year Day of year (0=Jan 1st).
-		 * \param simulation_year Simulation year (0=first year).
-		 * \param calendar_year Calendar year
-		 * (compare \ref Date::get_calendar_year()).
-		 * \return True if the given year/date shall be included.
-		 * \note This is equivalent to the check in \ref outlimit() in 
-		 * \ref commonoutput.cpp, but implemented with the strategy
-		 * pattern.
-		 */
-		virtual bool operator()(
-				const int day_of_year,
-				const int simulation_year, 
-				const int calendar_year) const {return true;}
-	};
-
-	/// Limits output to the time after \ref nyear_spinup.
-	struct IncludeNoSpinup: public IncludeDate{
-		virtual bool operator()(
-				const int day_of_year,
-				const int simulation_year, 
-				const int calendar_year) const;
-	};
-
 	/// Output module for the herbivory module.
 	/** 
 	 * For an overview on all output files and variables, please look at
@@ -145,16 +113,6 @@ namespace GuessOutput {
 			 */
 			void set_hftlist(const Fauna::HftList&);
 
-			/// Set the strategy object that limits the output.
-			/** \throw std::invalid_argument if `ptr==NULL`*/
-			void set_include_date(std::auto_ptr<IncludeDate> ptr){ 
-				if (ptr.get()==NULL)
-					throw std::invalid_argument(
-							"GuessOutput::HerbivoryOutput::set_include_date() "
-							"Received NULL as parameter");
-				include_date = ptr; 
-			}
-
 			/// How to connect different variables in column caption.
 			/** For example: “hft1“ and “grass” --> “hft1_grass” */
 			static const char CAPTION_SEPARATOR = '_';
@@ -180,8 +138,6 @@ namespace GuessOutput {
 
 			static HerbivoryOutput* global_instance; 
 			std::auto_ptr<Fauna::HftList> hftlist;
-			/// The object limiting output. This is never NULL.
-			std::auto_ptr<IncludeDate> include_date;
 			bool isactive;
 			int precision; 
 
@@ -211,6 +167,17 @@ namespace GuessOutput {
 			 * \see \ref interval
 			 */
 			void set_date_to_period_center(int& day, int& year)const;
+
+			/// Whether this day is included in the output.
+			/**
+			 * \return True for years after spinup.
+			 * \see \ref date, \ref nyear_spinup
+			 * \note This is functionally the counterpart of `outlimit()` in
+			 * \ref commonoutput.cpp. The difference is that in this 
+			 * implementation, all preparation of output data is skipped in the
+			 * first place if the day is not to be included.
+			 */
+			bool is_today_included()const;
 
 		private: // tables
 			/// File and table descriptor for one output variable.
