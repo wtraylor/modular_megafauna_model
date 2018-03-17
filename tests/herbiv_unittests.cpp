@@ -2170,13 +2170,13 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 		pop.create_offspring(.4 / AREA); // .4 individuals
 		REQUIRE( pop.get_list().size() == 0 );
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == 0.0 );
+		REQUIRE( get_total_pop_density(pop) == Approx(0.0) );
 
 		// Try it again, but it should still not work.
 		pop.create_offspring(.4 / AREA); // .8 individuals
 		REQUIRE( pop.get_list().size() == 0 );
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == 0.0 );
+		REQUIRE( get_total_pop_density(pop) == Approx(0.0) );
 
 		// Now we should get above a sum of 1.0, BUT males and females are
 		// created in parallel, so they shouldn’t be created until total
@@ -2184,7 +2184,7 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 		pop.create_offspring(.4 / AREA); // 1.2 individuals
 		REQUIRE( pop.get_list().size() == 0 );
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == 0.0 );
+		REQUIRE( get_total_pop_density(pop) == Approx(0.0) );
 
 		// Finally, we have 2 individuals complete.
 		pop.create_offspring(.9 / AREA); // 2.1 individuals
