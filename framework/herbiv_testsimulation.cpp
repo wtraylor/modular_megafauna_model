@@ -50,12 +50,6 @@ namespace {
 // The name of the log file to which output from all dprintf and fail calls is sent
 const xtring file_log = "herbivsim.log";
 
-/** \def NO_GUESS_PARAMETERS
- * \brief Preprocessor flag that the herbivory test simulation is compiled.
- * In the herbivory test simulation, the global options are obsolete, and we need to
- * suppress warning messages about missing parameters.
- */
-
 /// Run the test simulation with parameters read from instruction file
 /** \todo Print version, print help */
 int main(int argc,char* argv[]) {

@@ -4,6 +4,8 @@
  ' 
  ' PlantUML is free software under the GPL license.
  ' See http://plantuml.com 
+ '
+ ' Please keep the **alphabetical order** of the diagrams.
  '/
 
 @startuml (id=basic_components)
@@ -20,6 +22,19 @@
 	herbivoutput  ..> outputfiles : write
 	herbivory     --  paramreader 
 	paramreader   ..> insfiles  : read
+@enduml
+
+@startuml (id=default_pft_forage_type_mapping)
+  hide members
+  hide methods
+  hide circle
+  package "Forage Types"{
+  class "Grass"
+  }
+  package Pfts{
+    "C₃ Grass" --> Grass
+    "C₄ Grass" --> Grass
+  }
 @enduml
 
 @startuml (id=exception_classes)

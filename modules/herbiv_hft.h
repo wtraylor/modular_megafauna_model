@@ -82,9 +82,11 @@ namespace Fauna{
 		 * E = c * M^e
 		 * \f]
 		 * - $E$: Daily energy expenditure [MJ/ind/day]
-		 * - $c$: Coefficient \ref expenditure_allometry.coefficient
+		 * - $c$: Coefficient (\ref AllometryParameters::coefficient in 
+		 *   member \ref Hft::expenditure_allometry)
 		 * - $M$: Current body mass [kg/ind]
-		 * - $e$: Allometric exponent \ref expenditure_allometry.exponent
+		 * - $e$: Allometric exponent (\ref AllometryParameters::exponent in
+		 *   member \ref Hft::expenditure_allometry)
 		 */
 		EC_ALLOMETRIC,
 		/// Formula for field metabolic rate in cattle, see \ref get_expenditure_taylor_1981.

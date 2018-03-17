@@ -121,13 +121,13 @@ Forage Tutorials {#sec_herbiv_tutor_forage}
 
 ### How to add a new forage type {#sec_herbiv_new_forage_type}
 
-- Create new enum entry in \ref Fauna::ForageType and add it to \ref Fauna::FORAGE_TYPES by expanding the initializing function in \ref herbiv_forageclasses.cpp.
+- Create new enum entry in \ref Fauna::ForageType and add it to \ref Fauna::FORAGE_TYPES by expanding the initializing function `get_all_forage_types()`, which is declared in local namespace in \ref herbiv_forageclasses.cpp.
 
 - Add a short name without blanks in \ref Fauna::get_forage_type_name().
 
-- Instruction file (\ref herbiv_parameters.cpp):
-	+ ParamReader::declare_parameters(): Add parameter description.
-	+ ParamReader::callback(): Add forage type under \ref Fauna::CB_FORAGE_TYPE.
+- Instruction file parameters (\ref herbiv_paramreader.cpp):
+	+ \ref ParamReader::declare_parameters() : Add the new forage type to parameter description of parameter `forage_type`.
+	+ \ref ParamReader::callback() : Add forage type under \ref Fauna::CB_FORAGE_TYPE.
 
 - Derive new class from \ref Fauna::ForageBase.
 	+ Implement a `merge()` method, like \ref Fauna::GrassForage::merge().
@@ -139,7 +139,7 @@ Forage Tutorials {#sec_herbiv_tutor_forage}
 - Adjust \ref Individual::get_forage_mass() and \ref Individual::reduce_forage_mass().
 
 - Adjust \ref Fauna::PatchHabitat::get_available_forage() to define values for your new forage-specific properties.
-(\ref Fauna::PatchHabitat::remove_eaten_forage() is generic for all forage types and does not need to be altered.)
+(\ref Fauna::PatchHabitat::remove_eaten_forage() is generic for all forage types and does usually not need to be altered.)
 
 - Perhaps adjust the digestibility in your chosen \ref Fauna::GetDigestibility implementation.
 
@@ -213,9 +213,7 @@ Global parameters of the herbivory module are declared and parsed by \ref Fauna:
 	own callback:
 	+ add a new enum item CB_* in \ref parameters.h.
 	+ add a new if statement in \ref Fauna::ParamReader::callback().
-- Call the plib function \ref declareitem() in 
-	\ref Fauna::ParamReader::declare_parameters()
-	(possibly with your own CB_* code).
+- Call the plib function \ref declareitem() in \ref Fauna::ParamReader::declare_parameters() (possibly with your own CB_* code).
 - If you wish, add it to `mandatory_global_params` in \ref Fauna::ParamReader::callback() so that it must not be omitted. 
 - Extend the example instruction file `data/ins/herbivores.ins`.
 
@@ -245,9 +243,7 @@ Herbivory-related PFT parameters are declared and parsed by \ref Fauna::ParamRea
 	own callback:
 	+ add a new enum item CB_* in \ref parameters.h.
 	+ add a new if statement in \ref Fauna::ParamReader::callback().
-- Call the plib function \ref declareitem() in 
-	\ref Fauna::ParamReader::declare_parameters()
-	(possibly with your own CB_* code).
+- Call the plib function \ref declareitem() in \ref Fauna::ParamReader::declare_parameters() (possibly with your own CB_* code).
 - If you wish, add it to `mandatory_hft_params` in \ref Fauna::ParamReader::callback() so that it must not be omitted. 
 - Extend the example instruction file `data/ins/herbivores.ins`.
 

@@ -156,7 +156,7 @@ ForageMass GetForageDemands::get_max_foraging()const
 					get_hft().half_max_intake_density*1000.0, // gDM/m² to kgDM/km²
 					get_digestive_limit(bodymass, digestibility)[FT_GRASS]);
 
-			// Like Pachzelt (2013), we use the whole-habitat grass density,
+			// Like Pachzelt et al. (2013), we use the whole-habitat grass density,
 			// not the ‘sward density’.
 			const double grass_limit_mj = half_max.get_intake_rate(
 					available_forage.grass.get_mass()); // [MJ/day]

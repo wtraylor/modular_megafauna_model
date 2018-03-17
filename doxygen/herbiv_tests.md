@@ -73,6 +73,13 @@ The HabitatGroup corresponds in a way to the LPJ-GUESS \ref Gridcell.
 
 \see \ref sec_herbiv_new_testhabitat
 
+### Preprocessor Flag ###
+
+The preprocessor flag `NO_GUESS_PARAMETERS` indicates that the herbivory test simulation is compiled.
+In the herbivory test simulation, the global options are obsolete, and we need to
+suppress warning messages about missing parameters.
+\see \ref parameters.cpp, \ref herbiv_paramreder.cpp
+
 ### Parameters ###
 
 An example instruction file is provided in 

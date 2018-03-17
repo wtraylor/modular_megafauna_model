@@ -102,6 +102,11 @@ namespace Fauna{
 			/// Maximum forage [kgDM/ind/day] that could be potentially digested.
 			/**
 			 * The algorithm selected by \ref Hft::digestive_limit is employed.
+			 * Note that this is only the digestion-limited maximum intake.
+			 * It does not consider metabolic needs (“hunger”, compare
+			 * \ref FatmassEnergyBudget::get_energy_needs()) nor foraging
+			 * capabilities (\ref get_max_foraging()) nor actual available
+			 * forage.
 			 *
 			 * \return Maximum digestible dry matter today with given forage
 			 * composition [kgDM/ind/day].
@@ -111,7 +116,7 @@ namespace Fauna{
 			ForageMass get_max_digestion()const;
 
 			/// Get the amount of forage the herbivore would be able to 
-      /// harvest [kgDM/day/ind].
+			/// harvest [kgDM/day/ind].
 			/**
 			 * The relative amount of each forage type is prescribed, and 
 			 * the absolute mass that the herbivore could potentially ingest
@@ -119,10 +124,12 @@ namespace Fauna{
 			 * metabolic needs (“hunger”), but only considers the harvesting
 			 * efficiency of the herbivore this day.
 			 *
+			 * Each forage type is  calculated separately and independently.
+			 *
 			 * \return Maximum potentially harvested dry matter mass of 
-			 * each forage type [kgDM/day/ind].
+			 * each forage type [kgDM/day/ind]. 
 			 * \throw std::logic_error If one of \ref Hft::foraging_limits is 
-       * not implemented.
+			 * not implemented.
 			 */
 			ForageMass get_max_foraging()const;
 

@@ -30,6 +30,12 @@ A herbivore is defined by these state variables:
 Plant–Herbivore Interaction {#sec_herbiv_plantherbivore_interactions}
 ---------------------------------------------------------------------
 
+Each PFT can be mapped to a forage type:
+@startuml "How plant functional types are mapped to forage types."
+	!include herbiv_diagrams.iuml!default_pft_forage_type_mapping
+@enduml
+
+
 ![](herbivory_fluxes.png "Carbon and nitrogen fluxes in the vegetation model caused by herbivory.")
 
 ### Feeding {#sec_herbiv_feeding}
