@@ -241,33 +241,6 @@ namespace Fauna{
 			 * \throw std::invalid_argument If HFT pointer is NULL. */
 			Hft const* check_hft_pointer(const Hft*);
 
-			/// Compose diet from different forage types according to parameters.
-			/** 
-			 * \ref Hft::diet_composer defines the algorithm used to put 
-			 * together the fractions of different forage types in the preferred
-			 * diet for each day.
-			 * Note that this function may be called several times a day in
-			 * cases of food scarcity, when the available forage needs to be
-			 * split among herbivores according to their needs
-			 * (see \ref DistributeForage).
-			 * This allows for switching to another, less preferred, forage
-			 * type if the first choice is not available anymore.
-			 *
-			 * \param available_forage The total forage currently in the habitat.
-			 * This is being shared with all other herbivores in the same 
-			 * habitat.
-			 * \param energy_demand The ‘hunger’ today: What would be eaten if
-			 * resources are unlimited [MJ/ind].
-			 * \return The fractional composition of the diet for today. The
-			 * sum is always 1.0, e.g. 60% grass + 40% browse = 100% total.
-			 * \throw std::logic_error If \ref Hft::diet_composer not
-			 * implemented.
-			 * \throw std::logic_error If the selected algorithm does not
-			 * produce a sum of fractions that equals 1.0 (100%).
-			 */
-			ForageFraction compose_diet(const HabitatForage& available_forage,
-					const double energy_demand)const;
-
 			/// Forage net energy content given by the selected algorithm \ref Hft::net_energy_model.
 			/** 
 			 * \param digestibility Proportional digestibility.

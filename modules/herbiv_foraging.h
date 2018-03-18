@@ -80,22 +80,30 @@ namespace Fauna{
 
 			/// Get energy-wise preferences for forage types.
 			/** 
-			 * To what fractions the different forage
-			 * types are eaten (in sum the fractions must be 1.0).
+			 * To what fractions the different forage types are eaten (in 
+       * sum the fractions must be 1.0).
 			 *
+			 * \ref Hft::diet_composer defines the algorithm used to put 
+			 * together the fractions of different forage types in the preferred
+			 * diet for each day.
+			 * Note that this function may be called several times a day in
+			 * cases of food scarcity, when the available forage needs to be
+			 * split among herbivores according to their needs
+			 * (see \ref DistributeForage).
+			 * This allows for switching to another, less preferred, forage
+			 * type if the first choice is not available anymore.
+       *
 			 * This is the ad-libidum diet according to the preferences of the 
 			 * HFT.
 			 * The fractions refer to energy, not mass.
 			 * The composition is *set*, i.e. that the demanded forage will 
 			 * be put together accordingly.
-			 * In case of forage shortage in the habitat,
-			 * there is the chance to switch to other forage types when the 
-			 * demands are queried again in the same day.
-			 * (⇒ see Fauna::DistributeForage).
 			 * \return Energy fractions of forage types composing current diet;
 			 * the sum is 1.0.
 			 * \throw std::logic_error If the \ref Hft::diet_composer is not
 			 * implemented.
+			 * \throw std::logic_error If the selected algorithm does not
+			 * produce a sum of fractions that equals 1.0 (100%).
 			 */ 
 			ForageFraction get_diet_composition()const;
 
