@@ -106,12 +106,18 @@ double GetStarvationIlliusOConnor2000::operator()(
 				"Fauna::GetStarvationIlliusOConnor2000::operator()() "
 				"body_condition is not in interval [0,1].");
 
-	// This is the result of the function.
-	const double dead_fraction = cumulative_normal_distribution(
-			-body_condition / fat_standard_deviation);
+	assert( fat_standard_deviation >= 0.0 );
+	double dead_fraction = 0.0;
+	if (fat_standard_deviation > 0.0){
+		// This is the result of the function.
+		dead_fraction = cumulative_normal_distribution(
+				-body_condition / fat_standard_deviation);
+		assert(dead_fraction <= 0.501); // Mortality is .5 when body condition is zero.
+	} else // If no standard deviation, dead_fraction is either 1.0 or 0.0.
+		dead_fraction = body_condition <= 0;
 
 	assert(dead_fraction >= 0.0);
-	assert(dead_fraction <= 0.501); // Mortality is .5 when body condition is zero.
+	assert(dead_fraction <= 1.0);
 
 	if (shift_body_condition){
 		new_body_condition = body_condition / (1.0 - dead_fraction);
