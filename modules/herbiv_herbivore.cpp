@@ -210,33 +210,6 @@ void HerbivoreBase::apply_mortality_factors_today(){
 	apply_mortality(mortality_sum);
 }
 
-ForageFraction HerbivoreBase::compose_diet(
-		const HabitatForage& available_forage,
-		const double energy_demand)const
-{
-	// Initialize result with zeros.
-	ForageFraction result;
-
-	switch (get_hft().diet_composer){
-		case DC_PURE_GRAZER:
-			// We put 100% into grass here.
-			result.set(FT_GRASS, 1.0);
-
-			// *add new diet algorithms here*
-		default:
-			throw std::logic_error("Fauna::HerbivoreBase::compose_diet() "
-					"Selected diet composer not implemented.");
-	}
-
-	// Check if the diet makes sense: The total must be 1.0, but we leave
-	// some rounding error margin.
-	if (result.sum() > 1.0 || result.sum() < 0.9999)
-		throw std::logic_error("Fauna::HerbivoreBase::compose_diet() "
-				"The selected diet algorithm produced forage type fractions"
-				" that don’t sum up to 1.0 (100%). Please check if it is "
-				"implemented correctly.");
-}
-
 void HerbivoreBase::eat(				
 		const ForageMass& kg_per_km2,
 		const Digestibility& digestibility){
