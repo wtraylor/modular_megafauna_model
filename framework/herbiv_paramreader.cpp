@@ -966,6 +966,12 @@ void ParamReader::declare_parameters(
 				"Reproduction model for the HFT."
 				"Possible values: \"illius_oconnor_2000\", \"const_max\", \"linear\"");  
 
+		declareitem("shift_body_condition_for_starvation",
+				&(current_hft.shift_body_condition_for_starvation),
+				1, // number of parameters
+				CB_NONE,
+				"Whether to shift mean cohort body condition on starvation mortality.");  
+
 		// let plib call function plib_callback() with given code
 		callwhendone(CB_CHECKHFT);
 	}

@@ -286,6 +286,10 @@ namespace Fauna{
 			/// Algorithm to calculate herbivore reproduction.
 			ReproductionModel reproduction_model;
 
+			/// Whether to shift mean cohort body condition on starvation mortality.
+			/** See \ref GetStarvationIlliusOConnor2000. */
+			bool shift_body_condition_for_starvation;
+
 			// add more parameters in alphabetical order
 
 			/**@}*/ // group simulation parameters

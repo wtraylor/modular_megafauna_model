@@ -173,7 +173,7 @@ void HerbivoreBase::apply_mortality_factors_today(){
 
 			static const GetStarvationIlliusOConnor2000 starv_illius(
 					get_hft().bodyfat_deviation,
-					false); // Whether to shift body condition (deactivated feature)
+					get_hft().shift_body_condition_for_starvation);
 
 			// Call the function object and obtain mortality and new body
 			// condition.

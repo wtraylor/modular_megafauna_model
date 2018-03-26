@@ -46,7 +46,8 @@ Hft::Hft():
 	mortality_juvenile(0.3),
 	net_energy_model(NE_DEFAULT),
 	reproduction_max(0.7),
-	reproduction_model(RM_ILLIUS_OCONNOR_2000) 
+	reproduction_model(RM_ILLIUS_OCONNOR_2000),
+	shift_body_condition_for_starvation(false)
 {
 	expenditure_components.insert(EC_ALLOMETRIC);
 }
