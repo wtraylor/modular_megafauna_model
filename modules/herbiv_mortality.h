@@ -118,13 +118,6 @@ namespace Fauna{
    * \image html herbiv_starvation_body_condition_shift.png "Shift in body condition after removing the dead fraction of the cohort. Standard deviation = 0.125"
 	 *
 	 * \note This class only makes sense for herbivore cohorts.
-   *
-	 * \warning The cumulative effects of this algorithm change with
-	 * simulation interval. That means that, all together, more
-	 * animals have died if the algorithm was applied 30 times *daily*
-	 * than if it had been applied 1 time *monthly.*
-	 * Since the model of Illius & O’Connor (2000) works on a monthly basis,
-	 * this class should also be called monthly.
 	 */
 	class GetStarvationIlliusOConnor2000{
 		public:
