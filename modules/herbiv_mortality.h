@@ -71,17 +71,17 @@ namespace Fauna{
 	/// Function object to calculate herbivore mortality after Illius & O’Connor (2000)
 	/**
 	 * After Illius & O'Connor (2000)\cite illius_resource_2000 :
-   * <BLOCKQUOTE>
+	 * <BLOCKQUOTE>
 	 * “Mean body fat is assumed to be normally distributed with 
 	 * standard deviation σ (sigma). 
 	 * Mortality occurs in the proportion of animals in the tail 
 	 * of this distribution that projects below zero.”
-   * </BLOCKQUOTE>
-   *
-   * \image html herbiv_starvation_illius_oconnor_2000.png "Starvation mortality after Illius & O’Connor (2000). The red area indicates the dying part of the cohort. SD = standard deviation."
+	 * </BLOCKQUOTE>
 	 *
-   * <H1> Shift Body Condition </H1>	 
-   *
+	 * \image html herbiv_starvation_illius_oconnor_2000.png "Starvation mortality after Illius & O’Connor (2000). The red area indicates the dying part of the cohort. SD = standard deviation."
+	 *
+	 * <H1> Shift Body Condition </H1>	 
+	 *
 	 * \note The following extension to the mortality model is by Wolfgang 
 	 * Pappa and *not* from Illius & O’Connor (2000).
 	 *
@@ -90,32 +90,53 @@ namespace Fauna{
 	 * `shift_body_condition` can be turned on in the constructor.
 	 * This will change the body condition `b` to the following new value
 	 * `b_new`.
-   *
+	 *
 	 * \f[
-	 * b_{new} = b * \frac{2b + 2d}{2b + d}
+	 * b_{new} = \frac{b}{1-d}
 	 * \f]
-   *
+	 *
 	 * \f$d\f$ is the fraction that died.
 	 *
 	 * <H2> Idea </H2>
-   *
-	 * The mean body condition \f$b\f$ is thought to be given by the following
-	 * weighted mean with two “tails” on either side of the normal
-	 * distribution, one below zero and one symmetrically on the other side
-	 * (at body condition \f$2b\f$).
-   *
+	 *
+	 * Body fat of the dying animals is considered zero, even though
+	 * the normal distribution curve suggests mathematically negative values.
+	 * But in reality, there is no negative body fat.
+	 *
+	 * The total amount of body fat (kg/km²) in the cohort stays the same
+	 * after starvation death. It gets “redistributed” among the surviving
+	 * animals.
+	 *
+	 * Be \f$\delta\f$ the individual density [ind/km²] and \f$\beta\f$ the
+	 * body fat as kg/ind. Then \f$\delta\beta\f$ is the fat in kg/km².
+	 * \f$\delta (1-d)\f$ is the density of the survivors.
+	 *
 	 * \f[
-	 * b = \frac{d * 0 + 2b * b + d * 2b}{d + 2b + d}
+	 * \beta_{new} = \frac{\delta\beta}{\delta(1-d)} = \frac{\beta}{1-d}
 	 * \f]
-   *
-	 * When the fraction below zero is taken away, the weighted average
-	 * changes accordingly:
-   *
+	 *
+	 * Since all animals of one cohort have the same structural body mass 
+	 * (kg/ind) and fractional maximum body fat, the potential total fat
+	 * mass (kg/kg) is the same for all individuals. Therefore: 
 	 * \f[
-	 * b_{new} = \frac{2b * b + d * 2b}{2b + d} = b * \frac{2b + 2d}{2b + d}
+	 * \beta_{new} = \frac{\beta}{1-d} \Leftrightarrow 
+	 * b_{new} = \frac{b}{1-d}
 	 * \f]
-   *
-   * \image html herbiv_starvation_body_condition_shift.png "Shift in body condition after removing the dead fraction of the cohort. Standard deviation = 0.125"
+	 *
+	 * The two figures below show how the body condition gets shifted after
+	 * applying mortality. 
+	 * The absolute shift in body condition, \f$\Delta b = b_{new} - b\f$,
+	 * has a peak where both starvation mortality and body reserves are
+	 * relatively high. The curve tapers down towards lower mortality (to
+	 * the right) as well as towards lower body fat (to the left).
+	 *
+	 * The absolute shift is the indicator for the effect of the shift on 
+	 * the population dynamic. Once the fat reserves of the cohort drop
+	 * below the peak, chances for recovery are lower.
+	 *
+	 * \image html herbiv_starvation_body_condition_shift_abs.png "Absolute change in body condition after removing the dead fraction of the cohort. Standard deviation = 0.125"
+	 *
+	 * \image html herbiv_starvation_body_condition_shift_rel.png "Relative change in body condition after removing the dead fraction of the cohort. Standard deviation = 0.125"
 	 *
 	 * \note This class only makes sense for herbivore cohorts.
 	 */

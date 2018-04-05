@@ -970,7 +970,8 @@ void ParamReader::declare_parameters(
 				&(current_hft.shift_body_condition_for_starvation),
 				1, // number of parameters
 				CB_NONE,
-				"Whether to shift mean cohort body condition on starvation mortality.");  
+				"Whether to shift mean cohort body condition with starvation "
+				"mortality. Defaults to true.");  
 
 		// let plib call function plib_callback() with given code
 		callwhendone(CB_CHECKHFT);

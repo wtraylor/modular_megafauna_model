@@ -47,7 +47,7 @@ Hft::Hft():
 	net_energy_model(NE_DEFAULT),
 	reproduction_max(0.7),
 	reproduction_model(RM_ILLIUS_OCONNOR_2000),
-	shift_body_condition_for_starvation(false)
+	shift_body_condition_for_starvation(true)
 {
 	expenditure_components.insert(EC_ALLOMETRIC);
 }
