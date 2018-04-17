@@ -46,8 +46,8 @@ namespace FaunaOut {
 		Fauna::HabitatForage available_forage;
 
 		/// Forage mass [kgDM/km²/day] eaten by herbivores.
-		/** This equals the sum of \ref HerbivoreData::eaten_forage_per_ind over
-		 * all HFTs */
+		/** This equals the sum of \ref HerbivoreData::eaten_forage_per_ind 
+		 * over all HFTs */
 		Fauna::ForageMass eaten_forage;
 
 		/// Abiotic conditions in the habitat.
@@ -88,8 +88,10 @@ namespace FaunaOut {
 		HerbivoreData():
 			age_years(0.0),
 			bodyfat(0.0),
+			bound_nitrogen(0.0),
 			eaten_forage_per_ind(0.0),
 			eaten_forage_per_mass(0.0),
+			eaten_nitrogen_per_ind(0.0),
 			energy_content(0.0),
 			energy_intake_per_ind(0.0),
 			energy_intake_per_mass(0.0),
@@ -116,6 +118,9 @@ namespace FaunaOut {
 		//------------------------------------------------------------
 		/** @{ \name Per-habitat variables */
 
+		/// Pool of nitrogen bound in the herbivores [kgN/km²]
+		double bound_nitrogen;
+
 		/// Individual density [ind/km²].
 		double inddens;
 
@@ -133,6 +138,9 @@ namespace FaunaOut {
 
 		/// Eaten forage per body mass [kgDM/kg/day].
 		Fauna::ForageMass eaten_forage_per_mass;
+
+		/// Ingested nitrogen mass per individual and day [kgN/ind/day].
+		double eaten_nitrogen_per_ind;
 
 		/// Net energy content of available forage [MJ/kgDM].
 		Fauna::ForageEnergyContent energy_content;

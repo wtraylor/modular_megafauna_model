@@ -72,9 +72,22 @@ In order to minimize dependencies, PatchHabitat objects are not created by the c
 
 #### Forage Removal {#sec_herbiv_forageremoval}
 
-<!--TODO: Write about forage removal once I figured out the mass balance and the annual vegetation growth -->
+Herbivores remove aboveground plant biomass: They reduce \ref Individual::cmass_leaf and \ref Individual::nmass_leaf.
+This is implemented in the function \ref Individual::reduce_biomass().
 
+Several \ref Individual objects can be of the same forage type and appear to the herbivore as one single quantity, which is then reduced by eating.
+\ref Fauna::PatchHabitat::get_available_forage() calls \ref Individual::get_forage_mass() and sums up the quantities (kgDM/km²) for each forage type.
+\ref Fauna::PatchHabitat::remove_eaten_forage() converts the absolute eaten forage (kgDM/km²) into a fraction of remaining forage, which is then passed to \ref Individual::reduce_forage_mass().
+All this works only on the “available” part of the aboveground biomass (see \ref Fauna::PftParams::inaccessible_forage).
 ![](herbiv_patchhabitat_foragereduction.png "Proportional forage removal by Fauna::PatchHabitat")
+
+Eaten carbon leaves the system completely and is registered as a flux to the atmosphere (\ref Fluxes::EATENC).
+Eaten nitrogen is also registered as a flux (\ref Fluxes::EATENN), but returned to the soil pool \ref Soil::nmass_avail (\ref Fluxes::EXCRETEDN).
+
+Even though the nitrogen cycle is closed anyway, is important to have both ingestion and egestion nitrogen fluxes because the \ref MassBalance object would throw error messages otherwise since it is operating on an annual cycle while the herbivory module has a daily scheme.
+
+\see \ref sec_herbiv_nitrogen_excretion
+
 
 #### Abiotic Environment {#sec_herbiv_abiotic_environment}
 

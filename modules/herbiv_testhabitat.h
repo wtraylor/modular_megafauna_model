@@ -146,13 +146,14 @@ namespace FaunaSim {
 				snow_depth(0.0){}
 
 		public: // ------ Fauna::Habitat implementations ----
-			virtual void init_day(const int today); 
+			virtual void add_excreted_nitrogen(const double){} // disabled
 			virtual HabitatForage get_available_forage() const{
 				HabitatForage result;
 				result.grass = grass.get_forage();
 				return result;
 			}
 			virtual HabitatEnvironment get_environment()const;
+			virtual void init_day(const int today); 
 			virtual void remove_eaten_forage(const ForageMass& eaten_forage);
 
 		protected:

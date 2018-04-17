@@ -135,15 +135,10 @@ std::vector<HerbivoreInterface*> IndividualPopulation::get_list(){
 //============================================================
 
 CohortPopulation::CohortPopulation(
-		const CreateHerbivoreCohort create_cohort,
-		const double dead_herbivore_threshold
+		const CreateHerbivoreCohort create_cohort
 		):
-	create_cohort(create_cohort), 
-	dead_herbivore_threshold(dead_herbivore_threshold)
+	create_cohort(create_cohort)
 {
-	if (dead_herbivore_threshold < 0.0)
-		throw std::invalid_argument("Fauna::CohortPopulation::CohortPopulation() "
-				"dead_herbivore_threshold must be >=0.");
 	cumulated_offspring[SEX_MALE]   = 0.0;
 	cumulated_offspring[SEX_FEMALE] = 0.0;
 }
@@ -163,7 +158,7 @@ void CohortPopulation::create_offspring_by_sex(const Sex sex,
 	{ // no existing cohort
 
 		// Only create a new cohort if it is above the threshold.
-		if (ind_per_km2 > dead_herbivore_threshold)
+		if (ind_per_km2 > get_hft().dead_herbivore_threshold)
 			list.push_back(create_cohort(ind_per_km2, 0, sex));
 		else // otherwise remember it for next time.
 			cumulated_offspring[sex] += ind_per_km2;
@@ -175,7 +170,7 @@ void CohortPopulation::create_offspring_by_sex(const Sex sex,
 		// density is viable (this new offspring would be “lost” otherwise.
 
 		if (found->get_ind_per_km2() + ind_per_km2
-				> dead_herbivore_threshold)
+				> get_hft().dead_herbivore_threshold)
 		{
 			// create new temporary cohort object to merge into existing cohort
 			HerbivoreCohort new_cohort = create_cohort(ind_per_km2, 0, sex);
@@ -256,7 +251,7 @@ std::vector<const HerbivoreInterface*> CohortPopulation::get_list()const{
 	for (List::const_iterator itr=list.begin(); 
 			itr != list.end(); itr++){
 		// only add alive cohorts
-		if (itr->get_ind_per_km2() >= dead_herbivore_threshold)
+		if (!itr->is_dead())
 			result.push_back(&*itr);
 	}
 	return result;
@@ -269,7 +264,7 @@ std::vector<HerbivoreInterface*> CohortPopulation::get_list(){
 	result.reserve(list.size());
 	List::iterator itr = list.begin();
 	while (itr != list.end()){
-		if (itr->get_ind_per_km2() >= dead_herbivore_threshold){
+		if (!itr->is_dead()){
 			// cohort is alive, add it to the list
 			result.push_back(&*itr);
 			itr++;

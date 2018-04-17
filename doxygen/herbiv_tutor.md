@@ -126,8 +126,8 @@ Forage Tutorials {#sec_herbiv_tutor_forage}
 - Add a short name without blanks in \ref Fauna::get_forage_type_name().
 
 - Instruction file parameters (\ref herbiv_paramreader.cpp):
-	+ \ref ParamReader::declare_parameters() : Add the new forage type to parameter description of parameter `forage_type`.
-	+ \ref ParamReader::callback() : Add forage type under \ref Fauna::CB_FORAGE_TYPE.
+	+ \ref Fauna::ParamReader::declare_parameters() : Add the new forage type to parameter description of parameter `forage_type`.
+	+ \ref Fauna::ParamReader::callback() : Add forage type under \ref Fauna::CB_FORAGE_TYPE.
 
 - Derive new class from \ref Fauna::ForageBase.
 	+ Implement a `merge()` method, like \ref Fauna::GrassForage::merge().

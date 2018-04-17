@@ -26,12 +26,6 @@ bool Parameters::is_valid(std::string& messages)const{
 		is_valid = false;
 	}
 
-	if (herbivore_type==HT_COHORT)
-		if (dead_herbivore_threshold <= 0){
-			stream << "dead_herbivore_threshold must be >0" << std::endl;
-			is_valid = false;
-		}
-
 	if (herbivore_type==HT_INDIVIDUAL)
 		if (habitat_area_km2 <= 0.0) {
 			stream <<"habitat_area_km2 must be >0 with individual herbiovres."

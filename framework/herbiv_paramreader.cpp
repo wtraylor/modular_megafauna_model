@@ -310,11 +310,6 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			mandatory_global_params.push_back(MandatoryParam(
 						"herbivore_type"));
 
-			if (params.herbivore_type == HT_COHORT) 
-				mandatory_global_params.push_back(MandatoryParam(
-							"dead_herbivore_threshold", 
-							"herbivore_type=\"cohort\""));
-
 			if (params.herbivore_type == HT_INDIVIDUAL)
 				mandatory_global_params.push_back(MandatoryParam(
 							"habitat_area_km2",
@@ -644,13 +639,6 @@ void ParamReader::declare_parameters(
 	
 	if (id == BLOCK_GLOBAL) {
 
-		declareitem("dead_herbivore_threshold",
-				&(params.dead_herbivore_threshold),
-				0.0, DBL_MAX, // min, max
-				1,          // number of parameters
-				CB_NONE,
-				"Minimum density [ind/km²] for a living herbivore cohort.");
-
 #ifndef NO_GUESS_PARAMETERS
 		// The following models are only needed in LPJ-GUESS.
 		declareitem("digestibility_model",
@@ -803,6 +791,14 @@ void ParamReader::declare_parameters(
 				1,      // number of parameters
 				CB_NONE,
 				"First day of breeding season (0=Jan 1st).");
+
+		declareitem("dead_herbivore_threshold",
+				&(current_hft.dead_herbivore_threshold),
+				0.0, DBL_MAX, // min, max
+				1,          // number of parameters
+				CB_NONE,
+				"Minimum density [ind/km²] for a living herbivore cohort. "
+				"Default: 0.1");
 
 		declareitem("diet_composer",
 				&strparam,

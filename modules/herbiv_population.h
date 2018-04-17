@@ -113,7 +113,7 @@ namespace Fauna{
 		public: // ------ PopulationInterface -------
 			/** \copydoc PopulationInterface::create_offspring() 
 			 * If the resulting newborn cohort would be below the viable
-			 * minimum density (\ref dead_herbivore_threshold), the offspring
+			 * minimum density (\ref Hft::dead_herbivore_threshold), the offspring
 			 * is ‘accumulated’ until it reaches (after several calls to 
 			 * `create_offspring()`) a sum above the threshold.
 			 */
@@ -133,13 +133,10 @@ namespace Fauna{
 			/**
 			 * \param create_cohort Functor for creating new 
 			 * \ref HerbivoreCohort instances.
-			 * \param dead_herbivore_threshold Minimum individual density
-			 * [ind/km²] for a herbivore cohort to be considered alive.
 			 * \throw std::invalid_argument if any parameter is wrong.
 			 */
 			CohortPopulation(
-					const CreateHerbivoreCohort create_cohort,
-					const double dead_herbivore_threshold);
+					const CreateHerbivoreCohort create_cohort);
 
 		private:
 			typedef std::list<HerbivoreCohort> List;
@@ -160,8 +157,6 @@ namespace Fauna{
 					const Sex sex);
 
 			const CreateHerbivoreCohort create_cohort;
-			/// Minimum viable density for one cohort [ind/km²].
-			const double dead_herbivore_threshold; 
 			/// Offspring accumulated until above minimum threshold [ind/km²].
 			std::map<Sex, double> cumulated_offspring;
 			List list;

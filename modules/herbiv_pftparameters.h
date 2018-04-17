@@ -33,7 +33,7 @@ namespace Fauna {
 		/** 
 		 * Does not need to be defined if \ref forage_type is 
 		 * \ref Fauna::FT_INEDIBLE.
-		 * \see sec_herbiv_digestibility
+		 * \see \ref sec_herbiv_digestibility
 		 */
 		double digestibility;
 
@@ -41,7 +41,7 @@ namespace Fauna {
 		/** 
 		 * Does not need to be defined if \ref forage_type is 
 		 * \ref Fauna::FT_INEDIBLE.
-		 * \see sec_herbiv_digestibility
+		 * \see \ref sec_herbiv_digestibility
 		 */
 		double digestibility_dead;
 

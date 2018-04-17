@@ -57,6 +57,13 @@ namespace Fauna {
 				std::auto_ptr<GetSnowDepth> snow_depth_model);
 
 	public: // ----- Fauna::Habitat implementation -----
+		/** \copydoc Habitat::add_excreted_nitrogen()
+		 * Add all nitrogen to the plant-available soil pool
+		 * (\ref Soil::nmass_avail) and count the nitrogen input as flux 
+		 * (\ref Fluxes::EXCRETEDN).
+		*/
+		virtual void add_excreted_nitrogen(const double kgN_per_km2);
+
 		/** \copydoc Habitat::get_available_forage()
 		 * \see \ref GetDigestibility
 		 * \see \ref Individual::get_forage_mass()

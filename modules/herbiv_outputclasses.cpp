@@ -96,6 +96,9 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
 		bodyfat = average(
 				bodyfat, other.bodyfat,
 				this_weight_ind, other_weight_ind);
+		eaten_nitrogen_per_ind = average(
+				eaten_nitrogen_per_ind, other.eaten_nitrogen_per_ind,
+				this_weight, other_weight);
 		expenditure = average(
 				expenditure, other.expenditure,
 				this_weight_ind, other_weight_ind);
@@ -122,7 +125,9 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
 	}
 	this->mortality = mort_intersect;
 
-	// Density is calculated as a simple average.
+	bound_nitrogen = average(
+			bound_nitrogen, other.bound_nitrogen,
+			this_weight, this_weight);
 	inddens = average(
 			inddens, other.inddens,
 			this_weight, other_weight);
@@ -184,6 +189,9 @@ HerbivoreData HerbivoreData::create_datapoint(
 		result.bodyfat = average(
 				result.bodyfat, other.bodyfat,
 				result.inddens, other.inddens);
+		result.eaten_nitrogen_per_ind = average(
+				result.eaten_nitrogen_per_ind, other.eaten_nitrogen_per_ind,
+				result.inddens, other.inddens);
 		result.expenditure = average(
 				result.expenditure, other.expenditure,
 				result.inddens, other.inddens);
@@ -206,9 +214,10 @@ HerbivoreData HerbivoreData::create_datapoint(
 
 		// ------------------------------------------------------------------
 		// SUM building for per-area and per-habitat variables
-		result.inddens   += other.inddens;
-		result.massdens  += other.massdens;
-		result.offspring += other.offspring;
+		result.bound_nitrogen += other.bound_nitrogen;
+		result.inddens        += other.inddens;
+		result.massdens       += other.massdens;
+		result.offspring      += other.offspring;
 
 	}
 

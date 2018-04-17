@@ -77,6 +77,11 @@ HerbivoryOutput::HerbivoryOutput():
 			"Herbivore body fat.",
 			"kg/kg",
 			CS_HFT),
+	TBL_BOUND_NITROGEN(
+			"file_herbiv_bound_nitrogen",
+			"Nitrogen bound in herbivores.",
+			"kgN/km²",
+			CS_HFT),
 	TBL_EXPENDITURE(
 			"file_herbiv_expenditure",
 			"Herbivore daily energy expenditure.",
@@ -195,6 +200,7 @@ const std::vector<HerbivoryOutput::TableFile*> HerbivoryOutput::init_tablefiles(
 		list.push_back(&TBL_ENERGY_INTAKE_PER_IND);
 		list.push_back(&TBL_ENERGY_INTAKE_PER_MASS);
 		list.push_back(&TBL_BODYFAT);
+		list.push_back(&TBL_BOUND_NITROGEN);
 		list.push_back(&TBL_EXPENDITURE);
 		list.push_back(&TBL_INDDENS);
 		list.push_back(&TBL_MASSDENS);
@@ -525,6 +531,8 @@ void HerbivoryOutput::write_datapoint(
 			// HFT TABLES
 			output_rows.add_value(TBL_BODYFAT.table, 
 					herbidata.bodyfat);
+			output_rows.add_value(TBL_BOUND_NITROGEN.table, 
+					herbidata.bound_nitrogen);
 			output_rows.add_value(TBL_EXPENDITURE.table, 
 					herbidata.expenditure);
 			output_rows.add_value(TBL_INDDENS.table, 

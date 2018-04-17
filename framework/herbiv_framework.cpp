@@ -101,8 +101,7 @@ std::auto_ptr<HftPopulationsMap> Simulator::create_populations()const{
 		if (params.herbivore_type == HT_COHORT) {
 			std::auto_ptr<PopulationInterface> pcohort_pop(
 					new CohortPopulation(
-						CreateHerbivoreCohort(phft, &params),
-						params.dead_herbivore_threshold));
+						CreateHerbivoreCohort(phft, &params)));
 			pmap->add(pcohort_pop);
 		} else if (params.herbivore_type == HT_INDIVIDUAL) {
 			const double AREA=1.0; // TODO THis is only a test
@@ -142,6 +141,9 @@ void Simulator::simulate_day(const int day_of_year,
 
 	// all populations in the habitat (one for each HFT)
 	HftPopulationsMap& populations = simulation_unit.get_populations();
+
+	// Total nitrogen excreted by herbivores today [kgN/km²].
+	double excreted_nitrogen = 0.0;
 
 	// pass the current date into the herbivore module
 	habitat.init_day(day_of_year);
@@ -215,6 +217,9 @@ void Simulator::simulate_day(const int day_of_year,
 
 				// Gather the offspring.
 				total_offspring[&herbivore.get_hft()] += offspring;
+
+				// Gather nitrogen excreta.
+				excreted_nitrogen += herbivore.take_nitrogen_excreta();
 			}
 
 			// ---------------------------------------------------------
@@ -229,8 +234,10 @@ void Simulator::simulate_day(const int day_of_year,
 			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
 					ft != FORAGE_TYPES.end();
 					ft++)
-				if (available_forage[*ft].get_mass() <= NEGLIGIBLE_FORAGE_MASS)
+				if (available_forage[*ft].get_mass() <= NEGLIGIBLE_FORAGE_MASS) {
+					available_forage[*ft].set_nitrogen_mass(0.0);
 					available_forage[*ft].set_mass(0.0);
+				}
 			
 			// Remember forage mass before feeding.
 			const ForageMass old_forage = available_forage.get_mass();
@@ -290,6 +297,10 @@ void Simulator::simulate_day(const int day_of_year,
 			if (offspring > 0.0)
 				populations[*hft].create_offspring(offspring);
 		}
+
+		// ---------------------------------------------------------
+		// NITROGEN CYCLE
+		habitat.add_excreted_nitrogen(excreted_nitrogen);
 	}
 
 	// ---------------------------------------------------------
@@ -387,6 +398,7 @@ void FeedHerbivores::operator()(
 		HabitatForage& available,
 		const HerbivoreVector& herbivores) const{
 
+
 	// loop as many times as there are forage types
 	// to allow prey switching: 
 	// If one forage type gets “empty” in the first loop, the
@@ -429,7 +441,8 @@ void FeedHerbivores::operator()(
 		//------------------------------------------------------------
 		// LET THE HERBIVORES EAT
 
-		const Digestibility digestibility = available.get_digestibility();
+		const Digestibility digestibility     = available.get_digestibility();
+		const ForageFraction nitrogen_content = available.get_nitrogen_content();
 
 		// Loop through all portions and feed it to the respective
 		// herbivore
@@ -439,15 +452,21 @@ void FeedHerbivores::operator()(
 			const ForageMass& portion = iter->second; // [kgDM/km²]
 			HerbivoreInterface& herbivore = *(iter->first);
 
+			const ForageMass& nitrogen = portion * nitrogen_content;
+
 			if (herbivore.get_ind_per_km2() > 0.0) {
 				// feed this herbivore
-				herbivore.eat(portion, digestibility);
+				herbivore.eat(portion, digestibility, nitrogen);
 
 				// reduce the available forage
 				for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
 						ft != FORAGE_TYPES.end(); ft++)
-					available[*ft].set_mass( 
+				{
+					available[*ft].set_nitrogen_mass(
+							available[*ft].get_nitrogen_mass() - nitrogen[*ft] );
+					available[*ft].set_mass(
 							available[*ft].get_mass() - portion[*ft] );
+				}
 			}
 		}
 	}

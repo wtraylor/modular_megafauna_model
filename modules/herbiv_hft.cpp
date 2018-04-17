@@ -31,6 +31,7 @@ Hft::Hft():
 	breeding_season_start(120),
 	establishment_age_range(std::pair<int, int>(1, 5)),
 	establishment_density(10.0),
+	dead_herbivore_threshold(0.1),
 	diet_composer(DC_PURE_GRAZER),
 	digestion_type(DT_RUMINANT),
 	digestive_limit(DL_NONE),
@@ -137,6 +138,13 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
+		if (params.herbivore_type == HT_COHORT &&
+				dead_herbivore_threshold < 0.0) {
+			stream << "dead_herbivore_threshold < 0.0"
+				<< " (current value: " << dead_herbivore_threshold << ")";
+			is_valid = false;
+		}
+
 		if (digestive_limit == DL_NONE) {
 			stream << "No digestive limit defined."<<std::endl;
 			// the HFT is still valid (e.g. for testing purpose)
@@ -175,11 +183,11 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		const double establishment_cohort_count =
 			(2 * (establishment_age_range.second - establishment_age_range.first + 1));
 		if (params.herbivore_type == HT_COHORT && 
-				establishment_density/establishment_cohort_count <= params.dead_herbivore_threshold){
+				establishment_density/establishment_cohort_count <= dead_herbivore_threshold){
 			stream << "establishment_density (" <<establishment_density<<" ind/km²) "
 				<< "must not be smaller than minimum viable population density"
 				<< " (dead_herbivore_threshold = "
-				<< params.dead_herbivore_threshold << " ind/km²)"
+				<< dead_herbivore_threshold << " ind/km²)"
 				<< " for one sex and age in cohort mode." <<std::endl;
 			is_valid = false;
 		}

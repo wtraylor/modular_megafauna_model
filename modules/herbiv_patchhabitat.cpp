@@ -35,9 +35,21 @@ PatchHabitat::PatchHabitat(
 				"Parameter \"snow_depth_model\" is NULL.");
 }
 
+void PatchHabitat::add_excreted_nitrogen(const double kgN_per_km2){
+	if (kgN_per_km2 < 0.0)
+		throw std::invalid_argument("Fauna::PatchHabitat::add_excreted_nitrogen() "
+				"Value for excreted nitrogen is negative.");
+	const double kgN_per_m2 = kgN_per_km2 * 10e-6; // kgN/km²⇒kgN/m²
+	patch.soil.nmass_avail += kgN_per_m2;
+	patch.fluxes.report_flux(Fluxes::EXCRETEDN, -kgN_per_m2);
+}
+
 HabitatForage PatchHabitat::get_available_forage() const {
 	// Result object (initialized with zero values)
 	HabitatForage result; 
+
+	// Fractional nitrogen content in each forage type.
+	ForageFraction nitrogen_content;
 
 	// sum of grass FPC (foliar percentage cover)
 	double grass_fpc = 0.0;
@@ -78,6 +90,14 @@ HabitatForage PatchHabitat::get_available_forage() const {
 							result[ft].get_digestibility(), indiv_dig,
 							result[ft].get_mass(), indiv_mass));
 
+			// Nitrogen Content: Build weighted average.
+			if (indiv_mass != 0)
+				nitrogen_content.set(ft,
+						average(nitrogen_content[ft], // old total N fraction
+							indiv.nmass_leaf / indiv_mass, // new individual N fraction
+							result[ft].get_mass(), // total weight
+							indiv_mass)); // individual weight
+
 			// Simply sum up the mass for the whole habitat [kg/km²]
 			result[ft].set_mass( result[ft].get_mass() + indiv_mass );
 
@@ -115,19 +135,21 @@ HabitatForage PatchHabitat::get_available_forage() const {
 
 		}
 	}
-  // TODO: Grass FPC is made constant because 
-  // LPJ-GUESS produced near-zero FPC values.
-  if (result.grass.get_mass() > 0.0) {
-    grass_fpc = 0.5; // DIRTY FIX CONSTANT
-  } else
-    grass_fpc = 0.0;
+	// TODO: Grass FPC is made constant because 
+	// LPJ-GUESS produced near-zero FPC values.
+	if (result.grass.get_mass() > 0.0) {
+		grass_fpc = 0.5; // DIRTY FIX CONSTANT
+	} else
+		grass_fpc = 0.0;
 
-  // Keep FPC in valid range. If LPJ-GUESS has unreasonable values, we just
-  // correct them. It’s not our issue to complain about errors in the
-  // vegetation model here.
-  grass_fpc = max(grass_fpc, 0.0);
-  grass_fpc = min(grass_fpc, 1.0);
-  result.grass.set_fpc( grass_fpc );
+	// Keep FPC in valid range. If LPJ-GUESS has unreasonable values, we just
+	// correct them. It’s not our issue to complain about errors in the
+	// vegetation model here.
+	grass_fpc = max(grass_fpc, 0.0);
+	grass_fpc = min(grass_fpc, 1.0);
+	result.grass.set_fpc( grass_fpc );
+
+	result.set_nitrogen_content(nitrogen_content);
 
 	return result;
 }

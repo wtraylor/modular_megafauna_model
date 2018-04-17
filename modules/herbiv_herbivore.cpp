@@ -94,6 +94,7 @@ HerbivoreBase::HerbivoreBase(const HerbivoreBase& other):
 	hft(other.hft),
 	sex(other.sex),
 	body_condition_gestation(get_hft().gestation_months * 30),
+	nitrogen(other.nitrogen),
 	// Create new object instances for std::auto_ptr with copy construction:
 	energy_budget(new FatmassEnergyBudget(other.get_energy_budget())),
 	current_output(new FaunaOut::HerbivoreData(other.get_todays_output())),
@@ -106,6 +107,7 @@ HerbivoreBase& HerbivoreBase::operator=(const HerbivoreBase& other){
 		hft                      = other.hft;
 		age_days                 = other.age_days;
 		body_condition_gestation = other.body_condition_gestation;
+		nitrogen                 = other.nitrogen;
 		sex                      = other.sex;
 
 		// Create a new copies of auto_ptr objects.
@@ -207,14 +209,16 @@ void HerbivoreBase::apply_mortality_factors_today(){
 
 void HerbivoreBase::eat(				
 		const ForageMass& kg_per_km2,
-		const Digestibility& digestibility){
+		const Digestibility& digestibility,
+		const ForageMass& N_kg_per_km2){
 	if (get_ind_per_km2() == 0.0 && kg_per_km2 == 0.0)
 		throw std::logic_error("Fauna::HerbivoreBase::eat() "
 				"This herbivore has no individuals and cannot be fed.");
 
 	// convert forage from *per km²* to *per individual*
 	assert( get_ind_per_km2() != 0.0 );
-	const ForageMass kg_per_ind = kg_per_km2 / get_ind_per_km2();
+	const ForageMass kg_per_ind   = kg_per_km2 / get_ind_per_km2();
+	const ForageMass N_kg_per_ind = N_kg_per_km2 / get_ind_per_km2();
 
 	// net energy in the forage [MJ/ind]
 	// Divide mass by energy content and set any forage with zero
@@ -230,6 +234,10 @@ void HerbivoreBase::eat(
 	get_todays_output().eaten_forage_per_mass  += kg_per_ind / get_bodymass();
 	get_todays_output().energy_intake_per_ind  += mj_per_ind;
 	get_todays_output().energy_intake_per_mass += mj_per_ind / get_bodymass();
+	get_todays_output().eaten_nitrogen_per_ind += N_kg_per_ind.sum();
+
+	// Ingest the nitrogen
+	nitrogen.ingest(N_kg_per_ind.sum() * get_ind_per_km2());
 }
 
 double HerbivoreBase::get_bodyfat()const{
@@ -459,6 +467,11 @@ void HerbivoreBase::simulate_day(const int day,
 	environment = 
 		std::auto_ptr<HabitatEnvironment>(new HabitatEnvironment(_environment));
 
+	// In the following, we wrote doxygen comments in the function body.
+	/// - Digest last day’s nitrogen (\ref NitrogenInHerbivore::digest_today())
+	nitrogen.digest_today(get_retention_time(get_bodymass()),
+			get_kg_per_km2());
+
 	/// - Set current day.
 	today = day;
 	
@@ -476,10 +489,11 @@ void HerbivoreBase::simulate_day(const int day,
 
 	/// - Add new output.
 	get_todays_output().reset();
-	get_todays_output().inddens   = get_ind_per_km2();
-	get_todays_output().age_years = get_age_years();
-	get_todays_output().massdens  = get_kg_per_km2();
-	get_todays_output().bodyfat   = get_bodyfat();
+	get_todays_output().age_years      = get_age_years();
+	get_todays_output().bodyfat        = get_bodyfat();
+	get_todays_output().bound_nitrogen = nitrogen.get_unavailable();
+	get_todays_output().inddens        = get_ind_per_km2();
+	get_todays_output().massdens       = get_kg_per_km2();
 
 	/// - Catabolize fat to compensate unmet energy needs.
 	get_energy_budget().catabolize_fat();
@@ -495,6 +509,13 @@ void HerbivoreBase::simulate_day(const int day,
 
 	/// - Apply mortality factor.
 	apply_mortality_factors_today();
+}
+
+double HerbivoreBase::take_nitrogen_excreta(){
+	if (!is_dead())		
+		return nitrogen.reset_excreta();
+	else
+		return nitrogen.reset_total();
 }
 
 //============================================================
@@ -614,6 +635,10 @@ void HerbivoreCohort::apply_mortality(const double mortality){
 	assert(ind_per_km2 >= 0.0);
 }
 
+bool HerbivoreCohort::is_dead()const{
+	return get_ind_per_km2() < get_hft().dead_herbivore_threshold;
+}
+
 void HerbivoreCohort::merge(HerbivoreCohort& other){
 	if (!is_same_age(other))
 		throw std::invalid_argument("Fauna::HerbivoreCohort::merge() "
@@ -630,6 +655,9 @@ void HerbivoreCohort::merge(HerbivoreCohort& other){
 			other.get_energy_budget(),
 			this->get_ind_per_km2(),
 			other.get_ind_per_km2());
+
+	// Merge nitrogen
+	this->get_nitrogen().merge( other.get_nitrogen());
 
 	// sum up density
 	this->ind_per_km2 += other.ind_per_km2;

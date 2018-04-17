@@ -24,7 +24,7 @@ namespace Fauna{
 	class HerbivoreInterface; 
 	class Hft;
 
-	/// Abstract class of a spatial unit populated by herbivores
+	/// Abstract class of a homogenous spatial unit populated by herbivores
 	/** 
 	 * \note While this base class implements the basic output 
 	 * functions, any derived class is responsible to add its 
@@ -36,6 +36,11 @@ namespace Fauna{
 			/// Virtual Destructor
 			/** Destructor must be virtual in an interface. */
 			virtual ~Habitat(){}
+
+			/// Account for nitrogen cycling back to soil (faeces + carcasses).
+			/** \param kgN_per_km2 Nitrogen deposited in habitat [kgN/km²]. 
+			 * \throw std::invalid_argument If `kgN_per_km2 < 0.0`.*/
+			virtual void add_excreted_nitrogen(const double kgN_per_km2) = 0;
 
 			/// Get dry-matter biomass [kgDM/km²] that is available to herbivores to eat.
 			virtual HabitatForage get_available_forage() const = 0;

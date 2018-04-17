@@ -221,6 +221,7 @@ namespace GuessOutput {
 
 			/** @{ \name HFT output tables.*/
 			TableFile TBL_BODYFAT;
+			TableFile TBL_BOUND_NITROGEN;
 			TableFile TBL_EXPENDITURE;
 			TableFile TBL_INDDENS;
 			TableFile TBL_MASSDENS;

@@ -64,7 +64,7 @@ namespace Fauna{
 			/// Maximum fat mass [kg/ind].
 			double get_max_fatmass()const{return max_fatmass;}
 
-			/// Merge this object with another one by building weihted averages.
+			/// Merge this object with another one by building weighted averages.
 			/**
 			 * \param other The other object.
 			 * \param this_weight Weight for this object.

@@ -11,6 +11,7 @@
 #include <memory>                 // for std::auto_ptr
 #include "herbiv_forageclasses.h" // for ForageMass
 #include "herbiv_utils.h"         // for Sex
+#include "herbiv_nitrogen.h"      // for NitrogenInHerbivore
 
 // Forward declarations
 namespace FaunaOut{
@@ -44,6 +45,7 @@ namespace Fauna{
 		/// Feed the herbivore dry matter forage.
 		/**
 		 * \param kg_per_km2 Dry matter forage mass [kgDM/km²].
+		 * \param N_kg_per_km2 Nitrogen in the forage [kgN/km²].
 		 * \param digestibility Proportional forage digestibility.
 		 * \throw std::invalid_argument If `forage` exceeds
 		 * forage intake constraints.
@@ -52,7 +54,8 @@ namespace Fauna{
 		 */
 		virtual void eat(
 				const ForageMass& kg_per_km2,
-				const Digestibility& digestibility) = 0;
+				const Digestibility& digestibility,
+				const ForageMass& N_kg_per_km2 = ForageMass(0)) = 0;
 
 		/// Body mass of one individual [kg/ind].
 		virtual double get_bodymass() const = 0;
@@ -83,6 +86,9 @@ namespace Fauna{
 		/// Read current output.
 		virtual const FaunaOut::HerbivoreData& get_todays_output()const = 0;
 
+		/// Whether the herbivore object is dead.
+		virtual bool is_dead()const = 0;
+
 		/// Simulate daily events.
 		/** 
 		 * Call this before \ref get_forage_demands().
@@ -94,6 +100,25 @@ namespace Fauna{
 		virtual void simulate_day(const int day,
 				const HabitatEnvironment& environment,
 				double& offspring) = 0;
+
+		/// Get how much nitrogen is excreted, and reset.
+		/**
+		 * Through feeding, plant nitrogen is taken up. Any nitrogen that has
+		 * been excreted again can be queried with this function. This function
+		 * also resets the accumulated nitrogen to zero.
+		 * This way, the nitrogen cycle from plant to animal and back is
+		 * completely closed.
+		 *
+		 * If the herbivore is dead, *all* remaining nitrogen in the body
+		 * (including tissue) ought to be returned.
+		 *
+		 * Sidenote: The function name doesn’t start with `get_` because the
+		 * function changes the internal state of the object.
+		 * \return Excreted nitrogen [kgN/km²] (+ tissue nitrogen if dead).
+		 * \see \ref sec_herbiv_nitrogen_excretion
+		 */
+		virtual double take_nitrogen_excreta() = 0;
+
 	};
 
 	/// Abstract base class for herbivores.
@@ -109,7 +134,8 @@ namespace Fauna{
 			// -------- HerbivoreInterface ----------
 			virtual void eat(				
 					const ForageMass& kg_per_km2,
-					const Digestibility& digestibility);
+					const Digestibility& digestibility,
+					const ForageMass& N_kg_per_km2);
 			virtual double get_bodymass() const; 
 			virtual ForageMass get_forage_demands(
 					const HabitatForage& available_forage);
@@ -121,6 +147,7 @@ namespace Fauna{
 			virtual const FaunaOut::HerbivoreData& get_todays_output()const;
 			virtual void simulate_day(const int day, 
 					const HabitatEnvironment& environment, double& offspring);
+			virtual double take_nitrogen_excreta();
 		public:
 			/// Current age in days.
 			int get_age_days()const{return age_days;} 
@@ -226,6 +253,8 @@ namespace Fauna{
 			/// Class-internal read/write access to current output.
 			FaunaOut::HerbivoreData& get_todays_output();
 
+			/// Access for derived classes to nitrogen management.
+			NitrogenInHerbivore& get_nitrogen(); 
 		private: // private member functions
 			/// Calculate mortality according to \ref Hft::mortality_factors.
 			/** Calls \ref apply_mortality(), which is implemented by 
@@ -279,6 +308,7 @@ namespace Fauna{
 			// use auto_ptr to reduce dependencies:
 			std::auto_ptr<FatmassEnergyBudget> energy_budget;
 			std::auto_ptr<HabitatEnvironment> environment; // set in simulate_day()
+			NitrogenInHerbivore nitrogen;
 			int today;
 			/** @} */ // state variables
 
@@ -306,6 +336,7 @@ namespace Fauna{
 				assert(area_km2 > 0.0);
 				return 1.0/area_km2 * !is_dead(); 
 			}
+			virtual bool is_dead()const{return dead;}
 		public:
 			/// Establishment constructor
 			/**
@@ -352,9 +383,6 @@ namespace Fauna{
 			/// Habitat area [km²]
 			double get_area_km2()const{return area_km2;}
 
-			/// Whether the individual is dead.
-			bool is_dead()const{return dead;}
-
 		protected:
 			// -------- HerbivoreBase ---------------
 			virtual void apply_mortality(const double mortality);
@@ -376,6 +404,8 @@ namespace Fauna{
 			virtual double get_ind_per_km2()const{
 				return ind_per_km2;
 			} 
+			/// A cohort is dead if its population is below \ref Hft::dead_herbivore_threshold
+			virtual bool is_dead()const;
 		public:
 			/// Establishment constructor.
 			/**

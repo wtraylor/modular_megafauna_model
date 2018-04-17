@@ -50,9 +50,6 @@ namespace Fauna {
 	struct Parameters{
 		// alphabetical order
 
-		/// Minimum individual density [ind/km²] for a living herbivore cohort.
-		double dead_herbivore_threshold; 
-
 		/// How the forage digestibility of \ref Individual objects is calculated
 		DigestibilityModelType digestibility_model;
 
@@ -80,7 +77,6 @@ namespace Fauna {
 
 		/// Constructor with default (valid!) settings
 		Parameters(): // alphabetical order
-			dead_herbivore_threshold(0.1),
 			forage_distribution(FD_EQUALLY),
 			free_herbivory_years(0),
 			habitat_area_km2(100.0),

@@ -43,6 +43,7 @@ namespace {
 	/// A dummy habitat that does nothing
 	class DummyHabitat: public Habitat{
 		public:
+			virtual void add_excreted_nitrogen(const double){} // deactivated
 			virtual HabitatForage get_available_forage() const { return HabitatForage(); }
 			virtual HabitatEnvironment get_environment() const { return HabitatEnvironment();}
 			int get_day_public()const{return get_day();}
@@ -57,7 +58,8 @@ namespace {
 			
 			virtual void eat(
 					const ForageMass& kg_per_km2,
-					const Digestibility& digestibility){
+					const Digestibility& digestibility,
+					const ForageMass& N_kg_per_km2 = ForageMass(0)){
 				eaten += kg_per_km2;
 			}
 
@@ -80,9 +82,13 @@ namespace {
 				return dummy_output;
 			}
 
+			virtual bool is_dead()const{ return false; }
+
 			virtual void simulate_day(const int day,
 					const HabitatEnvironment&,
 					double& offspring){offspring=0.0;}
+
+			virtual double take_nitrogen_excreta(){ return 0; }
 		public:
 			const ForageMass& get_demand()const{return demand;}
 			void set_demand(const ForageMass& d){demand = d;}
@@ -134,6 +140,7 @@ namespace {
 		public:
 			virtual double get_ind_per_km2() const{ return ind_per_km2; }
 
+			virtual bool is_dead()const{ return false; }
 			/// Establishment Constructor
 			HerbivoreBaseDummy(
 					const int age_days,
@@ -303,18 +310,16 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 	Hft hft = create_hfts(1, params)[0];
 	hft.establishment_density = 10.0; // [ind/km²]
 	hft.mortality_factors.clear(); // immortal herbivores
+	const double THRESHOLD = 0.1;
+	hft.dead_herbivore_threshold = THRESHOLD;
 	REQUIRE( hft.is_valid(params) );
 
 	// prepare creating object
 	CreateHerbivoreCohort create_cohort(&hft, &params);
 
-	// check exceptions
-	CHECK_THROWS( CohortPopulation(create_cohort, -1.0) );
-	
 	// create cohort population
-	const double THRESHOLD = 0.1;
 	INFO( "THRESHOLD = " << THRESHOLD );
-	CohortPopulation pop(create_cohort, THRESHOLD);
+	CohortPopulation pop(create_cohort);
 	REQUIRE( pop.get_list().empty() );
 	REQUIRE( population_lists_match( pop ) );
 	REQUIRE( pop.get_hft() == hft );
@@ -1404,6 +1409,12 @@ TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {
 	}
 }
 
+TEST_CASE("Fauna::get_retention_time()"){
+	CHECK_THROWS( get_retention_time(0) );
+	CHECK_THROWS( get_retention_time(-1) );
+	CHECK( get_retention_time(100) == Approx(45.276604) );
+}
+
 TEST_CASE("Fauna::get_random_fraction", "") {
 	for (int i=0; i<100; i++){
 		const double r = get_random_fraction();
@@ -1606,10 +1617,18 @@ TEST_CASE("Fauna::HabitatForage", "") {
 	REQUIRE( hf1.get_total().get_digestibility()   == Approx(0.0) );
 
 	SECTION( "adding forage" ) {
-		const double GRASSMASS = 10.0;
+		const double GRASSMASS = 10.0; // dry matter [kgDM/km²]
+		const double NMASS = GRASSMASS * .1; // nitrogen [kgN/km²]
 		hf1.grass.set_mass(GRASSMASS);
 		hf1.grass.set_digestibility(0.5);
 		hf1.grass.set_fpc(0.3);
+
+		// Nitrogen
+		CHECK_THROWS( hf1.grass.set_nitrogen_mass(GRASSMASS * 1.1) );
+		hf1.grass.set_nitrogen_mass(NMASS);
+		CHECK( hf1.grass.get_nitrogen_mass() == NMASS );
+		CHECK( hf1.get_nitrogen_content()[FT_GRASS] == Approx(NMASS / GRASSMASS) );
+		CHECK_THROWS(hf1.grass.set_mass(NMASS * .9) );
 
 		// Check value access
 		REQUIRE( hf1.grass.get_mass() == GRASSMASS );
@@ -2194,6 +2213,74 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 
 	}
 
+}
+
+TEST_CASE("Fauna::NitrogenInHerbivore") {
+	NitrogenInHerbivore n;
+
+	// Exceptions
+	CHECK_THROWS( n.ingest(-.1) );
+	CHECK_THROWS( n.digest_today( -.1, 1.0));
+	CHECK_THROWS( n.digest_today( 0.0, 1.0));
+	CHECK_THROWS( n.digest_today( 1.0, -.1));
+
+	// Initialization
+	CHECK( n.get_excreta() == 0.0 );
+	CHECK( n.get_unavailable() == 0.0 );
+
+	SECTION("Ingestion-digestion cycle"){
+		double ingested = 0.0;
+		double soil = 0.0; // nitrogen from excreta in the soil
+		double total = 0.0; // total nitrogen in ecoystem, as it should be
+		const double RETENTION_TIME = 80; // [hours]
+		const double MASSDENS = 0; // herbivore density [kg/km²]
+		int hours = 0; // number of hours since first feeding
+		for (int i = 0; i < 20; i++) {
+			const double new_ingested = 1 + i%2; // just some positive numbers
+			n.ingest(new_ingested);
+			total += new_ingested;
+			CHECK( total == soil + n.get_excreta() + n.get_unavailable() );
+
+			// every couple of feeding bouts, digest the nitrogen
+			if (! (i%3) ) {
+				hours += 24;
+				n.digest_today(RETENTION_TIME, MASSDENS);
+			}
+
+			// put the excreta in the soil pool at some arbitrary interval
+			if (! (i%6) ){
+				// Once the first feeding bout has passed the digestive tract, 
+				// there should be some excreta produced.
+				INFO("hours = " << hours);
+				if (hours > RETENTION_TIME)
+					CHECK( n.get_excreta() > 0.0 );
+
+				soil += n.reset_excreta(); 
+				CHECK( n.get_excreta() == 0 );
+			}
+		}
+	}
+
+	SECTION("Tissue nitrogen"){
+		const double MASSDENS = 10.0; // [kg/km²]
+		const double RETENTION_TIME = 1.0; // hours
+		const double INGESTED = MASSDENS; // [kgN/km²]
+		n.ingest(INGESTED);
+
+		// Pass all nitrogen through the digestive tract.
+		n.digest_today(RETENTION_TIME, MASSDENS);
+		n.digest_today(RETENTION_TIME, MASSDENS);
+
+		// Now, all nitrogen should be excreted, and only the tissue nitrogen
+		// should be left in the unavailable pool.
+		CHECK( n.get_unavailable() 
+				== Approx(MASSDENS * NitrogenInHerbivore::N_CONTENT_IN_TISSUE) );
+		CHECK( n.get_unavailable() + n.get_excreta() == Approx(INGESTED) );
+
+		CHECK( n.reset_total()     == Approx(INGESTED) );
+		CHECK( n.get_unavailable() == 0.0 );
+		CHECK( n.get_excreta()     == 0.0 );
+	}
 }
 
 TEST_CASE("Fauna::Parameters", ""){

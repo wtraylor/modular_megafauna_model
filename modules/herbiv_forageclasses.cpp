@@ -115,6 +115,28 @@ ForageBase& ForageBase::merge_base(const ForageBase& other,
 	return *this;
 }
 
+void ForageBase::set_mass(const double dm){
+	if (dm<0.0)
+		throw std::invalid_argument("Fauna::ForageBase::set_mass(): "
+				"Dry matter is smaller than zero.");
+	if (get_nitrogen_mass() > dm)
+		throw std::logic_error("Fauna::ForageBase::set_mass() "
+				"Dry matter is set to a value smaller than "
+				"nitrogen mass. Decrease nitrogen mass first.");
+	dry_matter_mass = dm;
+}
+
+void ForageBase::set_nitrogen_mass(const double n_mass){
+	if (n_mass<0.0)
+		throw std::invalid_argument("Fauna::ForageBase::set_nitrogen_mass(): "
+				"Nitrogen mass is smaller than zero.");
+	if (n_mass > get_mass())
+		throw std::logic_error("Fauna::ForageBase::set_mass() "
+				"Nitrogen mass is set to a value greater than "
+				"the dry matter mass. Increase dry matter first.");
+	nitrogen_mass = n_mass;
+}
+
 //------------------------------------------------------------
 // GRASSFORAGE
 //------------------------------------------------------------
@@ -157,6 +179,17 @@ ForageMass HabitatForage::get_mass()const{
 	return result;
 }
 
+ForageFraction HabitatForage::get_nitrogen_content(){
+	ForageFraction n_content;
+	for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+			ft != FORAGE_TYPES.end(); ft++) {
+		const ForageBase& f = operator[](*ft);
+		if (f.get_mass() != 0.0)
+			n_content.set(*ft, f.get_nitrogen_mass() / f.get_mass() );
+	}
+	return n_content;
+}
+
 ForageBase HabitatForage::get_total() const{
 	// Return object
 	ForageBase result;
@@ -191,3 +224,16 @@ HabitatForage& HabitatForage::merge(const HabitatForage& other,
 	return *this;
 }
 
+void HabitatForage::set_nitrogen_content(const ForageFraction& n_content)
+{
+	// loop through each forage type
+	for (ForageMass::const_iterator itr = n_content.begin();
+			itr != n_content.end(); itr++){
+		const ForageType ft = itr->first;
+		const double dry_matter = (*this)[ft].get_mass();
+		if (n_content[ft] == 1.0) 
+			throw std::invalid_argument("Fauna::HabitatForage::set_nitrogen_content() "
+					"Nitrogen content for one forage type is 100%. That is not allowed.");
+		(*this)[ft].set_nitrogen_mass(dry_matter * n_content[ft]);
+	}
+}

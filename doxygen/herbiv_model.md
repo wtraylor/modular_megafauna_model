@@ -35,6 +35,14 @@ Each PFT can be mapped to a forage type:
 	!include herbiv_diagrams.iuml!default_pft_forage_type_mapping
 @enduml
 
+Through feeding, herbivores reduce aboveground plant biomass, i.e. carbon and nitrogen:
+
+- The removed carbon from plant leaves is considered as a flux directly to the atmosphere (respiration).
+  There is no intermediate decomposition of faeces or dead bodies in the soil.
+
+- Nitrogen, on the other hand, moves in a closed cycle, it does not enter the atmosphere, but gets returned through excrements (and carcasses after death) directly to the plant-available soil pool.
+
+<!-- Digestibility and C:N ratio are not coupled currently -->
 
 ![](herbivory_fluxes.png "Carbon and nitrogen fluxes in the vegetation model caused by herbivory.")
 
@@ -42,12 +50,27 @@ Each PFT can be mapped to a forage type:
 
 ### Nitrogen Excretion {#sec_herbiv_nitrogen_excretion}
 
+Nitrogen uptake is calculated based on the C:N ratio of leaves.
+The maximum amount of nitrogen (\f$N_{bound}\f$, kgN/km²) bound in herbivores is comprised of the body tissue and the contents of the digestive tract.
+Any ingested nitrogen is added to the pool of herbivore-bound nitrogen, and the surplus is returned to the soil.
+![](herbiv_nitrogen_cycle.svg "Nitrogen cycle in the herbivore model.")
+The amount of nitrogen bound in body tissue is approximated with 3% of live body weight (Robbins 1983\cite robbins_wildlife_1983); this ignores variation in fat and structural mass.
+Upon death, this amount of nitrogen is also returned to the plant-available soil pool.
+
+The nitrogen of ingesta in stomach and intestines depends on the mean retention time (\f$MRT\f$, hours) and the day’s intake of nitrogen (\f$I_N\f$, kgN/ind/day).
+$$
+N_{bound} = N_{guts} + N_{body} = I_N * MRT * P + 0.03 * M * P
+$$
+\f$P\f$ is the population density (ind/km²) and \f$M\f$ is the body mass (kg/ind).
+Mean retention time in hours is calculated according to Clauss et al. (2007)\cite clauss_case_2007, Fig. 2:
+$$
+MRT = 32.8 * M^{0.07}
+$$
+
 ### Trampling {#sec_herbiv_trampling}
 
 Energetics {#sec_herbiv_energetics}
 -----------------------------------
-
-Taylor et al 1981
 
 
 Energy Content of Forage {#sec_herbiv_energycontent}

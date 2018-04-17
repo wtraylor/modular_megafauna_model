@@ -215,6 +215,9 @@ namespace Fauna{
 			/// First day of parturition season (0=Jan 1st).
 			int breeding_season_start;
 
+			/// Minimum individual density [ind/km²] for a living herbivore cohort.
+			double dead_herbivore_threshold;
+
 			/// Model defining the herbivore’s diet composition.
 			DietComposer diet_composer;
 
