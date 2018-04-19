@@ -11,6 +11,14 @@
 namespace Fauna{
 	/// Variables describing the habitat that are not forage ⇒ abiotic environment.
 	struct HabitatEnvironment{
+		/// Constructor with default values.
+		HabitatEnvironment():
+		air_temperature(20.0),
+		snow_depth(0.0){ }
+
+		/// Ambient air temperature near ground [°C], whole-day average.
+		double air_temperature;
+
 		/// Depth of snow cover [cm].
 		double snow_depth;
 	};

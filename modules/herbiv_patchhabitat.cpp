@@ -157,6 +157,7 @@ HabitatForage PatchHabitat::get_available_forage() const {
 HabitatEnvironment PatchHabitat::get_environment() const{
 	HabitatEnvironment env;
 	env.snow_depth = (*get_snow_depth)(patch);
+	env.air_temperature = patch.get_climate().temp;
 	return env;
 }
 
