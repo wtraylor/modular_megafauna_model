@@ -255,6 +255,15 @@ double HerbivoreBase::get_bodymass_adult() const{
 		return get_hft().bodymass_female;
 }
 
+double HerbivoreBase::get_conductance()const{
+	if (get_hft().conductance == CM_BRADLEY_DEAVERS_1980){
+		return get_conductance_bradley_deavers_1980(get_bodymass());
+	} 
+	else 
+		throw std::logic_error("Fauna::HerbivoreBase::get_conductance() "
+				"Conductance model is not implemented.");
+}
+
 const HabitatEnvironment& HerbivoreBase::get_environment()const{
 	if (environment.get() == NULL)
 		throw std::logic_error("Fauna::HerbivoreBase::get_environment() "
@@ -382,6 +391,8 @@ double HerbivoreBase::get_todays_expenditure()const{
 	// Iterate through all selected expenditure components and sum up the
 	// results of their algorithsms.
 
+	bool add_thermoregulation = false;
+
 	for (std::set<ExpenditureComponent>::const_iterator 
 			itr = get_hft().expenditure_components.begin();
 			itr != get_hft().expenditure_components.end();
@@ -396,11 +407,26 @@ double HerbivoreBase::get_todays_expenditure()const{
 					get_bodymass(), 
 					get_bodymass_adult());
 		}
+		else if (*itr == EC_THERMOREGULATION) {
+			add_thermoregulation = true;
+		}
 		// ** Add new expenditure components in else-if statements here. **
 		else throw std::logic_error(
 				"Fauna::HerbivoreBase::get_todays_expenditure() "
 				"Expenditure component not implemented.");
 	}
+
+	// Thermoregulation needs to be “added” to the other energy expenses
+	// because any other burning of energy is already heating the body
+	// passively.
+	if (add_thermoregulation){
+		result += get_thermoregulatory_expenditure(
+				result, // thermoneutral_rate
+				get_conductance(),
+				get_hft().core_temperature,
+				get_environment().air_temperature);
+	}
+
 	assert( result >= 0.0 );
 	return result;
 }

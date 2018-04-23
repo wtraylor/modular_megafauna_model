@@ -43,6 +43,14 @@ namespace Fauna{
 		}
 	};
 
+	/// Selector for a function of how to calculate whole-body conductance.
+	/** \see \ref sec_herbiv_thermoregulation */
+	enum ConductanceModel{
+		/// Allometric formula from data by Bradley & Deavers (1980)\cite bradley_reexamination_1980
+		/** \see get_conductance_bradley_deavers_1980() */
+		CM_BRADLEY_DEAVERS_1980
+	};
+
 	/// Model to define a herbivore’s diet in a multi-forage scenario.
 	enum DietComposer{
 		/// Eat exclusively grass.
@@ -90,7 +98,9 @@ namespace Fauna{
 		 */
 		EC_ALLOMETRIC,
 		/// Formula for field metabolic rate in cattle, see \ref get_expenditure_taylor_1981.
-		EC_TAYLOR_1981
+		EC_TAYLOR_1981,
+		/// Increased expenditure in lower temperature, see \ref sec_herbiv_thermoregulation.
+		EC_THERMOREGULATION
 	};
 
 	/// A factor limiting a herbivore’s daily forage harvesting.
@@ -214,6 +224,13 @@ namespace Fauna{
 
 			/// First day of parturition season (0=Jan 1st).
 			int breeding_season_start;
+
+			/// Algorithm to calculate whole-body conductance for thermoregulation.
+			ConductanceModel conductance;
+
+			/// Body core temperature [°C].
+			/** Default is 38°C (Hudson & White, 1985\cite hudson_bioenergetics_1985) */
+			double core_temperature;
 
 			/// Minimum individual density [ind/km²] for a living herbivore cohort.
 			double dead_herbivore_threshold;

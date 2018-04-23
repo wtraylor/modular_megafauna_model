@@ -161,6 +161,11 @@ namespace Fauna{
 			/// Body mass at physical maturity [kg/ind].
 			double get_bodymass_adult()const;
 
+			/// Get full-body conductance [W/°C/ind].
+			/** \see \ref Hft::conductance 
+			 * \throw std::logic_error If \ref ConductanceModel not implemented. */
+			double get_conductance()const;
+
 			/// Current fat mass [kg/ind].
 			double get_fatmass()const;
 
@@ -254,7 +259,7 @@ namespace Fauna{
 			FaunaOut::HerbivoreData& get_todays_output();
 
 			/// Access for derived classes to nitrogen management.
-			NitrogenInHerbivore& get_nitrogen(); 
+			NitrogenInHerbivore& get_nitrogen(){return nitrogen;}
 		private: // private member functions
 			/// Calculate mortality according to \ref Hft::mortality_factors.
 			/** Calls \ref apply_mortality(), which is implemented by 

@@ -72,6 +72,39 @@ $$
 Energetics {#sec_herbiv_energetics}
 -----------------------------------
 
+### Thermoregulation {#sec_herbiv_thermoregulation}
+
+Homeothermic animals have extra energy costs to maintain their body core temperature.
+Through basal metabolism and other ways of energy burning, heat is already passively created.
+Thermoregulatory costs arise when the ambient temperature drops below the *lower critical temperature*: the passive heat from thermoneutral metabolism is not counterbalance heat loss to the environment.
+The rate of heat loss depends on the *thermal conductance* of the whole animal (energy flow per temperature difference), which in turn depends on the *thermal conductivity* (energy flow per temperature difference and per thickness) of fur and skin and the body surface.
+
+- \f$T_{crit}\f$: Lower critical temperature [°C].
+- \f$T_{core}\f$: Body core temperature [°C].
+- \f$T_{air}\f$: Ambient air temperature [°C].
+- \f$E_{neu}\f$: Thermoneutral metabolic rate [MJ/ind/day]
+- \f$G_{th}\f$: Whole-body thermal conductance [W/ind].
+- \f$\Phi\f$: Heat loss [MJ/ind/day]
+\f[
+  T_{crit} = T_{core} - \frac{E_{neu}}{G_{th}}
+\f]
+\f[
+  \Phi = G_{th} * max(T_{crit} - T_{air}, 0)
+\f]
+
+![](herbiv_thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms (Peters 1983, Fig. 5.6\cite peters_ecological_1983).")
+
+\note In its current form, the model only considers costs when temperatures are too low.
+Overheating effects are not implemented since the model was developed with the focus on Arctic megafauna.
+
+#### Conductance
+
+The critical parameter for thermoregulatory expenditure is the (whole-body) conductance: the rate of heat flow per difference between core and air temperature (W/°C).
+The conductance can be approximated from the average conductivity and the body surface.
+Conductivity is the inverse of insulation: it is the heat flow per temperature difference per area.
+
+Body surface in m² scales roughly as \f$0.09*M^{0.66}\f$ ([Hudson & White 1985](\cite hudson_bioenergetics_1985)).
+
 
 Energy Content of Forage {#sec_herbiv_energycontent}
 ----------------------------------------------------

@@ -10,6 +10,7 @@
 #define HERBIV_ENERGETICS_H
 
 #include <cmath> // for pow()
+#include <stdexcept>
 
 namespace Fauna{
 
@@ -124,6 +125,57 @@ namespace Fauna{
 			const double adult_bodymass){
 		return 0.4 * current_bodymass * pow(adult_bodymass,-0.27);
 	}
+
+	/// Convert Watts (=J/s) to MJ/day.
+	inline double watts_to_MJ_per_day(const double W){
+		return W * 24 * 3600 * 10e-6;
+	}
+
+	/// Get full body conductance [W/°C] after Bradley & Deavers (1980)
+	/// \cite bradley_reexamination_1980
+	/**
+	 * The formula is taken from Peters (1983)\cite peters_ecological_1983,
+	 * which is based on data by Bradley & Deavers (1980).
+	 * \f[
+	 * G_{th} = 0.224 * M^{0.574}
+	 * \f]
+	 * 230 conductance values from 192 mammal species with body weights
+	 * ranging from 3.5 g to 150 kg.
+	 * \param bodymass Current body weight [kg/ind].
+	 * \throw std::invalid_argument If `bodymass <= 0`.
+	 * \return Full body conductance [W/°C].
+	 */
+	inline double get_conductance_bradley_deavers_1980(const double bodymass){
+		if (bodymass <= 0.0)
+			throw std::invalid_argument("Fauna::get_conductance_bradley_deavers_1980() "
+					"Parameter `bodymass` is <=0.");
+		return 0.224 * pow(bodymass, 0.574);
+	}
+
+	/// Calculate additional energy requirements to keep body temperature.
+	/**
+	 * Please see \ref sec_herbiv_thermoregulation for the formulas and 
+	 * concepts.
+	 *
+	 * \param thermoneutral_rate Thermoneutral expenditure [MJ/ind/day]. 
+	 * \param conductance Whole-body thermal conductance of the animal [W/°C].
+	 * \param core_temperature Body core temperature [°C].
+	 * \param ambient_temperature Ambient air temperature [°C].
+	 * \return Additional expenditure for thermoregulation, i.e. heat loss
+	 * [MJ/ind/day].
+	 *
+	 * \throw std::invalid_argument If any parameter is out of range.
+	 */
+	double get_thermoregulatory_expenditure(
+			const double thermoneutral_rate,
+			const double conductance,
+			const double core_temperature,
+			const double ambient_temperature);
 }
 
 #endif // HERBIV_ENERGETICS_H 
+
+// References
+//
+// S.Robert Bradley and Daniel R Deavers. A re-examination of the relationship between thermal conductance and body weight in mammals. Comparative Biochemistry and Physiology Part A: Physiology, 65(4):465–476, 1980.
+// Peters, Robert Henry (1983). The ecological implications of body size. 1st publ. Cambridge studies in ecology. - Cambridge : Univ. Press, 1982 2. Cambridge [u.a.]: Cambridge Univ.Pr. xii+329.

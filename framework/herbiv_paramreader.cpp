@@ -167,6 +167,18 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	strparam = to_upper(strparam);
 
 	// add checkback codes in alphabetical order
+
+	if (callback == CB_CONDUCTANCE) {
+		if (strparam == "BRADLEY_DEAVERS_1980")
+			current_hft.conductance = CM_BRADLEY_DEAVERS_1980;
+		// add other conductance models here
+		else {
+			sendmessage("Error",
+					"Unknown conductance model; valid types: "
+					"\"bradley_deavers_1980\"");
+			plibabort();
+		}
+	}
 	
 	if (callback == CB_CHECKHFT) {
 
@@ -247,6 +259,11 @@ void ParamReader::callback(const int callback, Pft* ppft){
 						mandatory_hft_params.push_back(MandatoryParam(
 									"expenditure_allometry", req_str +
 									" and \"allometric\" is an expenditure component."));
+					}
+					if (current_hft.expenditure_components.count(EC_ALLOMETRIC)) {
+					mandatory_hft_params.push_back(MandatoryParam(
+								"conductance", req_str +
+								" and \"thermoregulation\" is an expenditure component."));
 					}
 					if (current_hft.foraging_limits.count(FL_ILLIUS_OCONNOR_2000)){
 						mandatory_hft_params.push_back(MandatoryParam(
@@ -449,13 +466,16 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				current_hft.expenditure_components.insert(EC_TAYLOR_1981);
 			else if (*itr == "ALLOMETRIC") 
 				current_hft.expenditure_components.insert(EC_ALLOMETRIC);
+			else if (*itr == "THERMOREGULATION") 
+				current_hft.expenditure_components.insert(EC_THERMOREGULATION);
 			// add new expenditure components here
 			else {
 				sendmessage("Error", std::string(
 							"Unknown expenditure component: \""
 							+*itr+"\". "
 							"Valid types: "
-							"\"allometric\", \"taylor_1981\"").c_str()); // add more here
+							"\"allometric\", \"taylor_1981\", "
+							"\"thermoregulation\"").c_str()); // add more here
 				plibabort();
 			} 
 		}
@@ -792,6 +812,19 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"First day of breeding season (0=Jan 1st).");
 
+		declareitem("conductance",
+				&strparam,
+				64,
+				CB_CONDUCTANCE,
+				"Conductance model for thermoregulation: \"bradley_deavers_1980\"");
+
+		declareitem("core_temperature",
+				&current_hft.core_temperature,
+				DBL_MIN, DBL_MAX, // min, max
+				1,          // number of parameters
+				CB_NONE,
+				"Body core temperature [°C].");
+
 		declareitem("dead_herbivore_threshold",
 				&(current_hft.dead_herbivore_threshold),
 				0.0, DBL_MAX, // min, max
@@ -848,7 +881,7 @@ void ParamReader::declare_parameters(
 				CB_EXPENDITURE_COMPONENTS,
 				"Comma-separated list of energy expenditure model for herbivores."
 				"Possible values: "
-				"\"taylor_1981\", \"allometric\""); 
+				"\"taylor_1981\", \"allometric\", \"thermoregulation\""); 
 
 		declareitem("digestive_limit_allometry",
 				double_pair,

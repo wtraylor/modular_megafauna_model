@@ -29,12 +29,14 @@ Hft::Hft():
 	bodymass_female(50.0),
 	breeding_season_length(60),
 	breeding_season_start(120),
-	establishment_age_range(std::pair<int, int>(1, 5)),
-	establishment_density(10.0),
+	conductance(CM_BRADLEY_DEAVERS_1980),
+	core_temperature(38.0),
 	dead_herbivore_threshold(0.1),
 	diet_composer(DC_PURE_GRAZER),
 	digestion_type(DT_RUMINANT),
 	digestive_limit(DL_NONE),
+	establishment_age_range(std::pair<int, int>(1, 5)),
+	establishment_density(10.0),
 	expenditure_allometry(0.005, 0.75),
 	digestive_limit_allometry(0.047, 0.76),
 	gestation_months(8),
@@ -138,6 +140,11 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
+		if (core_temperature <= 0.0){
+			stream << "core_temperature must be >0 ("<<bodymass_male<<")"<<std::endl;
+			is_valid = false;
+		}
+
 		if (params.herbivore_type == HT_COHORT &&
 				dead_herbivore_threshold < 0.0) {
 			stream << "dead_herbivore_threshold < 0.0"
@@ -204,6 +211,12 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		if (expenditure_components.empty()) {
 			stream << "No energy expenditure components defined." << std::endl;
 			is_valid = false;
+		}
+
+		if (expenditure_components.count(EC_THERMOREGULATION) &&
+				expenditure_components.size() == 1){
+			stream << "Thermoregulation is the only expenditure component. "
+				"That means that there is no basal metabolism." << std::endl;
 		}
 
 		if (expenditure_components.count(EC_ALLOMETRIC) &&
