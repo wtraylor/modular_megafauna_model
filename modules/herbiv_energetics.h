@@ -138,7 +138,7 @@ namespace Fauna{
 	 * The formula is taken from Peters (1983)\cite peters_ecological_1983,
 	 * which is based on data by Bradley & Deavers (1980).
 	 * \f[
-	 * G_{th} = 0.224 * M^{0.574}
+	 * C = 0.224 * M^{0.574}
 	 * \f]
 	 * 230 conductance values from 192 mammal species with body weights
 	 * ranging from 3.5 g to 150 kg.
@@ -183,7 +183,7 @@ namespace Fauna{
 	 * allometric exponent for body mass for whole-body conductance among
 	 * mammals is about 0.57.
 	 * We derive an allometric function for the conductance 
-	 * \f$G_{th} = x*M^{0.56}\f$ (in W/°C)
+	 * \f$C = x*M^{0.56}\f$ (in W/°C)
 	 * that contains the value from reindeer pelts.
 	 *
 	 * \f[

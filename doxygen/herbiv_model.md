@@ -83,13 +83,13 @@ The rate of heat loss depends on the *thermal conductance* of the whole animal (
 - \f$T_{core}\f$: Body core temperature [°C].
 - \f$T_{air}\f$: Ambient air temperature [°C].
 - \f$E_{neu}\f$: Thermoneutral metabolic rate [MJ/ind/day]
-- \f$G_{th}\f$: Whole-body thermal conductance [W/ind].
+- \f$C\f$: Whole-body thermal conductance [W/ind].
 - \f$\Phi\f$: Heat loss [MJ/ind/day]
 \f[
-  T_{crit} = T_{core} - \frac{E_{neu}}{G_{th}}
+  T_{crit} = T_{core} - \frac{E_{neu}}{C}
 \f]
 \f[
-  \Phi = G_{th} * max(T_{crit} - T_{air}, 0)
+  \Phi = C * max(T_{crit} - T_{air}, 0)
 \f]
 
 ![](herbiv_thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms (Peters 1983, Fig. 5.6\cite peters_ecological_1983).")
