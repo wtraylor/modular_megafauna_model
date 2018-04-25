@@ -171,11 +171,13 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	if (callback == CB_CONDUCTANCE) {
 		if (strparam == "BRADLEY_DEAVERS_1980")
 			current_hft.conductance = CM_BRADLEY_DEAVERS_1980;
+		if (strparam == "CUYLER_OERITSLAND_2004")
+			current_hft.conductance = CM_CUYLER_OERITSLAND_2004;
 		// add other conductance models here
 		else {
 			sendmessage("Error",
 					"Unknown conductance model; valid types: "
-					"\"bradley_deavers_1980\"");
+					"\"bradley_deavers_1980\", \"cuyler_oeritsland_2004\"");
 			plibabort();
 		}
 	}
@@ -816,7 +818,8 @@ void ParamReader::declare_parameters(
 				&strparam,
 				64,
 				CB_CONDUCTANCE,
-				"Conductance model for thermoregulation: \"bradley_deavers_1980\"");
+				"Conductance model for thermoregulation: "
+				"\"bradley_deavers_1980\", \"cuyler_oeritsland_2004\"");
 
 		declareitem("core_temperature",
 				&current_hft.core_temperature,

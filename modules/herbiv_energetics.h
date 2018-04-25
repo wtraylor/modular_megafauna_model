@@ -9,6 +9,7 @@
 #ifndef HERBIV_ENERGETICS_H
 #define HERBIV_ENERGETICS_H
 
+#include <assert.h>
 #include <cmath> // for pow()
 #include <stdexcept>
 
@@ -152,6 +153,62 @@ namespace Fauna{
 		return 0.224 * pow(bodymass, 0.574);
 	}
 
+	/// Selector for winter or summer pelt.
+	enum FurSeason{
+		/// Summer fur
+		FS_SUMMER,
+		/// Winter fur
+		FS_WINTER
+	};
+
+	/// Extrapolate conductance from reindeer fur.
+	/**
+	 * Cuyler & Øritsland (2004)\cite cuyler_rain_2004 measured conductivity
+	 * values of reindeer (Rangifer tarandus) pelts in calm air and dry 
+	 * conditions:
+	 * - 0.63 W/(°C*m²) in winter
+	 * - 2.16 W/(°C*m²) in summer
+	 *
+	 * We assume a body mass of 60 kg for an adult reindeer
+	 * (Soppela et al. 1986 \cite soppela_thermoregulation_1986).
+	 * Body surface is approximated by a formula from Hudson & White (1985)
+	 * \cite hudson_bioenergetics_1985 as \f$0.09*M^{0.66}\f$ (in m²).
+	 *
+	 * The whole-body conductance in W/°C is then:
+	 * - for winter \f$0.63 * 0.09 * 60^{0.66} = 0.8\f$
+	 * - for summer \f$2.16 * 0.09 * 60^{0.66} = 2.9\f$
+	 *
+	 * Both Bradley & Deavers (1980)\cite bradley_reexamination_1980 and
+	 * Fristoe et al. (2014)\cite fristoe_metabolic_2015 suggest that the 
+	 * allometric exponent for body mass for whole-body conductance among
+	 * mammals is about 0.57.
+	 * We derive an allometric function for the conductance 
+	 * \f$G_{th} = x*M^{0.56}\f$ (in W/°C)
+	 * that contains the value from reindeer pelts.
+	 *
+	 * \f[
+	 * x_{summer} = 2.9 * 60^{-0.56} = 0.29 \\\\
+	 * x_{winter} = 0.8 * 60^{-0.56} = 0.08
+	 * \f]
+	 *
+	 * \param bodymass Adult body mass [kg/ind].
+	 * \param season Whether it’s summer or winter pelt.
+	 * \return Extrapolated whole-body conductance for an Arctic species 
+	 * [W/°C].
+   * \throw std::invalid_argument If `bodymass <= 0`.
+	 */
+	inline double get_conductance_cuyler_oeritsland_2004(const double bodymass,
+			const FurSeason season){
+		if (bodymass <= 0.0)
+			throw std::invalid_argument("Fauna::get_conductance_cuyler_oeritsland_2004() "
+					"Parameter `bodymass` is <=0.");
+		assert( (season == FS_SUMMER) || (season == FS_WINTER) );
+		if (season == FS_SUMMER)
+			return 0.29 * pow(bodymass, 0.57);
+		else // Winter:
+			return 0.08 * pow(bodymass, 0.57);
+	}
+
 	/// Calculate additional energy requirements to keep body temperature.
 	/**
 	 * Please see \ref sec_herbiv_thermoregulation for the formulas and 
@@ -176,6 +233,11 @@ namespace Fauna{
 #endif // HERBIV_ENERGETICS_H 
 
 // References
-//
+
 // S.Robert Bradley and Daniel R Deavers. A re-examination of the relationship between thermal conductance and body weight in mammals. Comparative Biochemistry and Physiology Part A: Physiology, 65(4):465–476, 1980.
+
+// Hudson, Robert J. and Robert G. White (1985). Bioenergetics of wild herbivores. CRC press.
+
 // Peters, Robert Henry (1983). The ecological implications of body size. 1st publ. Cambridge studies in ecology. - Cambridge : Univ. Press, 1982 2. Cambridge [u.a.]: Cambridge Univ.Pr. xii+329.
+
+// Soppela, Päivi, Mauri Nieminen, and Jouni Timisjärvi (June 1, 1986). “吀ermoregulation in reindeer”. In: Rangifer 6.2, pp. 273–278. doi: 10.7557/2.6.2.659.

@@ -47,8 +47,11 @@ namespace Fauna{
 	/** \see \ref sec_herbiv_thermoregulation */
 	enum ConductanceModel{
 		/// Allometric formula from data by Bradley & Deavers (1980)\cite bradley_reexamination_1980
-		/** \see get_conductance_bradley_deavers_1980() */
-		CM_BRADLEY_DEAVERS_1980
+		/** \see \ref get_conductance_bradley_deavers_1980() */
+		CM_BRADLEY_DEAVERS_1980,
+		/// Allometric formula extrapolating from reindeer fur conductivity.
+		/** \see \ref get_conductance_cuyler_oeritsland_2004 */
+		CM_CUYLER_OERITSLAND_2004
 	};
 
 	/// Model to define a herbivore’s diet in a multi-forage scenario.

@@ -258,7 +258,10 @@ double HerbivoreBase::get_bodymass_adult() const{
 double HerbivoreBase::get_conductance()const{
 	if (get_hft().conductance == CM_BRADLEY_DEAVERS_1980){
 		return get_conductance_bradley_deavers_1980(get_bodymass());
-	} 
+	} else if (get_hft().conductance == CM_CUYLER_OERITSLAND_2004){
+		// Currently, we only choose winter fur.
+		return get_conductance_cuyler_oeritsland_2004(get_bodymass(), FS_WINTER);
+	}
 	else 
 		throw std::logic_error("Fauna::HerbivoreBase::get_conductance() "
 				"Conductance model is not implemented.");
