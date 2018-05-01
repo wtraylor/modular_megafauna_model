@@ -173,8 +173,16 @@ void HerbivoreBase::apply_mortality_factors_today(){
 			const double body_condition = get_fatmass()/get_max_fatmass();
 			double new_body_condition   = body_condition;
 
+			// Standard deviation of body fat in this cohort.
+			// Juveniles (1st year of life) have no variation in body fat
+			// so that there is no artificial mortality created if their
+			// body fat at birth is very low.
+			double bodyfat_deviation = 0;
+			if (get_age_years() >= 1)
+				bodyfat_deviation = get_hft().bodyfat_deviation;
+
 			const GetStarvationIlliusOConnor2000 starv_illius(
-					get_hft().bodyfat_deviation,
+					bodyfat_deviation,
 					get_hft().shift_body_condition_for_starvation);
 
 			// Call the function object and obtain mortality and new body

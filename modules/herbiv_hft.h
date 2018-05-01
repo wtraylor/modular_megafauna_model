@@ -203,6 +203,10 @@ namespace Fauna{
 			 * physiological maximum.
 			 * For herbivore individuals, the standard deviation refers to the 
 			 * whole population. In cohort mode, it refers only to one cohort.
+			 *
+			 * \note For juvevniles (1st year of life), body fat variation is
+			 * always zero in order to avoid artificially high death rates if
+			 * body fat is low at birth.
 			 */
 			double bodyfat_deviation;
 
