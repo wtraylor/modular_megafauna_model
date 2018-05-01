@@ -300,11 +300,22 @@ void ParamReader::callback(const int callback, Pft* ppft){
         }
       }
 
+			// Set `dead_herbivore_threshold` to default value.
+			if (!itemparsed("dead_herbivore_threshold")){
+				current_hft.dead_herbivore_threshold = 
+					current_hft.get_max_dead_herbivore_threshold() * 0.9;
+				std::ostringstream msg_stream;
+				msg_stream << "Setting `dead_herbivore_threshold` to 0.9 of "
+					<< "maximum value: " << current_hft.dead_herbivore_threshold
+					<< " ind/km²";
+				sendmessage("Info", msg_stream.str().c_str());
+			}
+
       if (!check_mandatory(mandatory_hft_params,
             "HFT \""+current_hft.name+"\""))
         plibabort();
 
-      // Now everything seems okay, and we can add the HFT
+      // Now everything seems okay, and we can add the HFT.
       hftlist.insert(current_hft);
     }
 	}
@@ -844,7 +855,7 @@ void ParamReader::declare_parameters(
 				1,          // number of parameters
 				CB_NONE,
 				"Minimum density [ind/km²] for a living herbivore cohort. "
-				"Default: 0.1");
+				"Default: 0.9 of maximum value");
 
 		declareitem("diet_composer",
 				&strparam,

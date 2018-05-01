@@ -55,6 +55,22 @@ Hft::Hft():
 	expenditure_components.insert(EC_ALLOMETRIC);
 }
 
+double Hft::get_max_dead_herbivore_threshold()const{
+	const double establishment_cohort_count =
+		(2 * (establishment_age_range.second - establishment_age_range.first + 1));
+
+	if (establishment_cohort_count <= 0)
+		throw std::logic_error("Fauna::Hft::get_max_dead_herbivore_threshold() "
+				"The variable `establishment_age_range` has invalid values.");
+
+	const double result = establishment_density / establishment_cohort_count;
+	if (result <= 0)
+		throw std::logic_error("Fauna::Hft::get_max_dead_herbivore_threshold() "
+				"The variable `establishment_density` has an invalid value.");
+	
+	return result;
+}
+
 bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 	bool is_valid = true;
 	
@@ -187,16 +203,23 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-		const double establishment_cohort_count =
-			(2 * (establishment_age_range.second - establishment_age_range.first + 1));
-		if (params.herbivore_type == HT_COHORT && 
-				establishment_density/establishment_cohort_count <= dead_herbivore_threshold){
-			stream << "establishment_density (" <<establishment_density<<" ind/km²) "
-				<< "must not be smaller than minimum viable population density"
-				<< " (dead_herbivore_threshold = "
-				<< dead_herbivore_threshold << " ind/km²)"
-				<< " for one sex and age in cohort mode." <<std::endl;
-			is_valid = false;
+		try {
+			// This might throw an exception:
+			double max_dead_herbivore_threshold = get_max_dead_herbivore_threshold();
+
+			if (params.herbivore_type == HT_COHORT && 
+					dead_herbivore_threshold >= max_dead_herbivore_threshold){
+				stream << "establishment_density (" <<establishment_density<<" ind/km²) "
+					<< "must not be smaller than minimum viable population density"
+					<< " (dead_herbivore_threshold = "
+					<< dead_herbivore_threshold << " ind/km²)"
+					<< " for one sex and age in cohort mode." <<std::endl;
+				is_valid = false;
+			}
+		} catch (std::exception){
+			// No handling because invalid values for `establishment_age_range` or
+			// `establishment_density` are already treated in the rest of this 
+			// function.
 		}
 
 		if (params.herbivore_type == HT_INDIVIDUAL && 
@@ -379,3 +402,5 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 
 	return is_valid;
 }
+
+
