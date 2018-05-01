@@ -173,7 +173,7 @@ void HerbivoreBase::apply_mortality_factors_today(){
 			const double body_condition = get_fatmass()/get_max_fatmass();
 			double new_body_condition   = body_condition;
 
-			static const GetStarvationIlliusOConnor2000 starv_illius(
+			const GetStarvationIlliusOConnor2000 starv_illius(
 					get_hft().bodyfat_deviation,
 					get_hft().shift_body_condition_for_starvation);
 
@@ -191,6 +191,8 @@ void HerbivoreBase::apply_mortality_factors_today(){
 		}
 
 		if (*itr == MF_STARVATION_THRESHOLD) {
+			// This function object can be static because it is in no way
+			// specific to this herbivore instance.
 			static const GetStarvationMortalityThreshold starv_thresh;
 			const double mortality = starv_thresh(get_bodyfat());
 			mortality_sum += mortality;
