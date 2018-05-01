@@ -54,7 +54,7 @@ Nitrogen uptake is calculated based on the C:N ratio of leaves.
 The maximum amount of nitrogen (\f$N_{bound}\f$, kgN/km²) bound in herbivores is comprised of the body tissue and the contents of the digestive tract.
 Any ingested nitrogen is added to the pool of herbivore-bound nitrogen, and the surplus is returned to the soil.
 ![](herbiv_nitrogen_cycle.svg "Nitrogen cycle in the herbivore model.")
-The amount of nitrogen bound in body tissue is approximated with 3% of live body weight (Robbins 1983\cite robbins_wildlife_1983); this ignores variation in fat and structural mass.
+The amount of nitrogen bound in body tissue is approximated with 3% of live body weight (Robbins 1983\cite robbins1983wildlife); this ignores variation in fat and structural mass.
 Upon death, this amount of nitrogen is also returned to the plant-available soil pool.
 
 The nitrogen of ingesta in stomach and intestines depends on the mean retention time (\f$MRT\f$, hours) and the day’s intake of nitrogen (\f$I_N\f$, kgN/ind/day).
@@ -62,7 +62,7 @@ $$
 N_{bound} = N_{guts} + N_{body} = I_N * MRT * P + 0.03 * M * P
 $$
 \f$P\f$ is the population density (ind/km²) and \f$M\f$ is the body mass (kg/ind).
-Mean retention time in hours is calculated according to Clauss et al. (2007)\cite clauss_case_2007, Fig. 2:
+Mean retention time in hours is calculated according to Clauss et al. (2007)\cite clauss2007case, Fig. 2:
 $$
 MRT = 32.8 * M^{0.07}
 $$
@@ -92,7 +92,7 @@ The rate of heat loss depends on the *thermal conductance* of the whole animal (
   \Phi = C * max(T_{crit} - T_{air}, 0)
 \f]
 
-![](herbiv_thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms (Peters 1983, Fig. 5.6\cite peters_ecological_1983).")
+![](herbiv_thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms (Peters 1983, Fig. 5.6\cite peters1983ecological).")
 
 \note In its current form, the model only considers costs when temperatures are too low.
 Overheating effects are not implemented since the model was developed with the focus on Arctic megafauna.
@@ -103,7 +103,7 @@ The critical parameter for thermoregulatory expenditure is the (whole-body) cond
 The conductance can be approximated from the average conductivity and the body surface.
 Conductivity is the inverse of insulation: it is the heat flow per temperature difference per area.
 
-Body surface in m² scales roughly as \f$0.09*M^{0.66}\f$ ([Hudson & White 1985](\cite hudson_bioenergetics_1985)).
+Body surface in m² scales roughly as \f$0.09*M^{0.66}\f$ ([Hudson & White 1985](\cite hudson1985bioenergetics)).
 
 
 Energy Content of Forage {#sec_herbiv_energycontent}

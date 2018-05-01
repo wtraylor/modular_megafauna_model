@@ -40,7 +40,7 @@ namespace Fauna{
 	/// Reproduction model following Illius & O’Connor (2000)
 	/**
 	 * The formula is derived from the model by 
-	 * Illius & O’Connor (2000) \cite illius_resource_2000.
+	 * Illius & O’Connor (2000) \cite illius2000resource.
 	 * Their variable names are used here:
 	 * \f[ 
 	 * B_{annual}[ind/year] 
@@ -69,8 +69,8 @@ namespace Fauna{
 	 *
 	 *
 	 * \note This reproduction model principle also used 
-	 * by Pachzelt et al. (2013) \cite pachzelt_coupling_2013 and 
-	 * Pachzelt et al. (2015) \cite pachzelt_potential_2015
+	 * by Pachzelt et al. (2013) \cite pachzelt2013coupling and 
+	 * Pachzelt et al. (2015) \cite pachzelt2015potential
 	 * \see \ref Fauna::ReproductionModel
 	 * \todo How does I&O determine the month?
 	 */

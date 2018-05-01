@@ -59,9 +59,9 @@ namespace Fauna {
 	 * energy a herbivore can get out of the forage.
 	 * 
 	 * Formula for ruminants given by Illius & Gordon (1992, p. 148)
-	 * \cite illius_modelling_1992
+	 * \cite illius1992modelling
 	 * citing ARC (1980)
-	 * \cite agricultural_research_council_nutrient_1980
+	 * \cite agricultural_research_council1980nutrient
 	 * \f[Net Energy [MJ/kgDM] =  ME * (0.503\frac{MJ}{kgDM} + 0.019 * ME) * e\f]
 	 * - ME = metabolizable energy of dry matter [MJ/kgDM]
 	 * - e = digestion efficiency factor; for ruminants always e=1.0
@@ -79,11 +79,11 @@ namespace Fauna {
 
 			/// Metabolizable energy coefficient of grass [MJ/kgDM]
 			/** 
-			 * Givens et al. (1989, p. 39)\cite givens_digestibility_1989 :
+			 * Givens et al. (1989, p. 39)\cite givens1989digestibility :
 			 *
 			 * > “In the absence of energetic data, it has been common
 			 * > to calculate ME from DOMD content. 
-			 * > MAFF et al. (1984) \cite maff_energy_1984
+			 * > MAFF et al. (1984) \cite maff1984energy
 			 * > stated that for a wide range of feedstuffs
 			 * > ME may be calculated as 0.015*DOMD. 
 			 * > This is based on the assumption that the GE of digested 
@@ -104,11 +104,11 @@ namespace Fauna {
 			/// Hindgut digestion factor
 			/**
 			 * - Johnson et al. (1982) give a value of 0.89
-			 *   \cite johnson_intake_1982
+			 *   \cite johnson1982intake
 			 * - Foose (1982) gives a value of 0.84
-			 *   \cite foose_trophic_1982
+			 *   \cite foose1982trophic
 			 * - The model by Illius & Gordon (1992) gives a value of 0.93
-			 *   \cite illius_modelling_1992
+			 *   \cite illius1992modelling
 			 *
 			 * Here, the last figure is used.
 			 */

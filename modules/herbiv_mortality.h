@@ -70,7 +70,7 @@ namespace Fauna{
 
 	/// Function object to calculate herbivore mortality after Illius & O’Connor (2000)
 	/**
-	 * After Illius & O'Connor (2000)\cite illius_resource_2000 :
+	 * After Illius & O'Connor (2000)\cite illius2000resource :
 	 * <BLOCKQUOTE>
 	 * “Mean body fat is assumed to be normally distributed with 
 	 * standard deviation σ (sigma). 
@@ -148,8 +148,8 @@ namespace Fauna{
 			 * mass in a herbivore cohort as fraction of potential
 			 * maximum fat mass.
 			 * The default standard deviation is 12.5\%, taken from
-			 * Illius & O’Connor (2000)\cite illius_resource_2000,
-			 * who are citing Ledger (1968)\cite ledger_body_1968.
+			 * Illius & O’Connor (2000)\cite illius2000resource,
+			 * who are citing Ledger (1968)\cite ledger1968body.
 			 * \param shift_body_condition Whether to shift body condition up to
 			 * compensate for dead herbivores (see class documentation).
 			 * \throw std::invalid_argument If `fat_standard_deviation`

@@ -102,15 +102,15 @@ namespace Fauna{
 			double max_fatmass;      // kg/ind
 			double max_fatmass_gain; // kg/ind/day
 
-			/// Metabolic coefficient for anabolism [MJ/kg] (Blaxter 1989)\cite blaxter_energy_1989
+			/// Metabolic coefficient for anabolism [MJ/kg] (Blaxter 1989)\cite blaxter1989energy
 			static const double FACTOR_ANABOLISM;
-			/// Metabolism coefficient for catabolism [MJ/kg] (Blaxter 1989)\cite blaxter_energy_1989
+			/// Metabolism coefficient for catabolism [MJ/kg] (Blaxter 1989)\cite blaxter1989energy
 			static const double FACTOR_CATABOLISM;
 	};
 
 	/// Energy expenditure [MJ/ind/day] based on cattle from Taylor et al. (1981)
 	/**
-	 * Taylor et al. (1981)\cite taylor_genetic_1981
+	 * Taylor et al. (1981)\cite taylor1981genetic
 	 * Daily energy expenditure is given by
 	 * \f[
 	 * E [\frac{MJ},{day*ind}] = 0.4 * M * M_{ad}^{-0.27}
@@ -133,9 +133,9 @@ namespace Fauna{
 	}
 
 	/// Get full body conductance [W/°C] after Bradley & Deavers (1980)
-	/// \cite bradley_reexamination_1980
+	/// \cite bradley1980reexamination
 	/**
-	 * The formula is taken from Peters (1983)\cite peters_ecological_1983,
+	 * The formula is taken from Peters (1983)\cite peters1983ecological,
 	 * which is based on data by Bradley & Deavers (1980).
 	 * \f[
 	 * C = 0.224 * M^{0.574}
@@ -163,23 +163,23 @@ namespace Fauna{
 
 	/// Extrapolate conductance from reindeer fur.
 	/**
-	 * Cuyler & Øritsland (2004)\cite cuyler_rain_2004 measured conductivity
+	 * Cuyler & Øritsland (2004)\cite cuyler2004rain measured conductivity
 	 * values of reindeer (Rangifer tarandus) pelts in calm air and dry 
 	 * conditions:
 	 * - 0.63 W/(°C*m²) in winter
 	 * - 2.16 W/(°C*m²) in summer
 	 *
 	 * We assume a body mass of 60 kg for an adult reindeer
-	 * (Soppela et al. 1986 \cite soppela_thermoregulation_1986).
+	 * (Soppela et al. 1986 \cite soppela1986thermoregulation).
 	 * Body surface is approximated by a formula from Hudson & White (1985)
-	 * \cite hudson_bioenergetics_1985 as \f$0.09*M^{0.66}\f$ (in m²).
+	 * \cite hudson1985bioenergetics as \f$0.09*M^{0.66}\f$ (in m²).
 	 *
 	 * The whole-body conductance in W/°C is then:
 	 * - for winter \f$0.63 * 0.09 * 60^{0.66} = 0.8\f$
 	 * - for summer \f$2.16 * 0.09 * 60^{0.66} = 2.9\f$
 	 *
-	 * Both Bradley & Deavers (1980)\cite bradley_reexamination_1980 and
-	 * Fristoe et al. (2014)\cite fristoe_metabolic_2015 suggest that the 
+	 * Both Bradley & Deavers (1980)\cite bradley1980reexamination and
+	 * Fristoe et al. (2014)\cite fristoe2015metabolic suggest that the 
 	 * allometric exponent for body mass for whole-body conductance among
 	 * mammals is about 0.57.
 	 * We derive an allometric function for the conductance 

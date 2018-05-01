@@ -41,7 +41,7 @@ namespace Fauna {
    * \warning This model works only with grass.
    *
    * This digestibility model mimics Pachzelt et al. (2013)
-   * \cite pachzelt_coupling_2013.
+   * \cite pachzelt2013coupling.
    * The average phenology over the last month 
    * (\ref Individual::get_average_phenology()) is interpreted as the
    * proportion of live (green) grass available; the rest is dead 
@@ -51,7 +51,7 @@ namespace Fauna {
    * \f$V_{Living}\f$ (kg/m²) in the habitat.
    *
    * Crude protein fraction of live grass is calculated with a formula
-   * from van Wijngaarden (1985) \cite vanwijngaarden_elephants_1985.
+   * from van Wijngaarden (1985) \cite vanwijngaarden1985elephants.
    * \f[
    * CPC =  0.208790 * V_{Living}^{-0.1697}
    * \f]
@@ -62,10 +62,10 @@ namespace Fauna {
    * d_{Living} = 0.4605 + 1.4152 * CPC
    * \f]
    * This formula is cited by 
-   * Prins (1996) \cite prins_ecology_1996 and
-   * Smallegange & Brunsting (2002) \cite smallegange_food_2002,
+   * Prins (1996) \cite prins1996ecology and
+   * Smallegange & Brunsting (2002) \cite smallegange2002food,
    * but originates from
-   * Bredon & Wilson (1963) \cite bredon_chemical_1963, who derived it
+   * Bredon & Wilson (1963) \cite bredon1963chemical, who derived it
    * from zebu cattle.
    *
    * The total digestibility is then calculated as live and dead grass

@@ -13,7 +13,7 @@ namespace Fauna{
 	/// Time of ingesta to pass digestion [hours].
 	/**
 	 * Mean retention time (MRT in hours) after 
-	 * Clauss et al. (2007) \cite clauss_case_2007, Fig. 2, animals 
+	 * Clauss et al. (2007) \cite clauss2007case, Fig. 2, animals 
 	 * heavier than 0.5 kg:
 	 * \f[
 	 * 		MRT = 32.8 * M^{0.07}
@@ -115,8 +115,8 @@ namespace Fauna{
 
 			/// Fraction of nitrogen in live weight herbivore mass [kgN/kg].
 			/**
-			 * Hobbs (2006, p. 292)\cite hobbs_large_2006 cites 
-			 * Robbins (1983)\cite robbins_wildlife_1983, estimating nitrogen content in the body of
+			 * Hobbs (2006, p. 292)\cite hobbs2006large cites 
+			 * Robbins (1983)\cite robbins1983wildlife, estimating nitrogen content in the body of
 			 * large mammalian herbivors as 2.5%–3.0%.
 			 * We choose 3.0% here.
 			 */

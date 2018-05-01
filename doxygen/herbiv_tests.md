@@ -84,7 +84,7 @@ suppress warning messages about missing parameters.
 
 An example instruction file is provided in 
 `data/ins/herbiv_testsim.ins`.
-It emulates the scenario of the metaphysiological model by Norman Owen-Smith \cite owensmith_metaphysiological_2002 during growing season.
+It emulates the scenario of the metaphysiological model by Norman Owen-Smith \cite owensmith2002metaphysiological during growing season.
 These are the relevant parameters:
 
 <!-- Alternatively to the snippet command, the dontinclude command could be used. -->

@@ -169,7 +169,7 @@ namespace Fauna{
 	 * The functional response of grazers (feeding rate depending on
 	 * grass biomass) is usually described as a “Type II” of the types
 	 * formulated by Crawford Stanley Holling (1959)
-	 * \cite holling_components_1959.
+	 * \cite holling1959components.
 	 *
 	 * Intake rate \f$I\f$ is expressed as a hyperbolically saturating
 	 * (‘Michalig-Menten’) function:
@@ -224,7 +224,7 @@ namespace Fauna{
 	/// Digestion-limited intake function after Illius & Gordon (1992)
 	/**
 	 * The model of digestive passage rates by Illius & Gordon 
-	 * (1992)\cite illius_modelling_1992 constrains maximum daily
+	 * (1992)\cite illius1992modelling constrains maximum daily
 	 * energy intake \f$I_{dig[MJ/day]}\f$ by gut size and retention 
 	 * time.
 	 *
@@ -236,11 +236,11 @@ namespace Fauna{
 	 * - \f$M_{ad}\f$: Adult body mass in kg
 	 * - \f$u_g = (M/M_{ad})^{0.75}\f$ is a scaling factor for
 	 *   gut capacity, introduced by Illius & Gordon (1999)
-	 *   \cite illius_scaling_1999
+	 *   \cite illius1999scaling
 	 * - %Parameters i, j, and k are derived from regression analysis 
 	 *   with 12 mammalian herbivores (0.05--547 kg) and are specific
 	 *   to hindguts and ruminants (Shipley et al. 1999)
-	 *   \cite shipley_predicting_1999.
+	 *   \cite shipley1999predicting.
 	 *
 	 * Grass forage:
 	 * |     | Hindgut | Ruminant |

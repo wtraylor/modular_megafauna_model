@@ -264,7 +264,7 @@ This brings some limitations:
 That demands a globally defined HFT list.
 3. The tables allow only `double` values, no strings.
 That means that for each “measured” output variable (e.g. `individual density`) *one* table needs be created; the “fixed” variable (in this case `HFT`) has its values in the column. 
-“Tidy data” output (*sensu* Wickham, 2014\cite wickham_tidy_2014), with variables in columns and observations in rows, is therefore not possible.
+“Tidy data” output (*sensu* Wickham, 2014\cite wickham2014tidy), with variables in columns and observations in rows, is therefore not possible.
 4. That means that combining multiple fixed variables (e.g. `ForageType` and `HFT`) leads to bulky column names (“grass_hft1”, “grass_hft2”, “browse_hft1”, etc.), which need to be separated in post-processing software.
 
 ### Output Classes {#sec_herbiv_outputclasses}

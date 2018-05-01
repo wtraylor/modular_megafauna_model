@@ -46,7 +46,7 @@ namespace Fauna{
 	/// Selector for a function of how to calculate whole-body conductance.
 	/** \see \ref sec_herbiv_thermoregulation */
 	enum ConductanceModel{
-		/// Allometric formula from data by Bradley & Deavers (1980)\cite bradley_reexamination_1980
+		/// Allometric formula from data by Bradley & Deavers (1980)\cite bradley1980reexamination
 		/** \see \ref get_conductance_bradley_deavers_1980() */
 		CM_BRADLEY_DEAVERS_1980,
 		/// Allometric formula extrapolating from reindeer fur conductivity.
@@ -111,14 +111,14 @@ namespace Fauna{
 
 		/// Foraging is limited by a functional response towards digestion limit.
 		/**
-		 * Illius & O’Connor (2000) \cite illius_resource_2000 describe daily 
+		 * Illius & O’Connor (2000) \cite illius2000resource describe daily 
 		 * food intake rate as a Holling Type II functional response 
 		 * (compare \ref HalfMaxIntake).
 		 * As the maximum daily energy intake they choose the digestive
 		 * capacity (compare \ref GetDigestiveLimitIlliusGordon1992).
 		 *
 		 * Like in the model of Pachzelt et al. (2013) 
-		 * \cite pachzelt_coupling_2013, the grass forage density of the 
+		 * \cite pachzelt2013coupling, the grass forage density of the 
 		 * whole patch (habitat) is used (not the sward density 
 		 *
 		 * \note This model for maximum foraging works only for pure grazers
@@ -232,7 +232,7 @@ namespace Fauna{
 			ConductanceModel conductance;
 
 			/// Body core temperature [°C].
-			/** Default is 38°C (Hudson & White, 1985\cite hudson_bioenergetics_1985) */
+			/** Default is 38°C (Hudson & White, 1985\cite hudson1985bioenergetics) */
 			double core_temperature;
 
 			/// Minimum individual density [ind/km²] for a living herbivore cohort.
