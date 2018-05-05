@@ -226,8 +226,6 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					mandatory_hft_params.push_back(MandatoryParam(
 								"gestation_months", req_str));
 					mandatory_hft_params.push_back(MandatoryParam(
-								"net_energy_model", req_str));
-					mandatory_hft_params.push_back(MandatoryParam(
 								"maturity_age_phys_female", req_str));
 					mandatory_hft_params.push_back(MandatoryParam(
 								"maturity_age_phys_male", req_str));
