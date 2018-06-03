@@ -904,7 +904,7 @@ void ParamReader::declare_parameters(
 				CB_FORAGING_LIMITS,
 				"Comma-separated list of constraints of herbivore forage intake. "
 				"Possible values: "
-				"\"allometric\", \"digestion_illius_1992\", \"illius_oconnor_2000\"");
+				"\"illius_oconnor_2000\"");
 
 		declareitem("gestation_months",
 				&current_hft.gestation_months,
