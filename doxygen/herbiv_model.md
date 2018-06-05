@@ -75,6 +75,7 @@ Energetics {#sec_herbiv_energetics}
 ### Thermoregulation by Conductance {#sec_herbiv_thermoregulation}
 
 This model of thermoregulation is often called the **Scholander-Irving model** and was published in two seminal papers in 1950: \cite scholander1950adaptation \cite scholander1950heat.
+The more detailed implementation is taken from Peters (1983)\cite peters1983ecological.
 
 Homeothermic animals have extra energy costs to maintain their body core temperature.
 Through basal metabolism and other ways of energy burning, heat is already passively created.
@@ -95,7 +96,7 @@ Conductance is the inverse of resistance or insulation, and conductivity is the 
   \Phi = C * max(T_{crit} - T_{air}, 0)
 \f]
 
-![](herbiv_thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms (Peters 1983, Fig. 5.6\cite peters1983ecological).")
+![](herbiv_thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms. – Peters 1983, Fig. 5.6")
 
 \note In its current form, the model only considers costs when temperatures are too low.
 Overheating effects are not implemented since the model was developed with the focus on Arctic megafauna.
