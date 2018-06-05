@@ -240,4 +240,6 @@ namespace Fauna{
 
 // Peters, Robert Henry (1983). The ecological implications of body size. 1st publ. Cambridge studies in ecology. - Cambridge : Univ. Press, 1982 2. Cambridge [u.a.]: Cambridge Univ.Pr. xii+329.
 
+// Taylor, C. S., H. G. Turner, and G. B. Young. 1981. “Genetic Control of Equilibrium Maintenance Efficiency in Cattle.” _Animal Science_ 33 (2): 179–94. http://journals.cambridge.org/article_S0003356100040617.
+
 // Soppela, Päivi, Mauri Nieminen, and Jouni Timisjärvi (June 1, 1986). “吀ermoregulation in reindeer”. In: Rangifer 6.2, pp. 273–278. doi: 10.7557/2.6.2.659.
