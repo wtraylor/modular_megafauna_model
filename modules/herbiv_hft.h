@@ -102,6 +102,9 @@ namespace Fauna{
 		EC_ALLOMETRIC,
 		/// Formula for field metabolic rate in cattle, see \ref get_expenditure_taylor_1981.
 		EC_TAYLOR_1981,
+		/// Formula for temperature-dependent field metabolic rate.
+		/** See \ref get_expenditure_zhu_et_al_2018() */
+		EC_ZHU_2018,
 		/// Increased expenditure in lower temperature, see \ref sec_herbiv_thermoregulation.
 		EC_THERMOREGULATION
 	};

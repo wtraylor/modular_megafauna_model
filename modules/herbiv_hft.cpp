@@ -219,6 +219,14 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 				"That means that there is no basal metabolism." << std::endl;
 		}
 
+		if (expenditure_components.count(EC_THERMOREGULATION) &&
+				expenditure_components.count(EC_ZHU_2018)){
+			stream << "Both \"thermoregulation\" and \"zhu_2018\" are chosen as "
+				"expenditure components, but the model of Zhu et al. (2018) has "
+				"thermoregulation already included." << std::endl;
+			is_valid = false;
+		}
+
 		if (expenditure_components.count(EC_ALLOMETRIC) &&
 				expenditure_allometry.coefficient < 0.0) {
 			stream << "Coefficient for allometric expenditure must not be "

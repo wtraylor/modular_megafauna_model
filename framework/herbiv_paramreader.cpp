@@ -468,6 +468,8 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				current_hft.expenditure_components.insert(EC_ALLOMETRIC);
 			else if (*itr == "THERMOREGULATION") 
 				current_hft.expenditure_components.insert(EC_THERMOREGULATION);
+			else if (*itr == "ZHU_2018") 
+				current_hft.expenditure_components.insert(EC_ZHU_2018);
 			// add new expenditure components here
 			else {
 				sendmessage("Error", std::string(
@@ -475,7 +477,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 							+*itr+"\". "
 							"Valid types: "
 							"\"allometric\", \"taylor_1981\", "
-							"\"thermoregulation\"").c_str()); // add more here
+							"\"thermoregulation\", \"zhu_2018\"").c_str()); // add more here
 				plibabort();
 			} 
 		}
@@ -882,7 +884,7 @@ void ParamReader::declare_parameters(
 				CB_EXPENDITURE_COMPONENTS,
 				"Comma-separated list of energy expenditure model for herbivores."
 				"Possible values: "
-				"\"taylor_1981\", \"allometric\", \"thermoregulation\""); 
+				"\"taylor_1981\", \"allometric\", \"thermoregulation\", \"zhu_2018\""); 
 
 		declareitem("digestive_limit_allometry",
 				double_pair,

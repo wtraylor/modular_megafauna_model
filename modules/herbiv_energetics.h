@@ -127,6 +127,33 @@ namespace Fauna{
 		return 0.4 * current_bodymass * pow(adult_bodymass,-0.27);
 	}
 
+	/// Daily expenditure by Zhu et al (2018) \cite zhu2018large.
+	/**
+	 * \f[
+	 * E = \frac{k_2}{e^{k_1*T}} * A^{0.75}
+	 * \f]
+	 * - \f$E\f$: Daily energy expenditure [MJ/ind/day].
+	 * - \f$A\f$: Body mass [kg/ind].
+	 * - \f$k_1 = 0.0079\f$: Constant, derived from regression analysis of 
+	 *   data from Anderson & Jetz (2005)\cite anderson2005broadscale.
+	 * - \f$k_2 = 0.36\f$: Constant, calibrated to yield a range close to the 
+	 *   values in Illius & O’Connor (2000)\cite illius2000resource.
+	 * \param bodymass Current body mass [kg/ind].
+	 * \param ambient_temperature Long-term mean air temperature [°C].
+	 * \return Daily energy expenditure per individual [MJ/ind/day].
+	 * \throw std::invalid_argument If `bodymass <= 0`.
+	 * \see Fauna::EC_ZHU_2018
+	 */
+	inline double get_expenditure_zhu_et_al_2018(const double bodymass,
+			const double ambient_temperature){
+		if (bodymass <= 0)
+			throw std::invalid_argument("Fauna::get_expenditure_zhu_et_al_2018() "
+					"Parameter `bodymass` is <=0.");
+		const double k1 = 0.0079;
+		const double k2 = 0.36;
+		return k2/(exp(k1*ambient_temperature)) * pow(bodymass, 0.75);
+	}
+
 	/// Convert Watts (=J/s) to MJ/day.
 	inline double watts_to_MJ_per_day(const double W){
 		return W * 24 * 3600 * 10e-6;
@@ -234,6 +261,8 @@ namespace Fauna{
 
 // References
 
+// Anderson, Kristina J., and Walter Jetz. 2005. “The Broad‐scale Ecology of Energy Expenditure of Endotherms.” _Ecology Letters_ 8 (3): 310–18. https://doi.org/10.1111/j.1461-0248.2005.00723.x.
+
 // S.Robert Bradley and Daniel R Deavers. A re-examination of the relationship between thermal conductance and body weight in mammals. Comparative Biochemistry and Physiology Part A: Physiology, 65(4):465–476, 1980.
 
 // Hudson, Robert J. and Robert G. White (1985). Bioenergetics of wild herbivores. CRC press.
@@ -243,3 +272,5 @@ namespace Fauna{
 // Taylor, C. S., H. G. Turner, and G. B. Young. 1981. “Genetic Control of Equilibrium Maintenance Efficiency in Cattle.” _Animal Science_ 33 (2): 179–94. http://journals.cambridge.org/article_S0003356100040617.
 
 // Soppela, Päivi, Mauri Nieminen, and Jouni Timisjärvi (June 1, 1986). “吀ermoregulation in reindeer”. In: Rangifer 6.2, pp. 273–278. doi: 10.7557/2.6.2.659.
+
+// Zhu, Dan, Philippe Ciais, Jinfeng Chang, Gerhard Krinner, Shushi Peng, Nicolas Viovy, Josep Peñuelas, and Sergey Zimov. 2018. “The Large Mean Body Size of Mammalian Herbivores Explains the Productivity Paradox During the Last Glacial Maximum.” _Nature Ecology & Evolution_. https://doi.org/10.1038/s41559-018-0481-y.

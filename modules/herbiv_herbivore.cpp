@@ -420,6 +420,11 @@ double HerbivoreBase::get_todays_expenditure()const{
 					get_bodymass(), 
 					get_bodymass_adult());
 		}
+		else if (*itr == EC_ZHU_2018) {
+			result += get_expenditure_zhu_et_al_2018(
+					get_bodymass(), 
+					get_environment().air_temperature);
+		}
 		else if (*itr == EC_THERMOREGULATION) {
 			add_thermoregulation = true;
 		}
