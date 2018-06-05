@@ -57,7 +57,7 @@ namespace Fauna{
 	 * - 50% of adults will breed when F/F_max=0.3
 	 * - 95% will breed when F/F_max=0.5
 	 *
-	 * \image html doxygen/herbiv_reproduction_illiusoconnor2000.png 
+	 * \image html herbiv_reproduction_illiusoconnor2000.png 
 	 *
 	 * The annual rate is then converted to a daily rate over the
 	 * breeding season length:
