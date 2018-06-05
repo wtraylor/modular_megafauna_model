@@ -140,7 +140,8 @@
 	package "Energy Expenditure" <<rectangle>>  {
     enum ExpenditureComponent{
       EC_ALLOMETRIC,
-      EC_TAYLOR_1981
+      EC_TAYLOR_1981,
+      EC_THERMOREGULATION
     } 
 	}
 	HerbivoreBase  ..> "*" "Energy Expenditure"
