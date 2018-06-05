@@ -72,12 +72,15 @@ $$
 Energetics {#sec_herbiv_energetics}
 -----------------------------------
 
-### Thermoregulation {#sec_herbiv_thermoregulation}
+### Thermoregulation by Conductance {#sec_herbiv_thermoregulation}
+
+This model of thermoregulation is often called the **Scholander-Irving model** and was published in two seminal papers in 1950: \cite scholander1950adaptation \cite scholander1950heat.
 
 Homeothermic animals have extra energy costs to maintain their body core temperature.
 Through basal metabolism and other ways of energy burning, heat is already passively created.
 Thermoregulatory costs arise when the ambient temperature drops below the *lower critical temperature*: the passive heat from thermoneutral metabolism is not counterbalance heat loss to the environment.
 The rate of heat loss depends on the *thermal conductance* of the whole animal (energy flow per temperature difference), which in turn depends on the *thermal conductivity* (energy flow per temperature difference and per thickness) of fur and skin and the body surface.
+Conductance is the inverse of resistance or insulation, and conductivity is the inverse of resistivity.
 
 - \f$T_{crit}\f$: Lower critical temperature [°C].
 - \f$T_{core}\f$: Body core temperature [°C].
