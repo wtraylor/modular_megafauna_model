@@ -161,6 +161,9 @@ namespace Fauna {
 			Parameters params;
 			bool completed;
 
+			/// Whether parameter `herbivore_type` has been parsed already.
+			bool herbivore_type_defined;
+
 			/** @{ \name Temporary storage for parameters. */
 
 			/// Holds two integer numbers.

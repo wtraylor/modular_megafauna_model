@@ -187,10 +187,20 @@ void ParamReader::callback(const int callback, Pft* ppft){
     // First check for `include` parameter
     if (!itemparsed("include")){
       sendmessage("Error", std::string(
-            "Parameter `include` s missing in HFT " 
+            "Parameter `include` is missing in HFT " 
             + current_hft.name + ".").c_str());
       plibabort();
     }
+
+		// We need to know which kind of herbivore we are parametrizing.
+		// (Note that itemparsed() doesn’t work here because of the local 
+		//  scope within the HFT parameters block.)
+		if (!herbivore_type_defined){
+			sendmessage("Error",
+					"Global parameter `herbivore_type` must be defined before "
+					"any HFTs can be parametrized.");
+			plibabort();
+		}
 
     if (current_hft.is_included) {
       // compile and check mandatory parameters
@@ -539,6 +549,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					"\"cohort\", \"individual\"");
 			plibabort();
 		}
+		herbivore_type_defined = true;
 	}
 
 	if (callback == CB_MORTALITY_FACTORS) {
@@ -713,6 +724,7 @@ void ParamReader::declare_parameters(
 				"Which kind of herbivore class to use."
 				"Possible values: "
 				"\"cohort\", \"individual\"");
+		herbivore_type_defined = false;
 
 		declareitem("hft",
 				BLOCK_HFT,
