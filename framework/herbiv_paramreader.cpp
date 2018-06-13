@@ -305,7 +305,8 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				current_hft.dead_herbivore_threshold = 
 					current_hft.get_max_dead_herbivore_threshold() * 0.9;
 				std::ostringstream msg_stream;
-				msg_stream << "Setting `dead_herbivore_threshold` to 0.9 of "
+				msg_stream << "(" <<current_hft.name << ")" 
+          << "Setting `dead_herbivore_threshold` to 0.9 of "
 					<< "maximum value: " << current_hft.dead_herbivore_threshold
 					<< " ind/km²";
 				sendmessage("Info", msg_stream.str().c_str());
