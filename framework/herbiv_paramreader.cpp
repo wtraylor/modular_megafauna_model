@@ -269,7 +269,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
                 "expenditure_allometry", req_str +
                 " and \"allometric\" is an expenditure component."));
         }
-        if (current_hft.expenditure_components.count(EC_ALLOMETRIC)) {
+        if (current_hft.expenditure_components.count(EC_THERMOREGULATION)) {
           mandatory_hft_params.push_back(MandatoryParam(
                 "conductance", req_str +
                 " and \"thermoregulation\" is an expenditure component."));
