@@ -60,7 +60,7 @@ HerbivoryOutput::HerbivoryOutput():
 	TBL_AVAILABLE_FORAGE(
 			"file_herbiv_available_forage",
 			"Available forage in the habitats.",
-			"kgDM/km²",
+			"kgDM/m²", // In kg/m² like cmass from LPJ-GUESS.
 			CS_FORAGE),
 	TBL_DIGESTIBILITY(
 			"file_herbiv_digestibility",
@@ -473,7 +473,7 @@ void HerbivoryOutput::write_datapoint(
 
 	// FORAGE TABLES
 	const ForageMass available_mass   = 
-		datapoint.habitat_data.available_forage.get_mass();
+		datapoint.habitat_data.available_forage.get_mass() * 1e-6; // kg/km²⇒kg/m²
 	const Digestibility digestibility = 
 		datapoint.habitat_data.available_forage.get_digestibility();
 	for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();

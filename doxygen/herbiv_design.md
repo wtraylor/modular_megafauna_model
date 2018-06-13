@@ -267,6 +267,9 @@ That means that for each “measured” output variable (e.g. `individual densit
 “Tidy data” output (*sensu* Wickham, 2014\cite wickham2014tidy), with variables in columns and observations in rows, is therefore not possible.
 4. That means that combining multiple fixed variables (e.g. `ForageType` and `HFT`) leads to bulky column names (“grass_hft1”, “grass_hft2”, “browse_hft1”, etc.), which need to be separated in post-processing software.
 
+\note The units of the output variables vary depending on the expected value range.
+Because LPJ-GUESS output is in fixed-width plaintext numbers, the values must not be too high (cutting the upper digits) nor too small (artefact zeros).
+
 ### Output Classes {#sec_herbiv_outputclasses}
 
 Output classes within the herbivory module are collected in the namespace \ref FaunaOut.
