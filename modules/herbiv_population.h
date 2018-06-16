@@ -89,6 +89,10 @@ namespace Fauna{
 
 		/** \copydoc get_list()const */
 		virtual HerbivoreVector get_list()=0; 
+
+		/// Delete all dead herbivores.
+		/** \see \ref HerbivoreInterface::is_dead() */
+		virtual void purge_of_dead()=0;
 	};
 
 	/// A population of \ref HerbivoreIndividual objects.
@@ -107,6 +111,7 @@ namespace Fauna{
 			}
 			virtual ConstHerbivoreVector get_list()const; 
 			virtual HerbivoreVector get_list(); 
+			virtual void purge_of_dead();
 		public:
 			/// Constructor
 			/**
@@ -148,6 +153,7 @@ namespace Fauna{
 			}
 			virtual ConstHerbivoreVector get_list()const; 
 			virtual HerbivoreVector get_list(); 
+			virtual void purge_of_dead();
 		public:
 			/// Constructor
 			/**
@@ -225,6 +231,14 @@ namespace Fauna{
 			 * Uses \ref Hft::operator==() for comparison.
 			 * \throw std::invalid_argument if `hft` not in the vector */
 			PopulationInterface& operator[](const Hft&);
+
+			/// Delete all dead herbivores.
+			/** Iterate over all populations and call 
+			 * \ref PopulationInterface::purge_of_dead(). */
+			virtual void purge_of_dead(){
+				for (iterator itr = begin(); itr != end(); itr++)
+					(*itr)->purge_of_dead();
+			}
 
 			//------------------------------------------------------------
 			/** @{ \name Wrapper around std::vector 

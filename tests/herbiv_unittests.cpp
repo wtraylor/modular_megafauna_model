@@ -112,7 +112,7 @@ namespace {
 			const Hft* hft;
 			std::vector<DummyHerbivore> vec;
 		public:
-			DummyPopulation(const Hft* hft):hft(hft){}
+			DummyPopulation(const Hft* hft):hft(hft),has_been_purged(false){}
 
 			/// creates one new herbivore object
 			virtual void create_offspring(const double ind_per_km2){
@@ -139,6 +139,9 @@ namespace {
 					res.push_back(&vec[i]);
 				return res;
 			}
+
+			void purge_of_dead(){ has_been_purged = true;}
+			bool has_been_purged;
 	};
 
 	/// Dummy class to test \ref HerbivoreBase
@@ -358,6 +361,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 
 			// Let them die ...
 			HerbivoreVector vec = pop.get_list();
+			const int old_count = vec.size();
 			// call birth constructor with zero density
 			HerbivoreCohort dead(&hft, SEX_FEMALE, 0.0);
 			for (HerbivoreVector::iterator itr=vec.begin();
@@ -368,7 +372,21 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 				REQUIRE( pcohort->get_ind_per_km2() == 0.0 );
 			}
 			// now they should be all dead
-			CHECK( population_lists_match(pop) );
+
+			// So far, the list shouldn’t have changed. It still includes the 
+			// dead cohorts.
+			CHECK( population_lists_match(pop) ); 
+			CHECK( old_count == pop.get_list().size() );
+
+			// Check that each cohort is really dead.
+			HerbivoreVector dead_vec = pop.get_list();
+			for (HerbivoreVector::const_iterator itr=vec.begin();
+					itr!=vec.end(); itr++) {
+				CHECK( (*itr)->is_dead() );
+			}
+
+			// Now delete all dead cohorts
+			pop.purge_of_dead();
 			CHECK( pop.get_list().size() == 0 );
 		}
 	}
@@ -2142,25 +2160,40 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 			dead.simulate_day(0, env, offspring_dump);
 			REQUIRE( dead.is_dead() );
 
-			// copy assign it to every ind. in the list
-			{
-				HerbivoreVector list = pop.get_list();
-				for (HerbivoreVector::iterator itr=list.begin();
-						itr!=list.end(); itr++) {
-					HerbivoreInterface* pint = *itr;
-					HerbivoreIndividual* pind = (HerbivoreIndividual*) pint;
-					pind->operator=(dead);
-					REQUIRE( pind->is_dead() );
-				}
+			SECTION("Kill only one individual"){
+				HerbivoreIndividual* pind = (HerbivoreIndividual*) *pop.get_list().begin();
+				pind->operator=(dead);
+				REQUIRE( pind->is_dead() );
+
+				// No change yet.
+				CHECK( pop.get_list().size() == ESTABLISH_COUNT );
+
+				// We purge and should have one object less.
+				pop.purge_of_dead();
+				CHECK( pop.get_list().size() == ESTABLISH_COUNT - 1 );
 			}
 
-			// now the list should be empty both the read-only and the
-			// writable
-			const IndividualPopulation& const_pop = pop;
-			ConstHerbivoreVector const_list = const_pop.get_list();
-			CHECK( const_list.size() == 0 );
-			HerbivoreVector list = pop.get_list();
-			CHECK( const_list.size() == 0 );
+			SECTION("Kill ALL individuals"){
+				// copy assign it to every ind. in the list
+				{
+					HerbivoreVector list = pop.get_list();
+					for (HerbivoreVector::iterator itr=list.begin();
+							itr!=list.end(); itr++) {
+						HerbivoreInterface* pint = *itr;
+						HerbivoreIndividual* pind = (HerbivoreIndividual*) pint;
+						pind->operator=(dead);
+						REQUIRE( pind->is_dead() );
+					}
+				}
+
+				// Now the list should contain only dead herbivores. Nothing was 
+				// deleted yet.
+				CHECK( pop.get_list().size() == ESTABLISH_COUNT );
+
+				// If we now delete the dead ones, we should have an empty list.
+				pop.purge_of_dead();
+				CHECK( pop.get_list().empty() );
+			}
 		}
 
 	}
@@ -2456,8 +2489,14 @@ TEST_CASE("Fauna::Simulator", "") {
 	const bool do_herbivores = true;
 	for (int d=0; d<365; d++){
 		sim.simulate_day(d,simunit, do_herbivores);
-		// NOTE: So far, only the day is checked!
+
+		// Check if day has been set correctly.
 		CHECK(((DummyHabitat&)simunit.get_habitat()).get_day_public() == d);
+
+		// Note: Various other things could be tested here.
+		// We keep this minimal because the simulate_day() function should be
+		// kept as slim as possible: it should only call well-capsulated other
+		// functions.
 	}
 }
 

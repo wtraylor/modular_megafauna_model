@@ -103,31 +103,37 @@ void IndividualPopulation::establish(){
 }
 
 std::vector<const HerbivoreInterface*> IndividualPopulation::get_list()const{
+	// We just copy the pointers from the individual list to the 
+	// HerbivoreInterface list.
 	std::vector<const HerbivoreInterface*> result;
 	result.reserve(list.size());
 	for (List::const_iterator itr=list.begin(); 
 			itr != list.end(); itr++) {
-		// only add alive individuals
-		if (!itr->is_dead())
-			result.push_back(&*itr);
+		result.push_back(&*itr);
 	}
 	return result;
 }
 
 std::vector<HerbivoreInterface*> IndividualPopulation::get_list(){
+	// We just copy the pointers from the individual list to the 
+	// HerbivoreInterface list.
 	std::vector<HerbivoreInterface*> result;
 	result.reserve(list.size());
-	List::iterator itr = list.begin();
-	while (itr!=list.end()){
-		if (!itr->is_dead()){
-			// herbivore is alive, add it to the list and proceed
-			result.push_back(&*itr);
-			itr++;
-		}
-		else
-			itr = list.erase(itr); // remove dead herbivore
+	for (List::iterator itr=list.begin(); 
+			itr != list.end(); itr++) {
+		result.push_back(&*itr);
 	}
 	return result;
+}
+
+void IndividualPopulation::purge_of_dead(){
+	List::iterator itr = list.begin();
+	while (itr != list.end()){
+		if (itr->is_dead())
+			itr = list.erase(itr); // Remove entry and increment iterator.
+		else
+			itr++;
+	}
 }
 
 //============================================================
@@ -208,6 +214,13 @@ void CohortPopulation::establish(){
 		2 * (get_hft().establishment_age_range.second
 		- get_hft().establishment_age_range.first + 1);
 
+	// Density of one cohort (ind/km²).
+	const double cohort_density = get_hft().establishment_density / cohort_count;
+
+	// Don’t create not viable cohorts.
+	if (cohort_density < get_hft().dead_herbivore_threshold)
+		return;
+
 	for (int age = get_hft().establishment_age_range.first;
 			age <= get_hft().establishment_age_range.second;
 			age++)
@@ -244,35 +257,37 @@ CohortPopulation::List::iterator CohortPopulation::find_cohort(
 }
 
 std::vector<const HerbivoreInterface*> CohortPopulation::get_list()const{
-	// Here we cannot change this object, but we need to create a new list
-	// without the dead cohorts.
+	// We just copy the pointers from the cohort list to the HerbivoreInterface
+	// list.
 	std::vector<const HerbivoreInterface*> result;
 	result.reserve(list.size());
 	for (List::const_iterator itr=list.begin(); 
 			itr != list.end(); itr++){
-		// only add alive cohorts
-		if (!itr->is_dead())
-			result.push_back(&*itr);
+		result.push_back(&*itr);
 	}
 	return result;
 }
 
 std::vector<HerbivoreInterface*> CohortPopulation::get_list(){
-	// Here we can change this object and directly erase dead cohorts from
-	// the list.
+	// We just copy the pointers from the cohort list to the HerbivoreInterface
+	// list.
 	std::vector<HerbivoreInterface*> result;
 	result.reserve(list.size());
-	List::iterator itr = list.begin();
-	while (itr != list.end()){
-		if (!itr->is_dead()){
-			// cohort is alive, add it to the list
+	for (List::iterator itr=list.begin(); 
+			itr != list.end(); itr++){
 			result.push_back(&*itr);
-			itr++;
-		}
-		else
-			itr = list.erase(itr); // remove dead cohort
 	}
 	return result;
+}
+
+void CohortPopulation::purge_of_dead(){
+	List::iterator itr = list.begin();
+	while (itr != list.end()){
+		if (itr->is_dead())
+			itr = list.erase(itr); // Remove entry and increment iterator.
+		else
+			itr++;
+	}
 }
 
 //============================================================

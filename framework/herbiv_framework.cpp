@@ -142,9 +142,6 @@ void Simulator::simulate_day(const int day_of_year,
 	// all populations in the habitat (one for each HFT)
 	HftPopulationsMap& populations = simulation_unit.get_populations();
 
-	// Total nitrogen excreted by herbivores today [kgN/km²].
-	double excreted_nitrogen = 0.0;
-
 	// pass the current date into the herbivore module
 	habitat.init_day(day_of_year);
 
@@ -189,6 +186,9 @@ void Simulator::simulate_day(const int day_of_year,
 			TodaysHftOutput;
 		TodaysHftOutput hft_output;
 
+		// Total nitrogen excreted by herbivores today [kgN/km²].
+		double excreted_nitrogen = 0.0;
+
 		{ // Custom variable scope: to make clear that the
 			// pointers to the herbivores in the variable `herbivores`
 			// are only valid within this scope.
@@ -204,6 +204,14 @@ void Simulator::simulate_day(const int day_of_year,
 					itr_h != herbivores.end(); itr_h++) 
 			{
 				HerbivoreInterface& herbivore = **itr_h;
+
+				// If this herbivore is dead, just take all of its nitrogen and
+				// skip it. The Population object will take care of releasing its
+				// memory.
+				if (herbivore.is_dead()){
+					excreted_nitrogen += herbivore.take_nitrogen_excreta();
+					continue;
+				} 
 
 				// ---------------------------------------------------------
 				// HERBIVORE SIMULATION
@@ -297,6 +305,10 @@ void Simulator::simulate_day(const int day_of_year,
 			if (offspring > 0.0)
 				populations[*hft].create_offspring(offspring);
 		}
+
+		// ---------------------------------------------------------
+		// REMOVE DEAD HERBIVORES
+		populations.purge_of_dead();
 
 		// ---------------------------------------------------------
 		// NITROGEN CYCLE
