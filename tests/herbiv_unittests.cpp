@@ -196,16 +196,6 @@ namespace {
 		return hftlist;
 	}
 
-	/// Sum of population individual density [ind/km²]
-	double get_total_pop_density(const PopulationInterface& pop){
-		double sum;
-		ConstHerbivoreVector vec = pop.get_list();
-		for (ConstHerbivoreVector::const_iterator itr = vec.begin();
-				itr != vec.end(); itr++)
-			sum += (*itr)->get_ind_per_km2();
-		return sum;
-	}
-
 	/// \brief Check if the lengths of the modifiable and the 
 	/// read-only population vectors match.
 	bool population_lists_match(PopulationInterface& pop){
@@ -345,8 +335,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 			REQUIRE( pop.get_list().size() == 2 ); 
 
 			// Does the total density match?
-			REQUIRE( get_total_pop_density(pop) 
-					== Approx(hft.establishment_density) );
+			REQUIRE( pop.get_ind_per_km2() == Approx(hft.establishment_density) );
 		}
 
 		SECTION("Establish several age classes"){
@@ -360,8 +349,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 			REQUIRE( pop.get_list().size() == 4 * 2 ); 
 
 			// Does the total density match?
-			REQUIRE( get_total_pop_density(pop) 
-					== Approx(hft.establishment_density) );
+			REQUIRE( pop.get_ind_per_km2() == Approx(hft.establishment_density) );
 		}
 
 		SECTION("Removal of dead cohorts with mortality"){
@@ -395,7 +383,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		REQUIRE( pop.get_list().size() == 2 ); 
 		CHECK( population_lists_match(pop) );
 		// Does the total density match?
-		REQUIRE( get_total_pop_density(pop) == Approx(DENS) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(DENS) );
 
 		// simulate one day
 		HerbivoreVector list = pop.get_list();
@@ -411,7 +399,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		// This must be in the same age class even though we advanced one day.
 		REQUIRE( pop.get_list().size() == 2 ); 
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == Approx(2.0*DENS) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(2.0*DENS) );
 
 		// let the herbivores age (they are immortal)
 		for (int i=1; i<365; i++) {
@@ -427,7 +415,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		pop.create_offspring(DENS);
 		CHECK( pop.get_list().size() == 4 );
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == Approx(3.0*DENS) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(3.0*DENS) );
 	}
 
 	SECTION("Offspring of too low density"){
@@ -451,7 +439,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		CHECK( population_lists_match(pop) );
 
 		// Does the total density match?
-		REQUIRE( get_total_pop_density(pop) == Approx(2.0 * DENS) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(2.0 * DENS) );
 	}
 
 	SECTION("Offspring of too low density on existing cohort"){
@@ -466,7 +454,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		// A newborn age class should be created for male/female.
 		REQUIRE( pop.get_list().size() == 2 ); 
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == Approx(DENS) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(DENS) );
 
 		// Now we add some marginal number
 		const double LOW_DENS = 1.5 * THRESHOLD;
@@ -476,7 +464,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		// The new offspring should have been added to existing cohort.
 		REQUIRE( pop.get_list().size() == 2 ); 
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == Approx(DENS + LOW_DENS) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(DENS + LOW_DENS) );
 	}
 
 	SECTION("Removal of dead cohorts at establishment"){
@@ -2138,8 +2126,7 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 		// Do we have the exact number of individuals?
 		CHECK( pop.get_list().size() == ESTABLISH_COUNT ); 
 		// Does the total density match?
-		CHECK( get_total_pop_density(pop) 
-				== Approx(hft.establishment_density) );
+		CHECK( pop.get_ind_per_km2() == Approx(hft.establishment_density) );
 
 		SECTION("Removal of dead individuals"){
 			// kill all herbivores in the list with a copy assignment
@@ -2189,13 +2176,13 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 		pop.create_offspring(IND_DENS);
 		REQUIRE( pop.get_list().size() == IND_COUNT );
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == Approx(IND_DENS) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(IND_DENS) );
 
 		// add more offspring
 		pop.create_offspring(IND_DENS);
 		REQUIRE( pop.get_list().size() == 2*IND_COUNT );
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == Approx(2.0*IND_DENS) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(2.0*IND_DENS) );
 	}
 
 	SECTION("Incomplete offspring"){
@@ -2206,13 +2193,13 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 		pop.create_offspring(.4 / AREA); // .4 individuals
 		REQUIRE( pop.get_list().size() == 0 );
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == Approx(0.0) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(0.0) );
 
 		// Try it again, but it should still not work.
 		pop.create_offspring(.4 / AREA); // .8 individuals
 		REQUIRE( pop.get_list().size() == 0 );
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == Approx(0.0) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(0.0) );
 
 		// Now we should get above a sum of 1.0, BUT males and females are
 		// created in parallel, so they shouldn’t be created until total
@@ -2220,13 +2207,13 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 		pop.create_offspring(.4 / AREA); // 1.2 individuals
 		REQUIRE( pop.get_list().size() == 0 );
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == Approx(0.0) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(0.0) );
 
 		// Finally, we have 2 individuals complete.
 		pop.create_offspring(.9 / AREA); // 2.1 individuals
 		REQUIRE( pop.get_list().size() == 2 );
 		CHECK( population_lists_match(pop) );
-		REQUIRE( get_total_pop_density(pop) == Approx(2.0/AREA) );
+		REQUIRE( pop.get_ind_per_km2() == Approx(2.0/AREA) );
 
 	}
 
