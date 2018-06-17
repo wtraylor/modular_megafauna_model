@@ -8,15 +8,15 @@
 
 #include "config.h"
 #include "herbiv_framework.h"
-#include "herbiv_digestibility.h" // for GetDigestibility
-#include "herbiv_environment.h"   // for HabitatEnvironment
-#include "herbiv_habitat.h"       // for Habitat and Population
-#include "herbiv_herbivore.h"     // for HerbivoreInterface
-#include "herbiv_hft.h"           // for Hft and HftList
-#include "herbiv_parameters.h"    // for Fauna::Parameters
-#include "herbiv_population.h"    // for HftPopulationsMap and PopulationInterface
-#include "herbiv_snowdepth.h"     // for GetSnowDepth implementations
-#include <stdexcept>              // for std::logic_error, std::invalid_argument
+#include "herbiv_digestibility.h"   // for GetDigestibility
+#include "herbiv_herbivore.h"       // for HerbivoreInterface
+#include "herbiv_hft.h"             // for Hft and HftList
+#include "herbiv_parameters.h"      // for Fauna::Parameters
+#include "herbiv_population.h"      // for HftPopulationsMap and PopulationInterface
+#include "herbiv_simulate_day.h"    // for SimulateDay
+#include "herbiv_simulation_unit.h" // for SimulationUnit
+#include "herbiv_snowdepth.h"       // for GetSnowDepth implementations
+#include <stdexcept>                // for std::logic_error, std::invalid_argument
 
 using namespace Fauna;
 
@@ -128,360 +128,29 @@ void Simulator::simulate_day(const int day_of_year,
 		const bool do_herbivores){
 	if (day_of_year < 0 || day_of_year >= 365)
 		throw std::invalid_argument("Simulator::simulate_day(): "
-				"argument day_of_year out of range");
+				"Argument 'day_of_year' out of range");
 
-	// Habitat and herbivore output for this day.
-	FaunaOut::CombinedData todays_datapoint;
+	// If there was no initial establishment yet, we may do this now.
+	bool establish_if_needed = !simulation_unit.is_initial_establishment_done();
 
-	// The habitat to simulate.
-	Habitat& habitat = simulation_unit.get_habitat();
-
-	// The current abiotic conditions.
-	const HabitatEnvironment environment = habitat.get_environment();
-
-	// all populations in the habitat (one for each HFT)
-	HftPopulationsMap& populations = simulation_unit.get_populations();
-
-	// pass the current date into the herbivore module
-	habitat.init_day(day_of_year);
+	// If one check interval has passed, we will check if HFTs have died out
+	// and need to be re-established.
+	// Note that re-establishment is only activated if the interval length is 
+	// a positive number.
+	if (days_since_last_establishment == params.herbivore_establish_interval &&
+		 params.herbivore_establish_interval > 0)
+	{
+		establish_if_needed = true;
+		days_since_last_establishment = 0;
+	}
 
 	// Keep track of the establishment cycle.
 	days_since_last_establishment++;
 
-	if (do_herbivores && hftlist.size()>0) {
+	// Create function object to delegate all simulations for this day to.
+	SimulateDay simulate_day(day_of_year, simulation_unit, feed_herbivores);
 
-		// ---------------------------------------------------------
-		// ESTABLISHMENT
-		// If we have to do initial establishment or if we have reached the end
-		// of an ‘establishment interval’. Note that re-establishment is only
-		// activated if the interval length is positive.
-		if (!simulation_unit.is_initial_establishment_done() ||
-				(days_since_last_establishment > params.herbivore_establish_interval &&
-				 params.herbivore_establish_interval > 0))
-		{
-			// iterate through HFT populations
-			for (HftPopulationsMap::iterator itr_p = populations.begin();
-					itr_p != populations.end(); itr_p++)
-			{
-				PopulationInterface& pop = **itr_p; // one population
-				const Hft& hft = pop.get_hft();
-
-				// Let the population handle the establishment
-				if (pop.get_list().empty())
-					pop.establish();
-			}
-			days_since_last_establishment = 0;
-			simulation_unit.set_initial_establishment_done();
-		}
-
-		// ---------------------------------------------------------
-		// PREPARE VARIABLES FOR SIMULATION
-
-		// All offspring for each HFT today [ind/km²]
-		std::map<const Hft*, double> total_offspring;
-
-		// Output data of all herbivores for today in this habitat.
-		// We define a local data type to save some typing.
-		typedef std::map<const Hft*, std::vector<FaunaOut::HerbivoreData> >
-			TodaysHftOutput;
-		TodaysHftOutput hft_output;
-
-		// Total nitrogen excreted by herbivores today [kgN/km²].
-		double excreted_nitrogen = 0.0;
-
-		{ // Custom variable scope: to make clear that the
-			// pointers to the herbivores in the variable `herbivores`
-			// are only valid within this scope.
-			// As soon as the populations change (new offspring, 
-			// delete dead ones,...), the herbivore pointers may become
-			// invalid.
-
-			// All herbivores in the habitat
-			HerbivoreVector herbivores = populations.get_all_herbivores();
-
-			// loop through all herbivores: simulate and get forage demands
-			for (HerbivoreVector::iterator itr_h=herbivores.begin();
-					itr_h != herbivores.end(); itr_h++) 
-			{
-				HerbivoreInterface& herbivore = **itr_h;
-
-				// If this herbivore is dead, just take all of its nitrogen and
-				// skip it. The Population object will take care of releasing its
-				// memory.
-				if (herbivore.is_dead()){
-					excreted_nitrogen += herbivore.take_nitrogen_excreta();
-					continue;
-				} 
-
-				// ---------------------------------------------------------
-				// HERBIVORE SIMULATION
-
-				// Offspring by this one herbivore today 
-				// [ind/km²]
-				double offspring = 0.0;
-
-				// Let the herbivores do their simulation.
-				herbivore.simulate_day(day_of_year, environment, offspring);
-
-				// Gather the offspring.
-				total_offspring[&herbivore.get_hft()] += offspring;
-
-				// Gather nitrogen excreta.
-				excreted_nitrogen += herbivore.take_nitrogen_excreta();
-			}
-
-			// ---------------------------------------------------------
-			// FORAGING
-
-			// available forage in the habitat [kgDM/km²]
-			HabitatForage available_forage = habitat.get_available_forage();
-
-			// Set any marginally small values to zero in order to avoid errors
-			// caused by rounding inaccuracy.
-			static const double NEGLIGIBLE_FORAGE_MASS = 10000; // [kgDM/km²] ٍ= 10 g/m²
-			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-					ft != FORAGE_TYPES.end();
-					ft++)
-				if (available_forage[*ft].get_mass() <= NEGLIGIBLE_FORAGE_MASS) {
-					available_forage[*ft].set_nitrogen_mass(0.0);
-					available_forage[*ft].set_mass(0.0);
-				}
-			
-			// Remember forage mass before feeding.
-			const ForageMass old_forage = available_forage.get_mass();
-
-			// call function object
-			feed_herbivores(
-					available_forage,
-					herbivores);
-
-			// remove the eaten forage
-			habitat.remove_eaten_forage(
-					old_forage - available_forage.get_mass()); 
-
-			// ---------------------------------------------------------
-			// GATHER OUTPUT
-
-			// loop through all herbivores: gather output
-			for (HerbivoreVector::iterator itr_h=herbivores.begin();
-					itr_h != herbivores.end(); itr_h++) 
-			{
-				HerbivoreInterface& herbivore = **itr_h;
-
-				// Add the output of this herbivore to the vector of output
-				// data for this HFT.
-				hft_output[&herbivore.get_hft()].push_back(
-						herbivore.get_todays_output());
-			} 
-
-		} // end of custom scope
-
-		// ---------------------------------------------------------
-		// MERGE HERBIVORE OUTPUT
-		// Aggregate output of herbivores for one habitat.
-		for (TodaysHftOutput::const_iterator itr = hft_output.begin();
-				itr != hft_output.end();
-				itr++)
-		{
-			const Hft& hft = *itr->first;
-
-			// Create a datapoint for each HFT that can then be merged
-			// across habitats and time.
-			todays_datapoint.hft_data[&hft] = 
-				FaunaOut::HerbivoreData::create_datapoint( itr->second );
-		}
-
-		// ---------------------------------------------------------
-		// REPRODUCTION
-		// For each HFT, let the PopulationInterface object create herbivores.
-		// These new herbivores will be counted in the output next simulation 
-		// cycle.
-		for (std::map<const Hft*, double>::iterator itr = total_offspring.begin();
-				itr != total_offspring.end(); 
-				itr++)
-		{
-			const Hft* hft = itr->first;
-			const double offspring = itr->second;
-			if (offspring > 0.0)
-				populations[*hft].create_offspring(offspring);
-		}
-
-		// ---------------------------------------------------------
-		// REMOVE DEAD HERBIVORES
-		populations.purge_of_dead();
-
-		// ---------------------------------------------------------
-		// NITROGEN CYCLE
-		habitat.add_excreted_nitrogen(excreted_nitrogen);
-	}
-
-	// ---------------------------------------------------------
-	// ADD HABITAT OUTPUT
-	// Add the habitat data to the output even if no herbivores are 
-	// simulated.
-	todays_datapoint.habitat_data =
-		((const Habitat&) habitat).get_todays_output();
-	// The output data container is now one complete datapoint.
-	todays_datapoint.datapoint_count = 1;
-	// Merge today’s output into temporal aggregation of the simulation
-	// unit.
-	simulation_unit.get_output().merge(todays_datapoint);
+	// Call the function object.
+	simulate_day(do_herbivores && hftlist.size()>0, establish_if_needed);
 }
 
-//============================================================
-// SimulationUnit
-//============================================================
-
-SimulationUnit::SimulationUnit( std::auto_ptr<Habitat> _habitat,
-		std::auto_ptr<HftPopulationsMap> _populations):
-	// move ownership to private auto_ptr objects
-	habitat(_habitat),
-	populations(_populations),
-	initial_establishment_done(false)
-{
-	if (habitat.get() == NULL)
-		throw std::invalid_argument("Fauna::SimulationUnit::SimulationUnit() "
-				"Pointer to habitat is NULL.");
-	if (populations.get() == NULL)
-		throw std::invalid_argument("Fauna::SimulationUnit::SimulationUnit() "
-				"Pointer to populations is NULL.");
-}
-
-//============================================================
-// DistributeForageEqually
-//============================================================
-
-void DistributeForageEqually::operator()(
-		const HabitatForage& available,
-		ForageDistribution& forage_distribution) const {
-	if (forage_distribution.empty()) return;
-
-	// BUILD SUM OF ALL DEMANDED FORAGE
-	ForageMass demand_sum;
-	// iterate through all herbivores
-	for (ForageDistribution::iterator itr = forage_distribution.begin();
-			itr != forage_distribution.end(); itr++) {
-		demand_sum += itr->second;
-	}
-
-	// Only distribute a little less than `available` in order
-	// to mitigate precision errors.
-	const ForageMass avail_mass = available.get_mass() * 0.999;
-
-	// If there is not more demanded than is available, nothing
-	// needs to be distributed.
-	if (demand_sum <= avail_mass)
-		return;
-
-	// MAKE EQUAL PORTIONS
-	// iterate through all herbivores
-	for (ForageDistribution::iterator itr = forage_distribution.begin();
-			itr != forage_distribution.end(); itr++) {
-		assert(itr->first != NULL);
-		const HerbivoreInterface& herbivore = *(itr->first);
-		const ForageMass& demand = itr->second; // input
-		ForageMass&      portion = itr->second; // output
-
-		// calculate the right portion for each forage type
-		for (ForageMass::const_iterator itr_ft = demand.begin();
-				itr_ft != demand.end(); itr_ft++){
-			const ForageType ft = itr_ft->first;
-
-			if (demand_sum[ft] != 0.0)
-				portion.set(ft,  avail_mass[ft] * 
-						demand[ft] / demand_sum[ft]);
-		}
-	}
-}
-
-//============================================================
-// FeedHerbivores
-//============================================================
-
-FeedHerbivores::FeedHerbivores(std::auto_ptr<DistributeForage> _distribute_forage):
-	distribute_forage(_distribute_forage)
-{
-	if (distribute_forage.get() == NULL)
-		throw std::invalid_argument("Fauna::FeedHerbivores::FeedHerbivores() "
-				"Parameter `distribute_forage` is NULL.");
-}
-
-void FeedHerbivores::operator()(
-		HabitatForage& available,
-		const HerbivoreVector& herbivores) const{
-
-
-	// loop as many times as there are forage types
-	// to allow prey switching: 
-	// If one forage type gets “empty” in the first loop, the
-	// herbivores can then demand from another forage type, and so
-	// on until it’s all empty or they are all satisfied or cannot
-	// switch to another forage type.
-	for (int i=0; i<FORAGE_TYPES.size(); i++){
-
-		// If there is no forage available (anymore), abort!
-		if (available.get_mass() <= 1000) // kg/km² = 1 gDM/m²
-			break;
-
-		//------------------------------------------------------------
-		// GET FORAGE DEMANDS
-		ForageDistribution forage_demand;
-		for (HerbivoreVector::const_iterator itr=herbivores.begin();
-				itr != herbivores.end(); itr++){
-			HerbivoreInterface& herbivore = **itr;
-
-			// calculate forage demand for this herbivore
-			const ForageMass ind_demand = herbivore.get_forage_demands(available);
-
-			// only add those herbivores that do want to eat
-			if (!(ind_demand == 0.0))
-				forage_demand[&herbivore] = ind_demand;
-		}
-
-		// abort if all herbivores are satisfied
-		if (forage_demand.empty())
-			break;
-
-		// get the forage distribution
-		assert(distribute_forage.get() != NULL);
-		(*distribute_forage)( available, forage_demand);
-
-		// rename variable to make clear it’s not the demands anymore
-		// but the portions to feed the herbivores
-		ForageDistribution& forage_portions = forage_demand;
-
-		//------------------------------------------------------------
-		// LET THE HERBIVORES EAT
-
-		const Digestibility digestibility     = available.get_digestibility();
-		const ForageFraction nitrogen_content = available.get_nitrogen_content();
-
-		// Loop through all portions and feed it to the respective
-		// herbivore
-		for (ForageDistribution::iterator iter=forage_portions.begin();
-				iter != forage_portions.end(); iter++)
-		{
-			const ForageMass& portion = iter->second; // [kgDM/km²]
-			HerbivoreInterface& herbivore = *(iter->first);
-
-			const ForageMass& nitrogen = portion * nitrogen_content;
-
-			if (herbivore.get_ind_per_km2() > 0.0) {
-				assert( portion <= herbivore.get_forage_demands(available) );
-
-				// feed this herbivore
-				herbivore.eat(portion, digestibility, nitrogen);
-
-				// reduce the available forage
-				for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-						ft != FORAGE_TYPES.end(); ft++)
-				{
-					available[*ft].set_nitrogen_mass(
-							available[*ft].get_nitrogen_mass() - nitrogen[*ft] );
-					available[*ft].set_mass(
-							available[*ft].get_mass() - portion[*ft] );
-				}
-			}
-		}
-	}
-}

@@ -8,15 +8,15 @@
 
 #include "config.h"
 #include "herbiv_outputmodule.h"
-#include "guess.h"                // for Date and Gridcell
-#include "herbiv_framework.h"     // for SimulationUnit
-#include "herbiv_hft.h"           // for HftList
-#include "herbiv_outputclasses.h" // for HabitatData and HerbivoreData
-#include "herbiv_patchhabitat.h"  // for Patch::get_habitat()
-#include "herbiv_population.h"    // for HerbivoreVector
-#include <algorithm>              // for std::max
-#include <cassert>                // for assert()
-#include <cmath>                  // for NAN
+#include "guess.h"                  // for Date and Gridcell
+#include "herbiv_simulation_unit.h" // for SimulationUnit
+#include "herbiv_hft.h"             // for HftList
+#include "herbiv_outputclasses.h"   // for HabitatData and HerbivoreData
+#include "herbiv_patchhabitat.h"    // for Patch::get_habitat()
+#include "herbiv_population.h"      // for HerbivoreVector
+#include <algorithm>                // for std::max
+#include <cassert>                  // for assert()
+#include <cmath>                    // for NAN
 #ifndef NO_GUESS_PARAMETERS
 #include "parameters.h"     // for declare_parameter()
 #endif // NO_GUESS_PARAMETERS

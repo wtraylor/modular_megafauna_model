@@ -22,6 +22,7 @@
 #include "herbiv_paramreader.h"
 #include "herbiv_population.h"
 #include "herbiv_reproduction.h"
+#include "herbiv_simulation_unit.h"
 #include "herbiv_testhabitat.h" 
 #include "herbiv_utils.h"
 #include <memory> // for std::auto_ptr
@@ -2494,9 +2495,9 @@ TEST_CASE("Fauna::Simulator", "") {
 		CHECK(((DummyHabitat&)simunit.get_habitat()).get_day_public() == d);
 
 		// Note: Various other things could be tested here.
-		// We keep this minimal because the simulate_day() function should be
-		// kept as slim as possible: it should only call well-capsulated other
-		// functions.
+		// But they are becoming more difficult to formulate as unit tests
+		// because Simulator::simulate_day() and SimulateDay are on a high
+		// level in the program hierarchy.
 	}
 }
 
