@@ -56,6 +56,8 @@ namespace Fauna{
 			/// Calculate current forage demands.
 			/**
 			 * Call this only after \ref init_today().
+			 * \return Forage [kgDM/ind/day] demanded by the herbivore today.
+			 * This will not exceed the available forage in the patch.
 			 * \throw std::logic_error If \ref init_today() hasn’t been called
 			 * yet.
 			 * \throw std::invalid_argument If `energy_needs < 0.0`.
@@ -98,6 +100,10 @@ namespace Fauna{
 			 * The fractions refer to energy, not mass.
 			 * The composition is *set*, i.e. that the demanded forage will 
 			 * be put together accordingly.
+			 * In case of forage shortage in the habitat,
+			 * there is the chance to switch to other forage types when the 
+			 * demands are queried again in the same day.
+			 * (⇒ see Fauna::DistributeForage).
 			 * \return Energy fractions of forage types composing current diet;
 			 * the sum is 1.0.
 			 * \throw std::logic_error If the \ref Hft::diet_composer is not
@@ -292,6 +298,7 @@ namespace Fauna{
 	 * \return The maximum intake for each forage type [kgDM/day] while
 	 * retaining the given relative energy proportions.
 	 * \throw std::invalid_argument If `kg_total < 0.0`.
+	 * \throw std::invalid_argument If `mj_proportions.sum() != 1.0`.
 	 * \see \ref DL_ALLOMETRIC
 	 */
 	ForageMass get_max_intake_as_total_mass(

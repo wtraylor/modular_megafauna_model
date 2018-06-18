@@ -24,6 +24,9 @@ ForageMass Fauna::get_max_intake_as_total_mass(
 				"Parameter `kg_total` is negative.");
 	if (kg_total == 0.0)
 		return ForageMass(0.0);
+	if (mj_proportions.sum() < 0.999 && mj_proportions.sum() > 1.001)
+		throw std::invalid_argument( "Fauna::get_max_intake_as_total_mass() "
+				"Values in `mj_proportions` don’t sum up to 100%");
 
 	// The energy-wise proportions of the diet are given by 
 	// `mj_proportions`. Now we need to obtain the mass-wise 
@@ -33,7 +36,8 @@ ForageMass Fauna::get_max_intake_as_total_mass(
 
 	// Multiply the maximum foraging with the mass-wise proportions.
 	// To get the maximum intake for each individual forage type.
-	return kg_total * (mass_proportions / mass_proportions.sum());
+	return kg_total * 
+		(mass_proportions.divide_safely(mass_proportions.sum(), 0.0));
 }
 
 //============================================================
