@@ -72,7 +72,11 @@ ForageFraction GetForageDemands::get_diet_composition()const
 	}
 
 	// Check the result, but leave some rounding error tolerance.
-	assert(result.sum() >= 0.999 && result.sum() <= 1.001); 
+	if (result.sum() < 0.999 && result.sum() > 1.001)
+		throw std::logic_error(
+				"Fauna::GetForageDemands::get_diet_composition() "
+				"The sum of the diet fractions is not 1.0. This is an "
+				"implementation fault.");
 	return result;
 }
 
