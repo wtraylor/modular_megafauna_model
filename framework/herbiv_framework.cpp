@@ -422,7 +422,7 @@ void FeedHerbivores::operator()(
 			const ForageMass ind_demand = herbivore.get_forage_demands(available);
 
 			// only add those herbivores that do want to eat
-			if (ind_demand != 0.0) 
+			if (!(ind_demand == 0.0))
 				forage_demand[&herbivore] = ind_demand;
 		}
 

@@ -64,6 +64,24 @@ namespace Fauna{
 	/**
 	 * The forage type \ref FT_INEDIBLE is excluded from all operations.
 	 * \tparam tag Defines the allowed data range.
+	 *
+	 * \note Operators that take a number as argument will interpret that as
+	 * a ForageValues object where all forage type values are that number. 
+	 *
+	 * \warning It is important to understand and use the binary comparison
+	 * operators correctly. Be `F1` and `F2` ForageValues objects.
+	 * `F1>F2` then means that *each* value in `F1` (one for each forage type)
+	 * is greater than the corresponding value in `F2`.
+	 * In the same way, `F1==F2` means that all corresponding values are 
+	 * identical.
+	 * `F1!=F2` means then that *each* pair of values is not equal. If one
+	 * value pair, *is* identical, the result is `false`!
+	 * In the same logic, `F1==d` is true if *all* values in `F1` are equal
+	 * to the double value `d`.
+	 * Now, `F1!=d` is true only if *all* values in `F1` are not equal to `d`.
+	 * If only one value of `F1` matches `d`, the result will be `false`!
+	 * To check if not all values in `F1` are equal to `d`, you would use
+	 * `!(F1==d)`.
 	 */
 	template<ForageValueTag tag> class ForageValues{
 		private:
@@ -342,7 +360,9 @@ namespace Fauna{
 				return true;
 			}
 			bool operator!=(const ForageValues<tag>& rhs)const{
-				return !operator==(rhs);
+				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++) 
+					if (get(i->first) == i->second) return false;
+				return true;
 			}
 
 			bool operator<(const ForageValues<tag>& rhs)const{
@@ -352,7 +372,10 @@ namespace Fauna{
 				return result;
 			}
 			bool operator<=(const ForageValues<tag>& rhs)const{
-				return operator<(rhs) || operator==(rhs);
+				bool result = true;
+				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++) 
+					result &= (get(i->first) <= i->second);
+				return result;
 			}
 			bool operator>(const ForageValues<tag>& rhs)const{
 				bool result = true;
@@ -361,7 +384,10 @@ namespace Fauna{
 				return result;
 			}
 			bool operator>=(const ForageValues<tag>& rhs)const{
-				return operator>(rhs) || operator==(rhs);
+				bool result = true;
+				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++) 
+					result &= (get(i->first) >= i->second);
+				return result;
 			}
 			/** @} */ // Operator overload
 		private:
