@@ -190,6 +190,31 @@
 	}
 @enduml
 
+@startuml (id=intake_limit_levels)
+hide members
+hide circle
+hide methods
+annotation "Available Forage" as available_forage
+note left: Plant biomass in the patch
+annotation "Foraging Limit" as foraging_limit
+note left: Potential ingestion
+annotation "Digestive Limit" as digestion_limit
+note left: Potential digestion
+annotation "Diet Choice" as diet_choice
+note left: Preference for forage types
+annotation "Metabolic Limit" as metabolic_limit
+note left: Maintenance needs + max. anabolism
+annotation "Competition Limit" as competition
+note left: Sharing resources with other herbivores
+annotation "Feeding" as feeding
+available_forage -down-> foraging_limit
+foraging_limit   -down-> digestion_limit
+digestion_limit  -down-> diet_choice
+diet_choice      -down-> metabolic_limit
+metabolic_limit  -down-> competition
+competition      -down-> feeding
+@enduml
+
 @startuml (id=new_forage_type)
 	namespace Fauna{
 		class ParamReader

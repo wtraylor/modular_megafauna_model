@@ -30,12 +30,14 @@ A herbivore is defined by these state variables:
 Plant–Herbivore Interaction {#sec_herbiv_plantherbivore_interactions}
 ---------------------------------------------------------------------
 
-Each PFT can be mapped to a forage type:
+Each PFT can be mapped to a [forage type](\ref Fauna::ForageType), i.e. the biomass of the plant individuals becomes available as forage for herbivores, and they can choose in which proportions they include the different forage types in their diet.
+
 @startuml "How plant functional types are mapped to forage types."
 	!include herbiv_diagrams.iuml!default_pft_forage_type_mapping
 @enduml
 
 Through feeding, herbivores reduce aboveground plant biomass, i.e. carbon and nitrogen:
+An [inaccessible reserve](\ref Fauna::PftParams::inaccessible_forage) can be defined so that a patch cannot be completely defoliated.
 
 - The removed carbon from plant leaves is considered as a flux directly to the atmosphere (respiration).
   There is no intermediate decomposition of faeces or dead bodies in the soil.

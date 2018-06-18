@@ -201,7 +201,7 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	// The fraction of forage that is left after eating.
 	ForageFraction fraction_left(1.0);
 
-	// iterate over all forage types
+	// Iterate over all forage types and see which proportion has been eaten.
 	for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
 			ft != FORAGE_TYPES.end(); ft++)
 	{
@@ -220,7 +220,7 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 		fraction_left.set(*ft, 1.0 - eaten_forage[*ft] / old_forage[*ft]);
 	}
 
-	// Reduce the forage of each plant individual
+	// Reduce the forage of each plant individual.
 	for (patch.vegetation.firstobj(); 
 			patch.vegetation.isobj;
 			patch.vegetation.nextobj()) 

@@ -139,7 +139,7 @@ void FatmassEnergyBudget::metabolize_energy(double energy){
 		energy -= energy_needs;
 		energy_needs = 0.0;
 
-		// store surplus as fat (anabolism)
+		// store surplus as fat (anabolism) [kg/ind]
 		const double fatmass_gain = energy / FACTOR_ANABOLISM;
 
 		// Check if fat mass gain is too high, but allow for some rounding
