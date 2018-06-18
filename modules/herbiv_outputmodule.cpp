@@ -628,8 +628,16 @@ void HerbivoryOutput::write_datapoint(
 					// values.
 					if (&tablefile == &TBL_INDDENS || &tablefile == &TBL_MASSDENS)
 						output_rows.add_value(tablefile.table, 0.0);
-					else 
+					else if (tablefile.column_selector == CS_HFT) {
+						// For a simple HFT table we need to add only one missing
+						// value.
 						output_rows.add_value(tablefile.table, NA_VALUE);
+					} else if (tablefile.column_selector == CS_HFT_FORAGE) {
+						// For a HFT-Forage table, we need to add as many missing
+						// values as there are forage types
+						for (int i=0; i<FORAGE_TYPES.size(); i++)
+							output_rows.add_value(tablefile.table, NA_VALUE);
+					}
 				}
 			}
 		}
