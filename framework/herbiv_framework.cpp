@@ -408,7 +408,7 @@ void FeedHerbivores::operator()(
 	for (int i=0; i<FORAGE_TYPES.size(); i++){
 
 		// If there is no forage available (anymore), abort!
-		if (available.get_mass() <= 0.00001)
+		if (available.get_mass() <= 1000) // kg/km² = 1 gDM/m²
 			break;
 
 		//------------------------------------------------------------
