@@ -604,13 +604,14 @@ void HerbivoryOutput::write_datapoint(
 				output_rows.add_value(TBL_ENERGY_CONTENT.table,
 						herbidata.energy_content[*ft] != 0.0 ?
 						herbidata.energy_content[*ft] :
-						NAN);
+						NA_VALUE);
 				output_rows.add_value(TBL_ENERGY_INTAKE_PER_IND.table,
 						herbidata.energy_intake_per_ind[*ft]);
 				output_rows.add_value(TBL_ENERGY_INTAKE_PER_MASS.table,
 						herbidata.energy_intake_per_mass[*ft]);
 				// ** add new HFT-Forage variables here
 			}
+
 		} else {
 			// Oops, no data for this HFT. We need to insert NA values.
 			// BUT: Only for those variables where it makes sense:
