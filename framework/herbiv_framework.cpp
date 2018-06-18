@@ -455,6 +455,8 @@ void FeedHerbivores::operator()(
 			const ForageMass& nitrogen = portion * nitrogen_content;
 
 			if (herbivore.get_ind_per_km2() > 0.0) {
+				assert( portion <= herbivore.get_forage_demands(available) );
+
 				// feed this herbivore
 				herbivore.eat(portion, digestibility, nitrogen);
 
