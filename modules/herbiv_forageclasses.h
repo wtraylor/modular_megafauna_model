@@ -629,15 +629,13 @@ namespace Fauna{
 			/** 
 			 * \param ft Forage type.
 			 * \return Polymorphic reference to forage class object.
-			 * If `ft==FT_INEDIBLE` a zero-value object is returned.
 			 * \throw std::logic_error if `ft` is not implemented. */
 			const ForageBase& operator[](const ForageType ft)const{
 				switch (ft){
 					case FT_GRASS: return grass;
 												 // ADD NEW FORAGE TYPES HERE.
 					case FT_INEDIBLE: 
-												 static ForageBase empty;
-												 return empty;
+												 return inedible;
 					default: throw std::logic_error((std::string)
 											 "Fauna::HabitatForage::operator[]()const "
 											 "Forage type \"" +
@@ -652,8 +650,7 @@ namespace Fauna{
 					case FT_GRASS: return grass;
 												 // ADD NEW FORAGE TYPES HERE.
 					case FT_INEDIBLE: 
-												 static ForageBase empty;
-												 return empty;
+												 return inedible;
 					default: throw std::logic_error("Fauna::HabitatForage::operator[]() "
 											 "Forage type \"" +
 											 get_forage_type_name(ft) + "\" "
@@ -667,6 +664,10 @@ namespace Fauna{
 			 */
 			void set_nitrogen_content(const ForageFraction& nitrogen_content);
 		private:
+			/// Inedible forage in the habitat.
+			/** This is currently not used, but only here to return something
+				* if \ref FT_INEDIBLE is passed to the [] operator. */
+			ForageBase inedible;
 	};
 }
 #endif //HERBIV_FORAGECLASSES_H
