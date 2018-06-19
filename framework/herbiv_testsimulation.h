@@ -10,11 +10,12 @@
 #define HERBIV_TESTSIMULATION_H
 
 #include <vector>
-#include "herbiv_testhabitat.h" // for SimpleHabitat::Parameters
-#include "herbiv_outputmodule.h"      // for HerbivoryOutput
+#include "herbiv_outputmodule.h" // for HerbivoryOutput
+#include "herbiv_testhabitat.h"  // for SimpleHabitat
 
 namespace Fauna{
 	// forward declaration
+	class Habitat;
 	class HftList;
 	class Parameters;
 }
@@ -66,7 +67,7 @@ namespace FaunaSim{
 			void plib_declare_parameters();
 		private:
 			/// Create a new habitat according to preferences.
-			std::auto_ptr<Habitat> create_habitat()const;
+			std::auto_ptr<Fauna::Habitat> create_habitat()const;
 
 			/// Output module
 			GuessOutput::HerbivoryOutput herbiv_out;

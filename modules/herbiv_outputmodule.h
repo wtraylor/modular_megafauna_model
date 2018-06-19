@@ -15,7 +15,6 @@
 #include <stdexcept>         // for std::invalid_argument
 
 // forward declarations of referenced classes
-class Date;
 namespace Fauna{
 	class HftList;
 	class SimulationUnit;

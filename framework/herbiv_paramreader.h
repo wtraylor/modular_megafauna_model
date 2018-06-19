@@ -14,12 +14,10 @@
 #include <string>              // for strparam
 
 // forward declarations
+class Pft;
 class Pftlist;
 
 namespace Fauna {
-	// forward declarations
-	class Hft;
-
 	/// Helper function to extract comma-separated substrings.
 	/**
 	 * \param strparam String of comma-separated substrings.

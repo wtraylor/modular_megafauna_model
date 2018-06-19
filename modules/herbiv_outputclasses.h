@@ -13,20 +13,6 @@
 #include "herbiv_forageclasses.h"
 #include "herbiv_hft.h" // for MortalityFactor
 
-namespace Fauna {
-	// forward declarations
-	class Hft;
-
-	/// Helper function to see if a day is the first of a month.
-	/**
-	 * \param day Day of year (0=Jan 1st).
-	 * \return True if `day` (0–364) is first day of a month.
-	 * \throw std::invalid_argument If `day` not in [0,364].
-	 * \todo This is misplaced.
-	 */
-	bool is_first_day_of_month(int day);
-}
-
 namespace FaunaOut {
 	class HerbivoreData; // forward declaration
 

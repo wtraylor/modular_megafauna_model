@@ -8,7 +8,6 @@
 
 #include "config.h"
 #include "herbiv_outputclasses.h"
-#include "herbiv_hft.h"
 
 using namespace Fauna;
 using namespace FaunaOut;

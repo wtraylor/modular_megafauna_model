@@ -11,6 +11,7 @@
 #include "herbiv_environment.h"     // for HabitatEnvironment
 #include "herbiv_feed.h"            // for FeedHerbivores
 #include "herbiv_habitat.h"         // for Habitat and Population
+#include "herbiv_herbivore.h"       // for HerbivoreInterface
 #include "herbiv_simulation_unit.h" // for SimulationUnit
 #include "herbiv_population.h"      // for HftPopulationsMap and PopulationInterface
 

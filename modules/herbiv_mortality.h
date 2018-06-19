@@ -8,7 +8,6 @@
 #ifndef HERBIV_MORTALITY_H
 #define HERBIV_MORTALITY_H
 
-#include "herbiv_utils.h" // for get_random_fraction()
 #include <stdexcept>
 
 namespace Fauna{

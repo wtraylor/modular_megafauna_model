@@ -73,3 +73,8 @@ bool PftParams::is_valid(const Parameters& params,
 	return is_valid;
 }
 
+bool PftParams::is_valid(const Parameters& params)const{
+	// Just call the other overload function and dump the messages.
+	std::string dump;
+	return is_valid(params, dump);
+} 

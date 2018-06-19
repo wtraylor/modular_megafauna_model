@@ -11,9 +11,6 @@
 #include <stdexcept>
 #include <cassert> // for assert()
 
-// forward declarations
-class Pft;
-
 namespace Fauna {
 
 	/// Type of digestibility model, corresponding to one implementation of \ref Fauna::GetDigestibility

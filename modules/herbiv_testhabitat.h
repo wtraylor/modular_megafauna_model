@@ -15,7 +15,6 @@ using namespace Fauna;
 
 //forward declarations
 namespace Fauna {
-	class Parameters;
 	class SimulationUnit;
 }
 

@@ -403,4 +403,9 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 	return is_valid;
 }
 
+bool Hft::is_valid(const Parameters& params) const{
+	// Just call the other overload function, but dump the messages.
+	std::string dump;
+	return is_valid(params, dump);
+}
 

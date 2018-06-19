@@ -8,6 +8,7 @@
 
 #include "config.h"
 #include "herbiv_createherbivores.h"
+#include "herbiv_herbivore.h"
 #include "herbiv_hft.h"
 #include "herbiv_parameters.h"
 #include <stdexcept>

@@ -84,10 +84,7 @@ namespace Fauna {
 		 * \param[in] params Global parameters of the herbivory module.
 		 * \return true if everything is valid, false if not
 		 */
-		bool is_valid(const Parameters& params)const{
-			std::string dump;
-			return is_valid(params, dump);
-		} 
+		bool is_valid(const Parameters& params)const;
 		private:
 			const Pft& pft;
 	};

@@ -8,21 +8,15 @@
 #ifndef HERBIV_HABITAT_H
 #define HERBIV_HABITAT_H
 
-#include "herbiv_environment.h"   // for HabitatEnvironment
 #include "herbiv_forageclasses.h" // for HabitatForage
-#include "herbiv_outputclasses.h" // for FaunaOut::HabitatOutput
+#include "herbiv_outputclasses.h" // for FaunaOut::HabitatOutput & HabitatData
 #include <cassert>                // for assert()
 #include <list>                   // for HabitatList
 #include <memory>                 // for std::auto_ptr
 
-namespace FaunaOut{
-	class HabitatData;
-}
-
 namespace Fauna{
 	// Forward declaration of classes in the same namespace
-	class HerbivoreInterface; 
-	class Hft;
+	class HabitatEnvironment;
 
 	/// Abstract class of a homogenous spatial unit populated by herbivores
 	/** 

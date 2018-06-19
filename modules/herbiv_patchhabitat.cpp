@@ -11,7 +11,7 @@
 #include "herbiv_digestibility.h"
 #include "herbiv_snowdepth.h"
 #include "guess.h"
-#include "assert.h"
+#include <cassert> // for assert()
 
 using namespace Fauna;
 

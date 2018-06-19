@@ -11,6 +11,7 @@
 
 #include "herbiv_createherbivores.h" // for CreateHerbivore*
 #include <list>                      
+#include <map>                      
 #include <vector>
 
 namespace Fauna{
@@ -58,24 +59,10 @@ namespace Fauna{
 		virtual const Hft& get_hft()const=0;
 
 		/// Get individual density of all herbivores together [ind/km²].
-		virtual const double get_ind_per_km2()const{
-			double sum = 0.0;
-			const ConstHerbivoreVector vec = get_list();
-			for (ConstHerbivoreVector::const_iterator itr = vec.begin();
-					itr != vec.end(); itr++)
-				sum += (*itr)->get_ind_per_km2();
-			return sum;
-		}
+		virtual const double get_ind_per_km2()const;
 
 		/// Get mass density of all herbivores together [kg/km²].
-		virtual const double get_kg_per_km2()const{
-			double sum = 0.0;
-			const ConstHerbivoreVector vec = get_list();
-			for (ConstHerbivoreVector::const_iterator itr = vec.begin();
-					itr != vec.end(); itr++)
-				sum += (*itr)->get_kg_per_km2();
-			return sum;
-		}
+		virtual const double get_kg_per_km2()const;
 
 		/// Get pointers to the (alive!) herbivores.
 		/** 

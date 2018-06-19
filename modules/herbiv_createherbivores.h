@@ -6,11 +6,14 @@
 #ifndef HERBIV_CREATEHERBIVORES_H
 #define HERBIV_CREATEHERBIVORES_H
 
-#include "herbiv_herbivore.h" // for HerbivoreIndividual and HerbivoreCohort
-#include <memory> // for std::auto_ptr
+#include <cassert>        // for assert()
+#include "herbiv_utils.h" // for Sex
+#include <memory>         // for std::auto_ptr
 
 namespace Fauna{
 	// forward declarations
+	class HerbivoreCohort;
+	class HerbivoreIndividual;
 	class Parameters;
 	class Hft;
 

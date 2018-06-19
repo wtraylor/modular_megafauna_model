@@ -17,6 +17,28 @@
 using namespace Fauna;
 
 //============================================================
+// PopulationInterface
+//============================================================
+
+const double PopulationInterface::get_kg_per_km2()const{
+	double sum = 0.0;
+	const ConstHerbivoreVector vec = get_list();
+	for (ConstHerbivoreVector::const_iterator itr = vec.begin();
+			itr != vec.end(); itr++)
+		sum += (*itr)->get_kg_per_km2();
+	return sum;
+}
+
+const double PopulationInterface::get_ind_per_km2()const{
+	double sum = 0.0;
+	const ConstHerbivoreVector vec = get_list();
+	for (ConstHerbivoreVector::const_iterator itr = vec.begin();
+			itr != vec.end(); itr++)
+		sum += (*itr)->get_ind_per_km2();
+	return sum;
+}
+
+//============================================================
 // IndividualPopulation
 //============================================================
 

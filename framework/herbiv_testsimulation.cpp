@@ -13,6 +13,7 @@
 #include "herbiv_testsimulation.h"
 #include "herbiv_framework.h"
 #include "herbiv_paramreader.h"
+#include "herbiv_simulation_unit.h"
 #include <cassert>
 #include <climits> // for INT_MAX
 #include <cfloat> // for DBL_MAX
