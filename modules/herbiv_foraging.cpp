@@ -107,7 +107,7 @@ ForageMass GetForageDemands::get_max_digestion()const
 		// already checked in Hft::is_valid().
 		assert(get_hft().diet_composer == DC_PURE_GRAZER);
 
-		// function object
+		// create function object
 		const GetDigestiveLimitIlliusGordon1992 get_digestive_limit(
 				get_bodymass_adult(), get_hft().digestion_type);
 
@@ -255,6 +255,9 @@ ForageMass GetForageDemands::operator()(const double _energy_needs)
 	//------------------------------------------------------------------
 	// CONVERT MASS TO ENERGY
 
+	// Note that we have many variables already calculated in 
+	// `init_today()`
+
 	// The maximum intake of each forage type as net energy [MJ/ind]
 	const ForageEnergy max_energy_intake = max_intake * energy_content;
 
@@ -289,7 +292,7 @@ ForageMass GetForageDemands::operator()(const double _energy_needs)
 
 	// The maximum energy intake with the forage types composed in
 	// the same fraction as in `diet_composition` [MJ/ind].
-	const ForageMass max_energy_intake_comp = 
+	const ForageEnergy max_energy_intake_comp = 
 		max_energy_intake * (min_fraction * diet_composition);
 
 	// Desired forage types cannot be eaten ⇒ no demands
@@ -299,20 +302,28 @@ ForageMass GetForageDemands::operator()(const double _energy_needs)
 	//------------------------------------------------------------------
 	// REDUCE TO ACTUAL ENERGY NEEDS
 	
-	// The fraction by what we need to reduce the energy intake to meet
+	// The fraction to what we need to reduce the energy intake to meet
 	// the actual needs.
 	const double energy_reduction = min(1.0,
 			energy_needs / max_energy_intake_comp.sum());
 
 	// This is our finally demanded energy [MJ/ind].
-	const ForageMass actual_energy_intake =
+	const ForageEnergy actual_energy_intake =
 		max_energy_intake_comp * energy_reduction;
+
+	// Check that we haven’t exceeded the actual needs (but leave room
+	// for rounding errors).
+	assert( actual_energy_intake.sum() <= energy_needs * 1.0000001 );
 
 	//------------------------------------------------------------------
 	// CONVERT BACK FROM ENERGY TO MASS
 
 	// convert MJ/ind to kgDM/ind
-	return actual_energy_intake.divide_safely(energy_content, 0.0);
+	ForageMass result = actual_energy_intake.divide_safely(energy_content, 0.0);
+
+	// Make sure that we don’t exceed the total available forage.
+	result.min(available_forage.get_mass());
+	return result;
 }
 
 //============================================================
@@ -409,7 +420,11 @@ const ForageEnergy GetDigestiveLimitIlliusGordon1992::operator()(
 			ft != FORAGE_TYPES.end(); ft++)
 	{
 		const ForageType f = *ft;
-		if (digestibility[f] > 0.0)
+
+		// Only for the supported forage types, the result is calculated.
+		// ADD NEW FORAGE TYPES HERE IN IF QUERY
+		if ((f == FT_GRASS) &&
+				digestibility[f] > 0.0)
 			result.set(f,
 					i[f] * exp(j[f]*d[f]) * pow(M_ad, k[f]*exp(d[f]) + .73) * u_g);
 		else
