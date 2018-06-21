@@ -34,10 +34,21 @@ ForageMass Fauna::get_max_intake_as_total_mass(
 	const ForageFraction mass_proportions = 
 		convert_mj_to_kg_proportionally(mj_per_kg, mj_proportions);
 
+	// Make sure that the sum of mass proportions doesn’t diverge from the
+	// sum of energy proportions.
+	assert( mass_proportions.sum() >= 0.99 * mj_proportions.sum() &&
+			mass_proportions.sum() <= 1.01 * mj_proportions.sum() );
+	
 	// Multiply the maximum foraging with the mass-wise proportions.
 	// To get the maximum intake for each individual forage type.
-	return kg_total * 
+	const ForageMass mass = kg_total * 
 		(mass_proportions.divide_safely(mass_proportions.sum(), 0.0));
+
+	// Make sure that the sum of mass parts matches the prescribed sum.
+	assert( mass.sum() >= 0.99 * kg_total &&
+			mass.sum() <= 1.01 * kg_total );
+
+	return mass;
 }
 
 //============================================================
