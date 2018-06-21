@@ -177,6 +177,16 @@ namespace Fauna{
         return *this;
 			}
 
+			/// For each forage type, take the maximum value.
+			/** \param other The object to compare this object with. 
+			 * \return This object. */
+			ForageValues<tag>& max(const ForageValues<tag>& other){
+				if (&other == this) return *this;
+				for (const_iterator i=other.begin(); i!=other.end(); i++)
+					set(i->first, fmax(get(i->first), i->second));
+				return *this;
+			}
+
 			/// For each forage type, take the minimum value.
 			/** \param other The object to compare this object with. 
 			 * \return This object. */

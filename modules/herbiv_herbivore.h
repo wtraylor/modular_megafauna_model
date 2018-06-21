@@ -47,8 +47,8 @@ namespace Fauna{
 		 * \param kg_per_km2 Dry matter forage mass [kgDM/km²].
 		 * \param N_kg_per_km2 Nitrogen in the forage [kgN/km²].
 		 * \param digestibility Proportional forage digestibility.
-		 * \throw std::invalid_argument If `forage` exceeds
-		 * forage intake constraints.
+		 * \throw std::logic_error If `forage` exceeds
+		 * intake constraints of maximal foraging and digestion.
 		 * \throw std::logic_error If this herbivore is dead or
 		 * has no individuals.
 		 */

@@ -236,7 +236,17 @@ void HerbivoreBase::eat(
 	const ForageEnergy mj_per_ind = 
 		get_net_energy_content(digestibility) * kg_per_ind;
 
-	// send energy to energy model
+	try {
+		assert( get_forage_demands_per_ind.get() != NULL );
+		// Deduct the eaten forage from today’s maximum intake.
+		// This function also checks whether we are violating ingestion constraints.
+		get_forage_demands_per_ind->add_eaten(kg_per_ind);
+	} catch (const std::logic_error e){
+		throw std::logic_error(std::string(e.what()) +
+				" (Passed on by Fauna::HerbivoreBase::eat().)");
+	}
+
+	// Send energy to energy model.
 	get_energy_budget().metabolize_energy(mj_per_ind.sum());
 
 	// Add to output

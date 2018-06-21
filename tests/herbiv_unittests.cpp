@@ -1382,28 +1382,86 @@ TEST_CASE("Fauna::GetForageDemands"){
 	CHECK_THROWS( GetForageDemands(NULL, SEX_MALE) );
 
 	const Parameters params;
-	const Hft hft = create_hfts(1, params)[0];
+	Hft hft = create_hfts(1, params)[0];
+	hft.foraging_limits.clear();
+	hft.digestive_limit = DL_NONE;
 
-	GetForageDemands gfd(&hft, SEX_FEMALE);
-
-	// exceptions because not initialized
-	CHECK_THROWS( gfd(1.0) );
-
+	const int DAY = 0;
 	HabitatForage avail; // available forage
 	const ForageEnergyContent ENERGY_CONTENT(1.0); // [MJ/kgDM]
 	const double BODYMASS = hft.bodymass_female; // [kg/ind]
 
-	// exceptions during initialization
-	CHECK_THROWS( gfd.init_today(
-				1,  // day
-				avail,
-				ENERGY_CONTENT,
-				-1) ); // body mass
+	SECTION("Check some exceptions."){
+		// Create the object.
+		GetForageDemands gfd(&hft, SEX_FEMALE);
 
-	// initialize
-	gfd.init_today(0, avail, ENERGY_CONTENT, BODYMASS);
+		// Exception because not initialized.
+		CHECK_THROWS( gfd(1.0) );
 
-	CHECK_THROWS( gfd(-1.0) );
+		// exceptions during initialization
+		CHECK_THROWS( gfd.init_today(
+					DAY, 
+					avail,
+					ENERGY_CONTENT,
+					-1) ); // body mass
+		CHECK_THROWS( gfd.init_today(
+					-1, // day
+					avail,
+					ENERGY_CONTENT,
+					BODYMASS) );
+
+		// initialize
+		CHECK( !gfd.is_day_initialized(DAY) );
+		gfd.init_today(DAY, avail, ENERGY_CONTENT, BODYMASS);
+		CHECK( gfd.is_day_initialized(DAY) );
+
+		// negative energy needs
+		CHECK_THROWS( gfd(-1.0) ); 
+
+		// Negative eaten forage
+		CHECK_THROWS( gfd.add_eaten(-1.0) );
+
+		// Eat more than possible.
+		CHECK_THROWS( gfd.add_eaten(999999) );
+	}
+
+	SECTION("Grazer with Fixed Fraction"){
+		hft.diet_composer         = DC_PURE_GRAZER;
+		hft.digestive_limit       = DL_FIXED_FRACTION;
+		GetForageDemands gfd(&hft, SEX_FEMALE); // create object
+		const double DIG_FRAC     = 0.03; // max. intake as fraction of body mass
+		hft.digestive_limit_fixed = DIG_FRAC;
+		avail.grass.set_mass(999999); // Lots of live grass (but nothing else).
+
+		// We prescribe *lots* of hunger so that digestion *must* be the
+		// limiting factor.
+		const double ENERGY_DEMAND = 99999;
+
+		// initialize
+		gfd.init_today(DAY, avail, ENERGY_CONTENT, BODYMASS);
+
+		// Lots of energy needs, but intake is limited by digestion.
+		// Only grass shall be demanded. 
+		// The result must match the given fraction of body mass.
+		const ForageMass init_demand = gfd(ENERGY_DEMAND);
+		CHECK( init_demand[FT_GRASS] == Approx(BODYMASS * DIG_FRAC) );
+		for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
+				ft != FORAGE_TYPES.end(); ft++) {
+			if (*ft != FT_GRASS)
+				CHECK( init_demand[*ft] == 0.0 );
+		}
+		// The demand may not change if we call it again.
+		CHECK( gfd(ENERGY_DEMAND) == init_demand );
+
+		// Now give something to eat, and the demand should become less.
+		ForageMass EATEN;
+		EATEN.set(FT_GRASS, 1.0);
+		gfd.add_eaten(EATEN);
+		CHECK( gfd(ENERGY_DEMAND) == init_demand - EATEN );
+		// … and of course the result should stay the same.
+		CHECK( gfd(ENERGY_DEMAND) == init_demand - EATEN );
+
+	}
 }
 
 TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {

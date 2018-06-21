@@ -29,6 +29,14 @@ namespace Fauna{
 			 */
 			GetForageDemands(const Hft* hft, const Sex sex);
 
+			/// Register ingested forage so that less forage will be demanded.
+			/**
+			 * \param eaten_forage Ingested plant material [kgDM/ind].
+			 * \throw std::logic_error If `eaten_forage` exceeds the maximum
+			 * intake of today.
+			 */
+			void add_eaten(ForageMass eaten_forage);
+
 			/// Initialize foraging for another day.
 			/**
 			 * - Calculate the diet composition with different forage types.

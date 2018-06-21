@@ -66,6 +66,22 @@ GetForageDemands::GetForageDemands(const Hft* hft, const Sex sex) :
 				"Parameter `hft` is NULL.");
 }
 
+void GetForageDemands::add_eaten(ForageMass eaten_forage){
+	// Check if we are eating more than possible, but leave some room for
+	// floating point imprecision.
+	if (!(eaten_forage <= max_intake*1.001))
+		throw std::logic_error("Fauna::GetForageDemands::add_eaten() "
+				"Eaten forage is greater than maximum intake.");
+	
+	// Since we just left some room for error, we are now responsible to make
+	// sure that the `max_intake` *really* has no negative values.
+	eaten_forage = eaten_forage.min(max_intake);
+
+	// Now we can be sure that `eaten_forage` will not make `max_intake`
+	// go below zero.
+	max_intake -= eaten_forage;
+}
+
 ForageFraction GetForageDemands::get_diet_composition()const
 {
 	// Initialize result with zero and let the algorithms set their
