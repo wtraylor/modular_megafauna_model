@@ -314,15 +314,12 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 	Hft hft = create_hfts(1, params)[0];
 	hft.establishment_density = 10.0; // [ind/km²]
 	hft.mortality_factors.clear(); // immortal herbivores
-	const double THRESHOLD = 0.1;
-	hft.dead_herbivore_threshold = THRESHOLD;
 	REQUIRE( hft.is_valid(params) );
 
 	// prepare creating object
 	CreateHerbivoreCohort create_cohort(&hft, &params);
 
 	// create cohort population
-	INFO( "THRESHOLD = " << THRESHOLD );
 	CohortPopulation pop(create_cohort);
 	REQUIRE( pop.get_list().empty() );
 	REQUIRE( population_lists_match( pop ) );
@@ -397,8 +394,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 	}
 
 	SECTION("Offspring with enough density"){
-		// offspring density higher than minimum cohort size [ind/km²].
-		const double DENS = 10.0 * THRESHOLD; 
+		const double DENS = 10.0; // offspring density [ind/km²]
 		INFO( "DENS = " << DENS );
 		pop.create_offspring(DENS); 
 
@@ -439,64 +435,6 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		CHECK( pop.get_list().size() == 4 );
 		CHECK( population_lists_match(pop) );
 		REQUIRE( pop.get_ind_per_km2() == Approx(3.0*DENS) );
-	}
-
-	SECTION("Offspring of too low density"){
-		// male/female establishment density LOWER than minimum cohort size [ind/km²].
-		const double DENS = 1.9 * THRESHOLD; 
-		INFO( "DENS = " << DENS );
-		pop.create_offspring(DENS); 
-
-		// There should be nothing created because each cohort (male/female)
-		// would be lower than allowed minimum.
-		REQUIRE( pop.get_list().size() == 0 );
-		CHECK( population_lists_match(pop) );
-
-		// Now we add more so that the total newborn density is above 
-		// minimum.
-		REQUIRE( DENS*2.0 > THRESHOLD );
-		pop.create_offspring(DENS);
-
-		// Now there should be one age class with male and female
-		REQUIRE( pop.get_list().size() == 2 ); 
-		CHECK( population_lists_match(pop) );
-
-		// Does the total density match?
-		REQUIRE( pop.get_ind_per_km2() == Approx(2.0 * DENS) );
-	}
-
-	SECTION("Offspring of too low density on existing cohort"){
-		// Now we add offspring on top of an existing viable age class
-		// of newborn herbivores.
-
-		// male/female establishment density GREATER than minimum cohort size [ind/km²].
-		const double DENS = 3.0 * THRESHOLD; 
-		INFO( "DENS = " << DENS );
-		pop.create_offspring(DENS); 
-
-		// A newborn age class should be created for male/female.
-		REQUIRE( pop.get_list().size() == 2 ); 
-		CHECK( population_lists_match(pop) );
-		REQUIRE( pop.get_ind_per_km2() == Approx(DENS) );
-
-		// Now we add some marginal number
-		const double LOW_DENS = 1.5 * THRESHOLD;
-		INFO( "LOW_DENS = " << LOW_DENS );
-		pop.create_offspring(LOW_DENS);
-
-		// The new offspring should have been added to existing cohort.
-		REQUIRE( pop.get_list().size() == 2 ); 
-		CHECK( population_lists_match(pop) );
-		REQUIRE( pop.get_ind_per_km2() == Approx(DENS + LOW_DENS) );
-	}
-
-	SECTION("Removal of dead cohorts at establishment"){
-		hft.establishment_age_range.first = hft.establishment_age_range.second = 3;
-		// establish in very low density
-		hft.establishment_density = THRESHOLD / 2.0;
-		pop.establish();
-		CHECK( population_lists_match(pop) );
-		CHECK( pop.get_list().empty() );
 	}
 }
 
@@ -2105,11 +2043,17 @@ TEST_CASE("Fauna::HftPopulationsMap", "") {
 	hfts[0].name = "hft1";
 	hfts[1].name = "hft2";
 	hfts[2].name = "hft3";
+	const int DEAD_HFT_ID = 1; // population below `minimum_density_threshold`
 	for (int i=0; i<NPOP; i++){
-		hfts[i].establishment_density = (double) i;
+		hfts[i].establishment_density = (double) i+1.0;
 		// have only one age class established:
 		hfts[i].establishment_age_range.first = hfts[i].establishment_age_range.second;
+		// First, have every populatien be above the minimum threshold.
+		hfts[i].minimum_density_threshold = 2 * i;
 	}
+	// Now let *one* population have a very low threshold.
+	// It will be deleted later.
+	hfts[DEAD_HFT_ID].minimum_density_threshold = 0.01;
 
 	// create some populations with establishment_density
 	DummyPopulation* pops[NPOP];
@@ -2123,11 +2067,22 @@ TEST_CASE("Fauna::HftPopulationsMap", "") {
 		for (int j=0; j<NHERBIS; j++)
 			pops[i]->establish();
 
+		// Check that all HFT populations have been created.
 		REQUIRE(pops[i]->get_list().size() == NHERBIS);
+
+		// Check that each HFT population has the expected density.
+		double pop_dens = 0.0;
+		const HerbivoreVector herbi_list = pops[i]->get_list();
+		for (HerbivoreVector::const_iterator itr = herbi_list.begin();
+				itr != herbi_list.end(); itr++)
+			pop_dens += (**itr).get_ind_per_km2();
+		REQUIRE( pop_dens == Approx(NHERBIS * hfts[i].establishment_density) );
+
 		// add them to the map -> transfer ownership
 		map.add(new_pop);
 	}
 
+	// Check if all populations and herbivores have been added.
 	REQUIRE(map.size() == NPOP);
 	REQUIRE( map.get_all_herbivores().size() == NPOP*NHERBIS );
 
@@ -2169,6 +2124,47 @@ TEST_CASE("Fauna::HftPopulationsMap", "") {
 	for (int i=0; i<NPOP; i++)
 		CHECK(&map[hfts[i]] == pops[i]);
 	CHECK_THROWS(map[Hft()]); // unnamed Hft is not in map
+
+	SECTION("Kill population below threshold"){
+		// Kill all herbivores of the one population below threshold.
+		PopulationInterface& dead_pop = map[hfts[DEAD_HFT_ID]];
+
+		// Reduce density of all herbivores in the one population
+		HerbivoreVector herbivores_to_kill = dead_pop.get_list();
+		for (HerbivoreVector::iterator h_itr = herbivores_to_kill.begin();
+				h_itr != herbivores_to_kill.end(); h_itr++)
+			((DummyHerbivore*) (*h_itr))->ind_per_km2 = 0.0000001;
+
+		// Mark those herbivores as killed.
+		map.kill_nonviable();
+
+		CHECK( map.size() == NPOP ); // the population object is still there
+
+		// Check the other (surviving) populations.
+		itr = map.begin();
+		for (itr = map.begin(); itr != map.end(); itr++){
+			const PopulationInterface& pop = **itr;
+			if (pop.get_hft() != hfts[DEAD_HFT_ID]){
+				// The populations above threshold are not affected.
+				CHECK( pop.get_list().size() == NHERBIS );
+				CHECK( pop.get_ind_per_km2() > 0.0 );
+				CHECK( pop.get_kg_per_km2()  > 0.0 );
+				ConstHerbivoreVector herbiv_vec = pop.get_list();
+				for (ConstHerbivoreVector::iterator h_itr = herbiv_vec.begin();
+						h_itr != herbiv_vec.end(); h_itr++)
+					CHECK( ! (**h_itr).is_dead() );
+			}
+		}
+
+		// The population below the threshold should have only killed herbivores.
+		CHECK( dead_pop.get_list().size() == NHERBIS );
+		CHECK( dead_pop.get_ind_per_km2() == 0.0 );
+		CHECK( dead_pop.get_kg_per_km2()  == 0.0 );
+		HerbivoreVector herbiv_vec = dead_pop.get_list();
+		for (HerbivoreVector::const_iterator h_itr = herbiv_vec.begin();
+				h_itr != herbiv_vec.end(); h_itr++)
+			CHECK( (**h_itr).is_dead() ); 
+	}
 }
 
 TEST_CASE("Fauna::IndividualPopulation", "") {

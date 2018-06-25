@@ -239,11 +239,6 @@ namespace Fauna{
 			/** Default is 38°C (Hudson & White, 1985\cite hudson1985bioenergetics) */
 			double core_temperature;
 
-			/// Minimum individual density [ind/km²] for a living herbivore cohort.
-      /** If left undefined, \ref ParamReader will set it to 90% of
-			 * \ref get_max_dead_herbivore_threshold() */
-			double dead_herbivore_threshold;
-
 			/// Model defining the herbivore’s diet composition.
 			DietComposer diet_composer;
 
@@ -297,6 +292,11 @@ namespace Fauna{
 			/// Age of female sexual maturity in years.
 			int maturity_age_sex;
 
+			/// Minimum viable density of one HFT population (all cohorts) [frac.].
+      /** Given as fraction of \ref establishment_density. Default: 0.5
+			 * \see \ref sec_minimum_density_threshold */
+			double minimum_density_threshold;
+
 			/// Annual mortality rate [0.0–1.0) after first year of life.
 			double mortality;
 
@@ -332,21 +332,6 @@ namespace Fauna{
 			bool operator<( const Hft& rhs)const{return name<rhs.name;}
 			/** @} */ // Comparison
 
-			/** @{ \name Helper functions */
-			/// Maximum allowed value for \ref dead_herbivore_threshold.
-			/**
-			 * \ref dead_herbivore_threshold refers to *one* cohort. 
-			 * \ref establishment_density refers to the *whole* population.
-			 * A newly established cohort must not immediately die. Therefore the 
-			 * threshold cannot be higher than the establishment density divided
-			 * by the number of established cohorts, which is given by the age
-			 * range (\ref establishment_age_range) times 2 (for males & females).
-			 * \return Minimum viable cohort density [ind/km²].
-			 * \throw std::logic_error If \ref establishment_density or
-			 * \ref establishment_age_range have invalid values.
-			 */
-			double get_max_dead_herbivore_threshold()const;
-			/** @} */ // Helper functions
 	};
 
 	/// A set of herbivore functional types, unique by name

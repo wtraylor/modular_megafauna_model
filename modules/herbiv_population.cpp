@@ -173,45 +173,23 @@ CohortPopulation::CohortPopulation(
 		const CreateHerbivoreCohort create_cohort
 		):
 	create_cohort(create_cohort)
-{
-	cumulated_offspring[SEX_MALE]   = 0.0;
-	cumulated_offspring[SEX_FEMALE] = 0.0;
-}
+{ }
 
 void CohortPopulation::create_offspring_by_sex(const Sex sex, 
 		double ind_per_km2)
 {
 	assert(ind_per_km2 >= 0.0);
 
-	// Add offspring from previous calls that was then too low to be
-	// established.
-	ind_per_km2             += cumulated_offspring[sex];
-	cumulated_offspring[sex] = 0.0;
-
 	List::iterator found = find_cohort(0, sex);
 	if (found == list.end())
 	{ // no existing cohort
-
-		// Only create a new cohort if it is above the threshold.
-		if (ind_per_km2 > get_hft().dead_herbivore_threshold)
-			list.push_back(create_cohort(ind_per_km2, 0, sex));
-		else // otherwise remember it for next time.
-			cumulated_offspring[sex] += ind_per_km2;
-
+		list.push_back(create_cohort(ind_per_km2, 0, sex));
 	}
 	else{ // cohort exists already
 
-		// Only merge new offspring into existing cohort if the resulting
-		// density is viable (this new offspring would be “lost” otherwise.
-
-		if (found->get_ind_per_km2() + ind_per_km2
-				> get_hft().dead_herbivore_threshold)
-		{
 			// create new temporary cohort object to merge into existing cohort
-			HerbivoreCohort new_cohort = create_cohort(ind_per_km2, 0, sex);
-			found->merge(new_cohort);
-		} else // otherwise remember it for next time.
-			cumulated_offspring[sex] += ind_per_km2;
+		HerbivoreCohort new_cohort = create_cohort(ind_per_km2, 0, sex);
+		found->merge(new_cohort);
 	}
 
 }
@@ -245,10 +223,6 @@ void CohortPopulation::establish(){
 
 	// Density of one cohort (ind/km²).
 	const double cohort_density = get_hft().establishment_density / cohort_count;
-
-	// Don’t create not viable cohorts.
-	if (cohort_density < get_hft().dead_herbivore_threshold)
-		return;
 
 	for (int age = get_hft().establishment_age_range.first;
 			age <= get_hft().establishment_age_range.second;
@@ -360,6 +334,19 @@ HerbivoreVector HftPopulationsMap::get_all_herbivores(){
 	}
 	last_all_herbivores_count = result.size();
 	return result;
+}
+
+void HftPopulationsMap::kill_nonviable(){
+	for (iterator itr = begin(); itr != end(); itr++){
+		PopulationInterface& pop = **itr;
+		// If the population’s density is below minimum, mark all 
+		// herbivores as dead.
+		const double min_ind_per_km2 = 
+			pop.get_hft().minimum_density_threshold * 
+			pop.get_hft().establishment_density;
+		if (pop.get_ind_per_km2() < min_ind_per_km2)
+			pop.kill_all();
+	}
 }
 
 PopulationInterface& HftPopulationsMap::operator[](const Hft& hft){
