@@ -690,7 +690,7 @@ void HerbivoreCohort::apply_mortality(const double mortality){
 }
 
 bool HerbivoreCohort::is_dead()const{
-	return get_ind_per_km2() < get_hft().dead_herbivore_threshold;
+	return get_ind_per_km2() <= 0.0;
 }
 
 void HerbivoreCohort::merge(HerbivoreCohort& other){

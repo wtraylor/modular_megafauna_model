@@ -31,7 +31,6 @@ Hft::Hft():
 	breeding_season_start(120),
 	conductance(CM_BRADLEY_DEAVERS_1980),
 	core_temperature(38.0),
-	dead_herbivore_threshold(0.1),
 	diet_composer(DC_PURE_GRAZER),
 	digestion_type(DT_RUMINANT),
 	digestive_limit(DL_NONE),
@@ -45,6 +44,7 @@ Hft::Hft():
 	maturity_age_phys_female(3),
 	maturity_age_phys_male(3),
 	maturity_age_sex(2),
+	minimum_density_threshold(0.5),
 	mortality(0.05),
 	mortality_juvenile(0.3),
 	net_energy_model(NE_DEFAULT),
@@ -53,22 +53,6 @@ Hft::Hft():
 	shift_body_condition_for_starvation(true)
 {
 	expenditure_components.insert(EC_ALLOMETRIC);
-}
-
-double Hft::get_max_dead_herbivore_threshold()const{
-	const double establishment_cohort_count =
-		(2 * (establishment_age_range.second - establishment_age_range.first + 1));
-
-	if (establishment_cohort_count <= 0)
-		throw std::logic_error("Fauna::Hft::get_max_dead_herbivore_threshold() "
-				"The variable `establishment_age_range` has invalid values.");
-
-	const double result = establishment_density / establishment_cohort_count;
-	if (result <= 0)
-		throw std::logic_error("Fauna::Hft::get_max_dead_herbivore_threshold() "
-				"The variable `establishment_density` has an invalid value.");
-	
-	return result;
 }
 
 bool Hft::is_valid(const Parameters& params, std::string& msg) const{
@@ -161,10 +145,10 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-		if (params.herbivore_type == HT_COHORT &&
-				dead_herbivore_threshold < 0.0) {
-			stream << "dead_herbivore_threshold < 0.0"
-				<< " (current value: " << dead_herbivore_threshold << ")";
+		if (minimum_density_threshold <= 0.0 || minimum_density_threshold >= 1.0) 
+		{
+			stream << "minimum_density_threshold not between 0 and 1"
+				<< " (current value: " << minimum_density_threshold << ")";
 			is_valid = false;
 		}
 
@@ -201,25 +185,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			stream << "establishment_density must be >=0.0 ("
 				<<establishment_density<<")"<<std::endl;
 			is_valid = false;
-		}
-
-		try {
-			// This might throw an exception:
-			double max_dead_herbivore_threshold = get_max_dead_herbivore_threshold();
-
-			if (params.herbivore_type == HT_COHORT && 
-					dead_herbivore_threshold >= max_dead_herbivore_threshold){
-				stream << "establishment_density (" <<establishment_density<<" ind/km²) "
-					<< "must not be smaller than minimum viable population density"
-					<< " (dead_herbivore_threshold = "
-					<< dead_herbivore_threshold << " ind/km²)"
-					<< " for one sex and age in cohort mode." <<std::endl;
-				is_valid = false;
-			}
-		} catch (std::exception){
-			// No handling because invalid values for `establishment_age_range` or
-			// `establishment_density` are already treated in the rest of this 
-			// function.
 		}
 
 		if (params.herbivore_type == HT_INDIVIDUAL && 

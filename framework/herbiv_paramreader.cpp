@@ -300,18 +300,6 @@ void ParamReader::callback(const int callback, Pft* ppft){
         }
       }
 
-			// Set `dead_herbivore_threshold` to default value.
-			if (!itemparsed("dead_herbivore_threshold")){
-				current_hft.dead_herbivore_threshold = 
-					current_hft.get_max_dead_herbivore_threshold() * 0.9;
-				std::ostringstream msg_stream;
-				msg_stream << "(" <<current_hft.name << ")" 
-          << "Setting `dead_herbivore_threshold` to 0.9 of "
-					<< "maximum value: " << current_hft.dead_herbivore_threshold
-					<< " ind/km²";
-				sendmessage("Info", msg_stream.str().c_str());
-			}
-
       if (!check_mandatory(mandatory_hft_params,
             "HFT \""+current_hft.name+"\""))
         plibabort();
@@ -850,14 +838,6 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Body core temperature [°C].");
 
-		declareitem("dead_herbivore_threshold",
-				&(current_hft.dead_herbivore_threshold),
-				0.0, DBL_MAX, // min, max
-				1,          // number of parameters
-				CB_NONE,
-				"Minimum density [ind/km²] for a living herbivore cohort. "
-				"Default: 0.9 of maximum value");
-
 		declareitem("diet_composer",
 				&strparam,
 				64,
@@ -972,6 +952,14 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Age of female sexual maturity in years.");
 
+		declareitem("minimum_density_threshold",
+				&(current_hft.minimum_density_threshold),
+				0.001, 0.999, // min, max
+				1,          // number of parameters
+				CB_NONE,
+				"Minimum density [frac. of establishment] for a viable herbivore population. "
+				"Default: 0.5");
+
 		declareitem("mortality",
 				&current_hft.mortality,
 				0.0, 1.0-DBL_MIN, // min, max
@@ -1070,7 +1058,7 @@ void ParamReader::declare_parameters(
 				&strparam,
 				64, // max length of string
 				CB_FORAGE_TYPE,
-				"Forage Type (\"inedible\",\"grass\")"); // Add more forage types here
+				"Forage Type (\"inedible\", \"grass\")"); // Add more forage types here
 
 	} 
 }

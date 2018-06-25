@@ -30,6 +30,9 @@ namespace Fauna{
 	 * have all the same \ref Hft.
 	 * It also instantiates all new objects of herbivore classes
 	 * (derived from \ref HerbivoreInterface) in a simulation.
+	 * \note This is strictly speaking no “interface” anymore since not all
+	 * of its functions are pure abstract. It is just unnecessary effort to
+	 * change the name.
 	 */
 	struct PopulationInterface{
 		/// Virtual destructor
@@ -64,7 +67,7 @@ namespace Fauna{
 		/// Get mass density of all herbivores together [kg/km²].
 		virtual const double get_kg_per_km2()const;
 
-		/// Get pointers to the (alive!) herbivores.
+		/// Get pointers to the herbivores (including dead ones).
 		/** 
 		 * \warning The pointers are not guaranteed to stay valid
 		 * on changing the population in \ref create_offspring() or 
@@ -76,6 +79,9 @@ namespace Fauna{
 
 		/** \copydoc get_list()const */
 		virtual HerbivoreVector get_list()=0; 
+
+		/// Mark all herbivores as dead (see \ref HerbivoreInterface::kill()).
+		virtual void kill_all();
 
 		/// Delete all dead herbivores.
 		/** \see \ref HerbivoreInterface::is_dead() */
@@ -123,12 +129,7 @@ namespace Fauna{
 	/// A population of \ref HerbivoreCohort objects.
 	class CohortPopulation: public PopulationInterface{
 		public: // ------ PopulationInterface -------
-			/** \copydoc PopulationInterface::create_offspring() 
-			 * If the resulting newborn cohort would be below the viable
-			 * minimum density (\ref Hft::dead_herbivore_threshold), the offspring
-			 * is ‘accumulated’ until it reaches (after several calls to 
-			 * `create_offspring()`) a sum above the threshold.
-			 */
+			/** \copydoc PopulationInterface::create_offspring() */
 			virtual void create_offspring(const double ind_per_km2);
 			/** \copydoc PopulationInterface::establish()
 			 * Establish with even sex ratio and *at least* as many 
@@ -171,7 +172,6 @@ namespace Fauna{
 
 			const CreateHerbivoreCohort create_cohort;
 			/// Offspring accumulated until above minimum threshold [ind/km²].
-			std::map<Sex, double> cumulated_offspring;
 			List list;
 	};
 	
@@ -218,6 +218,14 @@ namespace Fauna{
 			 * Uses \ref Hft::operator==() for comparison.
 			 * \throw std::invalid_argument if `hft` not in the vector */
 			PopulationInterface& operator[](const Hft&);
+
+			/// Kill populations whose density is below minimum threshold.
+			/**
+			 * If a population has a total density of less than 
+			 * \ref Hft::minimum_density_threshold, all of the herbivores are
+			 * killed (\ref HerbivoreInterface::kill()).
+			 */
+			void kill_nonviable();
 
 			/// Delete all dead herbivores.
 			/** Iterate over all populations and call 
