@@ -38,6 +38,13 @@ const double PopulationInterface::get_ind_per_km2()const{
 	return sum;
 }
 
+void PopulationInterface::kill_all(){
+	HerbivoreVector vec = get_list();
+	for (HerbivoreVector::const_iterator itr = vec.begin();
+			itr != vec.end(); itr++)
+		(*itr)->kill();
+}
+
 //============================================================
 // IndividualPopulation
 //============================================================

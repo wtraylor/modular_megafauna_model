@@ -55,7 +55,8 @@ namespace {
 		public:
 			DummyHerbivore(const Hft* hft, const double ind_per_km2,
 					const double bodymass=30.0):
-				hft(hft), ind_per_km2(ind_per_km2), bodymass(bodymass){}
+				hft(hft), ind_per_km2(ind_per_km2), bodymass(bodymass),
+		killed(false){}
 			
 			virtual void eat(
 					const ForageMass& kg_per_km2,
@@ -87,7 +88,8 @@ namespace {
 				return dummy_output;
 			}
 
-			virtual bool is_dead()const{ return false; }
+			virtual bool is_dead()const{ return killed; }
+			virtual void kill(){ killed = true; ind_per_km2 = 0.0;}
 
 			virtual void simulate_day(const int day,
 					const HabitatEnvironment&,
@@ -100,11 +102,12 @@ namespace {
 				original_demand = actual_demand = d;
 			}
 			const ForageMass& get_eaten()const{return eaten;}
+			double ind_per_km2; 
 		private:
 			const Hft* hft;
-			const double ind_per_km2; 
 			const double bodymass;
 			ForageMass original_demand, actual_demand, eaten;
+			int killed;
 	};
 
 	/// A population of dummy herbivores
@@ -151,6 +154,7 @@ namespace {
 			virtual double get_ind_per_km2() const{ return ind_per_km2; }
 
 			virtual bool is_dead()const{ return false; }
+			virtual void kill(){}
 			/// Establishment Constructor
 			HerbivoreBaseDummy(
 					const int age_days,

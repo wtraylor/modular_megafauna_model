@@ -77,6 +77,9 @@ namespace Fauna{
 		/** \copydoc get_list()const */
 		virtual HerbivoreVector get_list()=0; 
 
+		/// Mark all herbivores as dead (see \ref HerbivoreInterface::kill()).
+		virtual void kill_all();
+
 		/// Delete all dead herbivores.
 		/** \see \ref HerbivoreInterface::is_dead() */
 		virtual void purge_of_dead()=0;
