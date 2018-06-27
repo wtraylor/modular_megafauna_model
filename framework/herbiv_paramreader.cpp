@@ -184,13 +184,13 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	
 	if (callback == CB_CHECKHFT) {
 
-    // First check for `include` parameter
-    if (!itemparsed("include")){
-      sendmessage("Error", std::string(
-            "Parameter `include` is missing in HFT " 
-            + current_hft.name + ".").c_str());
-      plibabort();
-    }
+		// First check for `include` parameter
+		if (!itemparsed("include")){
+			sendmessage("Error", std::string(
+						"Parameter `include` is missing in HFT " 
+						+ current_hft.name + ".").c_str());
+			plibabort();
+		}
 
 		// We need to know which kind of herbivore we are parametrizing.
 		// (Note that itemparsed() doesn’t work here because of the local 
@@ -202,111 +202,111 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			plibabort();
 		}
 
-    if (current_hft.is_included) {
-      // compile and check mandatory parameters
-      MandatoryParamList mandatory_hft_params;
+		if (current_hft.is_included) {
+			// compile and check mandatory parameters
+			MandatoryParamList mandatory_hft_params;
 
-      if (params.herbivore_type == HT_INDIVIDUAL ||
-          params.herbivore_type == HT_COHORT) {
-        // string message why parameter is required
-        const std::string req_str = "herbivore_type=(cohort|individual)";
-        mandatory_hft_params.push_back(MandatoryParam(
-              "bodyfat_birth", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "bodyfat_max", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "bodymass_birth", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "bodymass_female", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "bodymass_male", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "diet_composer", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "digestion_type", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "digestive_limit", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "establishment_age_range", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "establishment_density", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "expenditure_components", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "gestation_months", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "maturity_age_phys_female", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "maturity_age_phys_male", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "maturity_age_sex", req_str));
-        mandatory_hft_params.push_back(MandatoryParam(
-              "reproduction_model", req_str));
-        if (current_hft.mortality_factors.count(MF_LIFESPAN))
-          mandatory_hft_params.push_back(MandatoryParam(
-                "lifespan", req_str +
-                " and lifespan in mortality_factors"));
-        if (current_hft.mortality_factors.count(MF_BACKGROUND)){
-          mandatory_hft_params.push_back(MandatoryParam(
-                "mortality", req_str +
-                " and \"background\" in mortality_factors"));
-          mandatory_hft_params.push_back(MandatoryParam(
-                "mortality_juvenile", req_str +
-                " and \"background\" in mortality_factors"));
-        }
-        if (current_hft.digestive_limit == DL_ALLOMETRIC){
-          mandatory_hft_params.push_back(MandatoryParam(
-                "digestive_limit_allometry", req_str +
-                " and \"allometric\" is digestive limit."));
-        }
-        if (current_hft.digestive_limit == DL_FIXED_FRACTION){
-          mandatory_hft_params.push_back(MandatoryParam(
-                "digestive_limit_fixed", req_str +
-                " and \"fixed_fraction\" is digestive limit."));
-        }
-        if (current_hft.expenditure_components.count(EC_ALLOMETRIC)) {
-          mandatory_hft_params.push_back(MandatoryParam(
-                "expenditure_allometry", req_str +
-                " and \"allometric\" is an expenditure component."));
-        }
-        if (current_hft.expenditure_components.count(EC_THERMOREGULATION)) {
-          mandatory_hft_params.push_back(MandatoryParam(
-                "conductance", req_str +
-                " and \"thermoregulation\" is an expenditure component."));
-        }
-        if (current_hft.foraging_limits.count(FL_ILLIUS_OCONNOR_2000)){
-          mandatory_hft_params.push_back(MandatoryParam(
-                "half_max_intake_density", req_str +
-                " and \"illius_oconnor_2000\" in foraging_limits"));
-        }
-        if (current_hft.mortality_factors.count(MF_STARVATION_ILLIUS_OCONNOR_2000)){
-          mandatory_hft_params.push_back(MandatoryParam(
-                "bodyfat_deviation", req_str +
-                " and \"starvation_illius_oconnor_2000\" in mortality_factors"));
-        }
-        if (current_hft.reproduction_model == RM_ILLIUS_OCONNOR_2000 ||
-            current_hft.reproduction_model == RM_CONST_MAX ||
-            current_hft.reproduction_model == RM_LINEAR)
-        {
-          mandatory_hft_params.push_back(MandatoryParam(
-                "breeding_season_length", req_str +
-                " and reproduction_model=illius_oconnor_2000|const_max|linear"));
-          mandatory_hft_params.push_back(MandatoryParam(
-                "breeding_season_start", req_str +
-                " and reproduction_model=illius_oconnor_2000|const_max|linear"));
-          mandatory_hft_params.push_back(MandatoryParam(
-                "reproduction_max", req_str +
-                " and reproduction_model=illius_oconnor_2000|const_max|linear"));
-        }
-      }
+			if (params.herbivore_type == HT_INDIVIDUAL ||
+					params.herbivore_type == HT_COHORT) {
+				// string message why parameter is required
+				const std::string req_str = "herbivore_type=(cohort|individual)";
+				mandatory_hft_params.push_back(MandatoryParam(
+							"bodyfat_birth", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"bodyfat_max", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"bodymass_birth", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"bodymass_female", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"bodymass_male", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"diet_composer", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"digestion_type", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"digestive_limit", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"establishment_age_range", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"establishment_density", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"expenditure_components", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"gestation_months", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"maturity_age_phys_female", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"maturity_age_phys_male", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"maturity_age_sex", req_str));
+				mandatory_hft_params.push_back(MandatoryParam(
+							"reproduction_model", req_str));
+				if (current_hft.mortality_factors.count(MF_LIFESPAN))
+					mandatory_hft_params.push_back(MandatoryParam(
+								"lifespan", req_str +
+								" and lifespan in mortality_factors"));
+				if (current_hft.mortality_factors.count(MF_BACKGROUND)){
+					mandatory_hft_params.push_back(MandatoryParam(
+								"mortality", req_str +
+								" and \"background\" in mortality_factors"));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"mortality_juvenile", req_str +
+								" and \"background\" in mortality_factors"));
+				}
+				if (current_hft.digestive_limit == DL_ALLOMETRIC){
+					mandatory_hft_params.push_back(MandatoryParam(
+								"digestive_limit_allometry", req_str +
+								" and \"allometric\" is digestive limit."));
+				}
+				if (current_hft.digestive_limit == DL_FIXED_FRACTION){
+					mandatory_hft_params.push_back(MandatoryParam(
+								"digestive_limit_fixed", req_str +
+								" and \"fixed_fraction\" is digestive limit."));
+				}
+				if (current_hft.expenditure_components.count(EC_ALLOMETRIC)) {
+					mandatory_hft_params.push_back(MandatoryParam(
+								"expenditure_allometry", req_str +
+								" and \"allometric\" is an expenditure component."));
+				}
+				if (current_hft.expenditure_components.count(EC_THERMOREGULATION)) {
+					mandatory_hft_params.push_back(MandatoryParam(
+								"conductance", req_str +
+								" and \"thermoregulation\" is an expenditure component."));
+				}
+				if (current_hft.foraging_limits.count(FL_ILLIUS_OCONNOR_2000)){
+					mandatory_hft_params.push_back(MandatoryParam(
+								"half_max_intake_density", req_str +
+								" and \"illius_oconnor_2000\" in foraging_limits"));
+				}
+				if (current_hft.mortality_factors.count(MF_STARVATION_ILLIUS_OCONNOR_2000)){
+					mandatory_hft_params.push_back(MandatoryParam(
+								"bodyfat_deviation", req_str +
+								" and \"starvation_illius_oconnor_2000\" in mortality_factors"));
+				}
+				if (current_hft.reproduction_model == RM_ILLIUS_OCONNOR_2000 ||
+						current_hft.reproduction_model == RM_CONST_MAX ||
+						current_hft.reproduction_model == RM_LINEAR)
+				{
+					mandatory_hft_params.push_back(MandatoryParam(
+								"breeding_season_length", req_str +
+								" and reproduction_model=illius_oconnor_2000|const_max|linear"));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"breeding_season_start", req_str +
+								" and reproduction_model=illius_oconnor_2000|const_max|linear"));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"reproduction_max", req_str +
+								" and reproduction_model=illius_oconnor_2000|const_max|linear"));
+				}
+			}
 
-      if (!check_mandatory(mandatory_hft_params,
-            "HFT \""+current_hft.name+"\""))
-        plibabort();
+			if (!check_mandatory(mandatory_hft_params,
+						"HFT \""+current_hft.name+"\""))
+				plibabort();
 
-      // Now everything seems okay, and we can add the HFT.
-      hftlist.insert(current_hft);
-    }
+			// Now everything seems okay, and we can add the HFT.
+			hftlist.insert(current_hft);
+		}
 	}
 
 	if (callback == CB_CHECKGLOBAL) {
