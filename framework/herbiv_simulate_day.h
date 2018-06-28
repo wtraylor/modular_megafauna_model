@@ -37,6 +37,8 @@ namespace Fauna{
 			 * \param day_of_year Current day of year (0 = Jan 1st)
 			 * \param simulation_unit The habitat and herbivores to
 			 * simulate.
+			 * \param feed_herbivores Function object used to give forage to the
+			 * herbivores.
 			 * \throw std::invalid_argument If day_of_year not in [0,364].
 			 */
 			SimulateDay(const int day_of_year, 
