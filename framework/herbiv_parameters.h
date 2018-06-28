@@ -50,7 +50,8 @@ namespace Fauna {
 		/// How the forage digestibility of \ref Individual objects is calculated
 		DigestibilityModelType digestibility_model;
 
-		/// Algorithm for how to distribute available forage among herbivores
+		/// Algorithm for how to distribute available forage among herbivores.
+		/** Default: \ref FD_EQUALLY */
 		ForageDistributionAlgorithm forage_distribution; 
 
 		/// Simulation years without herbivores (as part of spinup). 

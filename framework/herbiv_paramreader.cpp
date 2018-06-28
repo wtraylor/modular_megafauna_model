@@ -340,8 +340,6 @@ void ParamReader::callback(const int callback, Pft* ppft){
 						"snow_depth_model"));
 #endif
 			mandatory_global_params.push_back(MandatoryParam(
-						"forage_distribution"));
-			mandatory_global_params.push_back(MandatoryParam(
 						"free_herbivory_years"));
 			mandatory_global_params.push_back(MandatoryParam(
 						"herbivore_establish_interval"));
