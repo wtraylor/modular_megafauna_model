@@ -314,7 +314,7 @@ namespace Fauna{
 			/// Maximum annual reproduction rate for females (0.0–∞)
 			double reproduction_max;
 
-			/// Algorithm to calculate herbivore reproduction.
+			/// Algorithm to calculate herbivore reproduction (default: none).
 			ReproductionModel reproduction_model;
 
 			/// Whether to shift mean cohort body condition on starvation mortality.

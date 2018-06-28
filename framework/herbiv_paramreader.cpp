@@ -228,8 +228,6 @@ void ParamReader::callback(const int callback, Pft* ppft){
 							"establishment_density", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
 							"expenditure_components", req_str));
-				mandatory_hft_params.push_back(MandatoryParam(
-							"reproduction_model", req_str));
 				if (current_hft.mortality_factors.count(MF_LIFESPAN))
 					mandatory_hft_params.push_back(MandatoryParam(
 								"lifespan", req_str +
