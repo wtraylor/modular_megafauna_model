@@ -62,6 +62,7 @@ namespace Fauna {
 		double habitat_area_km2;
 
 		/// Days between establishment check for herbivores.
+		/** A value of `0` means no re-establishment. This is the default. */
 		int herbivore_establish_interval;
 
 		/// Which kind of herbivore class to use
@@ -79,7 +80,7 @@ namespace Fauna {
 			forage_distribution(FD_EQUALLY),
 			free_herbivory_years(0),
 			habitat_area_km2(100.0),
-			herbivore_establish_interval(365),
+			herbivore_establish_interval(0),
 			herbivore_type(HT_COHORT),
 			ifherbivory(false),
 			snow_depth_model(SD_TEN_TO_ONE)

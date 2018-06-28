@@ -340,8 +340,6 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			mandatory_global_params.push_back(MandatoryParam(
 						"free_herbivory_years"));
 			mandatory_global_params.push_back(MandatoryParam(
-						"herbivore_establish_interval"));
-			mandatory_global_params.push_back(MandatoryParam(
 						"herbivore_type"));
 
 			if (params.herbivore_type == HT_INDIVIDUAL)
@@ -727,7 +725,8 @@ void ParamReader::declare_parameters(
 				0, INT_MAX, // min, max
 				1,          // number of parameters
 				CB_NONE,
-				"Number of days between herbivore establishment.");
+				"Number of days between herbivore establishment. "
+				"Defaults to 0 = no re-establishment.");
 
 		declareitem("herbivore_type",
 				&strparam,
