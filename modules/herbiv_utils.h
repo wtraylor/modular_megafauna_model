@@ -43,40 +43,40 @@ namespace Fauna{
 		return (double) rand() / RAND_MAX;
 	}
 
-  /// Average of a `double` value over a given time period.
-  /**
-   * This helper class successively takes `double` values and 
-   * stores/records them up to a given count. 
-   * At any time, the average (arithmetic mean) over the stored values
-   * can be queried with \ref get_average().
-   *
-   * Use this to keep track of for instance the average body condition
-   * of the last month or the average phenology of the last year.
-   * In the first case, you would create the object with `count==30` and
-   * call \ref add_value() exactly once every day. 
-   * In the second scenario, `count` would equal `365`.
-   */
-  class PeriodAverage{
-    public:
-      /// Constructor.
-      /**
-       * \param count Number of values to remember and use for average.
-       * \throw std::invalid_argument If `count<=0`.
-       */
-      PeriodAverage(const int count);
+	/// Average of a `double` value over a given time period.
+	/**
+	 * This helper class successively takes `double` values and 
+	 * stores/records them up to a given count. 
+	 * At any time, the average (arithmetic mean) over the stored values
+	 * can be queried with \ref get_average().
+	 *
+	 * Use this to keep track of for instance the average body condition
+	 * of the last month or the average phenology of the last year.
+	 * In the first case, you would create the object with `count==30` and
+	 * call \ref add_value() exactly once every day. 
+	 * In the second scenario, `count` would equal `365`.
+	 */
+	class PeriodAverage{
+		public:
+			/// Constructor.
+			/**
+			 * \param count Number of values to remember and use for average.
+			 * \throw std::invalid_argument If `count<=0`.
+			 */
+			PeriodAverage(const int count);
 
-      /// Add a value to the record.
-      void add_value(const double);
+			/// Add a value to the record.
+			void add_value(const double);
 
-      /// Get arithmetic mean over all so-far recorded values.
+			/// Get arithmetic mean over all so-far recorded values.
 			/**
 			 * \throw std::logic_error If no values were added yet.
 			 */
-      double get_average()const;
-    private:
-      std::deque<double> deque;
-      int count; // const
-  };
+			double get_average()const;
+		private:
+			std::deque<double> deque;
+			int count; // const
+	};
 
 	/// The day of the month (0 = 1st).
 	/**

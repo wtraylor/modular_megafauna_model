@@ -312,7 +312,7 @@ namespace Fauna{
 			int maturity_age_sex;
 
 			/// Minimum viable density of one HFT population (all cohorts) [frac.].
-      /** Given as fraction of \ref establishment_density. Default: 0.5
+			/** Given as fraction of \ref establishment_density. Default: 0.5
 			 * \see \ref sec_minimum_density_threshold */
 			double minimum_density_threshold;
 

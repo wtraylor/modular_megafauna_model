@@ -1471,7 +1471,7 @@ TEST_CASE("Fauna::GetStarvationIlliusOConnor2000", "") {
 
 	SECTION("default standard deviation"){
 		const GetStarvationIlliusOConnor2000 get_mort(0.125, 
-        true);// yes, shift body condition
+				true);// yes, shift body condition
 		CHECK_THROWS( get_mort(-1.0, new_bc) );
 		CHECK_THROWS( get_mort(1.1, new_bc) );
 

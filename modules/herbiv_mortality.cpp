@@ -76,26 +76,26 @@ GetStarvationIlliusOConnor2000::GetStarvationIlliusOConnor2000(
 }
 
 double GetStarvationIlliusOConnor2000::cumulative_normal_distribution(double x){
-    // constants
-    static const double a1 =  0.254829592;
-    static const double a2 = -0.284496736;
-    static const double a3 =  1.421413741;
-    static const double a4 = -1.453152027;
-    static const double a5 =  1.061405429;
-    static const double p  =  0.3275911;
+	// constants
+	static const double a1 =  0.254829592;
+	static const double a2 = -0.284496736;
+	static const double a3 =  1.421413741;
+	static const double a4 = -1.453152027;
+	static const double a5 =  1.061405429;
+	static const double p  =  0.3275911;
 
-    // Save the sign of x
-    int sign = 1;
-    if (x < 0)
-        sign = -1;
-    x = fabs(x)/sqrt(2.0);
+	// Save the sign of x
+	int sign = 1;
+	if (x < 0)
+		sign = -1;
+	x = fabs(x)/sqrt(2.0);
 
-    // A&S formula 7.1.26 (Handbook of Mathematical Functions by 
-		// Abramowitz and Stegun)
-    const double t = 1.0/(1.0 + p*x);
-    const double y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x);
+	// A&S formula 7.1.26 (Handbook of Mathematical Functions by 
+	// Abramowitz and Stegun)
+	const double t = 1.0/(1.0 + p*x);
+	const double y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x);
 
-    return 0.5*(1.0 + sign*y);}
+	return 0.5*(1.0 + sign*y);}
 
 double GetStarvationIlliusOConnor2000::operator()(
 		const double body_condition,
@@ -121,9 +121,9 @@ double GetStarvationIlliusOConnor2000::operator()(
 
 	if (shift_body_condition){
 		new_body_condition = body_condition / (1.0 - dead_fraction);
-    // If `dead_fraction` approaches zero, `new_body_condition` can get
-    // above 1.0.
-    new_body_condition = min(1.0, new_body_condition);
+		// If `dead_fraction` approaches zero, `new_body_condition` can get
+		// above 1.0.
+		new_body_condition = min(1.0, new_body_condition);
 	} else 
 		new_body_condition = body_condition;
 
