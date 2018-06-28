@@ -166,14 +166,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-		if (establishment_age_range.first  >= lifespan ||
-				establishment_age_range.second >= lifespan) {
-			stream << "establishment_age_range must be smaller than `lifespan` ("
-				<<establishment_age_range.first << ", "
-				<<establishment_age_range.second<<")"<<std::endl;
-			is_valid = false;
-		}
-
 		if (establishment_age_range.first  > establishment_age_range.second) {
 			stream << "First number of `establishment_age_range` must be smaller "
 				<< " the second number ("
@@ -306,6 +298,15 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		}
 
 		if (mortality_factors.count(MF_LIFESPAN)) {
+
+			if (establishment_age_range.first  >= lifespan ||
+					establishment_age_range.second >= lifespan) {
+				stream << "establishment_age_range must be smaller than `lifespan` ("
+					<<establishment_age_range.first << ", "
+					<<establishment_age_range.second<<")"<<std::endl;
+				is_valid = false;
+			}
+
 			if (lifespan < 1) {
 				stream << "lifespan must be >=1 ("<<lifespan<<")"<<std::endl;
 				is_valid = false;
