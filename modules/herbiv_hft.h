@@ -160,7 +160,9 @@ namespace Fauna{
 		/// Use class \ref ReprIlliusOconnor2000 to calculate reproduction.
 		RM_ILLIUS_OCONNOR_2000,
 		/// Use class \ref ReproductionLinear for reproduction.
-		RM_LINEAR
+		RM_LINEAR,
+		/// Disable reproduction all together.
+		RM_NONE
 	};
 
 	/// One herbivore functional type (i.e. one species).
@@ -312,7 +314,7 @@ namespace Fauna{
 			/// Maximum annual reproduction rate for females (0.0–∞)
 			double reproduction_max;
 
-			/// Algorithm to calculate herbivore reproduction.
+			/// Algorithm to calculate herbivore reproduction (default: none).
 			ReproductionModel reproduction_model;
 
 			/// Whether to shift mean cohort body condition on starvation mortality.

@@ -50,7 +50,8 @@ namespace Fauna {
 		/// How the forage digestibility of \ref Individual objects is calculated
 		DigestibilityModelType digestibility_model;
 
-		/// Algorithm for how to distribute available forage among herbivores
+		/// Algorithm for how to distribute available forage among herbivores.
+		/** Default: \ref FD_EQUALLY */
 		ForageDistributionAlgorithm forage_distribution; 
 
 		/// Simulation years without herbivores (as part of spinup). 
@@ -61,6 +62,7 @@ namespace Fauna {
 		double habitat_area_km2;
 
 		/// Days between establishment check for herbivores.
+		/** A value of `0` means no re-establishment. This is the default. */
 		int herbivore_establish_interval;
 
 		/// Which kind of herbivore class to use
@@ -70,6 +72,7 @@ namespace Fauna {
 		bool ifherbivory;
 
 		/// How to convert snow water equivalent from LPJ-GUESS to snow depth.
+		/** Default: \ref SD_TEN_TO_ONE */
 		SnowDepthModel snow_depth_model;
 
 		/// Constructor with default (valid!) settings
@@ -77,7 +80,7 @@ namespace Fauna {
 			forage_distribution(FD_EQUALLY),
 			free_herbivory_years(0),
 			habitat_area_km2(100.0),
-			herbivore_establish_interval(365),
+			herbivore_establish_interval(0),
 			herbivore_type(HT_COHORT),
 			ifherbivory(false),
 			snow_depth_model(SD_TEN_TO_ONE)

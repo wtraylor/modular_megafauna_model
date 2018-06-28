@@ -49,7 +49,7 @@ Hft::Hft():
 	mortality_juvenile(0.3),
 	net_energy_model(NE_DEFAULT),
 	reproduction_max(0.7),
-	reproduction_model(RM_ILLIUS_OCONNOR_2000),
+	reproduction_model(RM_NONE),
 	shift_body_condition_for_starvation(true)
 {
 	expenditure_components.insert(EC_ALLOMETRIC);
@@ -123,7 +123,8 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-		if (bodymass_birth >= bodymass_male || bodymass_birth >= bodymass_female) {
+		if (bodymass_birth > bodymass_male || bodymass_birth > bodymass_female) 
+		{
 			stream << "bodymass_birth must not be greater than either "
 				<<"bodymass_male or bodymass_female ("
 				<<bodymass_birth<<")"<<std::endl;
@@ -160,14 +161,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		if (establishment_age_range.first < 0 ||
 				establishment_age_range.second < 0) {
 			stream << "establishment_age_range must be 2 positive numbers ("
-				<<establishment_age_range.first << ", "
-				<<establishment_age_range.second<<")"<<std::endl;
-			is_valid = false;
-		}
-
-		if (establishment_age_range.first  >= lifespan ||
-				establishment_age_range.second >= lifespan) {
-			stream << "establishment_age_range must be smaller than `lifespan` ("
 				<<establishment_age_range.first << ", "
 				<<establishment_age_range.second<<")"<<std::endl;
 			is_valid = false;
@@ -305,6 +298,15 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 		}
 
 		if (mortality_factors.count(MF_LIFESPAN)) {
+
+			if (establishment_age_range.first  >= lifespan ||
+					establishment_age_range.second >= lifespan) {
+				stream << "establishment_age_range must be smaller than `lifespan` ("
+					<<establishment_age_range.first << ", "
+					<<establishment_age_range.second<<")"<<std::endl;
+				is_valid = false;
+			}
+
 			if (lifespan < 1) {
 				stream << "lifespan must be >=1 ("<<lifespan<<")"<<std::endl;
 				is_valid = false;

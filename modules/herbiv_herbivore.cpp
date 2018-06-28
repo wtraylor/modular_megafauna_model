@@ -491,6 +491,9 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 				get_hft().reproduction_max);
 		return linear.get_offspring_density(get_today(), body_condition);
 	}
+	else if (get_hft().reproduction_model == RM_NONE){
+		return 0.0;
+	}
 	// ADD NEW MODELS HERE
 	// in new if statements
 	else
