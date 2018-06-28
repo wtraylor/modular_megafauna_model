@@ -263,7 +263,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				if (current_hft.foraging_limits.count(FL_ILLIUS_OCONNOR_2000)){
 					mandatory_hft_params.push_back(MandatoryParam(
 								"half_max_intake_density", req_str +
-								" and \"illius_oconnor_2000\" in foraging_limits"));
+								" and \"general_functional_response\" in foraging_limits"));
 				}
 				if (current_hft.mortality_factors.count(MF_STARVATION_ILLIUS_OCONNOR_2000)){
 					mandatory_hft_params.push_back(MandatoryParam(
@@ -518,13 +518,17 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		for (itr = token_list.begin(); itr != token_list.end(); itr++){
 			if (*itr == "ILLIUS_OCONNOR_2000") 
 				current_hft.foraging_limits.insert(FL_ILLIUS_OCONNOR_2000);
+			else if (*itr == "GENERAL_FUNCTIONAL_RESPONSE") 
+				current_hft.foraging_limits.insert(FL_GENERAL_FUNCTIONAL_RESPONSE);
 			// add new foraging limits here
 			else {
 				sendmessage("Error", std::string(
 							"Unknown foraging limit: \""
 							+*itr+"\". "
 							"Valid types: "
-							"\"illius_oconnor_2000\"").c_str());
+							"\"illius_oconnor_2000\", "
+							"\"general_functional_response\""
+							).c_str());
 				plibabort();
 			} 
 		}
@@ -919,7 +923,8 @@ void ParamReader::declare_parameters(
 				CB_FORAGING_LIMITS,
 				"Comma-separated list of constraints of herbivore forage intake. "
 				"Possible values: "
-				"\"illius_oconnor_2000\"");
+				"\"illius_oconnor_2000\", "
+				"\"general_functional_response\"");
 
 		declareitem("gestation_months",
 				&current_hft.gestation_months,

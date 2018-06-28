@@ -205,6 +205,9 @@ ForageMass GetForageDemands::get_max_foraging()const
 			// The Illius & O’Connor (2000) model applies only to grass, and
 			// hence we only constrain the grass part of `result`.
 			result.set(FT_GRASS, min(result[FT_GRASS], grass_limit_kg));
+		} else if (*itr == FL_GENERAL_FUNCTIONAL_RESPONSE){
+			// Silently ignore the limit “general_functional_response” here
+			// because it is applied later “on top” of all other limits.
 		} else
 			// ADD MORE LIMITS HERE IN NEW ELSE-IF STATEMENTS
 			throw std::logic_error(
@@ -261,6 +264,20 @@ void GetForageDemands::init_today(
 
 	// Reduce maximum intake by digestive limits.
 	max_intake.min(get_max_digestion());
+
+	// Apply the general functional response “on top”.
+	// BUT ONLY FOR THE GRASS COMPONENT.
+	if (get_hft().foraging_limits.count(FL_GENERAL_FUNCTIONAL_RESPONSE) &&
+			max_intake[FT_GRASS] > 0.0){
+		// Create functional response with current limit as maximum.
+		const HalfMaxIntake half_max(
+				get_hft().half_max_intake_density*1000.0, // gDM/m² to kgDM/km²
+				max_intake[FT_GRASS]);
+
+		// Apply the result to the grass component.
+		max_intake.set(FT_GRASS, half_max.get_intake_rate(
+					available_forage.grass.get_mass())); // [kgDM/ind/day]
+	}
 }
 
 ForageMass GetForageDemands::operator()(const double _energy_needs)

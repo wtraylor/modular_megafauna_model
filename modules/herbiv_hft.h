@@ -112,6 +112,23 @@ namespace Fauna{
 	/// A factor limiting a herbivore’s daily forage harvesting.
 	enum ForagingLimit{
 
+		/// Type-II functional response applied “on top” of all other constraints. 
+		/**This has no empirical basis, but serves as a way to implement an 
+		 * “artificial” smooth negative feedback from forage to fat mass.
+		 *
+		 * Note that this model is functionally similar to 
+		 * \ref FL_ILLIUS_OCONNOR_2000, but Illius & O’Connor (2000)
+		 * \cite illius2000resource use a value for 
+		 * \ref Hft::half_max_intake_density that is empirical-based.
+		 *
+		 * Here, it shall be explicitely stated that the half-max intake
+		 * density is *not* based on observation, but solely used as a means
+		 * to create a workable forage–intake feedback.
+		 *
+		 * \see \ref Hft::half_max_intake_density, \ref HalfMaxIntake
+	*/
+		FL_GENERAL_FUNCTIONAL_RESPONSE,
+
 		/// Foraging is limited by a functional response towards digestion limit.
 		/**
 		 * Illius & O’Connor (2000) \cite illius2000resource describe daily 

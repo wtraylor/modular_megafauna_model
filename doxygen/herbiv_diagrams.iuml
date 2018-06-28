@@ -156,6 +156,7 @@
 	package "Foraging Limits" <<rectangle>>  {
     enum ForagingLimit{
       FL_ILLIUS_OCONNOR_2000
+      FL_GENERAL_FUNCTIONAL_RESPONSE
     }
 	} 
 	HerbivoreBase  ..> "*" "Foraging Limits"

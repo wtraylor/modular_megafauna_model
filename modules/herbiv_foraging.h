@@ -203,6 +203,7 @@ namespace Fauna{
 	 * \f$V_{1/2}\f$ “beta” (β).
 	 *
 	 * \see \ref FL_ILLIUS_OCONNOR_2000
+	 * \see \ref FL_GENERAL_FUNCTIONAL_RESPONSE
 	 */
 	class HalfMaxIntake{
 		public:

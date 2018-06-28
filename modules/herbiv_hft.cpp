@@ -229,11 +229,23 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-		if (foraging_limits.count(FL_ILLIUS_OCONNOR_2000) &&
+		if ((foraging_limits.count(FL_ILLIUS_OCONNOR_2000)||
+					foraging_limits.count(FL_GENERAL_FUNCTIONAL_RESPONSE)) &&
 				!(half_max_intake_density > 0.0)){
 			stream << "half_max_intake_density must be >0 "
-				"if `ILLIUS_OCONNOR_2000` is set as a foraging limit."
+				"if `ILLIUS_OCONNOR_2000` or `GENERAL_FUNCTIONAL_RESPONSE` "
+				"is set as a foraging limit."
 				<< " (current value: "<<half_max_intake_density<<")"<<std::endl;
+			is_valid = false;
+		}
+
+		if (foraging_limits.count(FL_ILLIUS_OCONNOR_2000) &&
+				foraging_limits.count(FL_GENERAL_FUNCTIONAL_RESPONSE)){
+			stream << "The foraging limits `ILLIUS_OCONNOR_2000` and "
+				"`GENERAL_FUNCTIONAL_RESPONSE` are mutually exclusive because "
+				"they are functionally equivalent. The former applies a functional "
+				"response to maximum energy intake. The latter applies it to mass "
+				"intake." << std::endl;
 			is_valid = false;
 		}
 
