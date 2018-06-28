@@ -336,8 +336,6 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			// The following parameters only apply to LPJ-GUESS.
 			mandatory_global_params.push_back(MandatoryParam(
 						"digestibility_model"));
-			mandatory_global_params.push_back(MandatoryParam(
-						"snow_depth_model"));
 #endif
 			mandatory_global_params.push_back(MandatoryParam(
 						"free_herbivory_years"));

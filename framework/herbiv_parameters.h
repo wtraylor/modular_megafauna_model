@@ -71,6 +71,7 @@ namespace Fauna {
 		bool ifherbivory;
 
 		/// How to convert snow water equivalent from LPJ-GUESS to snow depth.
+		/** Default: \ref SD_TEN_TO_ONE */
 		SnowDepthModel snow_depth_model;
 
 		/// Constructor with default (valid!) settings
