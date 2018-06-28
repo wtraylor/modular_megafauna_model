@@ -211,11 +211,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 				// string message why parameter is required
 				const std::string req_str = "herbivore_type=(cohort|individual)";
 				mandatory_hft_params.push_back(MandatoryParam(
-							"bodyfat_birth", req_str));
-				mandatory_hft_params.push_back(MandatoryParam(
 							"bodyfat_max", req_str));
-				mandatory_hft_params.push_back(MandatoryParam(
-							"bodymass_birth", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
 							"bodymass_female", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
@@ -232,14 +228,6 @@ void ParamReader::callback(const int callback, Pft* ppft){
 							"establishment_density", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
 							"expenditure_components", req_str));
-				mandatory_hft_params.push_back(MandatoryParam(
-							"gestation_months", req_str));
-				mandatory_hft_params.push_back(MandatoryParam(
-							"maturity_age_phys_female", req_str));
-				mandatory_hft_params.push_back(MandatoryParam(
-							"maturity_age_phys_male", req_str));
-				mandatory_hft_params.push_back(MandatoryParam(
-							"maturity_age_sex", req_str));
 				mandatory_hft_params.push_back(MandatoryParam(
 							"reproduction_model", req_str));
 				if (current_hft.mortality_factors.count(MF_LIFESPAN))
@@ -288,15 +276,42 @@ void ParamReader::callback(const int callback, Pft* ppft){
 						current_hft.reproduction_model == RM_CONST_MAX ||
 						current_hft.reproduction_model == RM_LINEAR)
 				{
+					const std::string req_str_repr = req_str +
+								" and reproduction_model=illius_oconnor_2000|const_max|linear";
 					mandatory_hft_params.push_back(MandatoryParam(
-								"breeding_season_length", req_str +
-								" and reproduction_model=illius_oconnor_2000|const_max|linear"));
+								"bodyfat_birth", req_str_repr));
 					mandatory_hft_params.push_back(MandatoryParam(
-								"breeding_season_start", req_str +
-								" and reproduction_model=illius_oconnor_2000|const_max|linear"));
+								"bodymass_birth", req_str_repr));
 					mandatory_hft_params.push_back(MandatoryParam(
-								"reproduction_max", req_str +
-								" and reproduction_model=illius_oconnor_2000|const_max|linear"));
+								"breeding_season_length", req_str_repr));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"breeding_season_start", req_str_repr));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"gestation_months", req_str_repr));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"maturity_age_phys_female", req_str_repr));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"maturity_age_phys_male", req_str_repr));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"maturity_age_sex", req_str_repr));
+					mandatory_hft_params.push_back(MandatoryParam(
+								"reproduction_max", req_str_repr));
+				}
+				if (current_hft.reproduction_model == RM_NONE) {
+					// If there is no reproduction, we assume only adult animals
+					// if the life history parameters for neonates and young animals
+					// are not specified.
+					if (!itemparsed("bodyfat_birth"))
+						current_hft.bodyfat_birth = current_hft.bodyfat_max;
+					if (!itemparsed("bodymass_birth"))
+						current_hft.bodymass_birth = min(current_hft.bodymass_male,
+								current_hft.bodymass_female);
+					if (!itemparsed("maturity_age_phys_female"))
+						current_hft.maturity_age_phys_female = 1;
+					if (!itemparsed("maturity_age_phys_male"))
+						current_hft.maturity_age_phys_male = 1;
+					if (!itemparsed("maturity_age_sex"))
+						current_hft.maturity_age_sex = 1;
 				}
 			}
 
@@ -633,12 +648,15 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			current_hft.reproduction_model = RM_CONST_MAX;
 		else if (strparam == "LINEAR")
 			current_hft.reproduction_model = RM_LINEAR;
+		else if (strparam == "NONE")
+			current_hft.reproduction_model = RM_NONE;
 		// Add new reproduction models here.
 		else {
 			sendmessage("Error", std::string(
 					"Unknown value for `reproduction_model` "
 					"in HFT \""+current_hft.name+"\"; valid types: "
-					"\"illius_oconnor_2000\", \"const_max\", \"linear\"").c_str());
+					"\"illius_oconnor_2000\", \"const_max\", \"linear\", "
+					"\"none\"").c_str());
 			plibabort();
 		}
 	}
@@ -1006,7 +1024,8 @@ void ParamReader::declare_parameters(
 				256, // max length of string
 				CB_REPRODUCTION_MODEL,
 				"Reproduction model for the HFT."
-				"Possible values: \"illius_oconnor_2000\", \"const_max\", \"linear\"");  
+				"Possible values: \"illius_oconnor_2000\", \"const_max\", "
+				"\"none\", \"linear\"");  
 
 		declareitem("shift_body_condition_for_starvation",
 				&(current_hft.shift_body_condition_for_starvation),
