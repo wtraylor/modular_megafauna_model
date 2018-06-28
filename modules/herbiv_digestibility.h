@@ -24,6 +24,11 @@ namespace Fauna {
 	struct GetDigestibility{
 		/// Get current forage digestibility for one plant individual.
 		virtual double operator()(const Individual&)const=0;
+
+		/// Virtual destructor.
+		/** The virtual destructor is necessary so that the object is properly
+		 * released from memory.*/
+		virtual ~GetDigestibility(){}
 	};
 
 	/// Digestibility model using \ref PftParams::digestibility.

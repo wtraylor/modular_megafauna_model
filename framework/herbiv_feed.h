@@ -40,6 +40,11 @@ namespace Fauna{
 		virtual void operator()(
 				const HabitatForage& available,
 				ForageDistribution& forage_distribution) const = 0;
+
+		/// Virtual destructor.
+		/** The virtual destructor is necessary so that the object is properly
+		 * released from memory.*/
+		virtual ~DistributeForage(){}
 	};
 
 	/// Equal forage distribution algorithm
