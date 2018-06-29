@@ -222,7 +222,7 @@ namespace Fauna{
 	 * \param season Whether it’s summer or winter pelt.
 	 * \return Extrapolated whole-body conductance for an Arctic species 
 	 * [W/°C].
-   * \throw std::invalid_argument If `bodymass <= 0`.
+	 * \throw std::invalid_argument If `bodymass <= 0`.
 	 */
 	inline double get_conductance_cuyler_oeritsland_2004(const double bodymass,
 			const FurSeason season){

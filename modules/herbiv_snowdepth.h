@@ -15,6 +15,11 @@ namespace Fauna {
 	struct GetSnowDepth{
 		/// Get snow depth [cm].
 		virtual double operator()(const Patch&)const = 0;
+
+		/// Virtual destructor.
+		/** The virtual destructor is necessary so that the object is properly
+		 * released from memory.*/
+		virtual ~GetSnowDepth(){}
 	};
 
 	/// Assume a constant 10:1 ratio of snow water equivalent to snow depth.

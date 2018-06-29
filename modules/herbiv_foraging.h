@@ -91,7 +91,7 @@ namespace Fauna{
 			/// Get energy-wise preferences for forage types.
 			/** 
 			 * To what fractions the different forage types are eaten (in 
-       * sum the fractions must be 1.0).
+			 * sum the fractions must be 1.0).
 			 *
 			 * \ref Hft::diet_composer defines the algorithm used to put 
 			 * together the fractions of different forage types in the preferred
@@ -102,7 +102,7 @@ namespace Fauna{
 			 * (see \ref DistributeForage).
 			 * This allows for switching to another, less preferred, forage
 			 * type if the first choice is not available anymore.
-       *
+			 *
 			 * This is the ad-libidum diet according to the preferences of the 
 			 * HFT.
 			 * The fractions refer to energy, not mass.

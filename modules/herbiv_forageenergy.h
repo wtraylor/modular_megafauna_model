@@ -37,6 +37,10 @@ namespace Fauna {
 				return result;
 			}
 
+			/// Virtual destructor.
+			/** The virtual destructor is necessary so that the object is properly
+			 * released from memory.*/
+			virtual ~GetNetEnergyContentInterface(){}
 		protected:
 			/// Get net energy content for one forage type [MJ/kgDM]
 			/**
@@ -49,7 +53,7 @@ namespace Fauna {
 			virtual double get_per_forage_type(
 					const ForageType forage_type,
 					const double digestibility)const = 0;
-			
+
 	};
 
 	/// Default net energy content algorithm
