@@ -77,8 +77,32 @@ namespace Fauna{
 		/** \see Hft::digestive_limit_allometry */
 		DL_ALLOMETRIC,
 
-		/// Dry-matter ingestion is limited to a fixed fraction of live body mass. 
-		/** \see Hft::digestive_limit_fixed */
+		/// Dry-matter ingestion is limited to a fixed fraction of live body mass.
+		/**
+		 * The parameter \ref Hft::digestive_limit_fixed (\f$f_{ad}\f$) defines the
+		 * maximum daily intake in dry matter as a fraction of body mass. It
+		 * applies only to adult animals. Younger animals have a higher metabolic
+		 * rate per body mass and thus also need a higher digestive limit. Since
+		 * the metabolic rate generally scales roughly with \f$M^{0.75}\f$ (Kleiber
+		 * 1961\cite kleiber1961fire), the metabolic rate *per body mass* scales
+		 * with \f$M^{-0.25}\f$. It is assumed that the maximum intake (\f$DMI\f$)
+		 * for physically immature animals scales in the same way. This is not
+		 * necessarily the case (and also depends on the chosen energy expenditure
+		 * model), but the assumption may suffice for the purpose of assuring that
+		 * juveniles don’t succumb due to a mismatch between intake and
+		 * expenditure. The case of lactation is not considered here, but even
+		 * newborns are modelled to eat fresh forage. Hence the increased DMI of
+		 * juveniles can be considered a surrogate for the support of a lactating
+		 * mother.
+		 * \f[
+		 * DMI =
+		 *   \begin{cases}
+		 *   f_{ad} * M & \text{if adult: } M = M_{ad}\\\\
+		 *   f_{ad}*M_{ad}^{-0.75} * M^{-0.75} & \text{if } M < M_{ad}
+		 *   \end{cases}
+		 * \f]
+		 * \image html herbiv_scale_diglimit.svg "Scaling of digestive limit for non-mature animals."
+		 */
 		DL_FIXED_FRACTION,
 
 		/// Limit digestive limit with \ref GetDigestiveLimitIlliusGordon1992.
