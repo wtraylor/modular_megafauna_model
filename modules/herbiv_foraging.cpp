@@ -125,7 +125,7 @@ ForageMass GetForageDemands::get_max_digestion()const
 	else if (get_hft().digestive_limit == DL_FIXED_FRACTION) {
 		double fraction = get_hft().digestive_limit_fixed;
 		// If it is a juvenile, we need to scale maximum intake with the mass-related
-		// expenditure.
+		// expenditure. (See doxygen doc of `DL_FIXED_FRACTION` for details.)
 		const double bodymass_adult =
 			sex == SEX_MALE ? get_hft().bodymass_male : get_hft().bodymass_female;
 		if (bodymass < bodymass_adult)
