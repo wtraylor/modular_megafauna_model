@@ -123,10 +123,17 @@ ForageMass GetForageDemands::get_max_digestion()const
 	}
 
 	else if (get_hft().digestive_limit == DL_FIXED_FRACTION) {
+		double fraction = get_hft().digestive_limit_fixed;
+		// If it is a juvenile, we need to scale maximum intake with the mass-related
+		// expenditure.
+		const double bodymass_adult =
+			sex == SEX_MALE ? get_hft().bodymass_male : get_hft().bodymass_female;
+		if (bodymass < bodymass_adult)
+			fraction = fraction / pow(bodymass_adult, -0.75) * pow(bodymass, -0.75);
 		return get_max_intake_as_total_mass(
 				diet_composition,
 				energy_content,
-				get_hft().digestive_limit_fixed * bodymass);
+				fraction * bodymass);
 	}
 
 	else if (get_hft().digestive_limit == DL_ILLIUS_GORDON_1992) {
