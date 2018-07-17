@@ -96,6 +96,10 @@ void FeedHerbivores::operator()(
 				itr != herbivores.end(); itr++){
 			HerbivoreInterface& herbivore = **itr;
 
+			// Skip dead herbivores.
+			if (herbivore.is_dead())
+				continue;
+
 			// calculate forage demand for this herbivore
 			const ForageMass ind_demand = herbivore.get_forage_demands(available);
 
