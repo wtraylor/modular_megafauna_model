@@ -101,6 +101,7 @@ namespace Fauna{
 		 * \param[in] environment Current environmental conditions in the habitat.
 		 * \param[out] offspring Number of newborn today [ind/km²].
 		 * \throw std::invalid_argument If `day` not in [0,364].
+		 * \throw std::logic_error If this herbivore is dead.
 		 */
 		virtual void simulate_day(const int day,
 				const HabitatEnvironment& environment,

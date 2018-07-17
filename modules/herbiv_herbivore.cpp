@@ -306,6 +306,9 @@ double HerbivoreBase::get_lean_bodymass()const{
 ForageMass HerbivoreBase::get_forage_demands(
 		const HabitatForage& available_forage)
 {
+	if (is_dead())
+		return ForageMass(0.0);
+
 	assert( get_forage_demands_per_ind.get() != NULL );
 
 	// Prepare GetForageDemands helper object if not yet done today.
@@ -518,6 +521,10 @@ void HerbivoreBase::simulate_day(const int day,
 	if (day < 0 || day >= 365)
 		throw std::invalid_argument("Fauna::HerbivoreBase::simulate_day() "
 				"Argument \"day\" out of range.");
+	if (is_dead())
+		throw std::invalid_argument("Fauna::HerbivoreBase::simulate_day() "
+				"This herbivore is dead. `simulate_day()` must not be called "
+				"on a dead herbivore object.");
 
 	// Create a new HabitatEnvironment object in the auto_ptr object by
 	// copy-construction from the function parameter.
