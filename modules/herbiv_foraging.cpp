@@ -287,6 +287,16 @@ void GetForageDemands::init_today(
 	}
 }
 
+bool GetForageDemands::is_day_initialized(const int day)const{
+	if (day < 0)
+		throw std::invalid_argument("Fauna::GetForageDemands::is_day_initialized() "
+				"Parameter \"day\" is negative.");
+	if (day > 364)
+		throw std::invalid_argument("Fauna::GetForageDemands::is_day_initialized() "
+				"Parameter \"day\" is greater than 364.");
+	return day == this->today;
+}
+
 ForageMass GetForageDemands::operator()(const double _energy_needs)
 {
 	if (today == -1)

@@ -57,9 +57,8 @@ namespace Fauna{
 					const double bodymass);
 
 			/// Whether the given day has been initialized with \ref init_today().
-			bool is_day_initialized(const int day)const{
-				return day == this->today;
-			}
+			/** \throw std::invalid_argument If `day<0 || day>364`. */
+			bool is_day_initialized(const int day)const;
 
 			/// Calculate current forage demands.
 			/**
