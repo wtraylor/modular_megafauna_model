@@ -32,28 +32,7 @@ Simulator::Simulator(const Parameters& params, const HftList& hftlist):
 	// of declaration in the header file: feed_herbivores must be
 	// *after* params so that create_distribute_forage() does not
 	// cause segmentation fault.
-{
-	// CHECK PARAMETERS OF HFTS AND GLOBALLY
-
-	std::string all_msg; 
-	bool all_valid = true;
-
-	HftList::const_iterator itr = hftlist.begin();
-	while (itr != hftlist.end()){
-		std::string msg;
-		all_valid &= itr->is_valid(params, msg);
-		all_msg   += msg;
-		itr++;
-	}
-
-	std::string global_msg;
-	all_valid &= params.is_valid(global_msg);
-	all_msg   += global_msg;
-
-	if (!all_valid)
-		throw std::invalid_argument("Fauna::Simulator::Simulator() "
-				"Invalid parameters:\n"+all_msg);
-}
+{}
 
 std::auto_ptr<GetDigestibility> Simulator::create_digestibility_model()const{
 	switch (params.digestibility_model){
