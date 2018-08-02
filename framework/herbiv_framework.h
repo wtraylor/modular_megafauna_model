@@ -15,9 +15,11 @@ namespace Fauna{
 	// Forward declarations
 	class GetDigestibility;
 	class GetSnowDepth;
+	class Hft;
 	class HftList;
 	class HftPopulationsMap;
 	class Parameters;
+	class PopulationInterface;
 	class SimulationUnit;
 
 	/// Central herbivory framework class.
@@ -46,6 +48,16 @@ namespace Fauna{
 			 * \ref Parameters::snow_depth_model is not implemented.
 			 * \return Pointer to newly constructed object. */
 			std::auto_ptr<GetSnowDepth> create_snow_depth_model()const;
+
+			/// Create one (empty) herbivore population for one HFT.
+			/**
+			 * \param phft Pointer to the Hft.
+			 * \throw std::logic_error if \ref Parameters::herbivore_type
+			 * is not implemented 
+			 * \return Pointer to new object.
+			 */
+			std::auto_ptr<PopulationInterface> create_population(
+					const Hft* phft)const;
 
 			/// Instantiate populations for one \ref Habitat.
 			/**

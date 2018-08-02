@@ -67,6 +67,29 @@ std::auto_ptr<GetSnowDepth> Simulator::create_snow_depth_model()const{
 	};
 }
 
+std::auto_ptr<PopulationInterface> Simulator::create_population(
+		const Hft* phft)const{
+	// Create population instance according to selected herbivore
+	// type
+	if (params.herbivore_type == HT_COHORT) {
+		return(std::auto_ptr<PopulationInterface>(
+					new CohortPopulation(
+						CreateHerbivoreCohort(phft, &params))));
+	} else if (params.herbivore_type == HT_INDIVIDUAL) {
+		const double AREA=1.0; // TODO THis is only a test
+		return(std::auto_ptr<PopulationInterface>(
+					new IndividualPopulation(
+						CreateHerbivoreIndividual(phft, &params))));
+		// TODO Where does the area size come from??
+		// -> from Habitat (then merge() doesn’t work anymore)
+		// -> from Parameters (then CreateHerbivoreIndividual
+		//    can read it directly + new validity checks)
+		// -> calculated by framework() ?
+	} else
+		throw std::logic_error("Simulator::create_populations(): "
+				"unknown herbivore type");
+}
+
 std::auto_ptr<HftPopulationsMap> Simulator::create_populations(
 		const HftList& hftlist)const{
 	// instantiate the HftPopulationsMap object
@@ -75,28 +98,7 @@ std::auto_ptr<HftPopulationsMap> Simulator::create_populations(
 	// Fill the object with one population per HFT
 	for (int i=0; i<hftlist.size(); i++){
 		const Hft* phft = &hftlist[i];
-
-		// Create population instance according to selected herbivore
-		// type
-		if (params.herbivore_type == HT_COHORT) {
-			std::auto_ptr<PopulationInterface> pcohort_pop(
-					new CohortPopulation(
-						CreateHerbivoreCohort(phft, &params)));
-			pmap->add(pcohort_pop);
-		} else if (params.herbivore_type == HT_INDIVIDUAL) {
-			const double AREA=1.0; // TODO THis is only a test
-			std::auto_ptr<PopulationInterface> pind_pop(
-					new IndividualPopulation(
-						CreateHerbivoreIndividual(phft, &params)));
-			// TODO Where does the area size come from??
-			// -> from Habitat (then merge() doesn’t work anymore)
-			// -> from Parameters (then CreateHerbivoreIndividual
-			//    can read it directly + new validity checks)
-			// -> calculated by framework() ?
-			pmap->add(pind_pop);
-		} else 
-			throw std::logic_error("Simulator::create_populations(): "
-					"unknown herbivore type");
+		pmap->add(create_population(phft));
 	}
 	assert( pmap.get()  != NULL );
 	assert( pmap->size() == hftlist.size() );
