@@ -105,6 +105,17 @@ std::auto_ptr<HftPopulationsMap> Simulator::create_populations(
 	return pmap;
 }
 
+std::auto_ptr<HftPopulationsMap> Simulator::create_populations(
+		const Hft* phft)const{
+	// instantiate the HftPopulationsMap object
+	std::auto_ptr<HftPopulationsMap> pmap(new HftPopulationsMap());
+	// Fill the object with one population of one HFT
+	pmap->add(create_population(phft));
+	assert( pmap.get()  != NULL );
+	assert( pmap->size() == 1 );
+	return pmap;
+}
+
 void Simulator::simulate_day(const int day_of_year, 
 					SimulationUnit& simulation_unit,
 		const bool do_herbivores){

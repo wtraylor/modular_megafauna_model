@@ -70,6 +70,16 @@ namespace Fauna{
 			std::auto_ptr<HftPopulationsMap> create_populations(
 					const HftList& hftlist)const;
 
+			/// Instantiate a populaton of only one \ref Hft for one \ref Habitat.
+			/**
+			 * \param phft Pointer to the one \ref Hft.
+			 * \throw std::logic_error if \ref Parameters::herbivore_type
+			 * is not implemented.
+			 * \return Pointer to new object.
+			 */
+			std::auto_ptr<HftPopulationsMap> create_populations(
+					const Hft* phft)const;
+
 			/// Get simulation parameters
 			const Parameters& get_params(){return params;}
 

@@ -86,6 +86,14 @@ void ParamReader::check_all_params(bool& fatal, std::string& msg)const{
 		msg_stream << tmp_msg;
 	}
 
+	// LPJ-GUESS PARAMETERS
+	if (params.one_hft_per_patch && !(npatch % hftlist.size() == 0)) {
+		msg_stream << "If `one_hft_per_patch` is enabled, "
+			"`npatch` ("<<npatch<<") must be a multiple of number of included "
+			"HFTs("<<hftlist.size()<<")." << std::endl;
+		fatal = true;
+	}
+
 	{ // HFT PARAMETERS
 
 		// Now check each HFT if it is valid also in the context of the global
@@ -751,6 +759,12 @@ void ParamReader::declare_parameters(
 				1, // number of parameters
 				CB_NONE, 
 				"Whether herbivory is enabled");
+
+		declareitem("one_hft_per_patch",
+				&(params.one_hft_per_patch),
+				1, // number of parameters
+				CB_NONE,
+				"Whether exclusively one HFT is allowed per patch.");
 
 	} 
 
