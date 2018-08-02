@@ -278,7 +278,7 @@ bool Framework::run(const Fauna::Parameters& global_params,
 	// The simulator for the habitats
 	// Pass the global parameters that were read from the 
 	// instruction file.
-	Simulator habitat_simulator(global_params, hftlist);
+	Simulator habitat_simulator(global_params);
 
 	dprintf("Creating ecosystem with habitats and herbivores.\n");
 
@@ -303,7 +303,7 @@ bool Framework::run(const Fauna::Parameters& global_params,
 				new_group.add( std::auto_ptr<SimulationUnit>(
 							new SimulationUnit(
 								create_habitat(),
-								habitat_simulator.create_populations())));
+								habitat_simulator.create_populations(hftlist))));
 
 			} catch (const std::exception& e){
 				dprintf("Exception during habitat creation:\n"

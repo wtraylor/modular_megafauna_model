@@ -24,8 +24,8 @@ using namespace Fauna;
 // Simulator
 //============================================================
 
-Simulator::Simulator(const Parameters& params, const HftList& hftlist):
-	hftlist(hftlist), params(params),
+Simulator::Simulator(const Parameters& params):
+	params(params),
 	days_since_last_establishment(params.herbivore_establish_interval),
 	feed_herbivores(create_distribute_forage())
 	// Non-static data member initialization happens in the order
@@ -67,7 +67,8 @@ std::auto_ptr<GetSnowDepth> Simulator::create_snow_depth_model()const{
 	};
 }
 
-std::auto_ptr<HftPopulationsMap> Simulator::create_populations()const{
+std::auto_ptr<HftPopulationsMap> Simulator::create_populations(
+		const HftList& hftlist)const{
 	// instantiate the HftPopulationsMap object
 	std::auto_ptr<HftPopulationsMap> pmap(new HftPopulationsMap());
 
@@ -130,6 +131,6 @@ void Simulator::simulate_day(const int day_of_year,
 	SimulateDay simulate_day(day_of_year, simulation_unit, feed_herbivores);
 
 	// Call the function object.
-	simulate_day(do_herbivores && hftlist.size()>0, establish_if_needed);
+	simulate_day(do_herbivores, establish_if_needed);
 }
 
