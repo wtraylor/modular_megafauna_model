@@ -424,6 +424,15 @@ namespace Fauna{
 					vec.push_back(hft); // append new
 			}
 
+			/// Check all HFTs if they are valid.
+			/**
+			 * \param[in] params The global simulation parameters.
+			 * \param[out] msg Warning or error messages for output.
+			 * \return `true` if all HFTs are valid. `false` if one Hft is not valid
+			 * or if the list is empty.
+			 */
+			bool is_valid(const Fauna::Parameters& params, std::string& msg)const;
+
 			/// Remove all elements with `is_included==false`
 			void remove_excluded(){
 				std::vector<Hft>::iterator iter = vec.begin();
