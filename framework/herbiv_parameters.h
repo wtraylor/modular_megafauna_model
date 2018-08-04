@@ -71,6 +71,9 @@ namespace Fauna {
 		/// Whether herbivory is enabled.
 		bool ifherbivory;
 
+		/// Whether to allow only herbivores of one HFT in each patch (default false).
+		bool one_hft_per_patch;
+
 		/// How to convert snow water equivalent from LPJ-GUESS to snow depth.
 		/** Default: \ref SD_TEN_TO_ONE */
 		SnowDepthModel snow_depth_model;
@@ -83,6 +86,7 @@ namespace Fauna {
 			herbivore_establish_interval(0),
 			herbivore_type(HT_COHORT),
 			ifherbivory(false),
+			one_hft_per_patch(false),
 			snow_depth_model(SD_TEN_TO_ONE)
 		{
 			// Make sure that the default values are implemented

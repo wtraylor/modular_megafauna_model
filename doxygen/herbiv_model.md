@@ -174,6 +174,17 @@ On the other hand, the `minimum_density_threshold` should not be set *too* low a
 Mortality {#sec_herbiv_mortality}
 ---------------------------------
 
+Species Coexistence {#sec_herbiv_coexistence}
+---------------------------------------------
+
+The classical competitive exclusion principle predicts that no two species can coexist in the long term if they each solely depend on one shared resource (\cite hardin1960competitive).
+One species will inevitably outcompete the other one.
+Though there are indeed ecological mechanisms that can facilitate coexistence with a shared resource (\cite chesson2000mechanisms), the parameter space for this to happen in a model is usually very narrow (e.g. \cite vanlangevelde2008intantaneous).
+
+In order to simply avoid competition among different HFTs, the option `one_hft_per_patch` can be enabled: Each HFT exists on its own, without any interaction with other species.
+Of course, the grid cell averages for mass density etc. include all HFTs.
+In order to avoid biases in the output, the patch number (`npatch`) must be a multiple of the HFT count.
+
 ------------------------------------------------------------
 
 \author Wolfgang Pappa, Senckenberg BiK-F

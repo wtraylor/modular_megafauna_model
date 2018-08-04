@@ -278,7 +278,7 @@ bool Framework::run(const Fauna::Parameters& global_params,
 	// The simulator for the habitats
 	// Pass the global parameters that were read from the 
 	// instruction file.
-	Simulator habitat_simulator(global_params, hftlist);
+	Simulator habitat_simulator(global_params);
 
 	dprintf("Creating ecosystem with habitats and herbivores.\n");
 
@@ -299,11 +299,20 @@ bool Framework::run(const Fauna::Parameters& global_params,
 		// Fill one group with habitats and populations
 		for (int h=0; h<params.nhabitats_per_group; h++){
 			try {
+				// Create herbivore populations for this patch
+				std::auto_ptr<Fauna::HftPopulationsMap> pops;
+				if (global_params.one_hft_per_patch) {
+					// Create only one HFT in the habitat.
+					pops = habitat_simulator.create_populations(
+							&hftlist[h%hftlist.size()]);
+				} else {
+					// Create all HFTs in the habitat.
+					pops = habitat_simulator.create_populations(hftlist);
+				}
+
 				// create a new pair of habitat and populations
 				new_group.add( std::auto_ptr<SimulationUnit>(
-							new SimulationUnit(
-								create_habitat(),
-								habitat_simulator.create_populations())));
+							new SimulationUnit(create_habitat(), pops)));
 
 			} catch (const std::exception& e){
 				dprintf("Exception during habitat creation:\n"
