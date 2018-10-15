@@ -113,7 +113,7 @@ namespace Fauna{
 	 * Taylor et al. (1981)\cite taylor1981genetic
 	 * Daily energy expenditure is given by
 	 * \f[
-	 * E [\frac{MJ},{day*ind}] = 0.4 * M * M_{ad}^{-0.27}
+	 * E [\frac{MJ}{day*ind}] = 0.4 * M * M_{ad}^{-0.27}
 	 * \f]
 	 * where M is current body mass [kg/ind] and \f$M_{ad}\f$ is
 	 * adult body mass.
