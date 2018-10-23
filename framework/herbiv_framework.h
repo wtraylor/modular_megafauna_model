@@ -15,9 +15,11 @@ namespace Fauna{
 	// Forward declarations
 	class GetDigestibility;
 	class GetSnowDepth;
+	class Hft;
 	class HftList;
 	class HftPopulationsMap;
 	class Parameters;
+	class PopulationInterface;
 	class SimulationUnit;
 
 	/// Central herbivory framework class.
@@ -30,12 +32,10 @@ namespace Fauna{
 			/// Constructor, initializing simulation settings.
 			/** 
 			 * \param params **valid** global simulation parameters
-			 * \param hftlist set of **valid** herbivore functional types
-			 * \throw std::invalid_argument if any parameter not valid.
 			 * \throw std::logic_error if 
 			 * \ref Parameters::forage_distribution not implemented 
 			 */
-			Simulator(const Parameters& params, const HftList& hftlist);
+			Simulator(const Parameters& params);
 
 			/// Construct a digestibility model object for LPJ-GUESS according to parameters
 			/** \throw std::logic_error if 
@@ -49,12 +49,36 @@ namespace Fauna{
 			 * \return Pointer to newly constructed object. */
 			std::auto_ptr<GetSnowDepth> create_snow_depth_model()const;
 
+			/// Create one (empty) herbivore population for one HFT.
+			/**
+			 * \param phft Pointer to the Hft.
+			 * \throw std::logic_error if \ref Parameters::herbivore_type
+			 * is not implemented 
+			 * \return Pointer to new object.
+			 */
+			std::auto_ptr<PopulationInterface> create_population(
+					const Hft* phft)const;
+
 			/// Instantiate populations for one \ref Habitat.
-			/** \throw std::logic_error if \ref Parameters::herbivore_type
+			/**
+			 * \param hftlist For each HFT in the list, one population will be
+			 * created.
+			 * \throw std::logic_error if \ref Parameters::herbivore_type
 			 * is not implemented 
 			 * \return Pointer to new object
 			 */
-			std::auto_ptr<HftPopulationsMap> create_populations()const;
+			std::auto_ptr<HftPopulationsMap> create_populations(
+					const HftList& hftlist)const;
+
+			/// Instantiate a populaton of only one \ref Hft for one \ref Habitat.
+			/**
+			 * \param phft Pointer to the one \ref Hft.
+			 * \throw std::logic_error if \ref Parameters::herbivore_type
+			 * is not implemented.
+			 * \return Pointer to new object.
+			 */
+			std::auto_ptr<HftPopulationsMap> create_populations(
+					const Hft* phft)const;
 
 			/// Get simulation parameters
 			const Parameters& get_params(){return params;}
@@ -84,7 +108,6 @@ namespace Fauna{
 			/// parameters.
 			std::auto_ptr<DistributeForage> create_distribute_forage();
 
-			const HftList& hftlist;
 			const Parameters& params;
 			FeedHerbivores feed_herbivores; 
 			int days_since_last_establishment;

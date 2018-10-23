@@ -133,7 +133,13 @@ void SimulateDay::operator()(const bool do_herbivores,
 	// pass the current date into the herbivore module
 	simulation_unit.get_habitat().init_day(day_of_year);
 
-	if (do_herbivores) {
+	if (do_herbivores && !simulation_unit.get_populations().empty()) {
+		// Kill herbivore populations below the minimum density threshold here
+		// so that simulate_herbivores() can take the nitrogen back before
+		// the herbivore objects are removed from memory in purge_of_dead()
+		// below.
+		simulation_unit.get_populations().kill_nonviable();
+
 		if (establish_if_needed)
 			do_establishment();
 

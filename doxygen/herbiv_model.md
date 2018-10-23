@@ -160,8 +160,30 @@ Life History {#sec_herbiv_life_history}
 
 growth linear: \ref Fauna::HerbivoreBase::get_bodymass()
 
+## Minimum Density Threshold {#sec_minimum_density_threshold}
+<!--TODO-->
+The parameter \ref Fauna::Hft::minimum_density_threshold (ind/km²) defines at which point a dwindling population (sum of all cohorts/individuals) may be considered dead.
+It is an arbitrary, but critical value for model performance.
+Possible re-establishment only happens if all cohorts are dead within one habitat.
+
+It is important to keep this parameter low enough for slow-breeding and long-lived animals because otherwise they may die out after establishment: 
+After establishment, the background mortality continually diminishes the adult cohorts, and after some years the total population (all cohorts together) my drop below the `minimum_density_threshold` before reproduction could compensate. 
+
+On the other hand, the `minimum_density_threshold` should not be set *too* low as this would result in extremely thin “ghost” populations that are effectively preventing re-establishment.
+
 Mortality {#sec_herbiv_mortality}
 ---------------------------------
+
+Species Coexistence {#sec_herbiv_coexistence}
+---------------------------------------------
+
+The classical competitive exclusion principle predicts that no two species can coexist in the long term if they each solely depend on one shared resource (\cite hardin1960competitive).
+One species will inevitably outcompete the other one.
+Though there are indeed ecological mechanisms that can facilitate coexistence with a shared resource (\cite chesson2000mechanisms), the parameter space for this to happen in a model is usually very narrow (e.g. \cite vanlangevelde2008intantaneous).
+
+In order to simply avoid competition among different HFTs, the option `one_hft_per_patch` can be enabled: Each HFT exists on its own, without any interaction with other species.
+Of course, the grid cell averages for mass density etc. include all HFTs.
+In order to avoid biases in the output, the patch number (`npatch`) must be a multiple of the HFT count.
 
 ------------------------------------------------------------
 

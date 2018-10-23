@@ -306,6 +306,9 @@ double HerbivoreBase::get_lean_bodymass()const{
 ForageMass HerbivoreBase::get_forage_demands(
 		const HabitatForage& available_forage)
 {
+	if (is_dead())
+		return ForageMass(0.0);
+
 	assert( get_forage_demands_per_ind.get() != NULL );
 
 	// Prepare GetForageDemands helper object if not yet done today.
@@ -491,6 +494,9 @@ double HerbivoreBase::get_todays_offspring_proportion()const{
 				get_hft().reproduction_max);
 		return linear.get_offspring_density(get_today(), body_condition);
 	}
+	else if (get_hft().reproduction_model == RM_NONE){
+		return 0.0;
+	}
 	// ADD NEW MODELS HERE
 	// in new if statements
 	else
@@ -515,6 +521,10 @@ void HerbivoreBase::simulate_day(const int day,
 	if (day < 0 || day >= 365)
 		throw std::invalid_argument("Fauna::HerbivoreBase::simulate_day() "
 				"Argument \"day\" out of range.");
+	if (is_dead())
+		throw std::invalid_argument("Fauna::HerbivoreBase::simulate_day() "
+				"This herbivore is dead. `simulate_day()` must not be called "
+				"on a dead herbivore object.");
 
 	// Create a new HabitatEnvironment object in the auto_ptr object by
 	// copy-construction from the function parameter.
@@ -690,7 +700,7 @@ void HerbivoreCohort::apply_mortality(const double mortality){
 }
 
 bool HerbivoreCohort::is_dead()const{
-	return get_ind_per_km2() < get_hft().dead_herbivore_threshold;
+	return get_ind_per_km2() <= 0.0;
 }
 
 void HerbivoreCohort::merge(HerbivoreCohort& other){

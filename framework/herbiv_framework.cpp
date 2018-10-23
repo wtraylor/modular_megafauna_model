@@ -24,36 +24,15 @@ using namespace Fauna;
 // Simulator
 //============================================================
 
-Simulator::Simulator(const Parameters& params, const HftList& hftlist):
-	hftlist(hftlist), params(params),
+Simulator::Simulator(const Parameters& params):
+	params(params),
 	days_since_last_establishment(params.herbivore_establish_interval),
 	feed_herbivores(create_distribute_forage())
 	// Non-static data member initialization happens in the order
 	// of declaration in the header file: feed_herbivores must be
 	// *after* params so that create_distribute_forage() does not
 	// cause segmentation fault.
-{
-	// CHECK PARAMETERS OF HFTS AND GLOBALLY
-
-	std::string all_msg; 
-	bool all_valid = true;
-
-	HftList::const_iterator itr = hftlist.begin();
-	while (itr != hftlist.end()){
-		std::string msg;
-		all_valid &= itr->is_valid(params, msg);
-		all_msg   += msg;
-		itr++;
-	}
-
-	std::string global_msg;
-	all_valid &= params.is_valid(global_msg);
-	all_msg   += global_msg;
-
-	if (!all_valid)
-		throw std::invalid_argument("Fauna::Simulator::Simulator() "
-				"Invalid parameters:\n"+all_msg);
-}
+{}
 
 std::auto_ptr<GetDigestibility> Simulator::create_digestibility_model()const{
 	switch (params.digestibility_model){
@@ -88,38 +67,52 @@ std::auto_ptr<GetSnowDepth> Simulator::create_snow_depth_model()const{
 	};
 }
 
-std::auto_ptr<HftPopulationsMap> Simulator::create_populations()const{
+std::auto_ptr<PopulationInterface> Simulator::create_population(
+		const Hft* phft)const{
+	// Create population instance according to selected herbivore
+	// type
+	if (params.herbivore_type == HT_COHORT) {
+		return(std::auto_ptr<PopulationInterface>(
+					new CohortPopulation(
+						CreateHerbivoreCohort(phft, &params))));
+	} else if (params.herbivore_type == HT_INDIVIDUAL) {
+		const double AREA=1.0; // TODO THis is only a test
+		return(std::auto_ptr<PopulationInterface>(
+					new IndividualPopulation(
+						CreateHerbivoreIndividual(phft, &params))));
+		// TODO Where does the area size come from??
+		// -> from Habitat (then merge() doesn’t work anymore)
+		// -> from Parameters (then CreateHerbivoreIndividual
+		//    can read it directly + new validity checks)
+		// -> calculated by framework() ?
+	} else
+		throw std::logic_error("Simulator::create_populations(): "
+				"unknown herbivore type");
+}
+
+std::auto_ptr<HftPopulationsMap> Simulator::create_populations(
+		const HftList& hftlist)const{
 	// instantiate the HftPopulationsMap object
 	std::auto_ptr<HftPopulationsMap> pmap(new HftPopulationsMap());
 
 	// Fill the object with one population per HFT
 	for (int i=0; i<hftlist.size(); i++){
 		const Hft* phft = &hftlist[i];
-
-		// Create population instance according to selected herbivore
-		// type
-		if (params.herbivore_type == HT_COHORT) {
-			std::auto_ptr<PopulationInterface> pcohort_pop(
-					new CohortPopulation(
-						CreateHerbivoreCohort(phft, &params)));
-			pmap->add(pcohort_pop);
-		} else if (params.herbivore_type == HT_INDIVIDUAL) {
-			const double AREA=1.0; // TODO THis is only a test
-			std::auto_ptr<PopulationInterface> pind_pop(
-					new IndividualPopulation(
-						CreateHerbivoreIndividual(phft, &params)));
-			// TODO Where does the area size come from??
-			// -> from Habitat (then merge() doesn’t work anymore)
-			// -> from Parameters (then CreateHerbivoreIndividual
-			//    can read it directly + new validity checks)
-			// -> calculated by framework() ?
-			pmap->add(pind_pop);
-		} else 
-			throw std::logic_error("Simulator::create_populations(): "
-					"unknown herbivore type");
+		pmap->add(create_population(phft));
 	}
 	assert( pmap.get()  != NULL );
 	assert( pmap->size() == hftlist.size() );
+	return pmap;
+}
+
+std::auto_ptr<HftPopulationsMap> Simulator::create_populations(
+		const Hft* phft)const{
+	// instantiate the HftPopulationsMap object
+	std::auto_ptr<HftPopulationsMap> pmap(new HftPopulationsMap());
+	// Fill the object with one population of one HFT
+	pmap->add(create_population(phft));
+	assert( pmap.get()  != NULL );
+	assert( pmap->size() == 1 );
 	return pmap;
 }
 
@@ -151,6 +144,6 @@ void Simulator::simulate_day(const int day_of_year,
 	SimulateDay simulate_day(day_of_year, simulation_unit, feed_herbivores);
 
 	// Call the function object.
-	simulate_day(do_herbivores && hftlist.size()>0, establish_if_needed);
+	simulate_day(do_herbivores, establish_if_needed);
 }
 

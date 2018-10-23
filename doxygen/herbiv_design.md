@@ -191,13 +191,19 @@ Exceptions are used…:
 - …to check if parameters in public methods are valid.
 - …to check the validity of variables coming from outside of the herbivory module where there are no contracts defined and ensured.
 
+You throw an exception (in this case class `std::invalid_argument`) like this:
+```cpp
+if (/*error occurs/*) 
+	throw std::invalid_argument("My error message");
+```
+
 Each class makes no assumptions about the simulation framework (e.g. that parameters have been checked), but solely relies on the class contracts in the code documentation.
 
 Exceptions are caught with `try{…}catch(…){…}` blocks in:
 - framework.cpp: function \ref framework()
 - herbiv_testsimulation.h: %main() function and \ref FaunaSim::Framework::run()
 
-\note No part of the herbivory module writes directly to the shell output (stdout/stderr), except for:
+\note No part of the herbivory module writes directly to the shell output (stdout/stderr via `std::cout` or `std::cerr`, respectively), except for:
 - FaunaSim::Framework
 - Fauna::ParamReader
 

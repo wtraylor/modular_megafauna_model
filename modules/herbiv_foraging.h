@@ -57,9 +57,8 @@ namespace Fauna{
 					const double bodymass);
 
 			/// Whether the given day has been initialized with \ref init_today().
-			bool is_day_initialized(const int day)const{
-				return day == this->today;
-			}
+			/** \throw std::invalid_argument If `day<0 || day>364`. */
+			bool is_day_initialized(const int day)const;
 
 			/// Calculate current forage demands.
 			/**
@@ -91,7 +90,7 @@ namespace Fauna{
 			/// Get energy-wise preferences for forage types.
 			/** 
 			 * To what fractions the different forage types are eaten (in 
-       * sum the fractions must be 1.0).
+			 * sum the fractions must be 1.0).
 			 *
 			 * \ref Hft::diet_composer defines the algorithm used to put 
 			 * together the fractions of different forage types in the preferred
@@ -102,7 +101,7 @@ namespace Fauna{
 			 * (see \ref DistributeForage).
 			 * This allows for switching to another, less preferred, forage
 			 * type if the first choice is not available anymore.
-       *
+			 *
 			 * This is the ad-libidum diet according to the preferences of the 
 			 * HFT.
 			 * The fractions refer to energy, not mass.
@@ -203,6 +202,7 @@ namespace Fauna{
 	 * \f$V_{1/2}\f$ “beta” (β).
 	 *
 	 * \see \ref FL_ILLIUS_OCONNOR_2000
+	 * \see \ref FL_GENERAL_FUNCTIONAL_RESPONSE
 	 */
 	class HalfMaxIntake{
 		public:

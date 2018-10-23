@@ -89,6 +89,11 @@ namespace Fauna{
 		/// Whether the herbivore object is dead.
 		virtual bool is_dead()const = 0;
 
+		/// Mark this herbivore as dead (see \ref is_dead()).
+		/** This function is needed in order to take nitrogen back from “dead”
+		 * herbivores before removing them from memory. */
+		virtual void kill() = 0;
+
 		/// Simulate daily events.
 		/** 
 		 * Call this before \ref get_forage_demands().
@@ -96,6 +101,7 @@ namespace Fauna{
 		 * \param[in] environment Current environmental conditions in the habitat.
 		 * \param[out] offspring Number of newborn today [ind/km²].
 		 * \throw std::invalid_argument If `day` not in [0,364].
+		 * \throw std::logic_error If this herbivore is dead.
 		 */
 		virtual void simulate_day(const int day,
 				const HabitatEnvironment& environment,
@@ -342,6 +348,7 @@ namespace Fauna{
 				return 1.0/area_km2 * !is_dead(); 
 			}
 			virtual bool is_dead()const{return dead;}
+			virtual void kill(){ dead = true; }
 		public:
 			/// Establishment constructor
 			/**
@@ -409,8 +416,9 @@ namespace Fauna{
 			virtual double get_ind_per_km2()const{
 				return ind_per_km2;
 			} 
-			/// A cohort is dead if its population is below \ref Hft::dead_herbivore_threshold
+			/// A cohort is dead if its density is zero.
 			virtual bool is_dead()const;
+			virtual void kill(){ ind_per_km2 = 0.0; }
 		public:
 			/// Establishment constructor.
 			/**

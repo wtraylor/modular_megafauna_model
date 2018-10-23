@@ -174,7 +174,7 @@ namespace Fauna{
 					set(i->first, 
 							average((*this)[i->first], i->second,
 								this_weight, other_weight));
-        return *this;
+				return *this;
 			}
 
 			/// For each forage type, take the maximum value.

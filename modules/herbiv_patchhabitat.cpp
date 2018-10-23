@@ -106,16 +106,16 @@ HabitatForage PatchHabitat::get_available_forage() const {
 			if (ft == FT_GRASS){
 
 				// if (indiv_mass > 0.0) {
-        //
+				//
 				// 	// Maximum reasonable grass sward density [kgDM/km²].
 				// 	static const double MAX_SWARD_DENS = 20 * 10000; // = 20 kg/m²
-        //
+				//
 				// 	if (indiv.fpc <= 0.0)
 				// 		throw std::logic_error(
 				// 				"Fauna::PatchHabitat::get_available_forage() "
 				// 				"The grass individual has positive leaf biomass "
 				// 				"but its FPC is zero or negative.");
-        //
+				//
 				// 	if (indiv_mass/indiv.fpc > MAX_SWARD_DENS)
 				// 		throw std::logic_error(
 				// 				"Fauna::PatchHabitat::get_available_forage() "
@@ -123,7 +123,7 @@ HabitatForage PatchHabitat::get_available_forage() const {
 				// 				"but its FPC is near zero. "
 				// 				"This results in a preposterously high grass sward "
 				// 				"density.");
-        //
+				//
 				// 	// Build sum of FPCs
 				// 	// We assume there is never any overlap of grass PFTs.
 				// 	grass_fpc += indiv.fpc;

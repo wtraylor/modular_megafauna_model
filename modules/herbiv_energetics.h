@@ -113,7 +113,7 @@ namespace Fauna{
 	 * Taylor et al. (1981)\cite taylor1981genetic
 	 * Daily energy expenditure is given by
 	 * \f[
-	 * E [\frac{MJ},{day*ind}] = 0.4 * M * M_{ad}^{-0.27}
+	 * E [\frac{MJ}{day*ind}] = 0.4 * M * M_{ad}^{-0.27}
 	 * \f]
 	 * where M is current body mass [kg/ind] and \f$M_{ad}\f$ is
 	 * adult body mass.
@@ -222,7 +222,7 @@ namespace Fauna{
 	 * \param season Whether it’s summer or winter pelt.
 	 * \return Extrapolated whole-body conductance for an Arctic species 
 	 * [W/°C].
-   * \throw std::invalid_argument If `bodymass <= 0`.
+	 * \throw std::invalid_argument If `bodymass <= 0`.
 	 */
 	inline double get_conductance_cuyler_oeritsland_2004(const double bodymass,
 			const FurSeason season){

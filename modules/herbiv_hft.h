@@ -77,8 +77,32 @@ namespace Fauna{
 		/** \see Hft::digestive_limit_allometry */
 		DL_ALLOMETRIC,
 
-		/// Dry-matter ingestion is limited to a fixed fraction of live body mass. 
-		/** \see Hft::digestive_limit_fixed */
+		/// Dry-matter ingestion is limited to a fixed fraction of live body mass.
+		/**
+		 * The parameter \ref Hft::digestive_limit_fixed (\f$f_{ad}\f$) defines the
+		 * maximum daily intake in dry matter as a fraction of body mass. It
+		 * applies only to adult animals. Younger animals have a higher metabolic
+		 * rate per body mass and thus also need a higher digestive limit. Since
+		 * the metabolic rate generally scales roughly with \f$M^{0.75}\f$ (Kleiber
+		 * 1961\cite kleiber1961fire), the metabolic rate *per body mass* scales
+		 * with \f$M^{-0.25}\f$. It is assumed that the maximum intake (\f$DMI\f$)
+		 * for physically immature animals scales in the same way. This is not
+		 * necessarily the case (and also depends on the chosen energy expenditure
+		 * model), but the assumption may suffice for the purpose of assuring that
+		 * juveniles don’t succumb due to a mismatch between intake and
+		 * expenditure. The case of lactation is not considered here, but even
+		 * newborns are modelled to eat fresh forage. Hence the increased DMI of
+		 * juveniles can be considered a surrogate for the support of a lactating
+		 * mother.
+		 * \f[
+		 * DMI =
+		 *   \begin{cases}
+		 *   f_{ad} * M & \text{if adult: } M = M_{ad}\\\\
+		 *   f_{ad}*M_{ad}^{-0.75} * M^{-0.75} & \text{if } M < M_{ad}
+		 *   \end{cases}
+		 * \f]
+		 * \image html herbiv_scale_diglimit.svg "Scaling of digestive limit for non-mature animals."
+		 */
 		DL_FIXED_FRACTION,
 
 		/// Limit digestive limit with \ref GetDigestiveLimitIlliusGordon1992.
@@ -111,6 +135,23 @@ namespace Fauna{
 
 	/// A factor limiting a herbivore’s daily forage harvesting.
 	enum ForagingLimit{
+
+		/// Type-II functional response applied “on top” of all other constraints. 
+		/**This has no empirical basis, but serves as a way to implement an 
+		 * “artificial” smooth negative feedback from forage to fat mass.
+		 *
+		 * Note that this model is functionally similar to 
+		 * \ref FL_ILLIUS_OCONNOR_2000, but Illius & O’Connor (2000)
+		 * \cite illius2000resource use a value for 
+		 * \ref Hft::half_max_intake_density that is empirical-based.
+		 *
+		 * Here, it shall be explicitely stated that the half-max intake
+		 * density is *not* based on observation, but solely used as a means
+		 * to create a workable forage–intake feedback.
+		 *
+		 * \see \ref Hft::half_max_intake_density, \ref HalfMaxIntake
+	*/
+		FL_GENERAL_FUNCTIONAL_RESPONSE,
 
 		/// Foraging is limited by a functional response towards digestion limit.
 		/**
@@ -160,7 +201,9 @@ namespace Fauna{
 		/// Use class \ref ReprIlliusOconnor2000 to calculate reproduction.
 		RM_ILLIUS_OCONNOR_2000,
 		/// Use class \ref ReproductionLinear for reproduction.
-		RM_LINEAR
+		RM_LINEAR,
+		/// Disable reproduction all together.
+		RM_NONE
 	};
 
 	/// One herbivore functional type (i.e. one species).
@@ -239,11 +282,6 @@ namespace Fauna{
 			/** Default is 38°C (Hudson & White, 1985\cite hudson1985bioenergetics) */
 			double core_temperature;
 
-			/// Minimum individual density [ind/km²] for a living herbivore cohort.
-      /** If left undefined, \ref ParamReader will set it to 90% of
-			 * \ref get_max_dead_herbivore_threshold() */
-			double dead_herbivore_threshold;
-
 			/// Model defining the herbivore’s diet composition.
 			DietComposer diet_composer;
 
@@ -297,6 +335,11 @@ namespace Fauna{
 			/// Age of female sexual maturity in years.
 			int maturity_age_sex;
 
+			/// Minimum viable density of one HFT population (all cohorts) [frac.].
+			/** Given as fraction of \ref establishment_density. Default: 0.5
+			 * \see \ref sec_minimum_density_threshold */
+			double minimum_density_threshold;
+
 			/// Annual mortality rate [0.0–1.0) after first year of life.
 			double mortality;
 
@@ -312,7 +355,7 @@ namespace Fauna{
 			/// Maximum annual reproduction rate for females (0.0–∞)
 			double reproduction_max;
 
-			/// Algorithm to calculate herbivore reproduction.
+			/// Algorithm to calculate herbivore reproduction (default: none).
 			ReproductionModel reproduction_model;
 
 			/// Whether to shift mean cohort body condition on starvation mortality.
@@ -332,21 +375,6 @@ namespace Fauna{
 			bool operator<( const Hft& rhs)const{return name<rhs.name;}
 			/** @} */ // Comparison
 
-			/** @{ \name Helper functions */
-			/// Maximum allowed value for \ref dead_herbivore_threshold.
-			/**
-			 * \ref dead_herbivore_threshold refers to *one* cohort. 
-			 * \ref establishment_density refers to the *whole* population.
-			 * A newly established cohort must not immediately die. Therefore the 
-			 * threshold cannot be higher than the establishment density divided
-			 * by the number of established cohorts, which is given by the age
-			 * range (\ref establishment_age_range) times 2 (for males & females).
-			 * \return Minimum viable cohort density [ind/km²].
-			 * \throw std::logic_error If \ref establishment_density or
-			 * \ref establishment_age_range have invalid values.
-			 */
-			double get_max_dead_herbivore_threshold()const;
-			/** @} */ // Helper functions
 	};
 
 	/// A set of herbivore functional types, unique by name
@@ -395,6 +423,15 @@ namespace Fauna{
 				else
 					vec.push_back(hft); // append new
 			}
+
+			/// Check all HFTs if they are valid.
+			/**
+			 * \param[in] params The global simulation parameters.
+			 * \param[out] msg Warning or error messages for output.
+			 * \return `true` if all HFTs are valid. `false` if one Hft is not valid
+			 * or if the list is empty.
+			 */
+			bool is_valid(const Fauna::Parameters& params, std::string& msg)const;
 
 			/// Remove all elements with `is_included==false`
 			void remove_excluded(){

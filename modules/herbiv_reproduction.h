@@ -137,21 +137,21 @@ namespace Fauna{
 			double annual_increase; // const
 	};
 
-  /// Reproduction rate increases linearly with fat reserves up to maximum.
-  /**
-   */
-  class ReproductionLinear{
-    public:
-      /// Constructor
-      /**
+	/// Reproduction rate increases linearly with fat reserves up to maximum.
+	/**
+	*/
+	class ReproductionLinear{
+		public:
+			/// Constructor
+			/**
 			 * \param max_annual_increase Maximum annual offspring count for
 			 * one female under full fat reserves.
 			 * \param breeding_season When parturition occurs.
 			 * \throw std::invalid_argument If `max_annual_increase` is negative.
-       */
-      ReproductionLinear(
-          BreedingSeason breeding_season,
-          const double max_annual_increase);
+			 */
+			ReproductionLinear(
+					BreedingSeason breeding_season,
+					const double max_annual_increase);
 
 			/// Get the amount of offspring for one day in the year.
 			/**
@@ -159,16 +159,16 @@ namespace Fauna{
 			 * \param body_condition Current fat mass divided by
 			 * potential maximum fat mass [kg/kg].
 			 * \return The average number of children a female gives birth to at 
-       * given day.
+			 * given day.
 			 * \throw std::invalid_argument If `day_of_year` not in [0,364]
 			 * or `body_condition` not in [0,1].
 			 */
 			double get_offspring_density(const int day_of_year,
 					const double body_condition)const;
-    private:
+		private:
 			BreedingSeason breeding_season; // const
-      double max_annual_increase; // const
-  };
+			double max_annual_increase; // const
+	};
 }
 
 #endif // HERBIV_REPRODUCTION_H
