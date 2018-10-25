@@ -8,13 +8,31 @@ Large Herbivore Model {#sec_herbiv_model}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
-<!--TODO:
+\todo
+- Give a general introduction for what use case this model was originally developed.
+- What technical skills are required to work with this model?
+- Provide a simple quickstart guide to get the model running with the example herbivore.
 - Limitations of the model design:
 	+ year length of 365 assumed
 	+ habitats equal size
 	+ After offspring is created no connection to parents 
     -> no lactation, bonding, herding, etc.
--->
+- Explain some design choices:
+	+ Why differentiate sexes? ⇒ e.g. Shannon et al. (2013), Guthrie (1990)
+	+ Why daily time steps?
+	+ Why forage types?
+	+ Suggest use cases for individual mode.
+- Explain the drama of population fluctuations:
+	+ What makes populations crash to zero?
+	+ What’s the problem with annual allocation?
+	+ What mechanisms have we explored to prevent population crashes?
+- What is the problem with β (half-max intake density) in Illius & O’Connor (2000) and Pachzelt et al.?
+- Explain the problem of coexistence: How coexistence could arise theoretically, but why it is practically so difficult.
+- Provide a list of other mechanistic herbivore models.
+- Find a good name for the module: 
+	+ Simply “Megafauna Model” perhaps?
+	+ Or “Extensible Megafauna Model”?
+	+ Or “Modular Megafauna Model”? ⇒ LPJ-GUESS-M³
 
 Basic Model Concepts {#sec_herbiv_basicconcepts}
 ------------------------------------------------
