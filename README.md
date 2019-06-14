@@ -4,8 +4,24 @@ Modular Megafauna Model
 Overview
 --------
 
+Repository Structure
+--------------------
+
+This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pitchfork).
+
+- `docs/`: Doxygen documentation.
+- `examples/`: Exemplary instruction files.
+- `include/`: Public API header files.
+- `src/`: Source and (private) header files of the project. Subdirectories correspond to C++ namespaces.
+- `tests/`: Unit tests.
+- `tools/`: A dummy vegetation simulator that integrates the megafauna model.
+
 Usage
 -----
+
+### Compile the Doxygen Documentation
+
+### Integrate the Library into a Vegetation Model
 
 Known Bugs and Issues
 ---------------------
