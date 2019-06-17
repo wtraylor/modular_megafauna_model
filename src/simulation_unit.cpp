@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Simulation unit: a habitat + herbivore populations.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F

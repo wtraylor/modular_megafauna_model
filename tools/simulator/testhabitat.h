@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file    
+/// \file
 /// \brief   \ref Fauna::Habitat implementations for testing purpose.
 /// \ingroup group_herbivory
 /// \author  Wolfgang Pappa, Senckenberg BiK-F
@@ -28,7 +28,7 @@ namespace FaunaSim {
 			struct Parameters {
 
 				/// Constructor with arbitrary simple, *valid* values, but no growth.
-				Parameters():fpc(0.1), 
+				Parameters():fpc(0.1),
 				init_mass(0.0), reserve(0.1), saturation(1.0){
 					digestibility.push_back(.5);
 					decay_monthly.push_back(0.0);
@@ -36,7 +36,7 @@ namespace FaunaSim {
 				}
 
 				/// Proportional daily rates of grass decay [day^-1]
-				/** 
+				/**
 				 * This is a vector of *daily* decay rates for each month. When
 				 * the end of the vector is reached, the values are recycled.
 				 * A vector of length 12 creates the same behaviour every year.
@@ -44,14 +44,14 @@ namespace FaunaSim {
 				std::vector<double> decay_monthly;
 
 				/// Proportional digestibility of the grass [frac].
-				/** 
+				/**
 				 * This is a vector of digestibility values for each month. When
 				 * the end of the vector is reached, the values are recycled.
 				 * A vector of length 12 creates the same behaviour every year.
 				 */
 				std::vector<double> digestibility;
 
-				/// \brief Percentage of habitat covered with grass 
+				/// \brief Percentage of habitat covered with grass
 				///        (Foliar Percentage Cover) [frac]
 				double fpc;
 
@@ -67,7 +67,7 @@ namespace FaunaSim {
 				/** This should be smaller than \ref saturation */
 				double init_mass;
 
-				/// \brief Ungrazable grass biomass reserve, inaccessable 
+				/// \brief Ungrazable grass biomass reserve, inaccessable
 				///        to herbivores [kgDM/km²]
 				/** Owen-Smith (2002) gives value of 20 g/m²*/
 				double reserve;
@@ -77,7 +77,7 @@ namespace FaunaSim {
 				double saturation;
 
 				/// Check if parameters are valid
-				/** 
+				/**
 				 * \param[out] msg Possible warnings and error messages.
 				 * \return true if values are valid, false if not.
 				 */
@@ -92,27 +92,27 @@ namespace FaunaSim {
 
 			/// Perform grass growth and decay for one day.
 			/**
-			 * \param day_of_year January 1st = 0 
+			 * \param day_of_year January 1st = 0
 			 * \throw std::invalid_argument if not `0<=day_of_year<=364`
 			 */
 			void grow_daily(const int day_of_year);
 
 			/// Get current grass forage
-			const GrassForage& get_forage() const{ return forage; } 
+			const GrassForage& get_forage() const{ return forage; }
 
 			/// Set the grass forage
 			void set_forage(const GrassForage& f) { forage = f; }
 
 		private:
 			/// Current forage
-			/** Excluding the reserve 
+			/** Excluding the reserve
 			 * \ref LogisticGrass::Parameters::reserve. */
 			GrassForage forage;
 
 			LogisticGrass::Parameters settings;
 
 			/// The current simulation month, starting with zero.
-			/** We need this to address the current value in 
+			/** We need this to address the current value in
 			 * \ref Parameters::growth_monthly and
 			 * \ref Parameters::decay_monthly.
 			 */
@@ -139,8 +139,8 @@ namespace FaunaSim {
 			 * model.
 			 */
 			SimpleHabitat( const SimpleHabitat::Parameters settings):
-				settings(settings), 
-				grass(settings.grass), 
+				settings(settings),
+				grass(settings.grass),
 				simulation_month(0),
 				snow_depth(0.0){}
 
@@ -152,7 +152,7 @@ namespace FaunaSim {
 				return result;
 			}
 			virtual HabitatEnvironment get_environment()const;
-			virtual void init_day(const int today); 
+			virtual void init_day(const int today);
 			virtual void remove_eaten_forage(const ForageMass& eaten_forage);
 
 		protected:
@@ -171,20 +171,20 @@ namespace FaunaSim {
 			LogisticGrass grass;
 
 			/// The current simulation month, starting with zero.
-			/** We need this to address the current value in 
+			/** We need this to address the current value in
 			 * \ref Parameters::snow_depth_monthly. */
 			int simulation_month;
 	};
 
 	/// A set of \ref Fauna::SimulationUnit objects.
-	/** 
-	 * In the herbivore test simulations this corresponds 
-	 * semantically to a \ref ::Gridcell with \ref ::Patch objects. 
+	/**
+	 * In the herbivore test simulations this corresponds
+	 * semantically to a \ref ::Gridcell with \ref ::Patch objects.
 	 */
 	class HabitatGroup{
 		public:
 			/// Constructor
-			/** 
+			/**
 			 * \param lon longitude (just for output labels)
 			 * \param lat latitude  (just for output labels)
 			 */
@@ -212,7 +212,7 @@ namespace FaunaSim {
 				return vec;
 			}
 
-			/** @{ \name Wrapper around std::vector 
+			/** @{ \name Wrapper around std::vector
 			 * Equivalents to methods in Standard Library Container std::vector.*/
 			typedef std::vector<SimulationUnit*>::iterator iterator;
 			typedef std::vector<SimulationUnit*>::const_iterator const_iterator;
@@ -221,15 +221,15 @@ namespace FaunaSim {
 			iterator end()              { return vec.end();   }
 			const_iterator end()const   { return vec.end();   }
 			int size() const            { return vec.size();  }
-			void reserve(const int size){ vec.reserve(size);  } 
-			/** @} */ // Container functionality 
+			void reserve(const int size){ vec.reserve(size);  }
+			/** @} */ // Container functionality
 		private:
-			double lon,lat;		
+			double lon,lat;
 			std::vector<SimulationUnit*> vec;
 
 			// Deleted copy constructor and copy assignment operator.
 			// If they were not deleted, the unique ownership of the
-			// Habitat objects could be lost. 
+			// Habitat objects could be lost.
 			HabitatGroup(const HabitatGroup&);
 			HabitatGroup& operator=(const HabitatGroup&);
 	};
@@ -258,7 +258,7 @@ namespace FaunaSim {
 			 */
 			HabitatGroup& add( std::auto_ptr<HabitatGroup> new_group);
 
-			/** @{ \name Wrapper around std::vector 
+			/** @{ \name Wrapper around std::vector
 			 * Equivalents to methods in Standard Library Container std::vector.*/
 			typedef std::vector<HabitatGroup*>::iterator iterator;
 			typedef std::vector<HabitatGroup*>::const_iterator const_iterator;
@@ -267,8 +267,8 @@ namespace FaunaSim {
 			iterator end()              { return vec.end();   }
 			const_iterator end()const   { return vec.end();   }
 			int size() const            { return vec.size();  }
-			void reserve(const int size){ vec.reserve(size);  } 
-			/** @} */ // Container functionality 
+			void reserve(const int size){ vec.reserve(size);  }
+			/** @} */ // Container functionality
 		private:
 			std::vector<HabitatGroup*> vec;
 			// deleted copy constructor and copy assignment operator

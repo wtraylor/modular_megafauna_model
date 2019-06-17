@@ -55,7 +55,7 @@ bool ParamReader::check_mandatory(const MandatoryParamList& list,
 			msg_stream << std::endl;
 
 			okay = false;
-		} 
+		}
 		itr++;
 	}
 
@@ -154,7 +154,7 @@ void ParamReader::check_all_params(
 	}
 
 	// Check if at least one edible forage type is there for the herbivores.
-	if (params.ifherbivory && 
+	if (params.ifherbivory &&
 			hftlist.size() != 0 &&
 			edible_forage_types.empty())
 	{
@@ -189,19 +189,19 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			plibabort();
 		}
 	}
-	
+
 	if (callback == CB_CHECKHFT) {
 
 		// First check for `include` parameter
 		if (!itemparsed("include")){
 			sendmessage("Error", std::string(
-						"Parameter `include` is missing in HFT " 
+						"Parameter `include` is missing in HFT "
 						+ current_hft.name + ".").c_str());
 			plibabort();
 		}
 
 		// We need to know which kind of herbivore we are parametrizing.
-		// (Note that itemparsed() doesn’t work here because of the local 
+		// (Note that itemparsed() doesn’t work here because of the local
 		//  scope within the HFT parameters block.)
 		if (!herbivore_type_defined){
 			sendmessage("Error",
@@ -339,7 +339,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 		if (params.ifherbivory) {
 			MandatoryParamList mandatory_global_params;
 
-			// Add mandatory parameters 
+			// Add mandatory parameters
 #ifndef NO_GUESS_PARAMETERS
 			// The following parameters only apply to LPJ-GUESS.
 			mandatory_global_params.push_back(MandatoryParam(
@@ -400,7 +400,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 
 		// This is the very end of the plib checks
 		completed = true;
-	} 
+	}
 
 	if (callback == CB_DIG_MODEL) {
 		if (strparam == "PFT_FIXED")
@@ -416,7 +416,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					"\"npp\", \"pachzelt_2013\", \"pft_fixed\"");
 			plibabort();
 		}
-	} 
+	}
 
 	if (callback == CB_DIET_COMPOSER) {
 		if (strparam == "PURE_GRAZER")
@@ -427,7 +427,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					"in HFT \""+current_hft.name+"\"; valid types: "
 					"\"pure_grazer\"").c_str());
 			plibabort();
-		} 
+		}
 	}
 
 	if (callback == CB_DIGESTION_TYPE) {
@@ -441,7 +441,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 					"in HFT \""+current_hft.name+"\"; valid types: "
 					"\"ruminant\", \"hindgut\"").c_str());
 			plibabort();
-		} 
+		}
 	}
 
 	if (callback == CB_DIGESTION_LIMIT_ALLOMETRY) {
@@ -466,7 +466,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 						"Valid types: "
 						"\"none\", \"allometric\", \"illius_gordon_1992\"").c_str());
 			plibabort();
-		} 
+		}
 	}
 
 	if (callback == CB_ESTABLISHMENT_AGE_RANGE) {
@@ -480,18 +480,18 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	}
 
 	if (callback == CB_EXPENDITURE_COMPONENTS) {
-		const std::list<std::string> token_list = 
+		const std::list<std::string> token_list =
 			parse_comma_separated_param(strparam);
 
 		std::list<std::string>::const_iterator itr;
 		for (itr = token_list.begin(); itr != token_list.end(); itr++){
-			if (*itr == "TAYLOR_1981") 
+			if (*itr == "TAYLOR_1981")
 				current_hft.expenditure_components.insert(EC_TAYLOR_1981);
-			else if (*itr == "ALLOMETRIC") 
+			else if (*itr == "ALLOMETRIC")
 				current_hft.expenditure_components.insert(EC_ALLOMETRIC);
-			else if (*itr == "THERMOREGULATION") 
+			else if (*itr == "THERMOREGULATION")
 				current_hft.expenditure_components.insert(EC_THERMOREGULATION);
-			else if (*itr == "ZHU_2018") 
+			else if (*itr == "ZHU_2018")
 				current_hft.expenditure_components.insert(EC_ZHU_2018);
 			// add new expenditure components here
 			else {
@@ -502,9 +502,9 @@ void ParamReader::callback(const int callback, Pft* ppft){
 							"\"allometric\", \"taylor_1981\", "
 							"\"thermoregulation\", \"zhu_2018\"").c_str()); // add more here
 				plibabort();
-			} 
+			}
 		}
-	} 
+	}
 
 	if (callback == CB_FORAGE_DISTRIBUTION) {
 		if (strparam == "EQUALLY")
@@ -519,14 +519,14 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	}
 
 	if (callback == CB_FORAGING_LIMITS) {
-		const std::list<std::string> token_list = 
+		const std::list<std::string> token_list =
 			parse_comma_separated_param(strparam);
-				
+
 		std::list<std::string>::const_iterator itr;
 		for (itr = token_list.begin(); itr != token_list.end(); itr++){
-			if (*itr == "ILLIUS_OCONNOR_2000") 
+			if (*itr == "ILLIUS_OCONNOR_2000")
 				current_hft.foraging_limits.insert(FL_ILLIUS_OCONNOR_2000);
-			else if (*itr == "GENERAL_FUNCTIONAL_RESPONSE") 
+			else if (*itr == "GENERAL_FUNCTIONAL_RESPONSE")
 				current_hft.foraging_limits.insert(FL_GENERAL_FUNCTIONAL_RESPONSE);
 			// add new foraging limits here
 			else {
@@ -538,14 +538,14 @@ void ParamReader::callback(const int callback, Pft* ppft){
 							"\"general_functional_response\""
 							).c_str());
 				plibabort();
-			} 
+			}
 		}
 	}
 
 	if (callback == CB_FORAGE_TYPE) {
 		if (strparam == to_upper(get_forage_type_name(FT_INEDIBLE)))
 			ppft->herbiv_params.forage_type = FT_INEDIBLE;
-		else if (strparam == to_upper(get_forage_type_name(FT_GRASS))) 
+		else if (strparam == to_upper(get_forage_type_name(FT_GRASS)))
 			ppft->herbiv_params.forage_type = FT_GRASS;
 		// ** add new forage types here **
 		else {
@@ -572,18 +572,18 @@ void ParamReader::callback(const int callback, Pft* ppft){
 	}
 
 	if (callback == CB_MORTALITY_FACTORS) {
-		const std::list<std::string> token_list = 
+		const std::list<std::string> token_list =
 			parse_comma_separated_param(strparam);
-				
+
 		std::list<std::string>::const_iterator itr;
 		for (itr = token_list.begin(); itr != token_list.end(); itr++){
-			if (*itr == "BACKGROUND") 
+			if (*itr == "BACKGROUND")
 				current_hft.mortality_factors.insert(MF_BACKGROUND);
-			else if (*itr == "LIFESPAN") 
+			else if (*itr == "LIFESPAN")
 				current_hft.mortality_factors.insert(MF_LIFESPAN);
-			else if (*itr == "STARVATION_ILLIUS_OCONNOR_2000") 
+			else if (*itr == "STARVATION_ILLIUS_OCONNOR_2000")
 				current_hft.mortality_factors.insert(MF_STARVATION_ILLIUS_OCONNOR_2000);
-			else if (*itr == "STARVATION_THRESHOLD") 
+			else if (*itr == "STARVATION_THRESHOLD")
 				current_hft.mortality_factors.insert(MF_STARVATION_THRESHOLD);
 			// add new mortality factors here
 			else {
@@ -596,7 +596,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 							"\"starvation_illius_oconnor_2000\", "
 							"\"starvation_threshold\"").c_str());
 				plibabort();
-			} 
+			}
 		}
 	}
 
@@ -623,7 +623,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 			MandatoryParamList mandatory_pft_params;
 
 			// add parameters to the list
-			
+
 			if (params.digestibility_model == DM_PFT_FIXED ||
 					params.digestibility_model == DM_NPP) {
 				mandatory_pft_params.push_back(MandatoryParam(
@@ -679,7 +679,7 @@ void ParamReader::callback(const int callback, Pft* ppft){
 }
 
 void ParamReader::declare_parameters(
-		const int id, 
+		const int id,
 		const std::string& setname,
 		Pft* ppft,
 		const bool is_help)
@@ -687,9 +687,9 @@ void ParamReader::declare_parameters(
 	// (We use if-else instead of switch here, because the static
 	// members are initialized in parameters.cpp and cannot be
 	// used in as constant values in a switch-case statement.)
-	
+
 	// add new parameters in alphabetical order
-	
+
 	if (id == BLOCK_GLOBAL) {
 
 #ifndef NO_GUESS_PARAMETERS
@@ -754,10 +754,10 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Header for block defining HFT (Herbivore Functional Type)");
 
-		declareitem("ifherbivory", 
+		declareitem("ifherbivory",
 				&(params.ifherbivory),
 				1, // number of parameters
-				CB_NONE, 
+				CB_NONE,
 				"Whether herbivory is enabled");
 
 		declareitem("one_hft_per_patch",
@@ -766,7 +766,7 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Whether exclusively one HFT is allowed per patch.");
 
-	} 
+	}
 
 	if (id == BLOCK_HFT) {
 		if (!is_help) {
@@ -776,7 +776,7 @@ void ParamReader::declare_parameters(
 			else {
 				Hft new_hft;// create new object
 				new_hft.name=setname;
-				current_hft = new_hft; 
+				current_hft = new_hft;
 				current_hft.expenditure_components.clear();
 			}
 		}
@@ -787,9 +787,9 @@ void ParamReader::declare_parameters(
 				CB_NONE,
 				"Include HFT in simulation.");
 
-		// ------------------------ 
+		// ------------------------
 		// alphabetical order now
-		
+
 		declareitem("bodyfat_birth",
 				&current_hft.bodyfat_birth,
 				DBL_MIN, DBL_MAX, // min, max
@@ -915,7 +915,7 @@ void ParamReader::declare_parameters(
 				CB_EXPENDITURE_COMPONENTS,
 				"Comma-separated list of energy expenditure model for herbivores."
 				"Possible values: "
-				"\"taylor_1981\", \"allometric\", \"thermoregulation\", \"zhu_2018\""); 
+				"\"taylor_1981\", \"allometric\", \"thermoregulation\", \"zhu_2018\"");
 
 		declareitem("digestive_limit_allometry",
 				double_pair,
@@ -1006,7 +1006,7 @@ void ParamReader::declare_parameters(
 				"\"background\", "
 				"\"lifespan\", "
 				"\"starvation_threshold\", "
-				"\"starvation_illius_oconnor_2000\" (only for cohorts)");  
+				"\"starvation_illius_oconnor_2000\" (only for cohorts)");
 
 		declareitem("mortality_juvenile",
 				&current_hft.mortality_juvenile,
@@ -1037,14 +1037,14 @@ void ParamReader::declare_parameters(
 				CB_REPRODUCTION_MODEL,
 				"Reproduction model for the HFT."
 				"Possible values: \"illius_oconnor_2000\", \"const_max\", "
-				"\"none\", \"linear\"");  
+				"\"none\", \"linear\"");
 
 		declareitem("shift_body_condition_for_starvation",
 				&(current_hft.shift_body_condition_for_starvation),
 				1, // number of parameters
 				CB_NONE,
 				"Whether to shift mean cohort body condition with starvation "
-				"mortality. Defaults to true.");  
+				"mortality. Defaults to true.");
 
 		// let plib call function plib_callback() with given code
 		callwhendone(CB_CHECKHFT);
@@ -1091,6 +1091,6 @@ void ParamReader::declare_parameters(
 				CB_FORAGE_TYPE,
 				"Forage Type (\"inedible\", \"grass\")"); // Add more forage types here
 
-	} 
+	}
 }
 

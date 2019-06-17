@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Herbivory test simulation independent of the LPJ-GUESS %framework.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -22,9 +22,9 @@ using namespace Fauna;
 using namespace FaunaSim;
 using namespace GuessOutput;
 
-// Anonymous namespace with definitions local to this file 
+// Anonymous namespace with definitions local to this file
 namespace {
-	/// Creates a vector of pointers from a vector of 
+	/// Creates a vector of pointers from a vector of
 	/// \ref SimulationUnit objects.
 	std::vector<SimulationUnit*> simunit_vector_to_pointers(
 			std::vector<SimulationUnit> vec_input)
@@ -79,7 +79,7 @@ int main(int argc,char* argv[]) {
 				// let plib parse the instruction script
 				try {
 					// plib doesn’t use exceptions, it just returns zero on error.
-					if (!plib(instruction_filename)) 
+					if (!plib(instruction_filename))
 						fail("Bad instruction file!");
 				} catch (const std::exception e){
 					dprintf("An exception occurred while reading the instruction "
@@ -89,7 +89,7 @@ int main(int argc,char* argv[]) {
 			}
 		}
 		else {
-			fprintf(stderr, 
+			fprintf(stderr,
 					"Exactly one parameter expected.\n"
 					"Usage: %s <instruction-script-filename> | -help\n",
 					argv[0]);
@@ -136,8 +136,8 @@ void Framework::plib_declare_parameters(){
 
 	if (!parameters_declared) {
 		// General options
-		declare_parameter("outputdirectory", 
-				&params.outputdirectory, 
+		declare_parameter("outputdirectory",
+				&params.outputdirectory,
 				300, // string length
 				"Directory for the output files");
 		mandatory_parameters.push_back("outputdirectory");
@@ -230,7 +230,7 @@ void Framework::plib_callback(int callback) {
 				dprintf("Error: %s was not defined in the instruction file.\n",
 						item.c_str());
 				fail();
-			} 	
+			}
 		}
 
 		// Copy the monthly array values to std::vector
@@ -256,16 +256,16 @@ bool Framework::run(const Fauna::Parameters& global_params,
 
 	// PREPARE OUTPUT
 	// Since we only use HerbivoryOutput here, we don’t use the
-	// output module registry. 
+	// output module registry.
 	// Instead, the relevant functions are called directly.
-	if (params.outputdirectory=="") 
+	if (params.outputdirectory=="")
 		fail("No output directory given in the .ins file!");
 
 	try {
 		output_channel = new FileOutputChannel(
 				params.outputdirectory.c_str(),
 				COORDINATES_PRECISION);
-		herbiv_out.set_hftlist(hftlist); 
+		herbiv_out.set_hftlist(hftlist);
 		herbiv_out.init();
 	} catch (const std::exception& e){
 		dprintf("Exception during output initialization:\n%s\n",
@@ -276,7 +276,7 @@ bool Framework::run(const Fauna::Parameters& global_params,
 	// PREPARE VARIABLES
 
 	// The simulator for the habitats
-	// Pass the global parameters that were read from the 
+	// Pass the global parameters that were read from the
 	// instruction file.
 	Simulator habitat_simulator(global_params);
 
@@ -295,7 +295,7 @@ bool Framework::run(const Fauna::Parameters& global_params,
 		HabitatGroup& new_group = groups.add(
 				std::auto_ptr<HabitatGroup>(
 					new HabitatGroup(lon, lat)));
-		
+
 		// Fill one group with habitats and populations
 		for (int h=0; h<params.nhabitats_per_group; h++){
 			try {
@@ -348,15 +348,15 @@ bool Framework::run(const Fauna::Parameters& global_params,
 					SimulationUnit& simulation_unit = **itr_u;
 
 					// VEGATATION AND HERBIVORE SIMULATION
-					const bool do_herbivores = 
-						global_params.ifherbivory && 
+					const bool do_herbivores =
+						global_params.ifherbivory &&
 						(year >= global_params.free_herbivory_years);
 
 					try {
 						habitat_simulator.simulate_day(
-								day_of_year, 
+								day_of_year,
 								simulation_unit,
-								do_herbivores); 
+								do_herbivores);
 					} catch (const std::exception& e){
 						dprintf("Exception during herbivore simulation:\n\%s",
 								e.what());
@@ -368,7 +368,7 @@ bool Framework::run(const Fauna::Parameters& global_params,
 				herbiv_out.outdaily(
 						group.get_lon(), // longitude (only for labelling)
 						group.get_lat(), // latitude  (only for labelling)
-						day_of_year, 
+						day_of_year,
 						year, // simulation_year
 						year, // calendar_year, the same as there is no calendar
 						group.get_vector());
@@ -380,7 +380,7 @@ bool Framework::run(const Fauna::Parameters& global_params,
 		const int progress_interval = params.nyears / 10; // every 10%
 		if (year % progress_interval == 0
 				|| year == params.nyears-1)
-			dprintf("progress: %d%%\n", (100*year)/(params.nyears-1)); 
+			dprintf("progress: %d%%\n", (100*year)/(params.nyears-1));
 	} // year loop
 
 	return true; // success!

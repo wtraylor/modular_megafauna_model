@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Function objects to perform simulations in the herbivore model.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -41,7 +41,7 @@ namespace Fauna{
 			 * herbivores.
 			 * \throw std::invalid_argument If day_of_year not in [0,364].
 			 */
-			SimulateDay(const int day_of_year, 
+			SimulateDay(const int day_of_year,
 					SimulationUnit& simulation_unit,
 					const FeedHerbivores& feed_herbivores);
 
@@ -70,9 +70,9 @@ namespace Fauna{
 			void aggregate_output();
 
 			/// Create the offspring counted in \ref total_offspring.
-			/** 
+			/**
 			 * For each HFT, let the PopulationInterface object create herbivores.
-			 * These new herbivores will be counted in the output next simulation 
+			 * These new herbivores will be counted in the output next simulation
 			 * cycle.
 			 */
 			void create_offspring();
@@ -84,7 +84,7 @@ namespace Fauna{
 			/**
 			 * Set any marginally small values to zero in order to avoid errors
 			 * caused by rounding inaccuracy.
-			 * This is done here and not in \ref Habitat for the sake of 
+			 * This is done here and not in \ref Habitat for the sake of
 			 * decoupling: The \ref Habitat shouldn’t be concerned with the
 			 * herbivore feeding.
 			 */

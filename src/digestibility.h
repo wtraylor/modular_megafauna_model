@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \ingroup group_herbivory
 /// \brief Models for digestibility of herbivore forage.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -18,7 +18,7 @@ namespace Fauna {
 
 	/// Abstract base class (interface) for calculating forage digestibility
 	/**
-	 * This is a function object and implementing the 
+	 * This is a function object and implementing the
 	 * \ref sec_strategy design pattern.
 	 */
 	struct GetDigestibility{
@@ -32,7 +32,7 @@ namespace Fauna {
 	};
 
 	/// Digestibility model using \ref PftParams::digestibility.
-	/** 
+	/**
 	 * Digestibility is a fixed value for each \ref Pft.
 	 */
 	class PftDigestibility : public GetDigestibility{
@@ -47,12 +47,12 @@ namespace Fauna {
 	 *
 	 * This digestibility model mimics Pachzelt et al. (2013)
 	 * \cite pachzelt2013coupling.
-	 * The average phenology over the last month 
+	 * The average phenology over the last month
 	 * (\ref Individual::get_average_phenology()) is interpreted as the
-	 * proportion of live (green) grass available; the rest is dead 
+	 * proportion of live (green) grass available; the rest is dead
 	 * (non-functional) grass.
 	 * Dead grass has a fixed digestibility value of 0.4 while live grass
-	 * digestibility \f$d_{Living}\f$ depends on the live grass density 
+	 * digestibility \f$d_{Living}\f$ depends on the live grass density
 	 * \f$V_{Living}\f$ (kg/m²) in the habitat.
 	 *
 	 * Crude protein fraction of live grass is calculated with a formula
@@ -66,7 +66,7 @@ namespace Fauna {
 	 * \f[
 	 * d_{Living} = 0.4605 + 1.4152 * CPC
 	 * \f]
-	 * This formula is cited by 
+	 * This formula is cited by
 	 * Prins (1996) \cite prins1996ecology and
 	 * Smallegange & Brunsting (2002) \cite smallegange2002food,
 	 * but originates from
@@ -75,7 +75,7 @@ namespace Fauna {
 	 *
 	 * The total digestibility is then calculated as live and dead grass
 	 * mixed.
-	 * \note This model differs from Pachzelt et al. (2013) in that 
+	 * \note This model differs from Pachzelt et al. (2013) in that
 	 * the proportion of live to dead grass does not depend on the animals
 	 * weight.
 	 * Moreover, phenology is averaged over the last 30 days, but for grass
@@ -142,7 +142,7 @@ namespace Fauna {
 			/**
 			 * \param weights The proportional weight of the fraction of biomass
 			 * for each age (days). Each deque entry represents the biomass that
-			 * has grown on the specific day in the past, counting back. 
+			 * has grown on the specific day in the past, counting back.
 			 * `weights[0]` is forage grown today, `weights[1]` is forage from
 			 * yesterday and so on.
 			 * The digestibility of each portion is given by a linear decrease

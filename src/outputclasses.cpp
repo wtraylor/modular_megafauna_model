@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Output classes of the herbivory module.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -41,7 +41,7 @@ HabitatData& HabitatData::merge(const HabitatData& other,
 	if (this_weight == 0.0){
 		*this = other; // copy all values
 		return *this;
-	} 
+	}
 
 	// Build average for each variable:
 	eaten_forage.merge(other.eaten_forage, this_weight, other_weight);
@@ -63,7 +63,7 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
 	if (!(this_weight >= 0.0))
 		throw std::invalid_argument("FaunaOut::HerbivoreData::merge() "
 				"Parameter `this_weight` is not a >=0.0");
-	if (!(other_weight >= 0.0)) 
+	if (!(other_weight >= 0.0))
 		throw std::invalid_argument("FaunaOut::HerbivoreData::merge() "
 				"Parameter `other_weight` is not a >=0.0");
 	if (this_weight == 0.0 && other_weight == 0.0)
@@ -80,7 +80,7 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
 	if (this_weight == 0.0){
 		*this = other; // copy all values
 		return *this;
-	} 
+	}
 
 	// ------------------------------------------------------------------
 	// PER INDIVIDUAL
@@ -234,7 +234,7 @@ CombinedData& CombinedData::merge(const CombinedData& other){
 	if (this->datapoint_count == 0){
 		*this = other; // copy all values
 		return *this;
-	} 
+	}
 
 	// ------------------------------------------------------------------
 	// HABITAT DATA
@@ -244,7 +244,7 @@ CombinedData& CombinedData::merge(const CombinedData& other){
 	// ------------------------------------------------------------------
 	// HERBIVORE DATA
 	// Merge herbivore data for each HFT.
-	
+
 	typedef std::map<const Fauna::Hft*, HerbivoreData> HftMap;
 
 	// First, create empty HerbivoreData objects for all HFTs that are not
@@ -258,7 +258,7 @@ CombinedData& CombinedData::merge(const CombinedData& other){
 			hft_data[itr->first] = HerbivoreData();
 	}
 
-	// Second, merge all herbivore data. 
+	// Second, merge all herbivore data.
 	for (HftMap::iterator itr = hft_data.begin();
 			itr != hft_data.end();
 			itr++)

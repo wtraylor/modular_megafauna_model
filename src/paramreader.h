@@ -38,16 +38,16 @@ namespace Fauna {
 		public:
 
 			/// Check global parameters within the plib framework.
-			/** 
+			/**
 			 * Helper function to \ref plib_callback().
-			 * This function only checks if mandatory items have been parsed and 
+			 * This function only checks if mandatory items have been parsed and
 			 * converts strings to numeric values.
 			 * \see \ref Parameters::is_valid()
 			 *
 			 * After all parameters are read, it also checks if all HFTs are
 			 * valid (see \ref Hft::is_valid()).
 			 *
-			 * Any parameter can only be mandatory if \ref Parameters::ifherbivory 
+			 * Any parameter can only be mandatory if \ref Parameters::ifherbivory
 			 * is true.
 			 *
 			 * \warning Call this *only* from \ref plib_callback()
@@ -56,25 +56,25 @@ namespace Fauna {
 			 * \param callback The callback code defined with
 			 * \ref declareitem().
 			 * \param ppft The reference to the \ref Pft object that
-			 * is currently parsed. 
+			 * is currently parsed.
 			 * \throw std::invalid_argument if `ppft==NULL`
 			 */
 			void callback(const int callback, Pft* ppft);
 
 			/// Declare parameters within the plib framework.
 			/** Helper function to \ref plib_declarations().
-			 * \warning Call this *only* from \ref plib_declarations() 
+			 * \warning Call this *only* from \ref plib_declarations()
 			 * \param id The type identifier of the currently parsed block.
 			 * \param setname The name of the currently parsed block.
 			 * \param ppft Pointer to the currently parsed \ref Pft
-			 * object if id=\ref BLOCK_PFT, NULL otherwise. 
+			 * object if id=\ref BLOCK_PFT, NULL otherwise.
 			 * \param is_help True if only help message is printed --> No
 			 * assignments and validity checks, only parameters declared.
 			 * \throw std::invalid_argument if `ppft==NULL`
 			 */
-			void declare_parameters(const int id, 
-					const std::string& setname, Pft* ppft, 
-					const bool is_help); 
+			void declare_parameters(const int id,
+					const std::string& setname, Pft* ppft,
+					const bool is_help);
 
 			/// Get global singleton instance
 			static ParamReader& get_instance(){
@@ -118,7 +118,7 @@ namespace Fauna {
 					param(param), required_by(required_by){}
 				/// Simple constructor for always mandatory parameters.
 				MandatoryParam(std::string param): param(param){}
-			}; 
+			};
 			typedef std::list<MandatoryParam> MandatoryParamList;
 
 			/// Check both global and HFT parameters.
@@ -142,10 +142,10 @@ namespace Fauna {
 					bool& fatal, std::string& msg)const;
 
 			/// Check with \ref itemparsed() through list of parameters
-			/** Prints error messages. 
+			/** Prints error messages.
 			 * \param list List of mantdatory parameters
 			 * \param prefix prefix for the error message.
-			 * \return true if every parameter was parsed, false if 
+			 * \return true if every parameter was parsed, false if
 			 * at least one was missing.
 			 * \see \ref itemparsed()
 			 */
@@ -178,7 +178,7 @@ namespace Fauna {
 			/// Constructor (hidden from the outside
 			ParamReader():completed(false) {
 				current_hft.expenditure_components.clear();
-			} 
+			}
 
 			ParamReader(ParamReader const&);    // deleted copy constructor
 			void operator=(ParamReader const&); // deleted assignment constructor

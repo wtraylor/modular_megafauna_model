@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Function objects to perform simulations in the herbivore model.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -21,7 +21,7 @@ using namespace Fauna;
 // SimulateDay
 //============================================================
 
-SimulateDay::SimulateDay(const int day_of_year, 
+SimulateDay::SimulateDay(const int day_of_year,
 					SimulationUnit& simulation_unit,
 					const FeedHerbivores& feed_herbivores):
 	day_of_year(day_of_year),
@@ -39,13 +39,13 @@ void SimulateDay::aggregate_output(){
 	// Output data of all herbivores for today in this habitat.
 	std::map<const Hft*, std::vector<FaunaOut::HerbivoreData> > hft_output;
 
-	// Note: If herbivores were not simulated, the HFT output will simply 
+	// Note: If herbivores were not simulated, the HFT output will simply
 	// be empty.
-	
+
 	// GATHER HERBIVORE OUTPUT
 	// Loop through all herbivores: gather output.
 	for (HerbivoreVector::iterator itr_h=herbivores.begin();
-			itr_h != herbivores.end(); itr_h++) 
+			itr_h != herbivores.end(); itr_h++)
 	{
 		HerbivoreInterface& herbivore = **itr_h;
 
@@ -53,12 +53,12 @@ void SimulateDay::aggregate_output(){
 		// data for this HFT.
 		hft_output[&herbivore.get_hft()].push_back(
 				herbivore.get_todays_output());
-	} 
+	}
 
 	// MERGE HFT OUTPUT
 
 	// Iterate over HFT output.
-	for (std::map<const Hft*, std::vector<FaunaOut::HerbivoreData> >::const_iterator 
+	for (std::map<const Hft*, std::vector<FaunaOut::HerbivoreData> >::const_iterator
 			itr = hft_output.begin();
 			itr != hft_output.end();
 			itr++)
@@ -66,7 +66,7 @@ void SimulateDay::aggregate_output(){
 		const Hft& hft = *itr->first;
 		// Create a datapoint for each HFT that can then be merged
 		// across habitats and time.
-		todays_datapoint.hft_data[&hft] = 
+		todays_datapoint.hft_data[&hft] =
 			FaunaOut::HerbivoreData::create_datapoint( itr->second );
 	}
 
@@ -83,7 +83,7 @@ void SimulateDay::aggregate_output(){
 
 void SimulateDay::create_offspring(){
 	for (std::map<const Hft*, double>::iterator itr = total_offspring.begin();
-			itr != total_offspring.end(); 
+			itr != total_offspring.end();
 			itr++)
 	{
 		const Hft* hft = itr->first;
@@ -150,7 +150,7 @@ void SimulateDay::operator()(const bool do_herbivores,
 		feed_herbivores(available_forage, herbivores);
 		// remove the eaten forage
 		simulation_unit.get_habitat().remove_eaten_forage(
-				forage_before_feeding.get_mass() - available_forage.get_mass()); 
+				forage_before_feeding.get_mass() - available_forage.get_mass());
 	}
 
 	aggregate_output();
@@ -170,7 +170,7 @@ void SimulateDay::operator()(const bool do_herbivores,
 void SimulateDay::simulate_herbivores(){
 	// loop through all herbivores: simulate
 	for (HerbivoreVector::iterator itr_h=herbivores.begin();
-			itr_h != herbivores.end(); itr_h++) 
+			itr_h != herbivores.end(); itr_h++)
 	{
 		HerbivoreInterface& herbivore = **itr_h;
 
@@ -180,12 +180,12 @@ void SimulateDay::simulate_herbivores(){
 		if (herbivore.is_dead()){
 			excreted_nitrogen += herbivore.take_nitrogen_excreta();
 			continue;
-		} 
+		}
 
 		// ---------------------------------------------------------
 		// HERBIVORE SIMULATION
 
-		// Offspring by this one herbivore today 
+		// Offspring by this one herbivore today
 		// [ind/km²]
 		double offspring = 0.0;
 

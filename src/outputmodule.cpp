@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Output module for the herbivory module.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -146,13 +146,13 @@ HerbivoryOutput::HerbivoryOutput():
 {
 	// Check if someone is trying to create another instance
 	if (global_instance == NULL)
-		global_instance = this; 
+		global_instance = this;
 	else
 		throw std::logic_error("GuessOutput::HerbivoryOutput::HerbivoryOutput(): "
 				"Constructor called a second time. There should be only "
 				"one global instance of an output module.");
 
-	declare_parameter("herbiv_output_interval", 
+	declare_parameter("herbiv_output_interval",
 			&interval_xtring, 128,
 			"Interval for herbivory output: \"annual\", \"monthly\"\n");
 
@@ -260,7 +260,7 @@ void HerbivoryOutput::init() {
 		} else {
 			// Create a table as usual
 			create_output_table(
-					tf.table, 
+					tf.table,
 					tf.filename.c_str(),
 					get_columns(tf.column_selector));
 		}
@@ -271,7 +271,7 @@ ColumnDescriptors HerbivoryOutput::get_columns(
 		const HerbivoryOutput::ColumnSelector selector){
 	// The width of each column must be one greater than the longest
 	// column caption. The column captions need to be defined first.
-	
+
 	std::vector<std::string> captions;
 
 	switch (selector){
@@ -298,11 +298,11 @@ ColumnDescriptors HerbivoryOutput::get_columns(
 			// same as in write_datapoint()! Otherwise the values are
 			// not congruent with the table header.
 			for (HftList::const_iterator hft = hftlist->begin();
-					hft != hftlist->end(); hft++) 
+					hft != hftlist->end(); hft++)
 				for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
 						ft != FORAGE_TYPES.end(); ft++)
 				{
-					const std::string combined = 
+					const std::string combined =
 						hft->name + CAPTION_SEPARATOR + get_forage_type_name(*ft);
 					captions.push_back(combined);
 				}
@@ -330,7 +330,7 @@ ColumnDescriptors HerbivoryOutput::get_columns(
 	// The column width should reserve a minimum space for the integer
 	// part of the value.
 	const int MIN_INT_SPACE = 6; // this is just a hopeful guess
-	const int min_col_width = 
+	const int min_col_width =
 		MIN_INT_SPACE + 1 + precision + 1; // +1 for comma, +1 for space
 	const int col_width = std::max(max_length+1, min_col_width);
 
@@ -368,7 +368,7 @@ void HerbivoryOutput::outdaily(Gridcell& gridcell){
 	Gridcell::iterator gc_itr = gridcell.begin();
 	while (gc_itr != gridcell.end()) {
 		Stand& stand = *gc_itr;
-		stand.firstobj(); 
+		stand.firstobj();
 		while (stand.isobj) {
 			Patch& patch = stand.getobj();
 			// add pointer of the unit to the list
@@ -380,12 +380,12 @@ void HerbivoryOutput::outdaily(Gridcell& gridcell){
 
 	// Use the more general function to do the rest
 	outdaily(gridcell.get_lon(),
-			gridcell.get_lat(), 
-			date.day, 
+			gridcell.get_lat(),
+			date.day,
 			date.year,                // simulation_year
 			date.get_calendar_year(), // calendar_year
 			simulation_units);
-}	
+}
 
 void HerbivoryOutput::outdaily(
 		const double longitude, const double latitude,
@@ -413,7 +413,7 @@ void HerbivoryOutput::outdaily(
 
 		// Loop through all habitats and aggregate their output
 		// to one data point.
-		for (std::vector<Fauna::SimulationUnit*>::const_iterator 
+		for (std::vector<Fauna::SimulationUnit*>::const_iterator
 				itr  = simulation_units.begin();
 				itr != simulation_units.end(); itr++)
 		{
@@ -456,30 +456,30 @@ void HerbivoryOutput::set_hftlist(const HftList& _hftlist){
 	hftlist = std::auto_ptr<HftList>(new HftList(_hftlist));
 }
 
-void HerbivoryOutput::write_datapoint( 
+void HerbivoryOutput::write_datapoint(
 		const double longitude, const double latitude,
 		const int day, const int year,
 		const FaunaOut::CombinedData& datapoint){
 	// The OutputRows object manages the next row of output for each
 	// output table
 	OutputRows output_rows(
-			output_channel, longitude, latitude, 
+			output_channel, longitude, latitude,
 			year, day);
 
 	// HABITAT TABLE
 	// Add the values in the same order as in get_columns()!
-	output_rows.add_value(TBL_HABITAT.table, 
+	output_rows.add_value(TBL_HABITAT.table,
 			datapoint.habitat_data.environment.snow_depth);
 
 	// FORAGE TABLES
-	const ForageMass available_mass   = 
+	const ForageMass available_mass   =
 		datapoint.habitat_data.available_forage.get_mass() * 1e-6; // kg/km²⇒kg/m²
-	const Digestibility digestibility = 
+	const Digestibility digestibility =
 		datapoint.habitat_data.available_forage.get_digestibility();
 	for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
 			ft!=FORAGE_TYPES.end(); ft++)
 	{
-		output_rows.add_value(TBL_AVAILABLE_FORAGE.table, 
+		output_rows.add_value(TBL_AVAILABLE_FORAGE.table,
 				available_mass[*ft]);
 
 		if (available_mass[*ft] > 0.0)
@@ -509,7 +509,7 @@ void HerbivoryOutput::write_datapoint(
 		const FaunaOut::HerbivoreData* pherbidata = NULL;
 
 		// iterate through the data set and find the HFT we want to look at.
-		for (std::map<const Hft*, FaunaOut::HerbivoreData>::const_iterator 
+		for (std::map<const Hft*, FaunaOut::HerbivoreData>::const_iterator
 				itr2 = datapoint.hft_data.begin();
 				itr2 != datapoint.hft_data.end();
 				itr2++)
@@ -529,23 +529,23 @@ void HerbivoryOutput::write_datapoint(
 			const FaunaOut::HerbivoreData& herbidata = *pherbidata;
 
 			// HFT TABLES
-			output_rows.add_value(TBL_BODYFAT.table, 
+			output_rows.add_value(TBL_BODYFAT.table,
 					herbidata.bodyfat);
-			output_rows.add_value(TBL_BOUND_NITROGEN.table, 
+			output_rows.add_value(TBL_BOUND_NITROGEN.table,
 					herbidata.bound_nitrogen);
-			output_rows.add_value(TBL_EXPENDITURE.table, 
+			output_rows.add_value(TBL_EXPENDITURE.table,
 					herbidata.expenditure);
-			output_rows.add_value(TBL_INDDENS.table, 
+			output_rows.add_value(TBL_INDDENS.table,
 					herbidata.inddens);
-			output_rows.add_value(TBL_MASSDENS.table, 
+			output_rows.add_value(TBL_MASSDENS.table,
 					herbidata.massdens);
-			output_rows.add_value(TBL_OFFSPRING.table, 
+			output_rows.add_value(TBL_OFFSPRING.table,
 					herbidata.offspring);
 			// ** add new HFT variables here **
 
 			{ // BACKGROUND MORTALITY
 				// try to find the map entry
-				std::map<MortalityFactor, double>::const_iterator 
+				std::map<MortalityFactor, double>::const_iterator
 					itr_background = herbidata.mortality.find(MF_BACKGROUND);
 				// add value if it was found, otherwise add zero
 				if (itr_background != herbidata.mortality.end())
@@ -557,7 +557,7 @@ void HerbivoryOutput::write_datapoint(
 
 			{ // LIFESPAN MORTALITY
 				// try to find the map entry
-				std::map<MortalityFactor, double>::const_iterator 
+				std::map<MortalityFactor, double>::const_iterator
 					itr_lifespan = herbidata.mortality.find(MF_LIFESPAN);
 				// add value if it was found, otherwise add zero
 				if (itr_lifespan != herbidata.mortality.end())
@@ -570,9 +570,9 @@ void HerbivoryOutput::write_datapoint(
 			{ // STARVATION MORTALITY
 				double starvation = 0.0;
 				// try to find the starvation mortality factors
-				std::map<MortalityFactor, double>::const_iterator 
+				std::map<MortalityFactor, double>::const_iterator
 					itr_starv1 = herbidata.mortality.find(MF_STARVATION_ILLIUS_OCONNOR_2000);
-				std::map<MortalityFactor, double>::const_iterator 
+				std::map<MortalityFactor, double>::const_iterator
 					itr_starv2 = herbidata.mortality.find(MF_STARVATION_THRESHOLD);
 
 				// Sum up the starvation mortality.
@@ -622,7 +622,7 @@ void HerbivoryOutput::write_datapoint(
 
 				// Insert “missing value” if this table is HFT specific.
 				if (tablefile.column_selector == CS_HFT ||
-						tablefile.column_selector == CS_HFT_FORAGE) 
+						tablefile.column_selector == CS_HFT_FORAGE)
 				{
 					// Only individual density and mass density are never missing
 					// values.

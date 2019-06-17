@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Implementation of a herbivore habitat for a \ref Patch.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -25,9 +25,9 @@ namespace Fauna {
 	const int PHEN_AVG_PERIOD = 30; // 1 month
 
 	/// Class with herbivore habitat functionality for an LPJ-GUESS \ref Patch.
-	/** 
+	/**
 	 * Any object of this class are supposed to be owned by the
-	 * corresponding \ref Patch object, which takes care of 
+	 * corresponding \ref Patch object, which takes care of
 	 * instantiating and releasing.
 	 *
 	 * \note There are no unit tests for this class because the
@@ -51,15 +51,15 @@ namespace Fauna {
 		 * \throw std::invalid_argument If `digestibility_model` or
 		 * `snow_depth_model` is a NULL pointer.
 		 */
-		PatchHabitat( 
-				Patch& patch, 
+		PatchHabitat(
+				Patch& patch,
 				std::auto_ptr<GetDigestibility> digestibility_model,
 				std::auto_ptr<GetSnowDepth> snow_depth_model);
 
 	public: // ----- Fauna::Habitat implementation -----
 		/** \copydoc Habitat::add_excreted_nitrogen()
 		 * Add all nitrogen to the plant-available soil pool
-		 * (\ref Soil::nmass_avail) and count the nitrogen input as flux 
+		 * (\ref Soil::nmass_avail) and count the nitrogen input as flux
 		 * (\ref Fluxes::EXCRETEDN).
 		*/
 		virtual void add_excreted_nitrogen(const double kgN_per_km2);

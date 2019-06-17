@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Herbivore Functional Type.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -20,8 +20,8 @@ using namespace Fauna;
 //============================================================
 
 Hft::Hft():
-	name("hft"), 
-	is_included(false), 
+	name("hft"),
+	is_included(false),
 	// SIMULATION PARAMETERS:
 	// add more initializiations in alphabetical order
 	bodyfat_birth(0.1),
@@ -61,7 +61,7 @@ Hft::Hft():
 
 bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 	bool is_valid = true;
-	
+
 	// The message text is written into an output string stream
 	std::ostringstream stream;
 
@@ -74,15 +74,15 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			name.find(GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR)
 			!= std::string::npos)
 	{
-		stream << "name contains a forbidden character. " << 
+		stream << "name contains a forbidden character. " <<
 			"(' ', ',', or '"<<
-			GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR<<"')" 
+			GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR<<"')"
 			<< std::endl;
 		is_valid = false;
 	}
 
 	//------------------------------------------------------------
-	if (params.herbivore_type == HT_COHORT || 
+	if (params.herbivore_type == HT_COHORT ||
 			params.herbivore_type == HT_INDIVIDUAL ){
 
 		if (bodyfat_birth <= 0.0) {
@@ -127,7 +127,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-		if (bodymass_birth > bodymass_male || bodymass_birth > bodymass_female) 
+		if (bodymass_birth > bodymass_male || bodymass_birth > bodymass_female)
 		{
 			stream << "bodymass_birth must not be greater than either "
 				<<"bodymass_male or bodymass_female ("
@@ -150,7 +150,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-		if (minimum_density_threshold <= 0.0 || minimum_density_threshold >= 1.0) 
+		if (minimum_density_threshold <= 0.0 || minimum_density_threshold >= 1.0)
 		{
 			stream << "minimum_density_threshold not between 0 and 1"
 				<< " (current value: " << minimum_density_threshold << ")";
@@ -184,7 +184,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			is_valid = false;
 		}
 
-		if (params.herbivore_type == HT_INDIVIDUAL && 
+		if (params.herbivore_type == HT_INDIVIDUAL &&
 				establishment_density <= 2.0/params.habitat_area_km2) {
 			stream << "establishment_density (" <<establishment_density<<" ind/km²) "
 				<< "must not be smaller than two individuals in a habitat"
@@ -354,19 +354,19 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const{
 			if (reproduction_max <= 0.0) {
 				stream << "reproduction_max must be >0.0 ("
 					<<reproduction_max<<")"<<std::endl;
-				is_valid = false; 
+				is_valid = false;
 			}
-			
+
 			if (breeding_season_length < 0 || breeding_season_length > 365) {
 				stream << "breeding_season_length must be in [0,365]"
 					<<" ("<<breeding_season_length<<")"<<std::endl;
-				is_valid = false; 
+				is_valid = false;
 			}
-			
+
 			if (breeding_season_start < 0 || breeding_season_start >= 365) {
 				stream << "breeding_season_start must be in [0,364]"
 					<<" ("<<breeding_season_start<<")"<<std::endl;
-				is_valid = false; 
+				is_valid = false;
 			}
 		}
 		// add more checks in alphabetical order

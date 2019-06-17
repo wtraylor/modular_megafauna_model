@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Function objects to distribute forage among herbivores.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -30,7 +30,7 @@ namespace Fauna{
 		 * proportion to its demanded forage.
 		 * \param[in]  available Available forage in the habitat.
 		 * \param[in,out] forage_distribution As input: Demanded
-		 * forage of each herbivore 
+		 * forage of each herbivore
 		 * (see \ref HerbivoreInterface::get_forage_demands()).
 		 * As output: Forage portion for each herbivore.
 		 * Unit is kgDM/km².
@@ -77,8 +77,8 @@ namespace Fauna{
 	class FeedHerbivores{
 		public:
 			/// Constructor.
-			/** 
-			 * \param distribute_forage Strategy object for 
+			/**
+			 * \param distribute_forage Strategy object for
 			 * calculating the forage portions.
 			 * \throw std::invalid_argument If `distribute_forage==NULL`. */
 			FeedHerbivores(std::auto_ptr<DistributeForage> distribute_forage);
@@ -86,7 +86,7 @@ namespace Fauna{
 			/// Feed the herbivores.
 			/**
 			 * \param[in,out] available Available forage mass in the
-			 * habitat. This will be reduced by the amount of eaten 
+			 * habitat. This will be reduced by the amount of eaten
 			 * forage.
 			 * \param[in,out] herbivores Herbivore objects that are
 			 * being fed by calling \ref HerbivoreInterface::eat().

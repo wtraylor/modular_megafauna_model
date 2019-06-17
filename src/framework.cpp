@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Central management of the herbivory simulation.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -36,12 +36,12 @@ Simulator::Simulator(const Parameters& params):
 
 std::auto_ptr<GetDigestibility> Simulator::create_digestibility_model()const{
 	switch (params.digestibility_model){
-		case DM_PFT_FIXED: 
-			return std::auto_ptr<GetDigestibility>(new PftDigestibility()); 
-		case DM_NPP: 
-			return std::auto_ptr<GetDigestibility>(new DigestibilityFromNPP()); 
-		case DM_PFT_PACHZELT2013: 
-			return std::auto_ptr<GetDigestibility>(new DigestibilityPachzelt2013()); 
+		case DM_PFT_FIXED:
+			return std::auto_ptr<GetDigestibility>(new PftDigestibility());
+		case DM_NPP:
+			return std::auto_ptr<GetDigestibility>(new DigestibilityFromNPP());
+		case DM_PFT_PACHZELT2013:
+			return std::auto_ptr<GetDigestibility>(new DigestibilityPachzelt2013());
 		default: throw std::logic_error("Simulator::create_digestibility_model(): "
 								 "Digestibility model not implemented.");
 	};
@@ -60,8 +60,8 @@ std::auto_ptr<DistributeForage> Simulator::create_distribute_forage(){
 
 std::auto_ptr<GetSnowDepth> Simulator::create_snow_depth_model()const{
 	switch (params.snow_depth_model){
-		case SD_TEN_TO_ONE: 
-			return std::auto_ptr<GetSnowDepth>(new SnowDepthTenToOne()); 
+		case SD_TEN_TO_ONE:
+			return std::auto_ptr<GetSnowDepth>(new SnowDepthTenToOne());
 		default: throw std::logic_error("Simulator::create_snow_depth_model(): "
 								 "Snow depth model not implemented.");
 	};
@@ -116,7 +116,7 @@ std::auto_ptr<HftPopulationsMap> Simulator::create_populations(
 	return pmap;
 }
 
-void Simulator::simulate_day(const int day_of_year, 
+void Simulator::simulate_day(const int day_of_year,
 					SimulationUnit& simulation_unit,
 		const bool do_herbivores){
 	if (day_of_year < 0 || day_of_year >= 365)
@@ -128,7 +128,7 @@ void Simulator::simulate_day(const int day_of_year,
 
 	// If one check interval has passed, we will check if HFTs have died out
 	// and need to be re-established.
-	// Note that re-establishment is only activated if the interval length is 
+	// Note that re-establishment is only activated if the interval length is
 	// a positive number.
 	if (days_since_last_establishment == params.herbivore_establish_interval &&
 		 params.herbivore_establish_interval > 0)

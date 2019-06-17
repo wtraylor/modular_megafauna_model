@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Implementation of a herbivore habitat for a \ref Patch.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -20,10 +20,10 @@ using namespace Fauna;
 //============================================================
 
 PatchHabitat::PatchHabitat(
-				Patch& patch, 
+				Patch& patch,
 				std::auto_ptr<GetDigestibility> digestibility_model,
 				std::auto_ptr<GetSnowDepth> snow_depth_model):
-	patch(patch), 
+	patch(patch),
 	get_digestibility(digestibility_model),
 	get_snow_depth(snow_depth_model)
 {
@@ -46,7 +46,7 @@ void PatchHabitat::add_excreted_nitrogen(const double kgN_per_km2){
 
 HabitatForage PatchHabitat::get_available_forage() const {
 	// Result object (initialized with zero values)
-	HabitatForage result; 
+	HabitatForage result;
 
 	// Fractional nitrogen content in each forage type.
 	ForageFraction nitrogen_content;
@@ -55,9 +55,9 @@ HabitatForage PatchHabitat::get_available_forage() const {
 	double grass_fpc = 0.0;
 
 	// Loop through all vegetation individuals in this patch
-	for (patch.vegetation.firstobj(); 
+	for (patch.vegetation.firstobj();
 			patch.vegetation.isobj;
-			patch.vegetation.nextobj()) 
+			patch.vegetation.nextobj())
 	{
 		const Individual& indiv = patch.vegetation.getobj();
 		if (!indiv.alive)
@@ -81,7 +81,7 @@ HabitatForage PatchHabitat::get_available_forage() const {
 
 			// Avoid precision errors in extremely low values.
 			if (indiv_mass < 10)
-				indiv_mass = 0.0; 
+				indiv_mass = 0.0;
 			assert( indiv_mass >= 0.0 );
 
 			// Digestibility: Build average, weighted by mass.
@@ -135,7 +135,7 @@ HabitatForage PatchHabitat::get_available_forage() const {
 
 		}
 	}
-	// TODO: Grass FPC is made constant because 
+	// TODO: Grass FPC is made constant because
 	// LPJ-GUESS produced near-zero FPC values.
 	if (result.grass.get_mass() > 0.0) {
 		grass_fpc = 0.5; // DIRTY FIX CONSTANT
@@ -165,9 +165,9 @@ void PatchHabitat::init_day(const int today){
 	// Call parent function.
 	Habitat::init_day(today);
 
-	for (patch.vegetation.firstobj(); 
+	for (patch.vegetation.firstobj();
 			patch.vegetation.isobj;
-			patch.vegetation.nextobj()) 
+			patch.vegetation.nextobj())
 	{
 		Individual& indiv = patch.vegetation.getobj();
 
@@ -183,9 +183,9 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	ForageMass old_forage;
 
 	// Sum up the old forage
-	for (patch.vegetation.firstobj(); 
+	for (patch.vegetation.firstobj();
 			patch.vegetation.isobj;
-			patch.vegetation.nextobj()) 
+			patch.vegetation.nextobj())
 	{
 		const Individual& indiv = patch.vegetation.getobj();
 		if (!indiv.alive)
@@ -193,7 +193,7 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 		const ForageType ft = indiv.get_forage_type();
 
 		if (ft != FT_INEDIBLE){
-			old_forage.set(ft, 
+			old_forage.set(ft,
 					old_forage.get(ft) + indiv.get_forage_mass());
 		}
 	}
@@ -221,9 +221,9 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 	}
 
 	// Reduce the forage of each plant individual.
-	for (patch.vegetation.firstobj(); 
+	for (patch.vegetation.firstobj();
 			patch.vegetation.isobj;
-			patch.vegetation.nextobj()) 
+			patch.vegetation.nextobj())
 	{
 		Individual& indiv = patch.vegetation.getobj();
 		if (!indiv.alive)
@@ -233,6 +233,6 @@ void PatchHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
 		// Reduce the forage of each individual proportionally
 		if (ft != FT_INEDIBLE)
 			indiv.reduce_forage_mass(fraction_left[ft]);
-	} 
+	}
 }
 

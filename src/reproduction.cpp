@@ -37,13 +37,13 @@ bool BreedingSeason::is_in_season(const int day)const{
 		throw std::invalid_argument("Fauna::BreedingSeason::is_in_season() "
 				"Parameter `day` is out of range.");
 
-	// We are in breeding season if: 
-	// START ≤ day ≤ START+LENGTH || 
+	// We are in breeding season if:
+	// START ≤ day ≤ START+LENGTH ||
 	// START ≤ day+365 ≤ START+LENGTH  // season extending over year boundary
 	const int S=start;
 	const int L=length;
 	const int d=day;
-	return (S<=d && d<=S+L) || (S<=d+365 && d+365<=S+L); 
+	return (S<=d && d<=S+L) || (S<=d+365 && d+365<=S+L);
 }
 
 double BreedingSeason::annual_to_daily_rate(const double annual)const{
@@ -55,7 +55,7 @@ double BreedingSeason::annual_to_daily_rate(const double annual)const{
 // ######################### ReprIlliusOconnor2000 #################
 // ##################################################################
 
-ReprIlliusOconnor2000::ReprIlliusOconnor2000( 
+ReprIlliusOconnor2000::ReprIlliusOconnor2000(
 		BreedingSeason breeding_season,
 		const double max_annual_increase):
 	max_annual_increase(max_annual_increase),
@@ -84,10 +84,10 @@ double ReprIlliusOconnor2000::get_offspring_density(
 	static const double b = 15.0;
 	static const double c = 0.3;
 	const double k = max_annual_increase;
-	
+
 	// see doxygen documentation of the class for formula
 	// explanation
-	
+
 	// annual rate
 	const double annual = ( k / (1.0 + exp(-b*(body_condition-c))));
 	assert(annual <= max_annual_increase);
@@ -123,7 +123,7 @@ double ReproductionConstMax::get_offspring_density(const int day)const
 // ######################### ReproductionLinear #####################
 // ##################################################################
 
-ReproductionLinear::ReproductionLinear( 
+ReproductionLinear::ReproductionLinear(
 		BreedingSeason breeding_season,
 		const double max_annual_increase):
 	max_annual_increase(max_annual_increase),
@@ -150,7 +150,7 @@ double ReproductionLinear::get_offspring_density(
 
 	// Yes, we are in breeding season and just apply the formula.
 	const double annual = max_annual_increase * body_condition;
-	
+
 	// annual rate
 	assert(annual <= max_annual_increase);
 	assert(annual >= 0.0);

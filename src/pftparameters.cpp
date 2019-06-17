@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Herbivory-related PFT parameters
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -18,11 +18,11 @@ using namespace Fauna;
 // PftParams
 //============================================================
 
-bool PftParams::is_valid(const Parameters& params, 
+bool PftParams::is_valid(const Parameters& params,
 		std::string& messages)const{
 
 	bool is_valid = true;
-	
+
 	// The message text is written into an output string stream
 	std::ostringstream stream;
 
@@ -77,4 +77,4 @@ bool PftParams::is_valid(const Parameters& params)const{
 	// Just call the other overload function and dump the messages.
 	std::string dump;
 	return is_valid(params, dump);
-} 
+}

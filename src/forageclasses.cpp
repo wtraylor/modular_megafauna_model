@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \ingroup group_herbivory
 /// \brief Large herbivore forage.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -27,16 +27,16 @@ namespace Fauna {
 
 const std::string& Fauna::get_forage_type_name(const ForageType ft) {
 	switch (ft){
-		case FT_GRASS   : 
+		case FT_GRASS   :
 			static const std::string grass("grass");
 			return grass;
-		case FT_INEDIBLE: 
+		case FT_INEDIBLE:
 			static const std::string inedible("inedible");
 			return inedible;
 		default  : throw std::logic_error(
 									 "Fauna::get_forage_type_name() "
 									 "Forage type is not implemented.");
-	} 
+	}
 }
 
 ForageValues<POSITIVE_AND_ZERO> Fauna::foragefractions_to_foragevalues(
@@ -45,7 +45,7 @@ ForageValues<POSITIVE_AND_ZERO> Fauna::foragefractions_to_foragevalues(
 	ForageValues<POSITIVE_AND_ZERO> result;
 	for (ForageFraction::const_iterator i = fractions.begin();
 			i != fractions.end();
-			i++) 
+			i++)
 		result.set(i->first, i->second);
 	return result;
 }
@@ -62,7 +62,7 @@ ForageFraction Fauna::foragevalues_to_foragefractions(
 	ForageFraction result;
 	for (ForageFraction::const_iterator i = values.begin();
 			i != values.end();
-			i++) 
+			i++)
 	{
 		double v = i->second;
 		if (v > 1.0){
@@ -84,7 +84,7 @@ ForageFraction Fauna::convert_mj_to_kg_proportionally(
 		const ForageEnergyContent& mj_per_kg,
 		const ForageFraction& mj_proportions)
 {
-	ForageValues<POSITIVE_AND_ZERO> kg_proportions = 
+	ForageValues<POSITIVE_AND_ZERO> kg_proportions =
 		foragefractions_to_foragevalues(mj_proportions).
 		divide_safely(mj_per_kg, 0.0);
 
@@ -151,7 +151,7 @@ GrassForage& GrassForage::merge(const GrassForage& other,
 	// (don’t call get_fpc() here, but use private member variable
 	//  directly, so that no validity check is done)
 	set_fpc(average(
-				this->fpc, other.fpc, 
+				this->fpc, other.fpc,
 				this_weight, other_weight));
 	return *this;
 }
@@ -210,7 +210,7 @@ ForageBase HabitatForage::get_total() const{
 			dig_sum_weight += itr->second * operator[](ft).get_digestibility();
 		}
 		result.set_digestibility( dig_sum_weight / mass.sum() );
-	} else 
+	} else
 		result.set_digestibility(0.0);
 	return result;
 }
@@ -231,7 +231,7 @@ void HabitatForage::set_nitrogen_content(const ForageFraction& n_content)
 			itr != n_content.end(); itr++){
 		const ForageType ft = itr->first;
 		const double dry_matter = (*this)[ft].get_mass();
-		if (n_content[ft] == 1.0) 
+		if (n_content[ft] == 1.0)
 			throw std::invalid_argument("Fauna::HabitatForage::set_nitrogen_content() "
 					"Nitrogen content for one forage type is 100%. That is not allowed.");
 		(*this)[ft].set_nitrogen_mass(dry_matter * n_content[ft]);

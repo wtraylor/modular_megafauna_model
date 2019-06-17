@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \ingroup group_herbivory
-/// \brief Functions and classes shared across parts of the herbivory 
-///        module. 
+/// \brief Functions and classes shared across parts of the herbivory
+///        module.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date October 2017
 ///////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ namespace Fauna {
 				month++;
 			} else
 				day_of_month++;
-		}	
+		}
 		assert(day_of_month >= 0);
 		assert(month >= 0);
 		assert(month <= 11);

@@ -70,7 +70,7 @@ double DigestibilityPachzelt2013::operator()(
 
 double DigestibilityFromNPP::operator()(const Individual& indiv) const{
 	return get_digestibility_from_dnpp(
-			indiv.get_dnpp_record(), 
+			indiv.get_dnpp_record(),
 			indiv.pft.herbiv_params.digestibility, // fresh
 			indiv.pft.herbiv_params.digestibility_dead); // dead
 }
@@ -102,7 +102,7 @@ double DigestibilityFromNPP::get_digestibility_from_dnpp(
 
 	// Iterate through all daily NPP values.
 	for (std::deque<double>::const_iterator itr = weights.begin();
-			itr != weights.end() && count < ATTRITION_PERIOD; 
+			itr != weights.end() && count < ATTRITION_PERIOD;
 			itr++)
 	{
 		if (*itr < 0.0)
@@ -114,7 +114,7 @@ double DigestibilityFromNPP::get_digestibility_from_dnpp(
 		// record that is `count` days in the past.
 		// We assume a linear decreas here from fresh to dead over the
 		// “attrition period”.
-		const double dig = dig_fresh - 
+		const double dig = dig_fresh -
 			(dig_fresh-dig_dead) * (double)count / ATTRITION_PERIOD;
 
 		// Build sum of products of digestibility and NPP (weight).

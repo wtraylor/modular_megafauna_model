@@ -59,7 +59,7 @@ HerbivoreIndividual CreateHerbivoreIndividual::operator()(
 				"age_days < 0");
 
 	assert(get_area_km2() > 0.0);
-	if (age_days == 0) 
+	if (age_days == 0)
 		// Call birth constructor
 		return HerbivoreIndividual(&get_hft(), sex, get_area_km2());
 	else
@@ -86,7 +86,7 @@ HerbivoreCohort CreateHerbivoreCohort::operator()(
 				"age_years < 0");
 
 	const int age_days = age_years*365;
-	if (age_days == 0) 
+	if (age_days == 0)
 		// Call birth constructor
 		return HerbivoreCohort(&get_hft(), sex, ind_per_km2);
 	else

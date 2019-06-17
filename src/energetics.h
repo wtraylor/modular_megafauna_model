@@ -20,15 +20,15 @@ namespace Fauna{
 	/**
 	 * Terminology:
 	 * - Anabolism  = build up fat mass
-	 * - Catabolism = burn fat mass 
+	 * - Catabolism = burn fat mass
 	 * - Metabolism = us burn food energy directly and use surplus for
 	 *   anabolism
 	 */
 	class FatmassEnergyBudget {
 		public:
 			/// Constructor
-			/** 
-			 * \param initial_fatmass Initial fat mass [kg/ind] 
+			/**
+			 * \param initial_fatmass Initial fat mass [kg/ind]
 			 * \param maximum_fatmass Maximum fat mass [kg/ind]
 			 * \throw std::invalid_argument If one parameter is <=0.0
 			 * \throw std::logic_error `initial_fatmass > maximum_fatmass`
@@ -38,7 +38,7 @@ namespace Fauna{
 					const double maximum_fatmass);
 
 			/// Increase energy needs
-			/** \param energy Additional energy needs [MJ/ind] 
+			/** \param energy Additional energy needs [MJ/ind]
 			 * \throw std::invalid_argument if `energy<0.0` */
 			void add_energy_needs(const double energy);
 
@@ -76,7 +76,7 @@ namespace Fauna{
 					const double this_weight, const double other_weight);
 
 			/// Update budget and fat mass by receiving energy (through feeding)
-			/** 
+			/**
 			 * If `energy` exceeds current energy needs, the surplus is stored
 			 * as fat (anabolism).
 			 * \param energy Input energy [MJ/ind].
@@ -87,13 +87,13 @@ namespace Fauna{
 			void metabolize_energy(double energy);
 
 			/// Set the maximum allowed fat mass [kg/ind] and fat gain [kg/ind/day].
-			/** 
+			/**
 			 * \param max_fatmass Current maximum fat mass [kg/ind].
-			 * \param max_gain Maximum fat mass gain [kg/ind/day]. A value of 
+			 * \param max_gain Maximum fat mass gain [kg/ind/day]. A value of
 			 * zero indicates no limit.
-			 * \throw std::logic_error if `max_fatmass` is smaller than 
-			 * current fat mass 
-			 * \throw std::invalid_argument If `max_fatmass<=0.0` or 
+			 * \throw std::logic_error if `max_fatmass` is smaller than
+			 * current fat mass
+			 * \throw std::invalid_argument If `max_fatmass<=0.0` or
 			 * if `max_gain < 0`.*/
 			void set_max_fatmass(const double max_fatmass, const double max_gain);
 		private:
@@ -118,7 +118,7 @@ namespace Fauna{
 	 * where M is current body mass [kg/ind] and \f$M_{ad}\f$ is
 	 * adult body mass.
 	 *
-	 * \return energy expenditure in MJ for one herbivore individual 
+	 * \return energy expenditure in MJ for one herbivore individual
 	 * per day [MJ/day/ind]
 	 */
 	inline double get_expenditure_taylor_1981(
@@ -134,9 +134,9 @@ namespace Fauna{
 	 * \f]
 	 * - \f$E\f$: Daily energy expenditure [MJ/ind/day].
 	 * - \f$A\f$: Body mass [kg/ind].
-	 * - \f$k_1 = 0.0079\f$: Constant, derived from regression analysis of 
+	 * - \f$k_1 = 0.0079\f$: Constant, derived from regression analysis of
 	 *   data from Anderson & Jetz (2005)\cite anderson2005broadscale.
-	 * - \f$k_2 = 0.36\f$: Constant, calibrated to yield a range close to the 
+	 * - \f$k_2 = 0.36\f$: Constant, calibrated to yield a range close to the
 	 *   values in Illius & O’Connor (2000)\cite illius2000resource.
 	 * \param bodymass Current body mass [kg/ind].
 	 * \param ambient_temperature Long-term mean air temperature [°C].
@@ -191,7 +191,7 @@ namespace Fauna{
 	/// Extrapolate conductance from reindeer fur.
 	/**
 	 * Cuyler & Øritsland (2004)\cite cuyler2004rain measured conductivity
-	 * values of reindeer (Rangifer tarandus) pelts in calm air and dry 
+	 * values of reindeer (Rangifer tarandus) pelts in calm air and dry
 	 * conditions:
 	 * - 0.63 W/(°C*m²) in winter
 	 * - 2.16 W/(°C*m²) in summer
@@ -206,10 +206,10 @@ namespace Fauna{
 	 * - for summer \f$2.16 * 0.09 * 60^{0.66} = 2.9\f$
 	 *
 	 * Both Bradley & Deavers (1980)\cite bradley1980reexamination and
-	 * Fristoe et al. (2014)\cite fristoe2015metabolic suggest that the 
+	 * Fristoe et al. (2014)\cite fristoe2015metabolic suggest that the
 	 * allometric exponent for body mass for whole-body conductance among
 	 * mammals is about 0.57.
-	 * We derive an allometric function for the conductance 
+	 * We derive an allometric function for the conductance
 	 * \f$C = x*M^{0.56}\f$ (in W/°C)
 	 * that contains the value from reindeer pelts.
 	 *
@@ -220,7 +220,7 @@ namespace Fauna{
 	 *
 	 * \param bodymass Adult body mass [kg/ind].
 	 * \param season Whether it’s summer or winter pelt.
-	 * \return Extrapolated whole-body conductance for an Arctic species 
+	 * \return Extrapolated whole-body conductance for an Arctic species
 	 * [W/°C].
 	 * \throw std::invalid_argument If `bodymass <= 0`.
 	 */
@@ -238,10 +238,10 @@ namespace Fauna{
 
 	/// Calculate additional energy requirements to keep body temperature.
 	/**
-	 * Please see \ref sec_herbiv_thermoregulation for the formulas and 
+	 * Please see \ref sec_herbiv_thermoregulation for the formulas and
 	 * concepts.
 	 *
-	 * \param thermoneutral_rate Thermoneutral expenditure [MJ/ind/day]. 
+	 * \param thermoneutral_rate Thermoneutral expenditure [MJ/ind/day].
 	 * \param conductance Whole-body thermal conductance of the animal [W/°C].
 	 * \param core_temperature Body core temperature [°C].
 	 * \param ambient_temperature Ambient air temperature [°C].
@@ -257,7 +257,7 @@ namespace Fauna{
 			const double ambient_temperature);
 }
 
-#endif // HERBIV_ENERGETICS_H 
+#endif // HERBIV_ENERGETICS_H
 
 // References
 

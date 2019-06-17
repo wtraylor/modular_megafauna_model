@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Function objects to distribute forage among herbivores.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -54,7 +54,7 @@ void DistributeForageEqually::operator()(
 			const ForageType ft = itr_ft->first;
 
 			if (demand_sum[ft] != 0.0)
-				portion.set(ft,  avail_mass[ft] * 
+				portion.set(ft,  avail_mass[ft] *
 						demand[ft] / demand_sum[ft]);
 		}
 	}
@@ -78,7 +78,7 @@ void FeedHerbivores::operator()(
 
 
 	// loop as many times as there are forage types
-	// to allow prey switching: 
+	// to allow prey switching:
 	// If one forage type gets “empty” in the first loop, the
 	// herbivores can then demand from another forage type, and so
 	// on until it’s all empty or they are all satisfied or cannot

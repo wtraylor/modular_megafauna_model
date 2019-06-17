@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Herbivore mortality factor implementations.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -90,7 +90,7 @@ double GetStarvationIlliusOConnor2000::cumulative_normal_distribution(double x){
 		sign = -1;
 	x = fabs(x)/sqrt(2.0);
 
-	// A&S formula 7.1.26 (Handbook of Mathematical Functions by 
+	// A&S formula 7.1.26 (Handbook of Mathematical Functions by
 	// Abramowitz and Stegun)
 	const double t = 1.0/(1.0 + p*x);
 	const double y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x);
@@ -124,7 +124,7 @@ double GetStarvationIlliusOConnor2000::operator()(
 		// If `dead_fraction` approaches zero, `new_body_condition` can get
 		// above 1.0.
 		new_body_condition = min(1.0, new_body_condition);
-	} else 
+	} else
 		new_body_condition = body_condition;
 
 	assert( new_body_condition >= body_condition);
@@ -156,7 +156,7 @@ double GetStarvationMortalityThreshold::operator()(
 	assert (min_bodyfat >= 0.0 && min_bodyfat < 1.0);
 	if (bodyfat < min_bodyfat)
 		return 1.0;
-	else 
+	else
 		return 0.0;
 }
 

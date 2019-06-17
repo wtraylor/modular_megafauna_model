@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Herbivore Functional Type.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -63,9 +63,9 @@ namespace Fauna{
 	/// Digestion type of a herbivore.
 	enum DigestionType{
 		/// Hindgut fermenter (colonic caecalid).
-		DT_HINDGUT, 
+		DT_HINDGUT,
 		/// Ruminant forgut fermenter.
-		DT_RUMINANT 
+		DT_RUMINANT
 	};
 
 	/// Algorithm to calculate the daily digestive capacity of a herbivore.
@@ -117,7 +117,7 @@ namespace Fauna{
 		 * E = c * M^e
 		 * \f]
 		 * - $E$: Daily energy expenditure [MJ/ind/day]
-		 * - $c$: Coefficient (\ref AllometryParameters::coefficient in 
+		 * - $c$: Coefficient (\ref AllometryParameters::coefficient in
 		 *   member \ref Hft::expenditure_allometry)
 		 * - $M$: Current body mass [kg/ind]
 		 * - $e$: Allometric exponent (\ref AllometryParameters::exponent in
@@ -136,13 +136,13 @@ namespace Fauna{
 	/// A factor limiting a herbivore’s daily forage harvesting.
 	enum ForagingLimit{
 
-		/// Type-II functional response applied “on top” of all other constraints. 
-		/**This has no empirical basis, but serves as a way to implement an 
+		/// Type-II functional response applied “on top” of all other constraints.
+		/**This has no empirical basis, but serves as a way to implement an
 		 * “artificial” smooth negative feedback from forage to fat mass.
 		 *
-		 * Note that this model is functionally similar to 
+		 * Note that this model is functionally similar to
 		 * \ref FL_ILLIUS_OCONNOR_2000, but Illius & O’Connor (2000)
-		 * \cite illius2000resource use a value for 
+		 * \cite illius2000resource use a value for
 		 * \ref Hft::half_max_intake_density that is empirical-based.
 		 *
 		 * Here, it shall be explicitely stated that the half-max intake
@@ -155,15 +155,15 @@ namespace Fauna{
 
 		/// Foraging is limited by a functional response towards digestion limit.
 		/**
-		 * Illius & O’Connor (2000) \cite illius2000resource describe daily 
-		 * food intake rate as a Holling Type II functional response 
+		 * Illius & O’Connor (2000) \cite illius2000resource describe daily
+		 * food intake rate as a Holling Type II functional response
 		 * (compare \ref HalfMaxIntake).
 		 * As the maximum daily energy intake they choose the digestive
 		 * capacity (compare \ref GetDigestiveLimitIlliusGordon1992).
 		 *
-		 * Like in the model of Pachzelt et al. (2013) 
-		 * \cite pachzelt2013coupling, the grass forage density of the 
-		 * whole patch (habitat) is used (not the sward density 
+		 * Like in the model of Pachzelt et al. (2013)
+		 * \cite pachzelt2013coupling, the grass forage density of the
+		 * whole patch (habitat) is used (not the sward density
 		 *
 		 * \note This model for maximum foraging works only for pure grazers
 		 * (⇒ \ref DC_PURE_GRAZER).
@@ -210,21 +210,21 @@ namespace Fauna{
 	struct Hft{
 			/// Constructor initializing values
 			/** All values do not necessary need to be valid because
-			 * their validity potentially depends on external variables. 
+			 * their validity potentially depends on external variables.
 			 * For the sake of easy unit-testing, arbitrary default
 			 * values are given that lie within the valid ranges.
 			 */
 			Hft();
 
 			/// Check if all variables are okay
-			/** 
+			/**
 			 * \param[in] params The global simulation parameters.
 			 * \param[out] msg Warning or error messages for output.
 			 * \return true if the object has valid values */
 			bool is_valid(const Parameters& params, std::string& msg) const;
 
 			/// Check if all variables are okay
-			/** 
+			/**
 			 * \param[in] params The global simulation parameters.
 			 * \return true if the object has valid values */
 			bool is_valid(const Parameters& params) const;
@@ -238,13 +238,13 @@ namespace Fauna{
 			/** @{ \name Simulation Parameters */
 
 			/// Proportional fat mass at birth [kg/kg].
-			double bodyfat_birth; 
+			double bodyfat_birth;
 
 			/// Standard deviation in body condition for \ref GetStarvationIlliusOConnor2000.
 			/**
 			 * Body condition is the proportion of current body fat relative to
 			 * physiological maximum.
-			 * For herbivore individuals, the standard deviation refers to the 
+			 * For herbivore individuals, the standard deviation refers to the
 			 * whole population. In cohort mode, it refers only to one cohort.
 			 *
 			 * \note For juvevniles (1st year of life), body fat variation is
@@ -261,7 +261,7 @@ namespace Fauna{
 			double bodyfat_max_daily_gain;
 
 			/// Body mass [kg] at birth for both sexes.
-			int bodymass_birth; 
+			int bodymass_birth;
 
 			/// Body mass [kg] of an adult female individual (with full fat reserves).
 			int bodymass_female;
@@ -316,9 +316,9 @@ namespace Fauna{
 			int gestation_months;
 
 			/// Grass density [gDM/m²] where intake is half of its maximum.
-			/** 
-			 * Grass (sward) density at which intake rate reaches half 
-			 * of its maximum (in a Holling Type II functional response). 
+			/**
+			 * Grass (sward) density at which intake rate reaches half
+			 * of its maximum (in a Holling Type II functional response).
 			 * Required by specific foraging limits.
 			 */
 			double half_max_intake_density;
@@ -350,7 +350,7 @@ namespace Fauna{
 			double mortality_juvenile;
 
 			/// Algorithm for forage energy content.
-			NetEnergyModel net_energy_model; 
+			NetEnergyModel net_energy_model;
 
 			/// Maximum annual reproduction rate for females (0.0–∞)
 			double reproduction_max;
@@ -367,7 +367,7 @@ namespace Fauna{
 			/**@}*/ // group simulation parameters
 
 			/** @{ \name Comparison operators*/
-			/** Comparison operators are solely based on string 
+			/** Comparison operators are solely based on string
 			 * comparison of the \ref name.
 			 */
 			bool operator==(const Hft& rhs)const{return name==rhs.name;}
@@ -412,7 +412,7 @@ namespace Fauna{
 			 * it will be replaced with the new one.
 			 * \throw std::invalid_argument `if (hft.name=="")`
 			 */
-			void insert(const Hft hft){ 
+			void insert(const Hft hft){
 				if (hft.name == "")
 					throw std::invalid_argument("HftList::add(): "
 							"Hft.name is empty");
@@ -443,7 +443,7 @@ namespace Fauna{
 						iter++;
 			}
 
-			
+
 			//------------------------------------------------------------
 			/** @{ \name Wrapper around std::vector */
 			typedef std::vector<Hft>::iterator iterator;
@@ -457,17 +457,17 @@ namespace Fauna{
 		private:
 			/// Vector holding the Hft instances.
 			std::vector< Hft > vec;
-			
+
 			/// Find the position of the \ref Hft with given name.
 			/** \param name \ref Hft::name identifier
 			 * \return list position if found, -1 if not in list */
 			int find(const std::string& name)const{
 				for (int i=0; i<size(); i++)
-					if (vec.at(i).name == name) 
+					if (vec.at(i).name == name)
 						return i;
 				return -1;
 			}
 	};
-	
+
 }
 #endif //HERBIV_HFT_H

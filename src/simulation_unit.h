@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Simulation unit: a habitat + herbivore populations.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -35,7 +35,7 @@ namespace Fauna{
 					throw std::logic_error("Fauna::SimulationUnit::get_habitat() "
 							"The unique pointer to habitat is NULL. "
 							"The SimulationUnit object lost ownership "
-							"of the Habitat object."); 
+							"of the Habitat object.");
 				return *habitat;
 			};
 
@@ -46,7 +46,7 @@ namespace Fauna{
 					throw std::logic_error("Fauna::SimulationUnit::get_populations() "
 							"The unique pointer to populations is NULL. "
 							"The SimulationUnit object lost ownership "
-							"of the HftPopulationsMap object."); 
+							"of the HftPopulationsMap object.");
 				return *populations;
 			}
 
@@ -56,7 +56,7 @@ namespace Fauna{
 			/// Set the flag that initial establishment has been performed.
 			void set_initial_establishment_done(){initial_establishment_done = true;}
 
-			/// @{ \brief Get temporally aggregated habitat and herbivore output. 
+			/// @{ \brief Get temporally aggregated habitat and herbivore output.
 			FaunaOut::CombinedData& get_output(){ return current_output; }
 			const FaunaOut::CombinedData& get_output()const{
 				return current_output;

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Classes for abiotic conditions for herbivores.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F

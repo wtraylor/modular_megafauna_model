@@ -1,17 +1,17 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Unit tests for megafauna herbivores.
-/// \ingroup group_herbivory 
+/// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date 05-21-2017
 //////////////////////////////////////////////////////////////////////////
 
-#include "catch.hpp" 
+#include "catch.hpp"
 #include "digestibility.h"
 #include "energetics.h"
 #include "environment.h"
-#include "foraging.h" 
-#include "forageclasses.h" 
+#include "foraging.h"
+#include "forageclasses.h"
 #include "forageenergy.h"
 #include "framework.h"
 #include "herbivore.h"
@@ -23,7 +23,7 @@
 #include "population.h"
 #include "reproduction.h"
 #include "simulation_unit.h"
-#include "testhabitat.h" 
+#include "testhabitat.h"
 #include "utils.h"
 #include <memory> // for std::auto_ptr
 #include <cmath>  // for exp() and pow()
@@ -57,7 +57,7 @@ namespace {
 					const double bodymass=30.0):
 				hft(hft), ind_per_km2(ind_per_km2), bodymass(bodymass),
 		killed(false){}
-			
+
 			virtual void eat(
 					const ForageMass& kg_per_km2,
 					const Digestibility& digestibility,
@@ -102,7 +102,7 @@ namespace {
 				original_demand = actual_demand = d;
 			}
 			const ForageMass& get_eaten()const{return eaten;}
-			double ind_per_km2; 
+			double ind_per_km2;
 		private:
 			const Hft* hft;
 			const double bodymass;
@@ -137,7 +137,7 @@ namespace {
 					res.push_back(&vec[i]);
 				return res;
 			}
-			virtual std::vector<HerbivoreInterface*> get_list(){ 
+			virtual std::vector<HerbivoreInterface*> get_list(){
 				std::vector<HerbivoreInterface*> res;
 				for (int i=0; i<vec.size(); i++)
 					res.push_back(&vec[i]);
@@ -159,7 +159,7 @@ namespace {
 			HerbivoreBaseDummy(
 					const int age_days,
 					const double body_condition,
-					const Hft* hft, 
+					const Hft* hft,
 					const Sex sex):
 				HerbivoreBase(age_days, body_condition, hft, sex),
 				ind_per_km2(1.0){}
@@ -204,18 +204,18 @@ namespace {
 		return hftlist;
 	}
 
-	/// \brief Check if the lengths of the modifiable and the 
+	/// \brief Check if the lengths of the modifiable and the
 	/// read-only population vectors match.
 	bool population_lists_match(PopulationInterface& pop){
 		// FIRST the read-only -> no chance for the population
 		// object to change the list.
-		ConstHerbivoreVector readonly = 
+		ConstHerbivoreVector readonly =
 			((const PopulationInterface&) pop).get_list();
 		HerbivoreVector modifiable = pop.get_list();
 		return modifiable.size() == readonly.size();
 	}
 
-} // anonymous namespace 
+} // anonymous namespace
 
 
 // TEST CASES IN ALPHABETICAL ORDER, PLEASE
@@ -237,7 +237,7 @@ TEST_CASE("Dummies", "") {
 		const ForageMass DEMAND(23.9);
 		d.set_demand(DEMAND);
 		CHECK( d.get_original_demand() == DEMAND );
-		
+
 		const ForageMass EATEN(12.4);
 		d.eat(EATEN, Digestibility(.5));
 		CHECK( d.get_eaten() == EATEN );
@@ -291,7 +291,7 @@ TEST_CASE("Fauna::BreedingSeason", ""){
 		const int LENGTH2 = 360;
 		const BreedingSeason b(START, LENGTH2);
 		const int END = (START+LENGTH2) % 365;
-		
+
 		// within season
 		CHECK( b.is_in_season(START) > 0.0 );
 		CHECK( b.is_in_season(END) > 0.0 );
@@ -337,7 +337,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 			REQUIRE( population_lists_match(pop) );
 
 			// There should be only one age class with male and female
-			REQUIRE( pop.get_list().size() == 2 ); 
+			REQUIRE( pop.get_list().size() == 2 );
 
 			// Does the total density match?
 			REQUIRE( pop.get_ind_per_km2() == Approx(hft.establishment_density) );
@@ -351,14 +351,14 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 			REQUIRE( population_lists_match(pop) );
 
 			// There should be 2 cohorts per year in the age range.
-			REQUIRE( pop.get_list().size() == 4 * 2 ); 
+			REQUIRE( pop.get_list().size() == 4 * 2 );
 
 			// Does the total density match?
 			REQUIRE( pop.get_ind_per_km2() == Approx(hft.establishment_density) );
 		}
 
 		SECTION("Removal of dead cohorts with mortality"){
-			// we will kill all herbivores in the list with a copy 
+			// we will kill all herbivores in the list with a copy
 			// assignment trick
 
 			// Let them die ...
@@ -375,9 +375,9 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 			}
 			// now they should be all dead
 
-			// So far, the list shouldn’t have changed. It still includes the 
+			// So far, the list shouldn’t have changed. It still includes the
 			// dead cohorts.
-			CHECK( population_lists_match(pop) ); 
+			CHECK( population_lists_match(pop) );
 			CHECK( old_count == pop.get_list().size() );
 
 			// Check that each cohort is really dead.
@@ -396,10 +396,10 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 	SECTION("Offspring with enough density"){
 		const double DENS = 10.0; // offspring density [ind/km²]
 		INFO( "DENS = " << DENS );
-		pop.create_offspring(DENS); 
+		pop.create_offspring(DENS);
 
 		// There should be only one age class with male and female
-		REQUIRE( pop.get_list().size() == 2 ); 
+		REQUIRE( pop.get_list().size() == 2 );
 		CHECK( population_lists_match(pop) );
 		// Does the total density match?
 		REQUIRE( pop.get_ind_per_km2() == Approx(DENS) );
@@ -416,7 +416,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 		// add more offspring
 		pop.create_offspring(DENS);
 		// This must be in the same age class even though we advanced one day.
-		REQUIRE( pop.get_list().size() == 2 ); 
+		REQUIRE( pop.get_list().size() == 2 );
 		CHECK( population_lists_match(pop) );
 		REQUIRE( pop.get_ind_per_km2() == Approx(2.0*DENS) );
 
@@ -458,7 +458,7 @@ TEST_CASE("Fauna::DigestibilityFromNPP"){
 
 	// Calculate ‘manually’
 	const double sum = .4 + .5 + .7 + .4;
-	const double dig = 
+	const double dig =
 		(.4 * FRESH +
 		 .5 * FRESH - (FRESH-DEAD) * 1.0/DigestibilityFromNPP::ATTRITION_PERIOD    +
 		 .7 * FRESH - (FRESH-DEAD) * 2.0/DigestibilityFromNPP::ATTRITION_PERIOD    +
@@ -466,7 +466,7 @@ TEST_CASE("Fauna::DigestibilityFromNPP"){
 		sum;
 
 	// Calculate with function
-	const double dig_from_function 
+	const double dig_from_function
 		= DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, FRESH, DEAD);
 
 	REQUIRE( dig_from_function == Approx(dig).epsilon(.05) );
@@ -479,7 +479,7 @@ TEST_CASE("Fauna::DigestibilityFromNPP"){
 	REQUIRE( DigestibilityFromNPP::get_digestibility_from_dnpp(dnpp, FRESH, DEAD)
 			== Approx(dig_from_function) );
 
-	// Adding values beyond the time frame in question shouldn’t change the 
+	// Adding values beyond the time frame in question shouldn’t change the
 	// result either.
 	// First, fill the deque with zeros up until the ATTRITION_PERIOD is all
 	// covered.
@@ -500,7 +500,7 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 	const int IND_TOTAL = HFT_COUNT*IND_PER_HFT; // dummy herbivores total
 	const HftList hftlist = create_hfts(HFT_COUNT, Parameters());
 	HftPopulationsMap popmap;
-	for (HftList::const_iterator itr=hftlist.begin(); 
+	for (HftList::const_iterator itr=hftlist.begin();
 			itr!=hftlist.end(); itr++){
 		// create new population
 		std::auto_ptr<PopulationInterface> new_pop(
@@ -552,7 +552,7 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 			pherbivore->set_demand(IND_DEMAND);
 			itr->second = IND_DEMAND;
 		}
-		
+
 		// DISTRIBUTE
 		distribute(available, demands);
 
@@ -577,14 +577,14 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 			DummyHerbivore* pherbivore = (DummyHerbivore*) itr->first;
 			// define a demand that is in total somewhat higher than
 			// what’s available and varies among the herbivores
-			ForageMass ind_demand(AVAIL / IND_TOTAL 
+			ForageMass ind_demand(AVAIL / IND_TOTAL
 					* (1.0 + (i%5)/5)); // just arbitrary
 			pherbivore->set_demand(ind_demand);
 			itr->second = ind_demand;
 			total_demand += ind_demand;
 			i++;
 		}
-		
+
 		// DISTRIBUTE
 		distribute(available, demands);
 
@@ -592,7 +592,7 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 		// each herbivore must have approximatly its equal share
 		ForageMass sum;
 		for (ForageDistribution::iterator itr = demands.begin();
-				itr != demands.end(); itr++) 
+				itr != demands.end(); itr++)
 		{
 			DummyHerbivore* pherbivore = (DummyHerbivore*) itr->first;
 			CHECK( itr->second != pherbivore->get_original_demand() );
@@ -607,14 +607,14 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
 				const double tot_demand  = total_demand[*ft];
 				REQUIRE( tot_portion != 0.0 );
 				REQUIRE( tot_demand  != 0.0 );
-				CHECK( ind_portion/tot_portion 
+				CHECK( ind_portion/tot_portion
 						== Approx(ind_demand/tot_demand).epsilon(0.05) );
 			}
 		}
 		// The sum may never exceed available forage
 		for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-				ft != FORAGE_TYPES.end(); ft++) 
-		{ 
+				ft != FORAGE_TYPES.end(); ft++)
+		{
 			CHECK( sum[*ft] <= available.get_mass()[*ft] );
 		}
 		CHECK( sum <= available.get_mass() );
@@ -655,7 +655,7 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 	// Initialization
 	REQUIRE( budget.get_fatmass() == INIT_FATMASS );
 	REQUIRE( budget.get_energy_needs() == 0.0 );
-	REQUIRE( budget.get_max_anabolism_per_day() 
+	REQUIRE( budget.get_max_anabolism_per_day()
 			== Approx(54.6 * (MAX_FATMASS - INIT_FATMASS)) );
 
 	// exceptions
@@ -701,7 +701,7 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 		// Set maximum gain to half of the gap towards maximum fat mass.
 		const double MAX_GAIN = (MAX_FATMASS-INIT_FATMASS)/2.0;
 		budget.set_max_fatmass(MAX_FATMASS, MAX_GAIN);
-		
+
 		CHECK( budget.get_max_anabolism_per_day() ==
 				Approx(anabolism_unlimited / 2.0) );
 	}
@@ -710,7 +710,7 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 		budget.add_energy_needs(ENERGY);
 		budget.catabolize_fat();
 		CHECK( budget.get_fatmass() < INIT_FATMASS );
-		
+
 		// Check the number with coefficient of Blaxter (1989)
 		CHECK( budget.get_fatmass() ==
 				Approx(INIT_FATMASS - ENERGY/39.3) );
@@ -728,7 +728,7 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 		REQUIRE( budget.get_energy_needs() == Approx(ENERGY/2.0) );
 		budget.metabolize_energy(ENERGY);
 		CHECK( budget.get_energy_needs() == 0.0 );
-		CHECK( budget.get_fatmass() > INIT_FATMASS ); 
+		CHECK( budget.get_fatmass() > INIT_FATMASS );
 		CHECK( budget.get_fatmass() < MAX_FATMASS );
 	}
 
@@ -742,11 +742,11 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 
 		SECTION("Merge with equal weight"){
 			budget.merge(other, 1.0, 1.0);
-			CHECK( budget.get_energy_needs() == 
+			CHECK( budget.get_energy_needs() ==
 					Approx((ENERGY+OTHER_ENERGY)/2.0) );
-			CHECK( budget.get_max_fatmass() == 
+			CHECK( budget.get_max_fatmass() ==
 					Approx((MAX_FATMASS+OTHER_MAX_FATMASS)/2.0) );
-			CHECK( budget.get_fatmass() == 
+			CHECK( budget.get_fatmass() ==
 					Approx((INIT_FATMASS+OTHER_FATMASS)/2.0) );
 		}
 
@@ -754,11 +754,11 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
 			const double W1 = 0.4;
 			const double W2 = 1.2;
 			budget.merge(other, W1, W2);
-			CHECK( budget.get_energy_needs() == 
+			CHECK( budget.get_energy_needs() ==
 					Approx((ENERGY*W1+OTHER_ENERGY*W2)/(W1+W2)) );
-			CHECK( budget.get_max_fatmass() == 
+			CHECK( budget.get_max_fatmass() ==
 					Approx((MAX_FATMASS*W1+OTHER_MAX_FATMASS*W2)/(W1+W2)) );
-			CHECK( budget.get_fatmass() == 
+			CHECK( budget.get_fatmass() ==
 					Approx((INIT_FATMASS*W1+OTHER_FATMASS*W2)/(W1+W2)) );
 		}
 
@@ -836,9 +836,9 @@ TEST_CASE("Fauna::FeedHerbivores") {
 
 			for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
 					ft != FORAGE_TYPES.end(); ft++){
-				CHECK(eaten[*ft] 
+				CHECK(eaten[*ft]
 						== Approx(DEMAND[*ft] * FRACTION).epsilon(.05));
-				CHECK(herbi.get_eaten()[*ft] 
+				CHECK(herbi.get_eaten()[*ft]
 						== Approx(DEMAND[*ft] * FRACTION).epsilon(.05));
 			}
 		}
@@ -888,9 +888,9 @@ TEST_CASE("Fauna::FeedHerbivores") {
 				// check for each forage type
 				for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
 						ft != FORAGE_TYPES.end(); ft++){
-					CHECK( herbi.get_eaten()[*ft] 
+					CHECK( herbi.get_eaten()[*ft]
 							== Approx(herbi.get_original_demand()[*ft]).epsilon(.05) );
-					CHECK( eaten[*ft] 
+					CHECK( eaten[*ft]
 							== Approx(TOTAL_DEMAND[*ft]).epsilon(.05) );
 				}
 			}
@@ -912,9 +912,9 @@ TEST_CASE("Fauna::FeedHerbivores") {
 				// check for each forage type
 				for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
 						ft != FORAGE_TYPES.end(); ft++){
-					CHECK( herbi.get_eaten()[*ft] 
+					CHECK( herbi.get_eaten()[*ft]
 							== Approx(herbi.get_original_demand()[*ft] * FRACTION).epsilon(.05) );
-					CHECK( eaten[*ft] 
+					CHECK( eaten[*ft]
 							== Approx(TOTAL_DEMAND[*ft] * FRACTION).epsilon(.05) );
 				}
 			}
@@ -1040,7 +1040,7 @@ TEST_CASE("Fauna::ForageValues", "") {
 
 		double d = 123.4;
 		const ForageValues<POSITIVE_AND_ZERO> result = d * ff;
-		
+
 		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
 				ft != FORAGE_TYPES.end(); ft++)
 			CHECK( result[*ft] == ff[*ft] * d );
@@ -1087,7 +1087,7 @@ TEST_CASE("Fauna::ForageValues", "") {
 		SECTION("Numbers with tolerance"){
 			const double TOLERANCE = .1;
 			fv.set(FT_GRASS, 1.0 + TOLERANCE);
-			const ForageFraction ff = 
+			const ForageFraction ff =
 				foragevalues_to_foragefractions(fv, TOLERANCE);
 
 			CHECK( ff[FT_GRASS] == 1.0 );
@@ -1131,7 +1131,7 @@ TEST_CASE("Fauna::ForageValues", "") {
 			prop_mj.set(*ft, 1.0 / (++i) );
 
 		// calculate mass proportions
-		const ForageFraction prop_kg = 
+		const ForageFraction prop_kg =
 			convert_mj_to_kg_proportionally(energy_content, prop_mj);
 
 		// CHECK RESULTS
@@ -1143,7 +1143,7 @@ TEST_CASE("Fauna::ForageValues", "") {
 		const double mj_total = mj.sum();
 
 		// The relation between each energy component towards the total
-		// energy must stay the same. 
+		// energy must stay the same.
 		for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
 				ft != FORAGE_TYPES.end(); ft++)
 			CHECK( mj[*ft]             / mj.sum()
@@ -1174,7 +1174,7 @@ TEST_CASE("Fauna::GetBackgroundMortality", "") {
 	for (int d=0; d<365; d++)
 		surviving_juveniles *= (1.0 - get_mort(d));
 	CHECK( surviving_juveniles == Approx(1.0-JUV) );
-	
+
 	// Check that the daily mortality matches the annual one.
 	double surviving_adults = 1.0;
 	for (int d=365; d<2*365; d++)
@@ -1206,12 +1206,12 @@ TEST_CASE("Fauna::get_max_intake_as_total_mass()"){
 		prop_mj.set(*ft, 1.0 / (++i) );
 
 	// exception
-	CHECK_THROWS( 
+	CHECK_THROWS(
 			get_max_intake_as_total_mass(prop_mj, energy_content, -1) );
 
 	const double KG_TOTAL = 10.0;
 
-	const ForageMass result = 
+	const ForageMass result =
 		get_max_intake_as_total_mass(prop_mj, energy_content, KG_TOTAL);
 
 	CHECK( result.sum() == Approx(KG_TOTAL) );
@@ -1221,7 +1221,7 @@ TEST_CASE("Fauna::get_max_intake_as_total_mass()"){
 	const double mj_total = mj.sum();
 
 	// The relation between each energy component towards the total
-	// energy must stay the same. 
+	// energy must stay the same.
 	for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
 			ft != FORAGE_TYPES.end(); ft++)
 		CHECK( mj[*ft]             / mj.sum()
@@ -1342,7 +1342,7 @@ TEST_CASE("Fauna::GetForageDemands"){
 
 		// exceptions during initialization
 		CHECK_THROWS( gfd.init_today(
-					DAY, 
+					DAY,
 					avail,
 					ENERGY_CONTENT,
 					-1) ); // body mass
@@ -1358,7 +1358,7 @@ TEST_CASE("Fauna::GetForageDemands"){
 		CHECK( gfd.is_day_initialized(DAY) );
 
 		// negative energy needs
-		CHECK_THROWS( gfd(-1.0) ); 
+		CHECK_THROWS( gfd(-1.0) );
 
 		// Negative eaten forage
 		CHECK_THROWS( gfd.add_eaten(-1.0) );
@@ -1383,7 +1383,7 @@ TEST_CASE("Fauna::GetForageDemands"){
 		gfd.init_today(DAY, avail, ENERGY_CONTENT, BODYMASS);
 
 		// Lots of energy needs, but intake is limited by digestion.
-		// Only grass shall be demanded. 
+		// Only grass shall be demanded.
 		// The result must match the given fraction of body mass.
 		const ForageMass init_demand = gfd(ENERGY_DEMAND);
 		CHECK( init_demand[FT_GRASS] == Approx(BODYMASS * DIG_FRAC) );
@@ -1470,7 +1470,7 @@ TEST_CASE("Fauna::GetStarvationIlliusOConnor2000", "") {
 	double new_bc, new_bc1, new_bc2, new_bc3; // variables to store new body condition
 
 	SECTION("default standard deviation"){
-		const GetStarvationIlliusOConnor2000 get_mort(0.125, 
+		const GetStarvationIlliusOConnor2000 get_mort(0.125,
 				true);// yes, shift body condition
 		CHECK_THROWS( get_mort(-1.0, new_bc) );
 		CHECK_THROWS( get_mort(1.1, new_bc) );
@@ -1595,7 +1595,7 @@ TEST_CASE("Fauna::GrassForage", "") {
 TEST_CASE("Fauna::Habitat", "") {
 	// Since Habitat is an abstract class, we use the simple
 	// class DummyHabitat for testing the base class functionality.
-	
+
 	DummyHabitat habitat;
 
 	SECTION("init_day()") {
@@ -1658,13 +1658,13 @@ TEST_CASE("Fauna::HabitatForage", "") {
 		REQUIRE( hf1.grass.get_mass() == GRASSMASS );
 		CHECK(   hf1.grass.get_mass() == hf1.get_mass()[FT_GRASS] );
 		REQUIRE( hf1.get_total().get_mass() == GRASSMASS );
-		CHECK( hf1.get_total().get_mass() 
+		CHECK( hf1.get_total().get_mass()
 				== Approx(hf1.get_mass().sum()) );
 		REQUIRE( hf1.get_total().get_digestibility()   == 0.5 );
 	}
 
 	// The member function `merge()` is not tested here
-	// because it is a nothing more than simple wrapper around 
+	// because it is a nothing more than simple wrapper around
 	// the merge functions of ForageBase and its child classes.
 }
 
@@ -1715,19 +1715,19 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
 			REQUIRE( birth.get_age_years() == 0 );
 
 
-			const double lean_bodymass_birth 
+			const double lean_bodymass_birth
 				= hft.bodymass_birth * (1.0-hft.bodyfat_birth);
 			const double pot_bodymass_birth
 				= lean_bodymass_birth / (1.0-hft.bodyfat_max);
 			// body mass
 			CHECK( birth.get_bodymass() == Approx(hft.bodymass_birth) );
-			CHECK( birth.get_potential_bodymass() 
+			CHECK( birth.get_potential_bodymass()
 					== Approx(pot_bodymass_birth) );
-			CHECK( birth.get_lean_bodymass() 
+			CHECK( birth.get_lean_bodymass()
 					== Approx(lean_bodymass_birth) );
 			// fat mass
 			CHECK( birth.get_bodyfat() == Approx(hft.bodyfat_birth) );
-			CHECK( birth.get_max_fatmass() 
+			CHECK( birth.get_max_fatmass()
 					== Approx(pot_bodymass_birth * hft.bodyfat_max) );
 		}
 
@@ -1771,14 +1771,14 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
 				REQUIRE( male_adult.get_age_days() == AGE_DAYS );
 				REQUIRE( male_adult.get_age_years() == AGE_YEARS );
 				// BODY MASS
-				CHECK( male_adult.get_bodymass()   
+				CHECK( male_adult.get_bodymass()
 						== Approx(hft.bodymass_male) );
 				CHECK( male_adult.get_potential_bodymass()
 						== male_adult.get_bodymass() );
 				CHECK( male_adult.get_lean_bodymass()
 						== Approx(hft.bodymass_male * (1.0-hft.bodyfat_max)) );
 				// FAT MASS
-				CHECK( male_adult.get_max_fatmass() 
+				CHECK( male_adult.get_max_fatmass()
 						== Approx(hft.bodyfat_max*hft.bodymass_male) );
 				CHECK( male_adult.get_bodyfat()
 						== Approx(hft.bodyfat_max) );
@@ -1789,20 +1789,20 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
 				const int AGE_YEARS = hft.maturity_age_phys_female;
 				const int AGE_DAYS = AGE_YEARS * 365;
 				const HerbivoreBaseDummy female_adult(
-						hft.maturity_age_phys_male*365, 
+						hft.maturity_age_phys_male*365,
 						BODY_COND, &hft, SEX_FEMALE );
 				// AGE
 				REQUIRE( female_adult.get_age_days() == AGE_DAYS );
 				REQUIRE( female_adult.get_age_years() == AGE_YEARS );
 				// BODY MASS
-				CHECK( female_adult.get_bodymass() 
+				CHECK( female_adult.get_bodymass()
 						== Approx(hft.bodymass_female) );
 				CHECK( female_adult.get_potential_bodymass()
 						== female_adult.get_bodymass() );
 				CHECK( female_adult.get_lean_bodymass()
 						== Approx(hft.bodymass_female * (1.0-hft.bodyfat_max)) );
 				// FAT MASS
-				CHECK( female_adult.get_max_fatmass() 
+				CHECK( female_adult.get_max_fatmass()
 						== Approx(hft.bodyfat_max*hft.bodymass_female) );
 				CHECK( female_adult.get_bodyfat()
 						== Approx(hft.bodyfat_max) );
@@ -1816,7 +1816,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
 
 			SECTION("Male") {
 				const HerbivoreBaseDummy male_adult(
-						hft.maturity_age_phys_male*365, 
+						hft.maturity_age_phys_male*365,
 						BODY_COND, &hft, SEX_MALE );
 				// BODY MASS
 				CHECK( male_adult.get_potential_bodymass()
@@ -1824,7 +1824,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
 				CHECK( male_adult.get_lean_bodymass() + male_adult.get_max_fatmass()
 						== Approx(male_adult.get_potential_bodymass()) );
 				// FAT MASS
-				CHECK( male_adult.get_max_fatmass() 
+				CHECK( male_adult.get_max_fatmass()
 						== Approx(hft.bodyfat_max*hft.bodymass_male) );
 				CHECK( male_adult.get_fatmass() / male_adult.get_max_fatmass()
 						== Approx(BODY_COND) );
@@ -1832,7 +1832,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
 
 			SECTION("Female"){
 				const HerbivoreBaseDummy female_adult(
-						hft.maturity_age_phys_male*365, 
+						hft.maturity_age_phys_male*365,
 						BODY_COND, &hft, SEX_FEMALE );
 				// BODY MASS
 				CHECK( female_adult.get_potential_bodymass()
@@ -1840,12 +1840,12 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
 				CHECK( female_adult.get_lean_bodymass() + female_adult.get_max_fatmass()
 						== Approx(female_adult.get_potential_bodymass()) );
 				// FAT MASS
-				CHECK( female_adult.get_max_fatmass() 
+				CHECK( female_adult.get_max_fatmass()
 						== Approx(hft.bodyfat_max*hft.bodymass_female) );
 				CHECK( female_adult.get_fatmass() / female_adult.get_max_fatmass()
 						== Approx(BODY_COND) );
 			}
-		} 
+		}
 	}
 }
 
@@ -1858,36 +1858,36 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
 
 	// exceptions (only specific to HerbivoreCohort)
 	// initial density negative
-	CHECK_THROWS( HerbivoreCohort(10, 0.5, &hft, 
-				SEX_MALE, -1.0) ); 
+	CHECK_THROWS( HerbivoreCohort(10, 0.5, &hft,
+				SEX_MALE, -1.0) );
 
 	const double BC = 0.5; // body condition
 	const int AGE = 3 * 365;
 	const double DENS = 10.0; // [ind/km²]
 
 	// constructor (only test what is specific to HerbivoreCohort)
-	REQUIRE( HerbivoreCohort(AGE, BC, &hft, 
+	REQUIRE( HerbivoreCohort(AGE, BC, &hft,
 				SEX_MALE, DENS).get_ind_per_km2() == Approx(DENS) );
 
 	SECTION("is_same_age()"){
 		REQUIRE( AGE%365 == 0 );
-		const HerbivoreCohort cohort1(AGE, BC, &hft, 
+		const HerbivoreCohort cohort1(AGE, BC, &hft,
 				SEX_MALE, DENS);
 		// very similar cohort
 		CHECK( cohort1.is_same_age(
-					HerbivoreCohort(AGE, BC, &hft, 
+					HerbivoreCohort(AGE, BC, &hft,
 						SEX_MALE, DENS)));
 		// in the same year
 		CHECK( cohort1.is_same_age(
-					HerbivoreCohort(AGE+364, BC, &hft, 
+					HerbivoreCohort(AGE+364, BC, &hft,
 						SEX_MALE, DENS)));
 		// the other is younger
 		CHECK( ! cohort1.is_same_age(
-					HerbivoreCohort(AGE-364, BC, &hft, 
+					HerbivoreCohort(AGE-364, BC, &hft,
 						SEX_MALE, DENS)));
 		// the other is much older
 		CHECK( ! cohort1.is_same_age(
-					HerbivoreCohort(AGE+366, BC, &hft, 
+					HerbivoreCohort(AGE+366, BC, &hft,
 						SEX_MALE, DENS)));
 	}
 
@@ -1910,7 +1910,7 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
 				CHECK_THROWS( cohort.merge(other) );
 			}
 		}
-		
+
 		SECTION("merge whole cohort"){
 			const double old_bodymass = cohort.get_bodymass();
 			const double BC2 = BC+0.1; // more fat in the other cohort
@@ -1942,16 +1942,16 @@ TEST_CASE("Fauna::HerbivoreIndividual", "") {
 
 	// exceptions (only specific to HerbivoreIndividual)
 	// invalid area
-	CHECK_THROWS( HerbivoreIndividual(AGE, BC, &hft, SEX_MALE, -1.0) ); 
-	CHECK_THROWS( HerbivoreIndividual(AGE, BC, &hft, SEX_MALE, 0.0) ); 
-	CHECK_THROWS( HerbivoreIndividual(&hft, SEX_MALE, -1.0) ); 
-	CHECK_THROWS( HerbivoreIndividual(&hft, SEX_MALE, 0.0) ); 
+	CHECK_THROWS( HerbivoreIndividual(AGE, BC, &hft, SEX_MALE, -1.0) );
+	CHECK_THROWS( HerbivoreIndividual(AGE, BC, &hft, SEX_MALE, 0.0) );
+	CHECK_THROWS( HerbivoreIndividual(&hft, SEX_MALE, -1.0) );
+	CHECK_THROWS( HerbivoreIndividual(&hft, SEX_MALE, 0.0) );
 
-	// birth constructor 
-	REQUIRE( HerbivoreIndividual(&hft, 
+	// birth constructor
+	REQUIRE( HerbivoreIndividual(&hft,
 				SEX_MALE, AREA).get_area_km2() == Approx(AREA) );
 	// establishment constructor
-	REQUIRE( HerbivoreIndividual(AGE, BC, &hft, 
+	REQUIRE( HerbivoreIndividual(AGE, BC, &hft,
 				SEX_MALE, AREA).get_area_km2() == Approx(AREA) );
 
 	SECTION("Mortality"){
@@ -1998,7 +1998,7 @@ TEST_CASE("Fauna::HftList",""){
 	CHECK_THROWS(hftlist.insert(noname));
 
 	// add some real HFTs
-	Hft hft1; 
+	Hft hft1;
 	hft1.name="hft1";
 	hft1.is_included = true;
 	REQUIRE_NOTHROW(hftlist.insert(hft1));
@@ -2020,12 +2020,12 @@ TEST_CASE("Fauna::HftList",""){
 	CHECK(hftlist.contains("hft2"));
 	CHECK_FALSE(hftlist.contains("abc"));
 
-	// substitute element 
+	// substitute element
 	hft2.lifespan += 2; // change a property outside list
 	REQUIRE(hftlist[hft2.name].lifespan != hft2.lifespan);
 	hftlist.insert(hft2); // replace existing
 	CHECK( hftlist[hft2.name].lifespan == hft2.lifespan );
-	
+
 	// remove excluded
 	hftlist.remove_excluded();
 	CHECK(hftlist.size()==1);
@@ -2096,7 +2096,7 @@ TEST_CASE("Fauna::HftPopulationsMap", "") {
 	HftPopulationsMap::const_iterator itr = map.begin();
 	while (itr != map.end()) {
 		const PopulationInterface& pop = **itr;
-		bool found = false; 
+		bool found = false;
 		// check against HFTs (order in the map is not defined)
 		for (int i=0; i<NPOP; i++)
 			if (pop.get_hft() == hfts[i]) {
@@ -2111,7 +2111,7 @@ TEST_CASE("Fauna::HftPopulationsMap", "") {
 	}
 	// ... for herbivore list
 	HerbivoreVector all = map.get_all_herbivores();
-	for (HerbivoreVector::iterator itr=all.begin(); 
+	for (HerbivoreVector::iterator itr=all.begin();
 			itr != all.end(); itr++){
 		const HerbivoreInterface& herbiv=**itr;
 		// check if herbivore access works (that no bad memory
@@ -2163,7 +2163,7 @@ TEST_CASE("Fauna::HftPopulationsMap", "") {
 		HerbivoreVector herbiv_vec = dead_pop.get_list();
 		for (HerbivoreVector::const_iterator h_itr = herbiv_vec.begin();
 				h_itr != herbiv_vec.end(); h_itr++)
-			CHECK( (**h_itr).is_dead() ); 
+			CHECK( (**h_itr).is_dead() );
 	}
 }
 
@@ -2198,10 +2198,10 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 
 	SECTION("Establishment"){
 		pop.establish();
-		REQUIRE( !pop.get_list().empty() ); 
+		REQUIRE( !pop.get_list().empty() );
 		CHECK( population_lists_match(pop) );
 		// Do we have the exact number of individuals?
-		CHECK( pop.get_list().size() == ESTABLISH_COUNT ); 
+		CHECK( pop.get_list().size() == ESTABLISH_COUNT );
 		// Does the total density match?
 		CHECK( pop.get_ind_per_km2() == Approx(hft.establishment_density) );
 
@@ -2245,7 +2245,7 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 					}
 				}
 
-				// Now the list should contain only dead herbivores. Nothing was 
+				// Now the list should contain only dead herbivores. Nothing was
 				// deleted yet.
 				CHECK( pop.get_list().size() == ESTABLISH_COUNT );
 
@@ -2345,13 +2345,13 @@ TEST_CASE("Fauna::NitrogenInHerbivore") {
 
 			// put the excreta in the soil pool at some arbitrary interval
 			if (! (i%6) ){
-				// Once the first feeding bout has passed the digestive tract, 
+				// Once the first feeding bout has passed the digestive tract,
 				// there should be some excreta produced.
 				INFO("hours = " << hours);
 				if (hours > RETENTION_TIME)
 					CHECK( n.get_excreta() > 0.0 );
 
-				soil += n.reset_excreta(); 
+				soil += n.reset_excreta();
 				CHECK( n.get_excreta() == 0 );
 			}
 		}
@@ -2369,7 +2369,7 @@ TEST_CASE("Fauna::NitrogenInHerbivore") {
 
 		// Now, all nitrogen should be excreted, and only the tissue nitrogen
 		// should be left in the unavailable pool.
-		CHECK( n.get_unavailable() 
+		CHECK( n.get_unavailable()
 				== Approx(MASSDENS * NitrogenInHerbivore::N_CONTENT_IN_TISSUE) );
 		CHECK( n.get_unavailable() + n.get_excreta() == Approx(INGESTED) );
 
@@ -2476,7 +2476,7 @@ TEST_CASE("Fauna::ReprIlliusOconnor2000", "") {
 		const double BAD = OPT/2.0; // bad body condition
 		BreedingSeason season_short(START, 1);
 		ReprIlliusOconnor2000 rep(season_short, INC);
-		CHECK( rep.get_offspring_density(START, OPT) 
+		CHECK( rep.get_offspring_density(START, OPT)
 				== Approx(INC).epsilon(0.05) );
 		CHECK( rep.get_offspring_density(START, BAD) < INC);
 
@@ -2630,20 +2630,20 @@ TEST_CASE("FaunaOut::CombinedData"){
 
 		CHECK( c1.datapoint_count == 6 );
 
-		CHECK( c1.habitat_data.available_forage.grass.get_mass() 
+		CHECK( c1.habitat_data.available_forage.grass.get_mass()
 				== Approx(1.5) );
 		// c1 now has data for both HFTs
 		REQUIRE( c1.hft_data.size() == 2 );
 		// in HFT 0, two datapoints are merged
-		CHECK( c1.hft_data[&hfts[0]].inddens 
+		CHECK( c1.hft_data[&hfts[0]].inddens
 				== Approx((1.0+2.0)/2.0) ); // normal average
-		CHECK( c1.hft_data[&hfts[0]].expenditure 
+		CHECK( c1.hft_data[&hfts[0]].expenditure
 				== Approx((1.0*1.0 + 2.0*2.0)/(1.0+2.0)) ); // weighted by inddens
 
 		// in HFT 1, one datapoint is merged with zero values
-		CHECK( c1.hft_data[&hfts[1]].inddens 
+		CHECK( c1.hft_data[&hfts[1]].inddens
 				== Approx((0.0+3.0)/2.0) ); // normal average
-		CHECK( c1.hft_data[&hfts[1]].expenditure 
+		CHECK( c1.hft_data[&hfts[1]].expenditure
 				== Approx(3.0) ); // weighted by inddens, but only one data point
 	}
 
@@ -2655,27 +2655,27 @@ TEST_CASE("FaunaOut::CombinedData"){
 
 		CHECK( c1.datapoint_count == 3 );
 
-		CHECK( c1.habitat_data.available_forage.grass.get_mass() 
+		CHECK( c1.habitat_data.available_forage.grass.get_mass()
 				== Approx((1.0*1.0 + 2.0*2.0) / (3.0)) );
 		// c1 now has data for both HFTs
 		REQUIRE( c1.hft_data.size() == 2 );
 
 		// in HFT 0, two datapoints are merged
-		CHECK( c1.hft_data[&hfts[0]].inddens 
+		CHECK( c1.hft_data[&hfts[0]].inddens
 				== Approx((1.0+2.0*2.0)/3.0) ); // weighted by datapoint_count
 
 		// weighted by inddens*datapoint_count:
-		CHECK( c1.hft_data[&hfts[0]].expenditure 
+		CHECK( c1.hft_data[&hfts[0]].expenditure
 				== Approx((1.0 + 2.0*2.0*2.0)/(1.0+2.0*2.0)) );
 
 		// in HFT 1, one datapoint is merged with zero values
-		CHECK( c1.hft_data[&hfts[1]].inddens 
+		CHECK( c1.hft_data[&hfts[1]].inddens
 				== Approx((1.0*3.0+2.0*0.0)/(1.0 + 2.0)) ); // weighted by datapoint_count
 
 		// weighted by inddens*datapoint_count, but since c2 has no data for
 		// HFT 1, and since expenditure is individual based, c2 is simply not
 		// included in the average.
-		CHECK( c1.hft_data[&hfts[1]].expenditure 
+		CHECK( c1.hft_data[&hfts[1]].expenditure
 				== h3.expenditure);
 	}
 
@@ -2725,7 +2725,7 @@ TEST_CASE("FaunaOut::HerbivoreData", ""){
 		d1.mortality[MF_BACKGROUND] = .1;
 		d2.mortality[MF_BACKGROUND] = .2;
 		d3.mortality[MF_BACKGROUND] = .3;
-		d1.mortality[MF_LIFESPAN]   = .5; 
+		d1.mortality[MF_LIFESPAN]   = .5;
 
 		// put them in a vector
 		std::vector<HerbivoreData> vec;
@@ -2755,7 +2755,7 @@ TEST_CASE("FaunaOut::HerbivoreData", ""){
 		d2.expenditure = 2.0;
 		d1.mortality[MF_BACKGROUND] = .1;
 		d2.mortality[MF_BACKGROUND] = .2;
-		d1.mortality[MF_LIFESPAN]   = .5; 
+		d1.mortality[MF_LIFESPAN]   = .5;
 		// no lifespan mortality in d2
 
 		SECTION("equal weights") {
@@ -2788,7 +2788,7 @@ TEST_CASE("FaunaSim::LogisticGrass", "") {
 	grass_settings.saturation = 10*grass_settings.init_mass;
 
 	const int day = 1; // day of the year
-	
+
 	SECTION("Grass initialization"){
 		LogisticGrass grass(grass_settings);
 		CHECK( grass.get_forage().get_mass() == Approx(grass_settings.init_mass) );
@@ -2802,7 +2802,7 @@ TEST_CASE("FaunaSim::LogisticGrass", "") {
 		CHECK_THROWS( grass.grow_daily(365) );
 	}
 
-	// Let the grass grow for one day and compare before and after 
+	// Let the grass grow for one day and compare before and after
 	// Now we fill in new growth and decay values, so we need to remove the
 	// default first.
 	grass_settings.growth_monthly.clear();
@@ -2839,7 +2839,7 @@ TEST_CASE("FaunaSim::LogisticGrass", "") {
 		CHECK( after.get_mass() > before.get_mass() );
 
 		// Let it grow for very long and check that it reaches saturation
-		for (int i=0; i<1000000; i++) 
+		for (int i=0; i<1000000; i++)
 			grass.grow_daily(i%365);
 		CHECK( grass.get_forage().get_mass() == Approx(grass_settings.saturation) );
 	}
@@ -2873,7 +2873,7 @@ TEST_CASE("FaunaSim::LogisticGrass", "") {
 		grass_settings.decay_monthly.push_back(0.0);
 
 		LogisticGrass grass(grass_settings);
-		
+
 		int d = 0;
 		// Let it grow for January (31 days)
 		for (; d <= 31-1; d++)
@@ -2887,7 +2887,7 @@ TEST_CASE("FaunaSim::LogisticGrass", "") {
 			if (after.get_mass() < grass_settings.saturation)
 				CHECK( after.get_mass() > before.get_mass() );
 		}
-		
+
 		// Let it grow for February (28 days)
 		for (; d <= 31+28-1; d++)
 		{
@@ -2899,7 +2899,7 @@ TEST_CASE("FaunaSim::LogisticGrass", "") {
 			// Check that growth happened or maximum is reached
 			CHECK( after.get_mass() == Approx(before.get_mass()) );
 		}
-		
+
 		// Let it grow for March (31 days), now recycling the first value
 		for (; d <= 31+28+31-1; d++)
 		{
@@ -2925,11 +2925,11 @@ TEST_CASE("FaunaSim::SimpleHabitat", "") {
 	const Fauna::Parameters params;
 	Simulator sim(params);
 	SimpleHabitat habitat(settings);
-	
+
 	SECTION("Initialization") {
-		CHECK( habitat.get_available_forage().grass.get_fpc() 
+		CHECK( habitat.get_available_forage().grass.get_fpc()
 			== Approx(settings.grass.fpc) );
-		CHECK( habitat.get_available_forage().grass.get_mass() 
+		CHECK( habitat.get_available_forage().grass.get_mass()
 			== Approx(settings.grass.init_mass) );
 		CHECK( habitat.get_available_forage().grass.get_digestibility()
 			== Approx(settings.grass.digestibility[0]) );
@@ -2973,13 +2973,13 @@ TEST_CASE("FaunaSim::HabitatGroup","") {
 		std::auto_ptr<Habitat> habitat( new DummyHabitat() );
 		std::auto_ptr<HftPopulationsMap> populations(
 				new HftPopulationsMap() );
-		std::auto_ptr<SimulationUnit> simunit( 
+		std::auto_ptr<SimulationUnit> simunit(
 				new SimulationUnit(habitat, populations));
 		// add it to the group
 		group.add(simunit);
 		// Check if it has been added properly
 		CHECK( group.size() == i );
-		CHECK( group.get_vector().size() == i ); 
+		CHECK( group.get_vector().size() == i );
 	}
 	// Make sure the references are pointing correctly to the objects
 	const std::vector<SimulationUnit*> refs = group.get_vector();
@@ -3006,7 +3006,7 @@ TEST_CASE("FaunaSim::HabitatGroupList","") {
 			std::auto_ptr<Habitat> habitat( new DummyHabitat() );
 			std::auto_ptr<HftPopulationsMap> populations(
 					new HftPopulationsMap() );
-			std::auto_ptr<SimulationUnit> simunit( 
+			std::auto_ptr<SimulationUnit> simunit(
 					new SimulationUnit(habitat, populations));
 			// add it to the group
 			group.add(simunit);

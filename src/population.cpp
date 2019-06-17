@@ -58,18 +58,18 @@ void IndividualPopulation::create_offspring_by_sex(
 		const Sex sex,
 		const double ind_per_km2)
 {
-	// Convert density to continuous individual count and add the 
+	// Convert density to continuous individual count and add the
 	// remainder of previous offspring creation.
-	const double ind_count_dbl = 
-		ind_per_km2 * create_individual.get_area_km2() 
+	const double ind_count_dbl =
+		ind_per_km2 * create_individual.get_area_km2()
 		+ incomplete_offspring[sex];
-	
+
 	// This is the discrete individual count:
 	const int ind_count = (int) ind_count_dbl;
-	
+
 	// Save the new remainder (decimal part) for next time.
 	incomplete_offspring[sex] = ind_count_dbl - ind_count;
-	
+
 	// Now create herbivore objects.
 	static const double AGE_DAYS = 0; // age in days
 	for (int i=1; i<=ind_count; i++)
@@ -100,9 +100,9 @@ void IndividualPopulation::establish(){
 
 	// Now distribute the number of individuals as evenly as possible over
 	// the age range that is defined in the HFT.
-	
-	const int age_class_count = 
-		get_hft().establishment_age_range.second - 
+
+	const int age_class_count =
+		get_hft().establishment_age_range.second -
 		get_hft().establishment_age_range.first + 1;
 	assert( age_class_count > 0 );
 
@@ -124,7 +124,7 @@ void IndividualPopulation::establish(){
 		// even numbers
 		for (int i = 1; i <= count; i++){
 			list.push_back( create_individual(
-						age_years * 365, 
+						age_years * 365,
 						i%2 == 0 ? SEX_FEMALE : SEX_MALE) );
 		}
 	}
@@ -132,11 +132,11 @@ void IndividualPopulation::establish(){
 }
 
 std::vector<const HerbivoreInterface*> IndividualPopulation::get_list()const{
-	// We just copy the pointers from the individual list to the 
+	// We just copy the pointers from the individual list to the
 	// HerbivoreInterface list.
 	std::vector<const HerbivoreInterface*> result;
 	result.reserve(list.size());
-	for (List::const_iterator itr=list.begin(); 
+	for (List::const_iterator itr=list.begin();
 			itr != list.end(); itr++) {
 		result.push_back(&*itr);
 	}
@@ -144,11 +144,11 @@ std::vector<const HerbivoreInterface*> IndividualPopulation::get_list()const{
 }
 
 std::vector<HerbivoreInterface*> IndividualPopulation::get_list(){
-	// We just copy the pointers from the individual list to the 
+	// We just copy the pointers from the individual list to the
 	// HerbivoreInterface list.
 	std::vector<HerbivoreInterface*> result;
 	result.reserve(list.size());
-	for (List::iterator itr=list.begin(); 
+	for (List::iterator itr=list.begin();
 			itr != list.end(); itr++) {
 		result.push_back(&*itr);
 	}
@@ -175,7 +175,7 @@ CohortPopulation::CohortPopulation(
 	create_cohort(create_cohort)
 { }
 
-void CohortPopulation::create_offspring_by_sex(const Sex sex, 
+void CohortPopulation::create_offspring_by_sex(const Sex sex,
 		double ind_per_km2)
 {
 	assert(ind_per_km2 >= 0.0);
@@ -217,7 +217,7 @@ void CohortPopulation::establish(){
 
 	// We create one male and one female for each age specified in the HFT.
 
-	const double cohort_count = 
+	const double cohort_count =
 		2 * (get_hft().establishment_age_range.second
 		- get_hft().establishment_age_range.first + 1);
 
@@ -264,7 +264,7 @@ std::vector<const HerbivoreInterface*> CohortPopulation::get_list()const{
 	// list.
 	std::vector<const HerbivoreInterface*> result;
 	result.reserve(list.size());
-	for (List::const_iterator itr=list.begin(); 
+	for (List::const_iterator itr=list.begin();
 			itr != list.end(); itr++){
 		result.push_back(&*itr);
 	}
@@ -276,7 +276,7 @@ std::vector<HerbivoreInterface*> CohortPopulation::get_list(){
 	// list.
 	std::vector<HerbivoreInterface*> result;
 	result.reserve(list.size());
-	for (List::iterator itr=list.begin(); 
+	for (List::iterator itr=list.begin();
 			itr != list.end(); itr++){
 			result.push_back(&*itr);
 	}
@@ -339,10 +339,10 @@ HerbivoreVector HftPopulationsMap::get_all_herbivores(){
 void HftPopulationsMap::kill_nonviable(){
 	for (iterator itr = begin(); itr != end(); itr++){
 		PopulationInterface& pop = **itr;
-		// If the population’s density is below minimum, mark all 
+		// If the population’s density is below minimum, mark all
 		// herbivores as dead.
-		const double min_ind_per_km2 = 
-			pop.get_hft().minimum_density_threshold * 
+		const double min_ind_per_km2 =
+			pop.get_hft().minimum_density_threshold *
 			pop.get_hft().establishment_density;
 		if (pop.get_ind_per_km2() < min_ind_per_km2)
 			pop.kill_all();

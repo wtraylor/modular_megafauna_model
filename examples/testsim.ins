@@ -1,13 +1,13 @@
 !////////////////////////////////////////////////////////////
-!///////    INSTRUCTION FILE FOR HERBIVORY TEST SIMULATION   
+!///////    INSTRUCTION FILE FOR HERBIVORY TEST SIMULATION
 !////////////////////////////////////////////////////////////
 
 ! Use this instruction file with the executable herbivsim, which
 ! is created in the build directory along with the guess binary.
 ! See the doxygen documentation for more details on the test
 ! simulations of the herbivory module.
-! 
-! In the comments below, the value range of the parameters is 
+!
+! In the comments below, the value range of the parameters is
 ! denoted in mathematical notation.
 
 ! Uncomment the following line to get the full output.
@@ -20,7 +20,7 @@ ifherbivory 1
 
 
 !////////////////////////////////////////////////////////////
-! /// [Simulation Parameters] 
+! /// [Simulation Parameters]
 
 ! Number of simulation years. [1,∞)
 nyears 100
@@ -33,12 +33,12 @@ nhabitats_per_group 1
 
 ! Proportional daily grass decay rate for each month of the year. (0,∞)
 ! 0.0014 per day = 0.01 per week (Owen-Smith 2002)
-!grass_decay 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 
-!grass_decay 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 
-grass_decay 0 0 0 0 0 0 0 0 0 0 0 0 
+!grass_decay 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014 0.0014
+!grass_decay 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005
+grass_decay 0 0 0 0 0 0 0 0 0 0 0 0
 
 ! Fractional grass digestibility for each month of the year. (0,1]
-grass_digestibility .4 .4 .4 .7 .7 .7 .7 .6 .5 .5 .4 .4 
+grass_digestibility .4 .4 .4 .7 .7 .7 .7 .6 .5 .5 .4 .4
 
 ! Foliar Percentage Cover of the grass. [0,1]
 grass_fpc 0.8
@@ -62,7 +62,7 @@ grass_saturation 200000 ! = 200 g/m² (Owen-Smith 2002)
 ! Snow depth for each month of the year [cm]. (0,∞)
 snow_depth 40 40 10 0 0 0 0 0 0 0 10 20
 
-! /// [Simulation Parameters] 
+! /// [Simulation Parameters]
 
-	
+
 !	Owen-Smith, N. (2002). A metaphysiological modelling approach to stability in herbivore–vegetation systems. Ecological Modelling, 149(1), 153-178.

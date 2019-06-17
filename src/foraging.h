@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \ingroup group_herbivory
 /// \brief Foraging models and digestive contraints of the herbivory module.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -72,27 +72,27 @@ namespace Fauna{
 			ForageMass operator()(const double energy_needs);
 
 		private:
-	
+
 			/// Adult herbivore body mass [kg/ind].
 			double get_bodymass_adult() const{
 				if (sex == SEX_MALE)
-					return get_hft().bodymass_male; 
+					return get_hft().bodymass_male;
 				else
 					return get_hft().bodymass_female;
 			}
 
 			/// The herbivore functional type.
-			const Hft& get_hft()const{ 
-				assert( hft != NULL); 
-				return *hft; 
+			const Hft& get_hft()const{
+				assert( hft != NULL);
+				return *hft;
 			}
 
 			/// Get energy-wise preferences for forage types.
-			/** 
-			 * To what fractions the different forage types are eaten (in 
+			/**
+			 * To what fractions the different forage types are eaten (in
 			 * sum the fractions must be 1.0).
 			 *
-			 * \ref Hft::diet_composer defines the algorithm used to put 
+			 * \ref Hft::diet_composer defines the algorithm used to put
 			 * together the fractions of different forage types in the preferred
 			 * diet for each day.
 			 * Note that this function may be called several times a day in
@@ -102,13 +102,13 @@ namespace Fauna{
 			 * This allows for switching to another, less preferred, forage
 			 * type if the first choice is not available anymore.
 			 *
-			 * This is the ad-libidum diet according to the preferences of the 
+			 * This is the ad-libidum diet according to the preferences of the
 			 * HFT.
 			 * The fractions refer to energy, not mass.
-			 * The composition is *set*, i.e. that the demanded forage will 
+			 * The composition is *set*, i.e. that the demanded forage will
 			 * be put together accordingly.
 			 * In case of forage shortage in the habitat,
-			 * there is the chance to switch to other forage types when the 
+			 * there is the chance to switch to other forage types when the
 			 * demands are queried again in the same day.
 			 * (⇒ see Fauna::DistributeForage).
 			 * \return Energy fractions of forage types composing current diet;
@@ -117,7 +117,7 @@ namespace Fauna{
 			 * implemented.
 			 * \throw std::logic_error If the selected algorithm does not
 			 * produce a sum of fractions that equals 1.0 (100%).
-			 */ 
+			 */
 			ForageFraction get_diet_composition()const;
 
 			/// Maximum forage [kgDM/ind/day] that could be potentially digested.
@@ -136,10 +136,10 @@ namespace Fauna{
 			 */
 			ForageMass get_max_digestion()const;
 
-			/// Get the amount of forage the herbivore would be able to 
+			/// Get the amount of forage the herbivore would be able to
 			/// harvest [kgDM/day/ind].
 			/**
-			 * The relative amount of each forage type is prescribed, and 
+			 * The relative amount of each forage type is prescribed, and
 			 * the absolute mass that the herbivore could potentially ingest
 			 * is returned. This does not consider digestive limits or actual
 			 * metabolic needs (“hunger”), but only considers the harvesting
@@ -147,9 +147,9 @@ namespace Fauna{
 			 *
 			 * Each forage type is  calculated separately and independently.
 			 *
-			 * \return Maximum potentially harvested dry matter mass of 
-			 * each forage type [kgDM/day/ind]. 
-			 * \throw std::logic_error If one of \ref Hft::foraging_limits is 
+			 * \return Maximum potentially harvested dry matter mass of
+			 * each forage type [kgDM/day/ind].
+			 * \throw std::logic_error If one of \ref Hft::foraging_limits is
 			 * not implemented.
 			 */
 			ForageMass get_max_foraging()const;
@@ -164,7 +164,7 @@ namespace Fauna{
 			Sex sex;
 			/** @} */ // constants
 
-	private: 
+	private:
 			/// @{ \name State Variables
 			HabitatForage available_forage;
 			double bodymass;                    // [kg/ind]
@@ -191,14 +191,14 @@ namespace Fauna{
 	 * \f]
 	 * \f$I_{max}\f$ is the maximum intake rate: the asymptote of the
 	 * function curve. \f$V\f$ (gDM/m²) is the dry-matter forage (grass)
-	 * density and \f$V_{1/2}\f$ (gDM/m²) is a species-specific 
+	 * density and \f$V_{1/2}\f$ (gDM/m²) is a species-specific
 	 * half-saturation constant at which the herbivore reaches half of its
 	 * maximum ingestion rate.
-	 * This model is primarily empirical and does not represent any 
+	 * This model is primarily empirical and does not represent any
 	 * underlying mechanisms. The parameter \f$V_{1/2}\f$ does not generally
 	 * scale with body mass and usually needs to be derived from field
 	 * observations of the particular species.
-	 * \note Illius & O’Connor (2000) and Pachzelt et al. (2013) also call 
+	 * \note Illius & O’Connor (2000) and Pachzelt et al. (2013) also call
 	 * \f$V_{1/2}\f$ “beta” (β).
 	 *
 	 * \see \ref FL_ILLIUS_OCONNOR_2000
@@ -210,7 +210,7 @@ namespace Fauna{
 			/**
 			 * \param half_max_density The forage density at which
 			 * the intake rate of a herbivore is half of its maximum.
-			 * The unit can be freely chosen, but must correspond to the 
+			 * The unit can be freely chosen, but must correspond to the
 			 * parameter `density` in \ref get_intake_rate().
 			 * \param max_intake Maximum intake rate; the asymptote of the
 			 * functional response curve. The unit can be freely chosen as
@@ -237,9 +237,9 @@ namespace Fauna{
 
 	/// Digestion-limited intake function after Illius & Gordon (1992)
 	/**
-	 * The model of digestive passage rates by Illius & Gordon 
+	 * The model of digestive passage rates by Illius & Gordon
 	 * (1992)\cite illius1992modelling constrains maximum daily
-	 * energy intake \f$I_{dig[MJ/day]}\f$ by gut size and retention 
+	 * energy intake \f$I_{dig[MJ/day]}\f$ by gut size and retention
 	 * time.
 	 *
 	 * \f[
@@ -251,7 +251,7 @@ namespace Fauna{
 	 * - \f$u_g = (M/M_{ad})^{0.75}\f$ is a scaling factor for
 	 *   gut capacity, introduced by Illius & Gordon (1999)
 	 *   \cite illius1999scaling
-	 * - %Parameters i, j, and k are derived from regression analysis 
+	 * - %Parameters i, j, and k are derived from regression analysis
 	 *   with 12 mammalian herbivores (0.05--547 kg) and are specific
 	 *   to hindguts and ruminants (Shipley et al. 1999)
 	 *   \cite shipley1999predicting.
@@ -274,7 +274,7 @@ namespace Fauna{
 			 * \param digestion_type The herbivore’s digestion type.
 			 * \throw std::invalid_argument If `bodymass_adult<=0.0`.
 			 */
-			GetDigestiveLimitIlliusGordon1992( 
+			GetDigestiveLimitIlliusGordon1992(
 					const double bodymass_adult,
 					const DigestionType digestion_type);
 

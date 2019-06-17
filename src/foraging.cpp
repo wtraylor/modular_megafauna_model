@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \ingroup group_herbivory
 /// \brief Foraging models and digestive contraints of the herbivory module.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -28,20 +28,20 @@ ForageMass Fauna::get_max_intake_as_total_mass(
 		throw std::invalid_argument( "Fauna::get_max_intake_as_total_mass() "
 				"Values in `mj_proportions` don’t sum up to 100%");
 
-	// The energy-wise proportions of the diet are given by 
-	// `mj_proportions`. Now we need to obtain the mass-wise 
+	// The energy-wise proportions of the diet are given by
+	// `mj_proportions`. Now we need to obtain the mass-wise
 	// composition.
-	const ForageFraction mass_proportions = 
+	const ForageFraction mass_proportions =
 		convert_mj_to_kg_proportionally(mj_per_kg, mj_proportions);
 
 	// Make sure that the sum of mass proportions doesn’t diverge from the
 	// sum of energy proportions.
 	assert( mass_proportions.sum() >= 0.99 * mj_proportions.sum() &&
 			mass_proportions.sum() <= 1.01 * mj_proportions.sum() );
-	
+
 	// Multiply the maximum foraging with the mass-wise proportions.
 	// To get the maximum intake for each individual forage type.
-	const ForageMass mass = kg_total * 
+	const ForageMass mass = kg_total *
 		(mass_proportions.divide_safely(mass_proportions.sum(), 0.0));
 
 	// Make sure that the sum of mass parts matches the prescribed sum.
@@ -56,10 +56,10 @@ ForageMass Fauna::get_max_intake_as_total_mass(
 //============================================================
 
 GetForageDemands::GetForageDemands(const Hft* hft, const Sex sex) :
-	hft(hft), 
+	hft(hft),
 	sex(sex),
 	today(-1) // indicate that day has not been initialized.
-{ 
+{
 	if (hft == NULL)
 		throw std::invalid_argument(
 				"Fauna::GetForageDemands::GetForageDemands() "
@@ -72,7 +72,7 @@ void GetForageDemands::add_eaten(ForageMass eaten_forage){
 	if (!(eaten_forage <= max_intake*1.001))
 		throw std::logic_error("Fauna::GetForageDemands::add_eaten() "
 				"Eaten forage is greater than maximum intake.");
-	
+
 	// Since we just left some room for error, we are now responsible to make
 	// sure that the `max_intake` *really* has no negative values.
 	eaten_forage = eaten_forage.min(max_intake);
@@ -95,7 +95,7 @@ ForageFraction GetForageDemands::get_diet_composition()const
 		throw std::logic_error(
 				"Fauna::GetForageDemands::get_diet_composition() "
 				"The selected algorithm for diet composition "
-				"(Hft::diet_composer) is not implemented."); 
+				"(Hft::diet_composer) is not implemented.");
 	}
 
 	// Check the result, but leave some rounding error tolerance.
@@ -112,7 +112,7 @@ ForageMass GetForageDemands::get_max_digestion()const
 	assert(today > -1); // check that init_today() has been called
 
 	if (get_hft().digestive_limit == DL_NONE) {
-		return ForageMass(100000); 
+		return ForageMass(100000);
 	}
 
 	else if (get_hft().digestive_limit == DL_ALLOMETRIC) {
@@ -146,7 +146,7 @@ ForageMass GetForageDemands::get_max_digestion()const
 				get_bodymass_adult(), get_hft().digestion_type);
 
 		// calculate the digestive limit [MJ/ind/day]
-		const ForageEnergy limit_mj = 
+		const ForageEnergy limit_mj =
 			get_digestive_limit(bodymass, digestibility);
 
 		// Convert energy to kg dry matter
@@ -157,7 +157,7 @@ ForageMass GetForageDemands::get_max_digestion()const
 
 		// Set the maximum foraging limit [kgDM/ind/day]
 		return limit_kg;
-	} 
+	}
 
 	// ** add new digestive constraints in new else-if statements here **
 	else {
@@ -182,8 +182,8 @@ ForageMass GetForageDemands::get_max_foraging()const
 	std::set<ForagingLimit>::const_iterator itr;
 	for (itr = get_hft().foraging_limits.begin();
 			itr != get_hft().foraging_limits.end();
-			itr++) 
-	{ 
+			itr++)
+	{
 		if (*itr == FL_ILLIUS_OCONNOR_2000) {
 			// Check that we are only handling grass here. This should be
 			// already checked in Hft::is_valid().
@@ -316,7 +316,7 @@ ForageMass GetForageDemands::operator()(const double _energy_needs)
 	//------------------------------------------------------------------
 	// CONVERT MASS TO ENERGY
 
-	// Note that we have many variables already calculated in 
+	// Note that we have many variables already calculated in
 	// `init_today()`
 
 	// The maximum intake of each forage type as net energy [MJ/ind]
@@ -333,7 +333,7 @@ ForageMass GetForageDemands::operator()(const double _energy_needs)
 	// COMPOSE ENERGY FRACTIONS OF DIET
 
 	// Find the forage type that is limiting the total intake the most:
-	// This is the forage type where the preferred fraction 
+	// This is the forage type where the preferred fraction
 	// (↦ diet_composition) is furthest away from the fraction in the
 	// possible intake (↦ max_energy_intake).
 
@@ -346,14 +346,14 @@ ForageMass GetForageDemands::operator()(const double _energy_needs)
 			ft++)
 	{
 		if (diet_composition[*ft] > 0)
-			min_fraction = min(min_fraction, 
+			min_fraction = min(min_fraction,
 					(diet_composition[*ft] * max_energy_intake_sum) /
 					max_energy_intake[*ft]);
 	}
 
 	// The maximum energy intake with the forage types composed in
 	// the same fraction as in `diet_composition` [MJ/ind].
-	const ForageEnergy max_energy_intake_comp = 
+	const ForageEnergy max_energy_intake_comp =
 		max_energy_intake * (min_fraction * diet_composition);
 
 	// Desired forage types cannot be eaten ⇒ no demands
@@ -362,7 +362,7 @@ ForageMass GetForageDemands::operator()(const double _energy_needs)
 
 	//------------------------------------------------------------------
 	// REDUCE TO ACTUAL ENERGY NEEDS
-	
+
 	// The fraction to what we need to reduce the energy intake to meet
 	// the actual needs.
 	const double energy_reduction = min(1.0,
@@ -416,7 +416,7 @@ double HalfMaxIntake::get_intake_rate(const double density)const{
 // GetDigestiveLimitIlliusGordon1992
 //============================================================
 
-GetDigestiveLimitIlliusGordon1992::GetDigestiveLimitIlliusGordon1992( 
+GetDigestiveLimitIlliusGordon1992::GetDigestiveLimitIlliusGordon1992(
 		const double bodymass_adult,
 		const DigestionType digestion_type):
 	bodymass_adult(bodymass_adult),
@@ -475,7 +475,7 @@ const ForageEnergy GetDigestiveLimitIlliusGordon1992::operator()(
 	const double u_g = pow( M/M_ad, .75);
 
 	// Because of power calculations we cannot use the
-	// arithmetic operators of ForageValues<>, but need to 
+	// arithmetic operators of ForageValues<>, but need to
 	// iterate over all forage types.
 	for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
 			ft != FORAGE_TYPES.end(); ft++)

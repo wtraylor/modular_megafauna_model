@@ -28,7 +28,7 @@ namespace Fauna{
 	class Hft;
 
 	/// Interface of a herbivore of a specific \ref Hft.
-	/** 
+	/**
 	 * Derived classes will define the model mechanics.
 	 * Each herbivore class has a corresponding implementation of
 	 * \ref PopulationInterface which creates and manages the
@@ -68,7 +68,7 @@ namespace Fauna{
 		 *
 		 * \param available_forage Available forage in the habitat
 		 * [kgDM/km²].
-		 * \return Dry matter forage *per m²* that the herbivore 
+		 * \return Dry matter forage *per m²* that the herbivore
 		 * would eat without any food competition [kgDM/km²].
 		 */
 		virtual ForageMass get_forage_demands(
@@ -81,7 +81,7 @@ namespace Fauna{
 		virtual double get_ind_per_km2()const = 0;
 
 		/// Get herbivore biomass density [kg/km²]
-		virtual double get_kg_per_km2() const = 0; 
+		virtual double get_kg_per_km2() const = 0;
 
 		/// Read current output.
 		virtual const FaunaOut::HerbivoreData& get_todays_output()const = 0;
@@ -95,7 +95,7 @@ namespace Fauna{
 		virtual void kill() = 0;
 
 		/// Simulate daily events.
-		/** 
+		/**
 		 * Call this before \ref get_forage_demands().
 		 * \param[in] day Current day of year, 0=Jan. 1st.
 		 * \param[in] environment Current environmental conditions in the habitat.
@@ -138,11 +138,11 @@ namespace Fauna{
 	class HerbivoreBase: public HerbivoreInterface{
 		public:
 			// -------- HerbivoreInterface ----------
-			virtual void eat(				
+			virtual void eat(
 					const ForageMass& kg_per_km2,
 					const Digestibility& digestibility,
 					const ForageMass& N_kg_per_km2);
-			virtual double get_bodymass() const; 
+			virtual double get_bodymass() const;
 			virtual ForageMass get_forage_demands(
 					const HabitatForage& available_forage);
 			virtual const Hft& get_hft()const{
@@ -151,13 +151,13 @@ namespace Fauna{
 			}
 			virtual double get_kg_per_km2() const;
 			virtual const FaunaOut::HerbivoreData& get_todays_output()const;
-			virtual void simulate_day(const int day, 
+			virtual void simulate_day(const int day,
 					const HabitatEnvironment& environment, double& offspring);
 			virtual double take_nitrogen_excreta();
 		public:
 			/// Current age in days.
-			int get_age_days()const{return age_days;} 
-			
+			int get_age_days()const{return age_days;}
+
 			/// Current age in years.
 			double get_age_years()const{return age_days/365.0;}
 
@@ -168,7 +168,7 @@ namespace Fauna{
 			double get_bodymass_adult()const;
 
 			/// Get full-body conductance [W/°C/ind].
-			/** \see \ref Hft::conductance 
+			/** \see \ref Hft::conductance
 			 * \throw std::logic_error If \ref ConductanceModel not implemented. */
 			double get_conductance()const;
 
@@ -182,7 +182,7 @@ namespace Fauna{
 			 * \ref Hft::maturity_age_phys_female, respectively.
 			 * Otherwise interpolate linearly from \ref Hft::bodymass_birth.
 			 */
-			virtual double get_lean_bodymass() const; 
+			virtual double get_lean_bodymass() const;
 
 			/// Physiological maximum of fat mass [kg/ind].
 			double get_max_fatmass()const;
@@ -208,10 +208,10 @@ namespace Fauna{
 			 * \throw std::invalid_argument If `hft==NULL` or
 			 * `age_days <= 0` or `body_condition` not in [0,1].
 			 */
-			HerbivoreBase( 
+			HerbivoreBase(
 					const int age_days,
 					const double body_condition,
-					const Hft* hft, 
+					const Hft* hft,
 					const Sex sex
 					);
 
@@ -233,7 +233,7 @@ namespace Fauna{
 			/// Destructor
 			// Note that std::auto_ptr cleans up itself, no need to do
 			// implement anything in the destructor.
-			~HerbivoreBase(){} 
+			~HerbivoreBase(){}
 
 			/// Apply a fractional mortality.
 			/**
@@ -268,7 +268,7 @@ namespace Fauna{
 			NitrogenInHerbivore& get_nitrogen(){return nitrogen;}
 		private: // private member functions
 			/// Calculate mortality according to \ref Hft::mortality_factors.
-			/** Calls \ref apply_mortality(), which is implemented by 
+			/** Calls \ref apply_mortality(), which is implemented by
 			 * child classes.*/
 			void apply_mortality_factors_today();
 
@@ -282,9 +282,9 @@ namespace Fauna{
 			Hft const* check_hft_pointer(const Hft*);
 
 			/// Forage net energy content given by the selected algorithm \ref Hft::net_energy_model.
-			/** 
+			/**
 			 * \param digestibility Proportional digestibility.
-			 * \return Net energy content [MJ/kgDM]. 
+			 * \return Net energy content [MJ/kgDM].
 			 * \throw std::logic_error If the selected model is not
 			 * implemented. */
 			ForageEnergyContent get_net_energy_content(
@@ -297,7 +297,7 @@ namespace Fauna{
 
 			/// Get the proportional offspring for today using selected model.
 			/**
-			 * Reads \ref Hft::reproduction_model and performs 
+			 * Reads \ref Hft::reproduction_model and performs
 			 * calculations accordingly.
 			 * \return Number of offspring per individual [ind/ind/day].
 			 * Zero if this herbivore is male, or has not yet reached
@@ -326,7 +326,7 @@ namespace Fauna{
 			/// @{ \name Helper Classes
 			/// Body condition over the past x months (only females).
 			/** Body condition is current fat mass / max. fat mass. The record
-			 * spans the lenght of a potential pregnancy, counting back from 
+			 * spans the lenght of a potential pregnancy, counting back from
 			 * current day. This object is empty for male herbivores. */
 			PeriodAverage body_condition_gestation;
 
@@ -343,9 +343,9 @@ namespace Fauna{
 	class HerbivoreIndividual: public HerbivoreBase{
 		public:
 			// -------- HerbivoreInterface ----------
-			virtual double get_ind_per_km2()const{ 
+			virtual double get_ind_per_km2()const{
 				assert(area_km2 > 0.0);
-				return 1.0/area_km2 * !is_dead(); 
+				return 1.0/area_km2 * !is_dead();
 			}
 			virtual bool is_dead()const{return dead;}
 			virtual void kill(){ dead = true; }
@@ -364,7 +364,7 @@ namespace Fauna{
 			HerbivoreIndividual(
 					const int age_days,
 					const double body_condition,
-					const Hft* hft, 
+					const Hft* hft,
 					const Sex sex,
 					const double area_km2
 					);
@@ -378,7 +378,7 @@ namespace Fauna{
 			 * \param area_km2 The absolute area of the habitat [km²].
 			 */
 			HerbivoreIndividual(
-					const Hft* hft, 
+					const Hft* hft,
 					const Sex sex,
 					const double area_km2
 					);
@@ -405,7 +405,7 @@ namespace Fauna{
 
 	/// A herbivore cohort (age-class)
 	/**
-	 * Any state variables describe mean values across all 
+	 * Any state variables describe mean values across all
 	 * individuals.
 	 * All individuals have the same age.
 	 * \see \ref sec_herbiv_herbivoredesign
@@ -415,7 +415,7 @@ namespace Fauna{
 			// -------- HerbivoreInterface ----------
 			virtual double get_ind_per_km2()const{
 				return ind_per_km2;
-			} 
+			}
 			/// A cohort is dead if its density is zero.
 			virtual bool is_dead()const;
 			virtual void kill(){ ind_per_km2 = 0.0; }
@@ -429,13 +429,13 @@ namespace Fauna{
 			 * \param sex The sex of the herbivore.
 			 * \throw std::invalid_argument if any parameter is invalid
 			 *
-			 * \param ind_per_km2 Initial individual density [ind/km²]. 
+			 * \param ind_per_km2 Initial individual density [ind/km²].
 			 * Can be 0.0, but must not be negative.
 			 */
 			HerbivoreCohort(
 					const int age_days,
 					const double body_condition,
-					const Hft* hft, 
+					const Hft* hft,
 					const Sex sex,
 					const double ind_per_km2
 					);
@@ -446,11 +446,11 @@ namespace Fauna{
 			 * \param sex The sex of the herbivore.
 			 * \throw std::invalid_argument if any parameter is invalid
 			 *
-			 * \param ind_per_km2 Initial individual density [ind/km²]. 
+			 * \param ind_per_km2 Initial individual density [ind/km²].
 			 * Can be 0.0, but must not be negative.
 			 */
 			HerbivoreCohort(
-					const Hft* hft, 
+					const Hft* hft,
 					const Sex sex,
 					const double ind_per_km2
 					);
@@ -465,7 +465,7 @@ namespace Fauna{
 			~HerbivoreCohort(){};
 
 			/// Check if this and the other cohort are of the same age
-			/** 
+			/**
 			 * Two cohorts are considered coeval if they are in the
 			 * same year of life:
 			 * - First year:  `0<=age_days<365`
@@ -492,7 +492,7 @@ namespace Fauna{
 			// -------- HerbivoreBase ---------------
 			virtual void apply_mortality(const double mortality);
 		private:
-			double ind_per_km2; 
+			double ind_per_km2;
 	};
 }
 #endif //HERBIV_HERBIVORE_H

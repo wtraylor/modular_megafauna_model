@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file    
+/// \file
 /// \brief   \ref Fauna::Habitat implementations for testing purpose.
 /// \ingroup group_herbivory
 /// \author  Wolfgang Pappa, Senckenberg BiK-F
@@ -109,8 +109,8 @@ bool LogisticGrass::Parameters::is_valid(std::string& msg)const{
 	return is_valid;
 }
 
-LogisticGrass::LogisticGrass(const LogisticGrass::Parameters& settings): 
-	settings(settings), 
+LogisticGrass::LogisticGrass(const LogisticGrass::Parameters& settings):
+	settings(settings),
 	simulation_month(-1)
 {
 	std::string msg;
@@ -157,12 +157,12 @@ void LogisticGrass::grow_daily(const int day_of_year){
 	const double total_saturation = settings.saturation + settings.reserve;
 
 	// proportional net increase of total dry matter
-	const double net_growth = 
+	const double net_growth =
 		settings.growth_monthly[growth_id] * (1.0 - dm_total / total_saturation)
 		- settings.decay_monthly[decay_id];
 
 	// Absolute change in total dry matter
-	const double dm_total_change 
+	const double dm_total_change
 		= dm_total * net_growth;
 
 	// new total dry matter
@@ -171,7 +171,7 @@ void LogisticGrass::grow_daily(const int day_of_year){
 	const double dm_avail_new = std::max( dm_total_new - settings.reserve, 0.0 );
 	// With negative net growth, the available dry matter can drop below zero.
 	// That’s why max() is used to here
-	
+
 	forage.set_mass(dm_avail_new);
 
 	if (forage.get_mass() > 0.0)

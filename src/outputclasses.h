@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Output classes of the herbivory module.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -18,7 +18,7 @@ namespace FaunaOut {
 
 	/// Habitat output data for one time unit.
 	/**
-	 * \see \ref sec_herbiv_outputclasses 
+	 * \see \ref sec_herbiv_outputclasses
 	 */
 	struct HabitatData{
 
@@ -32,7 +32,7 @@ namespace FaunaOut {
 		Fauna::HabitatForage available_forage;
 
 		/// Forage mass [kgDM/km²/day] eaten by herbivores.
-		/** This equals the sum of \ref HerbivoreData::eaten_forage_per_ind 
+		/** This equals the sum of \ref HerbivoreData::eaten_forage_per_ind
 		 * over all HFTs */
 		Fauna::ForageMass eaten_forage;
 
@@ -42,15 +42,15 @@ namespace FaunaOut {
 		//------------------------------------------------------------
 		/** @{ \name Aggregation Functionality */
 		/// Aggregate data of this object with another one.
-		/** 
-		 * This does no calculations if the partners are the same object, or 
+		/**
+		 * This does no calculations if the partners are the same object, or
 		 * one of the weights is zero.
 		 * \param other The other object to be merged into this one.
 		 * \param this_weight Weight of this object in average building.
 		 * \param other_weight Weight of `other` in average building.
-		 * \return This object. 
+		 * \return This object.
 		 * \see \ref Fauna::average(),
-		 *      \ref Fauna::HabitatForage::merge(), 
+		 *      \ref Fauna::HabitatForage::merge(),
 		 *      \ref Fauna::ForageValues::merge()
 		 * \throw std::invalid_argument If either weight is not a positive
 		 * number or if both are zero.
@@ -142,21 +142,21 @@ namespace FaunaOut {
 		//------------------------------------------------------------
 		/** @{ \name Aggregation Functionality */
 		/// Aggregate data of this object with another one.
-		/** 
+		/**
 		 * This function builds **averages** for all member variables.
 		 *
-		 * \ref mortality : Only those factors are included in the 
+		 * \ref mortality : Only those factors are included in the
 		 * result that are present in both objects (intersection).
 		 * All other map entries are deleted. This is necessary because
 		 * the statistical weight is the same for *all* variables.
 		 *
-		 * This does no calculations if the partners are the same object, or 
+		 * This does no calculations if the partners are the same object, or
 		 * one of the weights is zero.
 		 *
 		 * \param other The other object to be merged into this one.
 		 * \param this_weight Weight of this object in average building.
 		 * \param other_weight Weight of `other` in average building.
-		 * \return This object. 
+		 * \return This object.
 		 * \see \ref Fauna::average(), \ref Fauna::ForageValues::merge()
 		 * \throw std::invalid_argument If either weight is not a positive
 		 * number or if both are zero.
@@ -174,14 +174,14 @@ namespace FaunaOut {
 		/// Aggregate herbivore data *within one habitat*.
 		/**
 		 * As opposed to \ref merge(), this function is intended to combine
-		 * data of *one habitat* in *one point of time* into a single data 
-		 * point. 
-		 * This can then be merged with other data points across space and 
+		 * data of *one habitat* in *one point of time* into a single data
+		 * point.
+		 * This can then be merged with other data points across space and
 		 * time, using \ref merge().
 		 *
-		 * For variables *per individual*, this function creates the 
+		 * For variables *per individual*, this function creates the
 		 * **average** (just like \ref merge()).
-		 * For variables *per area* or *per habitat*, this function creates 
+		 * For variables *per area* or *per habitat*, this function creates
 		 * the **sum**, adding up the numbers in the habitat.
 		 *
 		 * In contrast to \ref merge(), \ref mortality is summed up, and
@@ -208,11 +208,11 @@ namespace FaunaOut {
 	};
 
 	/// Output data for herbivores and habitat(s).
-	/** 
-	 * This can be data for one \ref Fauna::SimulationUnit (possibly aggregated 
+	/**
+	 * This can be data for one \ref Fauna::SimulationUnit (possibly aggregated
 	 * over a period of time) or for a set of spatial units (aggregated over
 	 * time and space).
-	 * \see \ref sec_herbiv_outputclasses 
+	 * \see \ref sec_herbiv_outputclasses
 	 */
 	struct CombinedData{
 		/// Constructor.
@@ -232,16 +232,16 @@ namespace FaunaOut {
 		/// Merge other data into this object.
 		/**
 		 * Use this to aggregate (=build averages) over space and time.
-		 * \ref datapoint_count is used to weigh the values in 
+		 * \ref datapoint_count is used to weigh the values in
 		 * average-building.
 		 *
 		 * For herbivore data (\ref hft_data), the merge routine creates an
 		 * empty \ref HerbivoreData object as a ‘stub’ if it the HFT is found
-		 * in one of the merge partners, but not in the other one. This way, 
+		 * in one of the merge partners, but not in the other one. This way,
 		 * the averages are built correctly across habitats even if in one
 		 * habitat, there are no herbivores of one type.
 		 *
-		 * This does no calculations if the partners are the same object, or 
+		 * This does no calculations if the partners are the same object, or
 		 * \ref datapoint_count is zero in one of the two objects.
 		 * \return This object after merging.
 		 *
@@ -253,7 +253,7 @@ namespace FaunaOut {
 		/// Retrieve aggregated data and reset object.
 		CombinedData reset(){
 			// copy old object
-			CombinedData result = *this; 
+			CombinedData result = *this;
 			// reset with copy assignment operator
 			this->operator=(CombinedData());
 			return result;

@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Test simulations for the herbivory module.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -21,7 +21,7 @@ namespace Fauna{
 }
 namespace FaunaSim{
 	/// Performs test simulations for herbivores outside of the LPJ-GUESS vegetation model
-	/** 
+	/**
 	 * \see \ref sec_singleton for an explanation of the design pattern used.
 	 * \see \ref sec_herbiv_testsimulations
 	 */
@@ -57,7 +57,7 @@ namespace FaunaSim{
 			void plib_callback(int callback);
 
 			/// Declare instruction file parameters (called from \ref parameters.cpp).
-			/** 
+			/**
 			 * Registers also mandatory parameters in \ref mandatory_parameters.
 			 * - \ref declare_parameter() from \ref parameters.h is used for
 			 *   regular parameters.
@@ -78,14 +78,14 @@ namespace FaunaSim{
 				int nyears;
 				int nhabitats_per_group, ngroups;
 				SimpleHabitat::Parameters habitat;
-			} params; 
+			} params;
 
 			/// List of mandatory instruction file parameters.
 			std::vector<std::string> mandatory_parameters;
 
 			/// Number of decimal places in output tables.
 			static const int COORDINATES_PRECISION;
-		
+
 			/// Deleted copy constructor
 			Framework(Framework const&); //don’t implement, it’s deleted
 			/// Deleted assignment constructor

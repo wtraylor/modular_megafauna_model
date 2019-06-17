@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \brief Classes for the spatial units where herbivores live.
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -19,20 +19,20 @@ namespace Fauna{
 	class HabitatEnvironment;
 
 	/// Abstract class of a homogenous spatial unit populated by herbivores
-	/** 
-	 * \note While this base class implements the basic output 
-	 * functions, any derived class is responsible to add its 
+	/**
+	 * \note While this base class implements the basic output
+	 * functions, any derived class is responsible to add its
 	 * own output.
 	 * \see \ref Fauna::SimulationUnit
 	 */
 	class Habitat{
-		public: 
+		public:
 			/// Virtual Destructor
 			/** Destructor must be virtual in an interface. */
 			virtual ~Habitat(){}
 
 			/// Account for nitrogen cycling back to soil (faeces + carcasses).
-			/** \param kgN_per_km2 Nitrogen deposited in habitat [kgN/km²]. 
+			/** \param kgN_per_km2 Nitrogen deposited in habitat [kgN/km²].
 			 * \throw std::invalid_argument If `kgN_per_km2 < 0.0`.*/
 			virtual void add_excreted_nitrogen(const double kgN_per_km2) = 0;
 
@@ -43,8 +43,8 @@ namespace Fauna{
 			virtual HabitatEnvironment get_environment() const = 0;
 
 			/// Update at the start of the day.
-			/** 
-			 * Call this once every day from the framework. 
+			/**
+			 * Call this once every day from the framework.
 			 * When overwriting this in derived classes, make sure to
 			 * call this parent function first.
 			 * \param today Day of the year (0 ≙ Jan 1st).
@@ -71,17 +71,17 @@ namespace Fauna{
 			int get_day()const{return day_of_year;}
 
 			/// The current output data (read-only).
-			const FaunaOut::HabitatData& get_todays_output()const{ 
-				return current_output; 
+			const FaunaOut::HabitatData& get_todays_output()const{
+				return current_output;
 			}
 		protected:
 			/// Class-internal read/write access to current output data.
-			FaunaOut::HabitatData& get_todays_output(){ 
-				return current_output; 
+			FaunaOut::HabitatData& get_todays_output(){
+				return current_output;
 			}
 		private:
 			FaunaOut::HabitatData current_output;
-			int day_of_year; 
+			int day_of_year;
 	};
 
 	/// A list of \ref Habitat pointers.

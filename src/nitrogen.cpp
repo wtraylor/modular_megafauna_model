@@ -33,7 +33,7 @@ void NitrogenInHerbivore::digest_today(const double retention_time,
 					"Parameter `massdens` < 0.0"));
 
 	// Maximum amount of nitrogen in the guts of an animal [kgN/km²].
-	const double max_in_guts =  
+	const double max_in_guts =
 		ingested // [kgN/km²/day]
 		* retention_time/24.0; // [day]
 
@@ -44,14 +44,14 @@ void NitrogenInHerbivore::digest_today(const double retention_time,
 
 
 	// Add nitrogen that “overflows” the limits of gut (and tissue) capacity
-	// to the excreta and update the bound nitrogen pool without exceeding 
+	// to the excreta and update the bound nitrogen pool without exceeding
 	// the maximum.
 	const double new_excreta = max(0.0, bound + ingested - max_bound);
 	excreta += new_excreta;
 	bound = min(max_bound, bound + ingested);
 
-	// Reset ingested nitrogen because it is now accounted for 
-	ingested = 0.0; 
+	// Reset ingested nitrogen because it is now accounted for
+	ingested = 0.0;
 }
 
 void NitrogenInHerbivore::ingest(const double eaten_nitrogen) {
@@ -59,7 +59,7 @@ void NitrogenInHerbivore::ingest(const double eaten_nitrogen) {
 		throw(std::invalid_argument("Fauna::NitrogenInHerbivore::ingest() "
 					"Parameter `eaten_nitrogen` < 0.0"));
 
-	this->ingested += eaten_nitrogen; 
+	this->ingested += eaten_nitrogen;
 }
 
 void NitrogenInHerbivore::merge(const NitrogenInHerbivore& other){

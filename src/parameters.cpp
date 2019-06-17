@@ -7,14 +7,14 @@
 ////////////////////////////////////////////////////////////
 
 #include "config.h"
-#include "parameters.h" 
+#include "parameters.h"
 #include <sstream> // for is_valid() messages
 
 using namespace Fauna;
 
 bool Parameters::is_valid(std::string& messages)const{
 	bool is_valid = true;
-	
+
 	// The message text is written into an output string stream
 	std::ostringstream stream;
 

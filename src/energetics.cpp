@@ -49,7 +49,7 @@ FatmassEnergyBudget::FatmassEnergyBudget(
 		const double initial_fatmass,
 		const double maximum_fatmass):
 	energy_needs(0.0),
-	fatmass(initial_fatmass), 
+	fatmass(initial_fatmass),
 	max_fatmass(maximum_fatmass),
 	max_fatmass_gain(0.0)
 {
@@ -113,13 +113,13 @@ double FatmassEnergyBudget::get_max_anabolism_per_day()const{
 
 void FatmassEnergyBudget::merge(const FatmassEnergyBudget& other,
 		const double this_weight, const double other_weight){
-	energy_needs = 
+	energy_needs =
 		(energy_needs*this_weight + other.energy_needs*other_weight) /
 		(this_weight + other_weight);
-	fatmass = 
+	fatmass =
 		(fatmass*this_weight + other.fatmass*other_weight) /
 		(this_weight + other_weight);
-	max_fatmass = 
+	max_fatmass =
 		(max_fatmass*this_weight + other.max_fatmass*other_weight) /
 		(this_weight + other_weight);
 }

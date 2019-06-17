@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \ingroup group_herbivory
 /// \brief Basic forage-related classes of the herbivory module.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
@@ -22,9 +22,9 @@ namespace Fauna{
 	/// Different types of forage.
 	enum ForageType {
 		/// Forage type grass.
-		FT_GRASS,   
+		FT_GRASS,
 		/// Plants that are not edible for herbivores.
-		FT_INEDIBLE 
+		FT_INEDIBLE
 	};
 
 	/// Set with all enum entries of \ref ForageType.
@@ -43,11 +43,11 @@ namespace Fauna{
 	extern const std::set<ForageType> FORAGE_TYPES;
 
 	/// Get a short, lowercase string identifier for a forage type.
-	/** The names are 
+	/** The names are
 	 * - unique,
-	 * - lowercase, 
+	 * - lowercase,
 	 * - without blank spaces or tabs, newlines etc.,
-	 * - without the output column header separation character 
+	 * - without the output column header separation character
 	 *   \ref GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR.
 	 */
 	const std::string& get_forage_type_name(const ForageType);
@@ -66,13 +66,13 @@ namespace Fauna{
 	 * \tparam tag Defines the allowed data range.
 	 *
 	 * \note Operators that take a number as argument will interpret that as
-	 * a ForageValues object where all forage type values are that number. 
+	 * a ForageValues object where all forage type values are that number.
 	 *
 	 * \warning It is important to understand and use the binary comparison
 	 * operators correctly. Be `F1` and `F2` ForageValues objects.
 	 * `F1>F2` then means that *each* value in `F1` (one for each forage type)
 	 * is greater than the corresponding value in `F2`.
-	 * In the same way, `F1==F2` means that all corresponding values are 
+	 * In the same way, `F1==F2` means that all corresponding values are
 	 * identical.
 	 * `F1!=F2` means then that *each* pair of values is not equal. If one
 	 * value pair, *is* identical, the result is `false`!
@@ -98,7 +98,7 @@ namespace Fauna{
 			void init(){
 				assert( map.empty() );
 				for (std::set<ForageType>::const_iterator ft=FORAGE_TYPES.begin();
-						ft != FORAGE_TYPES.end(); ft++) 
+						ft != FORAGE_TYPES.end(); ft++)
 					map[*ft] = 0.0;
 				assert( map.size() == FORAGE_TYPES.size() );
 			}
@@ -125,12 +125,12 @@ namespace Fauna{
 			 * \see operator/()
 			 */
 			ForageValues<tag> divide_safely(
-					const ForageValues<tag>& divisor, 
+					const ForageValues<tag>& divisor,
 					const double na_value)const{
 				ForageValues<tag> result(*this);
 				for (const_iterator i=begin(); i!=end(); i++) {
 					const double d = divisor.get(i->first);
-					if (d != 0.0) 
+					if (d != 0.0)
 						result.set(i->first, i->second / d); // normal
 					else
 						result.set(i->first, na_value); // division by zero
@@ -139,11 +139,11 @@ namespace Fauna{
 			}
 
 			/// Get a value (read-only).
-			/** 
+			/**
 			 * \throw std::invalid_argument If \ref FT_INEDIBLE is passed.
 			 * \throw std::logic_error If forage type not accessible.
 			 * This error should never occur, as all forage types are
-			 * initialized in the constructors. 
+			 * initialized in the constructors.
 			 */
 			double get(const ForageType ft)const{
 				if (ft == FT_INEDIBLE)
@@ -164,21 +164,21 @@ namespace Fauna{
 			 * \param other Other object to merge into this one.
 			 * \param this_weight Weight of this object’s values.
 			 * \param other_weight Weight of the other object’s values.
-			 * \return This object. 
+			 * \return This object.
 			 * \throw std::invalid_argument The same as \ref average().
 			 * \see \ref Fauna::average().
 			 */
 			ForageValues<tag>& merge(const ForageValues<tag>& other,
 					const double this_weight=1.0, const double other_weight=1.0){
 				for (const_iterator i=other.begin(); i!=other.end(); i++)
-					set(i->first, 
+					set(i->first,
 							average((*this)[i->first], i->second,
 								this_weight, other_weight));
 				return *this;
 			}
 
 			/// For each forage type, take the maximum value.
-			/** \param other The object to compare this object with. 
+			/** \param other The object to compare this object with.
 			 * \return This object. */
 			ForageValues<tag>& max(const ForageValues<tag>& other){
 				if (&other == this) return *this;
@@ -188,7 +188,7 @@ namespace Fauna{
 			}
 
 			/// For each forage type, take the minimum value.
-			/** \param other The object to compare this object with. 
+			/** \param other The object to compare this object with.
 			 * \return This object. */
 			ForageValues<tag>& min(const ForageValues<tag>& other){
 				if (&other == this) return *this;
@@ -212,14 +212,14 @@ namespace Fauna{
 			 */
 			void set(const ForageType forage_type, const double value){
 				switch (tag){
-					case POSITIVE_AND_ZERO: 
+					case POSITIVE_AND_ZERO:
 						if (value<0.0)
-							throw std::invalid_argument((std::string) 
+							throw std::invalid_argument((std::string)
 									"ForageValues<POSITIVE_AND_ZERO> "
 									"Value < 0 not allowed."+
 									" ("+get_forage_type_name(forage_type)+")");
 						break;
-					case ZERO_TO_ONE: 
+					case ZERO_TO_ONE:
 						if (value<0.0 || value>1.0)
 							throw std::invalid_argument((std::string)
 									"ForageValues<ZERO_TO_ONE> "
@@ -243,7 +243,7 @@ namespace Fauna{
 					throw std::invalid_argument((std::string)"ForageValues<> "
 							"Forage type `FT_INEDIBLE` is not allowed."+
 							" ("+get_forage_type_name(forage_type)+")");
-				
+
 				// The map entry for any forage type should have been
 				// created on initialization.
 				assert( map.size() == FORAGE_TYPES.size() );
@@ -272,7 +272,7 @@ namespace Fauna{
 		public:
 			/** @{ \name Operator overload. */
 			ForageValues<tag>& operator+=(const double rhs){
-				for (iterator i=begin(); i!=end(); i++) 
+				for (iterator i=begin(); i!=end(); i++)
 					set(i->first, i->second + rhs);
 				return *this;
 			}
@@ -290,7 +290,7 @@ namespace Fauna{
 			ForageValues<tag>& operator/=(const double rhs){
 				if (rhs==0) throw std::domain_error(
 						"Fauna::ForageValues<> Division by zero.");
-				for (iterator i=begin(); i!=end(); i++) 
+				for (iterator i=begin(); i!=end(); i++)
 					set(i->first, i->second / rhs);
 				return *this;
 			}
@@ -332,7 +332,7 @@ namespace Fauna{
 			}
 
 			ForageValues<tag>& operator+=(const ForageValues<tag>& rhs){
-				for (iterator i=begin(); i!=end(); i++) 
+				for (iterator i=begin(); i!=end(); i++)
 					set(i->first, i->second + rhs.get(i->first));
 				return *this;
 			}
@@ -359,43 +359,43 @@ namespace Fauna{
 			}
 
 			ForageValues<tag>& operator=(const ForageValues<tag>& rhs){
-				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++) 
+				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++)
 					set(i->first, i->second);
 				return *this;
 			}
 
 			bool operator==(const ForageValues<tag>& rhs)const{
-				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++) 
+				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++)
 					if (get(i->first) != i->second) return false;
 				return true;
 			}
 			bool operator!=(const ForageValues<tag>& rhs)const{
-				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++) 
+				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++)
 					if (get(i->first) == i->second) return false;
 				return true;
 			}
 
 			bool operator<(const ForageValues<tag>& rhs)const{
 				bool result = true;
-				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++) 
+				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++)
 					result &= (get(i->first) < i->second);
 				return result;
 			}
 			bool operator<=(const ForageValues<tag>& rhs)const{
 				bool result = true;
-				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++) 
+				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++)
 					result &= (get(i->first) <= i->second);
 				return result;
 			}
 			bool operator>(const ForageValues<tag>& rhs)const{
 				bool result = true;
-				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++) 
+				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++)
 					result &= (get(i->first) > i->second);
 				return result;
 			}
 			bool operator>=(const ForageValues<tag>& rhs)const{
 				bool result = true;
-				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++) 
+				for (const_iterator i=rhs.begin(); i!=rhs.end(); i++)
 					result &= (get(i->first) >= i->second);
 				return result;
 			}
@@ -426,7 +426,7 @@ namespace Fauna{
 
 	/// Multiply forage fractions with coefficient, allowing numbers >0.
 	/**
-	 * Note that this function takes the double value on the left side 
+	 * Note that this function takes the double value on the left side
 	 * whereas the member function ForageValues<>::operator*() takes the
 	 * double value as the right operand and returns a ForageValues<> object
 	 * of the same template, which doesn’t allow numbers exceeding 1.0 in
@@ -435,11 +435,11 @@ namespace Fauna{
 	inline ForageValues<POSITIVE_AND_ZERO> operator*(
 			const double lhs,
 			const ForageFraction& rhs)
-	{ 
+	{
 		ForageValues<POSITIVE_AND_ZERO> result;
 		for (ForageFraction::const_iterator i=rhs.begin();
 				i!=rhs.end();
-				i++) 
+				i++)
 			result.set(i->first, i->second * lhs);
 		return result;
 	}
@@ -447,11 +447,11 @@ namespace Fauna{
 	inline ForageValues<POSITIVE_AND_ZERO> operator*(
 			const ForageFraction& lhs,
 			const ForageValues<POSITIVE_AND_ZERO>& rhs)
-	{ 
+	{
 		ForageValues<POSITIVE_AND_ZERO> result;
 		for (ForageFraction::const_iterator i=rhs.begin();
 				i!=rhs.end();
-				i++) 
+				i++)
 			result.set(i->first, i->second * lhs[i->first]);
 		return result;
 	}
@@ -503,7 +503,7 @@ namespace Fauna{
 			double digestibility, dry_matter_mass, nitrogen_mass;
 		public:
 			/// Constructor with zero values
-			ForageBase():digestibility(0.0), dry_matter_mass(0.0), 
+			ForageBase():digestibility(0.0), dry_matter_mass(0.0),
 			nitrogen_mass(0.0){}
 
 			/// Fractional digestibility of the biomass for ruminants.
@@ -516,7 +516,7 @@ namespace Fauna{
 			/// Nitrogen mass per area [kgN/km²].
 			double get_nitrogen_mass()const{return nitrogen_mass;}
 
-			/** \copydoc get_digestibility() 
+			/** \copydoc get_digestibility()
 			 * \throw std::invalid_argument if not `0.0<=d<=1.0`*/
 			void set_digestibility(const double d){
 				if (d<0.0 || d>1.0)
@@ -636,7 +636,7 @@ namespace Fauna{
 					const double this_weight, const double other_weight);
 
 			/// Reference to forage object by forage type.
-			/** 
+			/**
 			 * \param ft Forage type.
 			 * \return Polymorphic reference to forage class object.
 			 * \throw std::logic_error if `ft` is not implemented. */
@@ -644,7 +644,7 @@ namespace Fauna{
 				switch (ft){
 					case FT_GRASS: return grass;
 												 // ADD NEW FORAGE TYPES HERE.
-					case FT_INEDIBLE: 
+					case FT_INEDIBLE:
 												 return inedible;
 					default: throw std::logic_error((std::string)
 											 "Fauna::HabitatForage::operator[]()const "
@@ -659,7 +659,7 @@ namespace Fauna{
 				switch (ft){
 					case FT_GRASS: return grass;
 												 // ADD NEW FORAGE TYPES HERE.
-					case FT_INEDIBLE: 
+					case FT_INEDIBLE:
 												 return inedible;
 					default: throw std::logic_error("Fauna::HabitatForage::operator[]() "
 											 "Forage type \"" +

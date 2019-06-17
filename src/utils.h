@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
-/// \file 
+/// \file
 /// \ingroup group_herbivory
-/// \brief Functions and classes shared across parts of the herbivory 
-///        module. 
+/// \brief Functions and classes shared across parts of the herbivory
+///        module.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date October 2017
 ///////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ namespace Fauna{
 	/**
 	 * For stochastic mortality.
 	 *
-	 * This implementation simply uses the standard library 
+	 * This implementation simply uses the standard library
 	 * function `rand()` with the current time as random seed.
 	 */
 	inline double get_random_fraction(){
@@ -45,15 +45,15 @@ namespace Fauna{
 
 	/// Average of a `double` value over a given time period.
 	/**
-	 * This helper class successively takes `double` values and 
-	 * stores/records them up to a given count. 
+	 * This helper class successively takes `double` values and
+	 * stores/records them up to a given count.
 	 * At any time, the average (arithmetic mean) over the stored values
 	 * can be queried with \ref get_average().
 	 *
 	 * Use this to keep track of for instance the average body condition
 	 * of the last month or the average phenology of the last year.
 	 * In the first case, you would create the object with `count==30` and
-	 * call \ref add_value() exactly once every day. 
+	 * call \ref add_value() exactly once every day.
 	 * In the second scenario, `count` would equal `365`.
 	 */
 	class PeriodAverage{

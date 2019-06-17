@@ -52,9 +52,9 @@ namespace Fauna {
 
 		/// Algorithm for how to distribute available forage among herbivores.
 		/** Default: \ref FD_EQUALLY */
-		ForageDistributionAlgorithm forage_distribution; 
+		ForageDistributionAlgorithm forage_distribution;
 
-		/// Simulation years without herbivores (as part of spinup). 
+		/// Simulation years without herbivores (as part of spinup).
 		int free_herbivory_years;
 
 		/// Habitat area [km²].
@@ -91,7 +91,7 @@ namespace Fauna {
 		{
 			// Make sure that the default values are implemented
 			// correctly
-			assert(is_valid()); 
+			assert(is_valid());
 		}
 
 		/// Check if the parameters are valid

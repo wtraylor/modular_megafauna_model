@@ -12,8 +12,8 @@
 namespace Fauna{
 	/// Time of ingesta to pass digestion [hours].
 	/**
-	 * Mean retention time (MRT in hours) after 
-	 * Clauss et al. (2007) \cite clauss2007case, Fig. 2, animals 
+	 * Mean retention time (MRT in hours) after
+	 * Clauss et al. (2007) \cite clauss2007case, Fig. 2, animals
 	 * heavier than 0.5 kg:
 	 * \f[
 	 * 		MRT = 32.8 * M^{0.07}
@@ -29,10 +29,10 @@ namespace Fauna{
 	 * The nitrogen (\f$N_{bound}\f$, kgN/ind) inside an animal is the sum
 	 * of nitrogen in gut content (\f$N_{guts}\f$) and in body tissue
 	 * (\f$N_{body}\f$).
-	 * 
+	 *
 	 * <H3> Nitrogen in Guts </H3>
 	 * How much ingesta are currently in the guts depends on the daily
-	 * nitrogen intake (\f$I_N\f$, kgN/ind/day) and the mean retention time 
+	 * nitrogen intake (\f$I_N\f$, kgN/ind/day) and the mean retention time
 	 * (MRT, h).
 	 * \f[
 	 * N_{guts} = I_N * MRT
@@ -52,7 +52,7 @@ namespace Fauna{
 	 * \note If the individual density changes (e.g. some animal die in a
 	 * cohort), the nitrogen pools stay the same because they are *per area*.
 	 * With the next call of \ref digest_today(), the nitrogen “surplus”
-	 * will be counted as excreta. This way, no nitrogen is lost in the 
+	 * will be counted as excreta. This way, no nitrogen is lost in the
 	 * system.
 	 * \see \ref HerbivoreInterface::take_nitrogen_excreta()
 	 * \see \ref sec_herbiv_nitrogen_excretion
@@ -79,7 +79,7 @@ namespace Fauna{
 			 * \param massdens Herbivore live weight per area [kg/km²]. Set to
 			 * zero in order to effectively disable accounting nitrogen in live
 			 * tissue.
-			 * \throw std::invalid_argument If `retention_time <= 0` or 
+			 * \throw std::invalid_argument If `retention_time <= 0` or
 			 * `massdens < 0`.
 			 * \see \ref get_retention_time()
 			 */
@@ -96,7 +96,7 @@ namespace Fauna{
 			/**
 			 * \param other The other object.
 			 */
-			void merge(const NitrogenInHerbivore& other); 
+			void merge(const NitrogenInHerbivore& other);
 
 			/// Reset the excreted nitrogen.
 			/**
@@ -105,7 +105,7 @@ namespace Fauna{
 			 * \return Same as \ref get_excreta().
 			 */
 			double reset_excreta();
-			
+
 			/// Reset *all* nitrogen (excreta + gut content + tissue nitrogen).
 			/**
 			 * Call this when the herbivore is dead and the body shall decompose.
@@ -115,7 +115,7 @@ namespace Fauna{
 
 			/// Fraction of nitrogen in live weight herbivore mass [kgN/kg].
 			/**
-			 * Hobbs (2006, p. 292)\cite hobbs2006large cites 
+			 * Hobbs (2006, p. 292)\cite hobbs2006large cites
 			 * Robbins (1983)\cite robbins1983wildlife, estimating nitrogen content in the body of
 			 * large mammalian herbivors as 2.5%–3.0%.
 			 * We choose 3.0% here.
