@@ -9,256 +9,249 @@
 #ifndef HERBIV_OUTPUT_H
 #define HERBIV_OUTPUT_H
 
-#include "environment.h" // for HabitatEnvironment
+#include "environment.h"  // for HabitatEnvironment
 #include "forageclasses.h"
-#include "hft.h" // for MortalityFactor
+#include "hft.h"  // for MortalityFactor
 
 namespace FaunaOut {
-	class HerbivoreData; // forward declaration
+class HerbivoreData;  // forward declaration
 
-	/// Habitat output data for one time unit.
-	/**
-	 * \see \ref sec_herbiv_outputclasses
-	 */
-	struct HabitatData{
+/// Habitat output data for one time unit.
+/**
+ * \see \ref sec_herbiv_outputclasses
+ */
+struct HabitatData {
+  /// Constructor, initializing with zero values.
+  HabitatData()
+      : available_forage(),  // already zeros by default.
+        eaten_forage()       // already zeros by default.
+  {}
 
-		/// Constructor, initializing with zero values.
-		HabitatData():
-			available_forage(), // already zeros by default.
-			eaten_forage()      // already zeros by default.
-		{}
+  /// Available forage in the habitat.
+  Fauna::HabitatForage available_forage;
 
-		/// Available forage in the habitat.
-		Fauna::HabitatForage available_forage;
+  /// Forage mass [kgDM/km²/day] eaten by herbivores.
+  /** This equals the sum of \ref HerbivoreData::eaten_forage_per_ind
+   * over all HFTs */
+  Fauna::ForageMass eaten_forage;
 
-		/// Forage mass [kgDM/km²/day] eaten by herbivores.
-		/** This equals the sum of \ref HerbivoreData::eaten_forage_per_ind
-		 * over all HFTs */
-		Fauna::ForageMass eaten_forage;
+  /// Abiotic conditions in the habitat.
+  Fauna::HabitatEnvironment environment;
 
-		/// Abiotic conditions in the habitat.
-		Fauna::HabitatEnvironment environment;
+  //------------------------------------------------------------
+  /** @{ \name Aggregation Functionality */
+  /// Aggregate data of this object with another one.
+  /**
+   * This does no calculations if the partners are the same object, or
+   * one of the weights is zero.
+   * \param other The other object to be merged into this one.
+   * \param this_weight Weight of this object in average building.
+   * \param other_weight Weight of `other` in average building.
+   * \return This object.
+   * \see \ref Fauna::average(),
+   *      \ref Fauna::HabitatForage::merge(),
+   *      \ref Fauna::ForageValues::merge()
+   * \throw std::invalid_argument If either weight is not a positive
+   * number or if both are zero.
+   */
+  HabitatData& merge(const HabitatData& other, const double this_weight,
+                     const double other_weight);
 
-		//------------------------------------------------------------
-		/** @{ \name Aggregation Functionality */
-		/// Aggregate data of this object with another one.
-		/**
-		 * This does no calculations if the partners are the same object, or
-		 * one of the weights is zero.
-		 * \param other The other object to be merged into this one.
-		 * \param this_weight Weight of this object in average building.
-		 * \param other_weight Weight of `other` in average building.
-		 * \return This object.
-		 * \see \ref Fauna::average(),
-		 *      \ref Fauna::HabitatForage::merge(),
-		 *      \ref Fauna::ForageValues::merge()
-		 * \throw std::invalid_argument If either weight is not a positive
-		 * number or if both are zero.
-		 */
-		HabitatData& merge(const HabitatData& other,
-				const double this_weight,
-				const double other_weight);
+  /// Reset to initial values.
+  void reset() {
+    // Simply call the copy assignment operator
+    this->operator=(HabitatData());
+  }
+  /** @} */  // Aggregation Functionality
+};
 
-		/// Reset to initial values.
-		void reset(){
-			// Simply call the copy assignment operator
-			this->operator=(HabitatData());
-		}
-		/** @} */ // Aggregation Functionality
-	};
+/// Herbivore output data for one time unit.
+/** \see \ref sec_herbiv_outputclasses */
+struct HerbivoreData {
+  /// Constructor, initializing with zero values.
+  HerbivoreData()
+      : age_years(0.0),
+        bodyfat(0.0),
+        bound_nitrogen(0.0),
+        eaten_forage_per_ind(0.0),
+        eaten_forage_per_mass(0.0),
+        eaten_nitrogen_per_ind(0.0),
+        energy_content(0.0),
+        energy_intake_per_ind(0.0),
+        energy_intake_per_mass(0.0),
+        expenditure(0.0),
+        inddens(0.0),
+        massdens(0.0),
+        offspring(0.0) {}
 
-	/// Herbivore output data for one time unit.
-	/** \see \ref sec_herbiv_outputclasses */
-	struct HerbivoreData{
-		/// Constructor, initializing with zero values.
-		HerbivoreData():
-			age_years(0.0),
-			bodyfat(0.0),
-			bound_nitrogen(0.0),
-			eaten_forage_per_ind(0.0),
-			eaten_forage_per_mass(0.0),
-			eaten_nitrogen_per_ind(0.0),
-			energy_content(0.0),
-			energy_intake_per_ind(0.0),
-			energy_intake_per_mass(0.0),
-			expenditure(0.0),
-			inddens(0.0),
-			massdens(0.0),
-			offspring(0.0)
-		{}
+  //------------------------------------------------------------
+  /** @{ \name Per-individual variables */
 
-		//------------------------------------------------------------
-		/** @{ \name Per-individual variables */
+  /// Age in years.
+  double age_years;
 
-		/// Age in years.
-		double age_years;
+  /// Body fat [fraction].
+  double bodyfat;
 
-		/// Body fat [fraction].
-		double bodyfat;
+  /// Energy expenditure [MJ/ind/day].
+  double expenditure;
 
-		/// Energy expenditure [MJ/ind/day].
-		double expenditure;
+  /** @} */  // Per-Individual variables
 
-		/** @} */ // Per-Individual variables
+  //------------------------------------------------------------
+  /** @{ \name Per-habitat variables */
 
-		//------------------------------------------------------------
-		/** @{ \name Per-habitat variables */
+  /// Pool of nitrogen bound in the herbivores [kgN/km²]
+  double bound_nitrogen;
 
-		/// Pool of nitrogen bound in the herbivores [kgN/km²]
-		double bound_nitrogen;
+  /// Individual density [ind/km²].
+  double inddens;
 
-		/// Individual density [ind/km²].
-		double inddens;
+  /// Mass density [kg/km²].
+  double massdens;
 
-		/// Mass density [kg/km²].
-		double massdens;
+  /// Daily mortality rate [ind/ind/day].
+  std::map<Fauna::MortalityFactor, double> mortality;
 
-		/// Daily mortality rate [ind/ind/day].
-		std::map<Fauna::MortalityFactor, double> mortality;
+  /// Newborns (offspring) per day [ind/km²/day].
+  double offspring;
 
-		/// Newborns (offspring) per day [ind/km²/day].
-		double offspring;
+  /// Eaten forage per individual [kgDM/ind/day].
+  Fauna::ForageMass eaten_forage_per_ind;
 
-		/// Eaten forage per individual [kgDM/ind/day].
-		Fauna::ForageMass eaten_forage_per_ind;
+  /// Eaten forage per body mass [kgDM/kg/day].
+  Fauna::ForageMass eaten_forage_per_mass;
 
-		/// Eaten forage per body mass [kgDM/kg/day].
-		Fauna::ForageMass eaten_forage_per_mass;
+  /// Ingested nitrogen mass per individual and day [kgN/ind/day].
+  double eaten_nitrogen_per_ind;
 
-		/// Ingested nitrogen mass per individual and day [kgN/ind/day].
-		double eaten_nitrogen_per_ind;
+  /// Net energy content of available forage [MJ/kgDM].
+  Fauna::ForageEnergyContent energy_content;
 
-		/// Net energy content of available forage [MJ/kgDM].
-		Fauna::ForageEnergyContent energy_content;
+  /// Intake of net energy in forage per individual [MJ/ind/day]
+  Fauna::ForageEnergy energy_intake_per_ind;
 
-		/// Intake of net energy in forage per individual [MJ/ind/day]
-		Fauna::ForageEnergy energy_intake_per_ind;
+  /// Intake of net energy in forage per herbivore mass [MJ/kg/day]
+  Fauna::ForageEnergy energy_intake_per_mass;
 
-		/// Intake of net energy in forage per herbivore mass [MJ/kg/day]
-		Fauna::ForageEnergy energy_intake_per_mass;
+  /** @} */  // Per-habitat variables
 
-		/** @} */ // Per-habitat variables
+  //------------------------------------------------------------
+  /** @{ \name Aggregation Functionality */
+  /// Aggregate data of this object with another one.
+  /**
+   * This function builds **averages** for all member variables.
+   *
+   * \ref mortality : Only those factors are included in the
+   * result that are present in both objects (intersection).
+   * All other map entries are deleted. This is necessary because
+   * the statistical weight is the same for *all* variables.
+   *
+   * This does no calculations if the partners are the same object, or
+   * one of the weights is zero.
+   *
+   * \param other The other object to be merged into this one.
+   * \param this_weight Weight of this object in average building.
+   * \param other_weight Weight of `other` in average building.
+   * \return This object.
+   * \see \ref Fauna::average(), \ref Fauna::ForageValues::merge()
+   * \throw std::invalid_argument If either weight is not a positive
+   * number or if both are zero.
+   */
+  HerbivoreData& merge(const HerbivoreData& other, const double this_weight,
+                       const double other_weight);
 
-		//------------------------------------------------------------
-		/** @{ \name Aggregation Functionality */
-		/// Aggregate data of this object with another one.
-		/**
-		 * This function builds **averages** for all member variables.
-		 *
-		 * \ref mortality : Only those factors are included in the
-		 * result that are present in both objects (intersection).
-		 * All other map entries are deleted. This is necessary because
-		 * the statistical weight is the same for *all* variables.
-		 *
-		 * This does no calculations if the partners are the same object, or
-		 * one of the weights is zero.
-		 *
-		 * \param other The other object to be merged into this one.
-		 * \param this_weight Weight of this object in average building.
-		 * \param other_weight Weight of `other` in average building.
-		 * \return This object.
-		 * \see \ref Fauna::average(), \ref Fauna::ForageValues::merge()
-		 * \throw std::invalid_argument If either weight is not a positive
-		 * number or if both are zero.
-		 */
-		HerbivoreData& merge(const HerbivoreData& other,
-				const double this_weight,
-				const double other_weight);
+  /// Reset to initial values.
+  void reset() {
+    // Simply call the copy assignment operator
+    this->operator=(HerbivoreData());
+  }
 
-		/// Reset to initial values.
-		void reset(){
-			// Simply call the copy assignment operator
-			this->operator=(HerbivoreData());
-		}
+  /// Aggregate herbivore data *within one habitat*.
+  /**
+   * As opposed to \ref merge(), this function is intended to combine
+   * data of *one habitat* in *one point of time* into a single data
+   * point.
+   * This can then be merged with other data points across space and
+   * time, using \ref merge().
+   *
+   * For variables *per individual*, this function creates the
+   * **average** (just like \ref merge()).
+   * For variables *per area* or *per habitat*, this function creates
+   * the **sum**, adding up the numbers in the habitat.
+   *
+   * In contrast to \ref merge(), \ref mortality is summed up, and
+   * all mortality factors are included because all merged datapoints
+   * have the same weight.
+   *
+   * \throw std::invalid_argument If length of vector `data` is zero.
+   */
+  static HerbivoreData create_datapoint(const std::vector<HerbivoreData> data);
 
-		/// Aggregate herbivore data *within one habitat*.
-		/**
-		 * As opposed to \ref merge(), this function is intended to combine
-		 * data of *one habitat* in *one point of time* into a single data
-		 * point.
-		 * This can then be merged with other data points across space and
-		 * time, using \ref merge().
-		 *
-		 * For variables *per individual*, this function creates the
-		 * **average** (just like \ref merge()).
-		 * For variables *per area* or *per habitat*, this function creates
-		 * the **sum**, adding up the numbers in the habitat.
-		 *
-		 * In contrast to \ref merge(), \ref mortality is summed up, and
-		 * all mortality factors are included because all merged datapoints
-		 * have the same weight.
-		 *
-		 * \throw std::invalid_argument If length of vector `data` is zero.
-		 */
-		static HerbivoreData create_datapoint(
-				const std::vector<HerbivoreData> data);
+  /// Build weighted mean for net energy content, not counting zero values.
+  /** Don’t count zero net energy, which results from zero available forage.
+   * We need to check every forage type and build average only if energy
+   * content in `obj2` is not zero.
+   * \see \ref Fauna::average()
+   */
+  static void merge_energy_content(Fauna::ForageEnergyContent& obj1,
+                                   const Fauna::ForageEnergyContent& obj2,
+                                   const double weight1 = 1.0,
+                                   const double weight2 = 1.0);
 
-		/// Build weighted mean for net energy content, not counting zero values.
-		/** Don’t count zero net energy, which results from zero available forage.
-		 * We need to check every forage type and build average only if energy
-		 * content in `obj2` is not zero.
-		 * \see \ref Fauna::average()
-		 */
-		static void merge_energy_content(
-				Fauna::ForageEnergyContent& obj1,
-				const Fauna::ForageEnergyContent& obj2,
-				const double weight1=1.0, const double weight2=1.0);
+  /** @} */  // Aggregation Functionality
+};
 
-		/** @} */ // Aggregation Functionality
-	};
+/// Output data for herbivores and habitat(s).
+/**
+ * This can be data for one \ref Fauna::SimulationUnit (possibly aggregated
+ * over a period of time) or for a set of spatial units (aggregated over
+ * time and space).
+ * \see \ref sec_herbiv_outputclasses
+ */
+struct CombinedData {
+  /// Constructor.
+  CombinedData() : datapoint_count(0) {}
 
-	/// Output data for herbivores and habitat(s).
-	/**
-	 * This can be data for one \ref Fauna::SimulationUnit (possibly aggregated
-	 * over a period of time) or for a set of spatial units (aggregated over
-	 * time and space).
-	 * \see \ref sec_herbiv_outputclasses
-	 */
-	struct CombinedData{
-		/// Constructor.
-		CombinedData():
-			datapoint_count(0)
-		{}
+  /// How many data points are merged in this object.
+  unsigned int datapoint_count;
 
-		/// How many data points are merged in this object.
-		unsigned int datapoint_count;
+  /// Habitat output data.
+  HabitatData habitat_data;
 
-		/// Habitat output data.
-		HabitatData habitat_data;
+  /// Herbivore output data aggregated by HFT.
+  std::map<const Fauna::Hft*, HerbivoreData> hft_data;
 
-		/// Herbivore output data aggregated by HFT.
-		std::map<const Fauna::Hft*, HerbivoreData> hft_data;
+  /// Merge other data into this object.
+  /**
+   * Use this to aggregate (=build averages) over space and time.
+   * \ref datapoint_count is used to weigh the values in
+   * average-building.
+   *
+   * For herbivore data (\ref hft_data), the merge routine creates an
+   * empty \ref HerbivoreData object as a ‘stub’ if it the HFT is found
+   * in one of the merge partners, but not in the other one. This way,
+   * the averages are built correctly across habitats even if in one
+   * habitat, there are no herbivores of one type.
+   *
+   * This does no calculations if the partners are the same object, or
+   * \ref datapoint_count is zero in one of the two objects.
+   * \return This object after merging.
+   *
+   * \see \ref HerbivoreData::merge()
+   * \see \ref HabitatData::merge()
+   */
+  CombinedData& merge(const CombinedData&);
 
-		/// Merge other data into this object.
-		/**
-		 * Use this to aggregate (=build averages) over space and time.
-		 * \ref datapoint_count is used to weigh the values in
-		 * average-building.
-		 *
-		 * For herbivore data (\ref hft_data), the merge routine creates an
-		 * empty \ref HerbivoreData object as a ‘stub’ if it the HFT is found
-		 * in one of the merge partners, but not in the other one. This way,
-		 * the averages are built correctly across habitats even if in one
-		 * habitat, there are no herbivores of one type.
-		 *
-		 * This does no calculations if the partners are the same object, or
-		 * \ref datapoint_count is zero in one of the two objects.
-		 * \return This object after merging.
-		 *
-		 * \see \ref HerbivoreData::merge()
-		 * \see \ref HabitatData::merge()
-		 */
-		CombinedData& merge(const CombinedData&);
+  /// Retrieve aggregated data and reset object.
+  CombinedData reset() {
+    // copy old object
+    CombinedData result = *this;
+    // reset with copy assignment operator
+    this->operator=(CombinedData());
+    return result;
+  }
+};
+}  // namespace FaunaOut
 
-		/// Retrieve aggregated data and reset object.
-		CombinedData reset(){
-			// copy old object
-			CombinedData result = *this;
-			// reset with copy assignment operator
-			this->operator=(CombinedData());
-			return result;
-		}
-	};
-}
-
-#endif // HERBIV_OUTPUT_H
+#endif  // HERBIV_OUTPUT_H

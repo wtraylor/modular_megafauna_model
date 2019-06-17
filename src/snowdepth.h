@@ -12,23 +12,23 @@
 class Patch;
 
 namespace Fauna {
-	struct GetSnowDepth{
-		/// Get snow depth [cm].
-		virtual double operator()(const Patch&)const = 0;
+struct GetSnowDepth {
+  /// Get snow depth [cm].
+  virtual double operator()(const Patch&) const = 0;
 
-		/// Virtual destructor.
-		/** The virtual destructor is necessary so that the object is properly
-		 * released from memory.*/
-		virtual ~GetSnowDepth(){}
-	};
+  /// Virtual destructor.
+  /** The virtual destructor is necessary so that the object is properly
+   * released from memory.*/
+  virtual ~GetSnowDepth() {}
+};
 
-	/// Assume a constant 10:1 ratio of snow water equivalent to snow depth.
-	/** \see \ref SD_TEN_TO_ONE */
-	struct SnowDepthTenToOne: public GetSnowDepth{
-		/** \copybrief GetSnowDepth::operator()()
-		 * \return \ref Soil::snowpack times 10. Result in cm.
-		 */
-		virtual double operator()(const Patch&)const;
-	};
-}
-#endif // HERBIV_SNOWDEPTH_H
+/// Assume a constant 10:1 ratio of snow water equivalent to snow depth.
+/** \see \ref SD_TEN_TO_ONE */
+struct SnowDepthTenToOne : public GetSnowDepth {
+  /** \copybrief GetSnowDepth::operator()()
+   * \return \ref Soil::snowpack times 10. Result in cm.
+   */
+  virtual double operator()(const Patch&) const;
+};
+}  // namespace Fauna
+#endif  // HERBIV_SNOWDEPTH_H

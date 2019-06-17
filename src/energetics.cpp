@@ -6,35 +6,36 @@
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
 #include "energetics.h"
-#include <cassert> // for assert()
+#include <cassert>  // for assert()
+#include "config.h"
 
 using namespace Fauna;
 
-double Fauna::get_thermoregulatory_expenditure(
-		const double thermoneutral_rate,
-		const double conductance,
-		const double core_temp,
-		const double ambient_temp)
-{
-	if (thermoneutral_rate < 0.0)
-		throw std::invalid_argument("Fauna::get_thermoregulatory_expenditure() "
-				"Parameter `thermoneutral_rate` is negative.");
-	if (conductance <= 0.0)
-		throw std::invalid_argument("Fauna::get_thermoregulatory_expenditure() "
-				"Parameter `conductance` is negative or zero.");
-	if (core_temp < 0.0)
-		throw std::invalid_argument("Fauna::get_thermoregulatory_expenditure() "
-				"Parameter `core_temp` is negative.");
+double Fauna::get_thermoregulatory_expenditure(const double thermoneutral_rate,
+                                               const double conductance,
+                                               const double core_temp,
+                                               const double ambient_temp) {
+  if (thermoneutral_rate < 0.0)
+    throw std::invalid_argument(
+        "Fauna::get_thermoregulatory_expenditure() "
+        "Parameter `thermoneutral_rate` is negative.");
+  if (conductance <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::get_thermoregulatory_expenditure() "
+        "Parameter `conductance` is negative or zero.");
+  if (core_temp < 0.0)
+    throw std::invalid_argument(
+        "Fauna::get_thermoregulatory_expenditure() "
+        "Parameter `core_temp` is negative.");
 
-	// Conductance as MJ/ind/day/°C
-	const double cond_MJ = watts_to_MJ_per_day(conductance);
+  // Conductance as MJ/ind/day/°C
+  const double cond_MJ = watts_to_MJ_per_day(conductance);
 
-	const double critical_temp = core_temp - thermoneutral_rate / cond_MJ;
-	const double heat_loss = cond_MJ * max(critical_temp - ambient_temp, 0.0);
-	assert( heat_loss >= 0.0 );
-	return heat_loss;
+  const double critical_temp = core_temp - thermoneutral_rate / cond_MJ;
+  const double heat_loss = cond_MJ * max(critical_temp - ambient_temp, 0.0);
+  assert(heat_loss >= 0.0);
+  return heat_loss;
 }
 
 //============================================================
@@ -42,130 +43,130 @@ double Fauna::get_thermoregulatory_expenditure(
 //============================================================
 
 // Definition of static constants.
-const double FatmassEnergyBudget::FACTOR_ANABOLISM  = 54.6; // [MJ/kg]
-const double FatmassEnergyBudget::FACTOR_CATABOLISM = 39.3; // [MJ/kg]
+const double FatmassEnergyBudget::FACTOR_ANABOLISM = 54.6;   // [MJ/kg]
+const double FatmassEnergyBudget::FACTOR_CATABOLISM = 39.3;  // [MJ/kg]
 
-FatmassEnergyBudget::FatmassEnergyBudget(
-		const double initial_fatmass,
-		const double maximum_fatmass):
-	energy_needs(0.0),
-	fatmass(initial_fatmass),
-	max_fatmass(maximum_fatmass),
-	max_fatmass_gain(0.0)
-{
-	if (initial_fatmass < 0.0)
-		throw std::invalid_argument(
-				"Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
-				"initial_fatmass < 0.0");
-	if (maximum_fatmass <= 0.0)
-		throw std::invalid_argument(
-				"Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
-				"maximum_fatmass <= 0.0");
-	if (initial_fatmass > maximum_fatmass)
-		throw std::invalid_argument(
-				"Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
-				"initial_fatmass > maximum_fatmass");
+FatmassEnergyBudget::FatmassEnergyBudget(const double initial_fatmass,
+                                         const double maximum_fatmass)
+    : energy_needs(0.0),
+      fatmass(initial_fatmass),
+      max_fatmass(maximum_fatmass),
+      max_fatmass_gain(0.0) {
+  if (initial_fatmass < 0.0)
+    throw std::invalid_argument(
+        "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
+        "initial_fatmass < 0.0");
+  if (maximum_fatmass <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
+        "maximum_fatmass <= 0.0");
+  if (initial_fatmass > maximum_fatmass)
+    throw std::invalid_argument(
+        "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
+        "initial_fatmass > maximum_fatmass");
 }
 
-void FatmassEnergyBudget::add_energy_needs(const double energy){
-	if (energy<0.0)
-		throw std::invalid_argument("Fauna::FatmassEnergyBudget::add_energy_needs() "
-				"energy < 0.0");
-	energy_needs += energy;
+void FatmassEnergyBudget::add_energy_needs(const double energy) {
+  if (energy < 0.0)
+    throw std::invalid_argument(
+        "Fauna::FatmassEnergyBudget::add_energy_needs() "
+        "energy < 0.0");
+  energy_needs += energy;
 }
 
-void FatmassEnergyBudget::catabolize_fat(){
-	assert(energy_needs >= 0.0);
-	assert(fatmass >= 0.0);
-	if (energy_needs == 0.0)
-		return;
+void FatmassEnergyBudget::catabolize_fat() {
+  assert(energy_needs >= 0.0);
+  assert(fatmass >= 0.0);
+  if (energy_needs == 0.0) return;
 
-	// fat mass [kg] to burn in order to meet energy needs
-	const double burned_fatmass = energy_needs / FACTOR_CATABOLISM;
+  // fat mass [kg] to burn in order to meet energy needs
+  const double burned_fatmass = energy_needs / FACTOR_CATABOLISM;
 
-	/// Fat mass never drops below zero.
-	fatmass = max(0.0, fatmass - burned_fatmass);
-	assert(fatmass >= 0.0);
+  /// Fat mass never drops below zero.
+  fatmass = max(0.0, fatmass - burned_fatmass);
+  assert(fatmass >= 0.0);
 
-	energy_needs = 0.0;
+  energy_needs = 0.0;
 }
 
-void FatmassEnergyBudget::force_body_condition(const double body_condition){
-	if (body_condition > 1.0 || body_condition < 0.0)
-		throw std::invalid_argument(
-				"Fauna::FatmassEnergyBudget::force_body_condition() "
-				"Parameter `body_condition` out of bounds.");
-	fatmass = get_max_fatmass() * body_condition;
+void FatmassEnergyBudget::force_body_condition(const double body_condition) {
+  if (body_condition > 1.0 || body_condition < 0.0)
+    throw std::invalid_argument(
+        "Fauna::FatmassEnergyBudget::force_body_condition() "
+        "Parameter `body_condition` out of bounds.");
+  fatmass = get_max_fatmass() * body_condition;
 }
 
-double FatmassEnergyBudget::get_max_anabolism_per_day()const{
-	assert( max_fatmass_gain >= 0.0 );
+double FatmassEnergyBudget::get_max_anabolism_per_day() const {
+  assert(max_fatmass_gain >= 0.0);
 
-	// Fat mass increment [kg/ind/day] without limit.
-	double increment = max_fatmass - fatmass;
+  // Fat mass increment [kg/ind/day] without limit.
+  double increment = max_fatmass - fatmass;
 
-	// If there is a limit set, decrease `increment`.
-	if (max_fatmass_gain != 0.0)
-		increment = min(max_fatmass_gain, increment);
+  // If there is a limit set, decrease `increment`.
+  if (max_fatmass_gain != 0.0) increment = min(max_fatmass_gain, increment);
 
-	return increment * FACTOR_ANABOLISM;
+  return increment * FACTOR_ANABOLISM;
 }
 
 void FatmassEnergyBudget::merge(const FatmassEnergyBudget& other,
-		const double this_weight, const double other_weight){
-	energy_needs =
-		(energy_needs*this_weight + other.energy_needs*other_weight) /
-		(this_weight + other_weight);
-	fatmass =
-		(fatmass*this_weight + other.fatmass*other_weight) /
-		(this_weight + other_weight);
-	max_fatmass =
-		(max_fatmass*this_weight + other.max_fatmass*other_weight) /
-		(this_weight + other_weight);
+                                const double this_weight,
+                                const double other_weight) {
+  energy_needs =
+      (energy_needs * this_weight + other.energy_needs * other_weight) /
+      (this_weight + other_weight);
+  fatmass = (fatmass * this_weight + other.fatmass * other_weight) /
+            (this_weight + other_weight);
+  max_fatmass = (max_fatmass * this_weight + other.max_fatmass * other_weight) /
+                (this_weight + other_weight);
 }
 
-void FatmassEnergyBudget::metabolize_energy(double energy){
-	if (energy < 0.0)
-		throw std::invalid_argument("Fauna::FatmassEnergyBudget::metabolize_energy() "
-				"energy < 0.0");
-	assert(energy_needs >= 0.0);
-	assert(fatmass >= 0.0);
+void FatmassEnergyBudget::metabolize_energy(double energy) {
+  if (energy < 0.0)
+    throw std::invalid_argument(
+        "Fauna::FatmassEnergyBudget::metabolize_energy() "
+        "energy < 0.0");
+  assert(energy_needs >= 0.0);
+  assert(fatmass >= 0.0);
 
-	if (energy <= energy_needs){
-		energy_needs -= energy; // just meet immediate energy needs
-	} else {
+  if (energy <= energy_needs) {
+    energy_needs -= energy;  // just meet immediate energy needs
+  } else {
+    // meet immediate energy needs
+    energy -= energy_needs;
+    energy_needs = 0.0;
 
-		// meet immediate energy needs
-		energy -= energy_needs;
-		energy_needs = 0.0;
+    // store surplus as fat (anabolism) [kg/ind]
+    const double fatmass_gain = energy / FACTOR_ANABOLISM;
 
-		// store surplus as fat (anabolism) [kg/ind]
-		const double fatmass_gain = energy / FACTOR_ANABOLISM;
+    // Check if fat mass gain is too high, but allow for some rounding
+    // errors.
+    if (fatmass + fatmass_gain > 1.001 * max_fatmass)
+      throw std::logic_error(
+          "Fauna::FatmassEnergyBudget::metabolize_energy() "
+          "Received energy exceeds maximum allowed fat anabolism.");
 
-		// Check if fat mass gain is too high, but allow for some rounding
-		// errors.
-		if (fatmass + fatmass_gain > 1.001 * max_fatmass)
-			throw std::logic_error("Fauna::FatmassEnergyBudget::metabolize_energy() "
-					"Received energy exceeds maximum allowed fat anabolism.");
-
-		// increase fat reserves
-		// If fat mass gain exceeds maximum fat mass (rounding errors), only
-		// increase up to the maximum.
-		fatmass = min(fatmass + fatmass_gain, max_fatmass);
-	}
+    // increase fat reserves
+    // If fat mass gain exceeds maximum fat mass (rounding errors), only
+    // increase up to the maximum.
+    fatmass = min(fatmass + fatmass_gain, max_fatmass);
+  }
 }
 
 void FatmassEnergyBudget::set_max_fatmass(const double _max_fatmass,
-		const double max_gain){
-	if (_max_fatmass < fatmass)
-		throw std::logic_error("Fauna::FatmassEnergyBudget::set_max_fatmass() "
-				"Maximum fat mass is lower than current fat mass.");
-	if (_max_fatmass <= 0.0)
-		throw std::invalid_argument("Fauna::FatmassEnergyBudget::set_max_fatmass() "
-				"Received maximum fat mass smaller than zero");
-	if (max_gain < 0)
-		throw std::invalid_argument("Fauna::FatmassEnergyBudget::set_max_fatmass() "
-				"Maximum fat mass gain must not be negative.");
-	max_fatmass      = _max_fatmass;
-	max_fatmass_gain = max_gain;
+                                          const double max_gain) {
+  if (_max_fatmass < fatmass)
+    throw std::logic_error(
+        "Fauna::FatmassEnergyBudget::set_max_fatmass() "
+        "Maximum fat mass is lower than current fat mass.");
+  if (_max_fatmass <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::FatmassEnergyBudget::set_max_fatmass() "
+        "Received maximum fat mass smaller than zero");
+  if (max_gain < 0)
+    throw std::invalid_argument(
+        "Fauna::FatmassEnergyBudget::set_max_fatmass() "
+        "Maximum fat mass gain must not be negative.");
+  max_fatmass = _max_fatmass;
+  max_fatmass_gain = max_gain;
 }
