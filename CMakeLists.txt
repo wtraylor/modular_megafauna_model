@@ -6,8 +6,6 @@ set (CMAKE_CXX_STANDARD 11)  # requires CMake 3.1 or higher
 add_library (ModularMegafaunaModel STATIC
   src/fauna/createherbivores.cpp
   src/fauna/createherbivores.h
-  src/fauna/digestibility.cpp
-  src/fauna/digestibility.h
   src/fauna/energetics.cpp
   src/fauna/energetics.h
   src/fauna/environment.h
