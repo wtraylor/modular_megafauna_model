@@ -7,7 +7,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "nitrogen.h"
-#include "config.h"
 #include "forageclasses.h"
 
 using namespace Fauna;

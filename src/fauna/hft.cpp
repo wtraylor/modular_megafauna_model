@@ -9,7 +9,6 @@
 
 #include "hft.h"
 #include <sstream>  // for is_valid() messages
-#include "config.h"
 #include "outputmodule.h"  // for GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR
 #include "parameters.h"
 

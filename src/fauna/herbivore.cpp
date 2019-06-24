@@ -9,7 +9,6 @@
 #include "herbivore.h"
 #include <cfloat>  // for DBL_MAX
 #include <stdexcept>
-#include "config.h"
 #include "energetics.h"    // for FatmassEnergyBudget
 #include "environment.h"   // for HabitatEnvironment
 #include "forageenergy.h"  // for GetNetEnergyContentInterface

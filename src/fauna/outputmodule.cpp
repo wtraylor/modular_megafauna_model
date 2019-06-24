@@ -10,7 +10,6 @@
 #include <algorithm>  // for std::max
 #include <cassert>    // for assert()
 #include <cmath>      // for NAN
-#include "config.h"
 #include "guess.h"            // for Date and Gridcell
 #include "hft.h"              // for HftList
 #include "outputclasses.h"    // for HabitatData and HerbivoreData

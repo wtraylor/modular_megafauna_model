@@ -8,7 +8,6 @@
 
 #include "createherbivores.h"
 #include <stdexcept>
-#include "config.h"
 #include "herbivore.h"
 #include "hft.h"
 #include "parameters.h"

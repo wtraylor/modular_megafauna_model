@@ -11,7 +11,6 @@
 #include <cfloat>     // for DBL_MAX, DBL_MIN
 #include <climits>    // for INT_MAX
 #include <sstream>    // for ostringstream and istringstream
-#include "config.h"
 #include "guess.h"        // for Pft and Pftlist
 #include "guessstring.h"  // for trim() and to_upper()
 #include "parameters.h"   // read instruction file

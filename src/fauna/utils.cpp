@@ -10,7 +10,6 @@
 #include <cassert>  // for assert()
 #include <cmath>    // for NAN and INFINITY
 #include <stdexcept>
-#include "config.h"
 
 using namespace Fauna;
 

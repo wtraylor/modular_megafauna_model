@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////////
 
 #include "outputclasses.h"
-#include "config.h"
 
 using namespace Fauna;
 using namespace FaunaOut;

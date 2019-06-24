@@ -8,7 +8,6 @@
 
 #include "forageclasses.h"
 #include <cassert>  // for assert()
-#include "config.h"
 
 using namespace Fauna;
 

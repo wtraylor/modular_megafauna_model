@@ -7,7 +7,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "snowdepth.h"
-#include "config.h"
 #include "guess.h"
 
 using namespace Fauna;

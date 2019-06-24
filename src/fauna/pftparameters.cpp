@@ -8,7 +8,6 @@
 
 #include "pftparameters.h"
 #include <sstream>  // for is_valid() messages
-#include "config.h"
 #include "guess.h"
 #include "parameters.h"  // for Parameters
 

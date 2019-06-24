@@ -7,7 +7,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "simulate_day.h"
-#include "config.h"
 #include "environment.h"      // for HabitatEnvironment
 #include "feed.h"             // for FeedHerbivores
 #include "habitat.h"          // for Habitat and Population

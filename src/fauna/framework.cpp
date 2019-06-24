@@ -8,7 +8,6 @@
 
 #include "framework.h"
 #include <stdexcept>  // for std::logic_error, std::invalid_argument
-#include "config.h"
 #include "digestibility.h"    // for GetDigestibility
 #include "herbivore.h"        // for HerbivoreInterface
 #include "hft.h"              // for Hft and HftList

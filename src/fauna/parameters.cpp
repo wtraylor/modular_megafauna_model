@@ -8,7 +8,6 @@
 
 #include "parameters.h"
 #include <sstream>  // for is_valid() messages
-#include "config.h"
 
 using namespace Fauna;
 

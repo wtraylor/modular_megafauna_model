@@ -7,7 +7,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "simulation_unit.h"
-#include "config.h"
 #include "habitat.h"     // for Habitat and Population
 #include "population.h"  // for HftPopulationsMap
 

@@ -10,7 +10,6 @@
 #include <cmath>      // for round() and ceil()
 #include <sstream>    // for std::ostringstream
 #include <stdexcept>  // for std::out_of_range
-#include "config.h"
 #include "herbivore.h"
 #include "hft.h"
 

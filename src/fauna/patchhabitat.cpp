@@ -8,7 +8,6 @@
 
 #include "patchhabitat.h"
 #include <cassert>  // for assert()
-#include "config.h"
 #include "digestibility.h"
 #include "guess.h"
 #include "snowdepth.h"

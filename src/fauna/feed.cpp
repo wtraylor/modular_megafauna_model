@@ -7,7 +7,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "feed.h"
-#include "config.h"
 #include "habitat.h"    // for Habitat and Population
 #include "herbivore.h"  // for HerbivoreInterface
 
