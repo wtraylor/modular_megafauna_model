@@ -7,6 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "energetics.h"
+#include <algorithm> // for std::max()
 #include <cassert>  // for assert()
 
 using namespace Fauna;
@@ -32,7 +33,8 @@ double Fauna::get_thermoregulatory_expenditure(const double thermoneutral_rate,
   const double cond_MJ = watts_to_MJ_per_day(conductance);
 
   const double critical_temp = core_temp - thermoneutral_rate / cond_MJ;
-  const double heat_loss = cond_MJ * max(critical_temp - ambient_temp, 0.0);
+  const double heat_loss = cond_MJ * std::max(critical_temp - ambient_temp,
+      0.0);
   assert(heat_loss >= 0.0);
   return heat_loss;
 }
@@ -82,7 +84,7 @@ void FatmassEnergyBudget::catabolize_fat() {
   const double burned_fatmass = energy_needs / FACTOR_CATABOLISM;
 
   /// Fat mass never drops below zero.
-  fatmass = max(0.0, fatmass - burned_fatmass);
+  fatmass = std::max(0.0, fatmass - burned_fatmass);
   assert(fatmass >= 0.0);
 
   energy_needs = 0.0;
@@ -103,7 +105,8 @@ double FatmassEnergyBudget::get_max_anabolism_per_day() const {
   double increment = max_fatmass - fatmass;
 
   // If there is a limit set, decrease `increment`.
-  if (max_fatmass_gain != 0.0) increment = min(max_fatmass_gain, increment);
+  if (max_fatmass_gain != 0.0)
+    increment = std::min(max_fatmass_gain, increment);
 
   return increment * FACTOR_ANABOLISM;
 }
@@ -148,7 +151,7 @@ void FatmassEnergyBudget::metabolize_energy(double energy) {
     // increase fat reserves
     // If fat mass gain exceeds maximum fat mass (rounding errors), only
     // increase up to the maximum.
-    fatmass = min(fatmass + fatmass_gain, max_fatmass);
+    fatmass = std::min(fatmass + fatmass_gain, max_fatmass);
   }
 }
 

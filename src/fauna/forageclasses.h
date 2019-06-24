@@ -8,6 +8,7 @@
 #ifndef HERBIV_FORAGECLASSES_H
 #define HERBIV_FORAGECLASSES_H
 
+#include <algorithm> // for std::max(), std::min()
 #include <cassert>  // for assert()
 #include <cmath>    // for NAN and INFINITY
 #include <map>      // for ForageValues
@@ -185,7 +186,7 @@ class ForageValues {
   ForageValues<tag>& max(const ForageValues<tag>& other) {
     if (&other == this) return *this;
     for (const_iterator i = other.begin(); i != other.end(); i++)
-      set(i->first, fmax(get(i->first), i->second));
+      set(i->first, std::max(get(i->first), i->second));
     return *this;
   }
 
@@ -195,7 +196,7 @@ class ForageValues {
   ForageValues<tag>& min(const ForageValues<tag>& other) {
     if (&other == this) return *this;
     for (const_iterator i = other.begin(); i != other.end(); i++)
-      set(i->first, fmin(get(i->first), i->second));
+      set(i->first, std::min(get(i->first), i->second));
     return *this;
   }
 

@@ -6,6 +6,7 @@
 /// \date May 2017
 ///////////////////////////////////////////////////////////////////////
 
+#include <algorithm> // for std::min()
 #include "foraging.h"
 
 using namespace Fauna;
@@ -199,7 +200,7 @@ ForageMass GetForageDemands::get_max_foraging() const {
 
       // The Illius & O’Connor (2000) model applies only to grass, and
       // hence we only constrain the grass part of `result`.
-      result.set(FT_GRASS, min(result[FT_GRASS], grass_limit_kg));
+      result.set(FT_GRASS, std::min(result[FT_GRASS], grass_limit_kg));
     } else if (*itr == FL_GENERAL_FUNCTIONAL_RESPONSE) {
       // Silently ignore the limit “general_functional_response” here
       // because it is applied later “on top” of all other limits.
@@ -337,9 +338,10 @@ ForageMass GetForageDemands::operator()(const double _energy_needs) {
   for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
        ft != FORAGE_TYPES.end(); ft++) {
     if (diet_composition[*ft] > 0)
-      min_fraction =
-          min(min_fraction, (diet_composition[*ft] * max_energy_intake_sum) /
-                                max_energy_intake[*ft]);
+      min_fraction = std::min(
+          min_fraction,
+          (diet_composition[*ft] * max_energy_intake_sum) /
+          max_energy_intake[*ft]);
   }
 
   // The maximum energy intake with the forage types composed in
@@ -356,7 +358,7 @@ ForageMass GetForageDemands::operator()(const double _energy_needs) {
   // The fraction to what we need to reduce the energy intake to meet
   // the actual needs.
   const double energy_reduction =
-      min(1.0, energy_needs / max_energy_intake_comp.sum());
+      std::min(1.0, energy_needs / max_energy_intake_comp.sum());
 
   // This is our finally demanded energy [MJ/ind].
   const ForageEnergy actual_energy_intake =

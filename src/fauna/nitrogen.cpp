@@ -6,6 +6,7 @@
 /// \date April 2018
 //////////////////////////////////////////////////////////////////////////
 
+#include <algorithm> // for std::max(), std::min()
 #include "nitrogen.h"
 #include "forageclasses.h"
 
@@ -45,9 +46,9 @@ void NitrogenInHerbivore::digest_today(const double retention_time,
   // Add nitrogen that “overflows” the limits of gut (and tissue) capacity
   // to the excreta and update the bound nitrogen pool without exceeding
   // the maximum.
-  const double new_excreta = max(0.0, bound + ingested - max_bound);
+  const double new_excreta = std::max(0.0, bound + ingested - max_bound);
   excreta += new_excreta;
-  bound = min(max_bound, bound + ingested);
+  bound = std::min(max_bound, bound + ingested);
 
   // Reset ingested nitrogen because it is now accounted for
   ingested = 0.0;

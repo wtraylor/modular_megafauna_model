@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////
 
 #include "paramreader.h"
-#include <algorithm>  // for std::transform
+#include <algorithm>  // for std::transform and std::min()
 #include <cfloat>     // for DBL_MAX, DBL_MIN
 #include <climits>    // for INT_MAX
 #include <sstream>    // for ostringstream and istringstream
@@ -300,8 +300,8 @@ void ParamReader::callback(const int callback, Pft* ppft) {
           if (!itemparsed("bodyfat_birth"))
             current_hft.bodyfat_birth = current_hft.bodyfat_max;
           if (!itemparsed("bodymass_birth"))
-            current_hft.bodymass_birth =
-                min(current_hft.bodymass_male, current_hft.bodymass_female);
+            current_hft.bodymass_birth = std::min(current_hft.bodymass_male,
+                current_hft.bodymass_female);
           if (!itemparsed("maturity_age_phys_female"))
             current_hft.maturity_age_phys_female = 1;
           if (!itemparsed("maturity_age_phys_male"))

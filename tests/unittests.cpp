@@ -6,6 +6,7 @@
 /// \date 05-21-2017
 //////////////////////////////////////////////////////////////////////////
 
+#include <algorithm> // for std::max()
 #include <cmath>   // for exp() and pow()
 #include <memory>  // for std::auto_ptr
 #include "catch.hpp"
@@ -65,7 +66,7 @@ class DummyHerbivore : public HerbivoreInterface {
     // Make sure we don’t drop the demand below zero.
     for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
          ft != FORAGE_TYPES.end(); ft++)
-      actual_demand.set(*ft, fmax(0.0, actual_demand[*ft] - eaten[*ft]));
+      actual_demand.set(*ft, std::max(0.0, actual_demand[*ft] - eaten[*ft]));
   }
 
   virtual double get_bodymass() const { return bodymass; }

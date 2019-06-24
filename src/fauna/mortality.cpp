@@ -7,6 +7,7 @@
 /////////////////////////////////////////////////////////////////
 
 #include "mortality.h"
+#include <algorithm> // for std::min()
 #include <cassert>  // for assert()
 #include <cmath>    // for pow()
 #include <stdexcept>
@@ -118,7 +119,7 @@ double GetStarvationIlliusOConnor2000::operator()(
     new_body_condition = body_condition / (1.0 - dead_fraction);
     // If `dead_fraction` approaches zero, `new_body_condition` can get
     // above 1.0.
-    new_body_condition = min(1.0, new_body_condition);
+    new_body_condition = std::min(1.0, new_body_condition);
   } else
     new_body_condition = body_condition;
 

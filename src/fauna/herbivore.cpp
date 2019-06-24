@@ -7,6 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "herbivore.h"
+#include <algorithm> // for std::max(), std::min()
 #include <cfloat>  // for DBL_MAX
 #include <stdexcept>
 #include "energetics.h"    // for FatmassEnergyBudget
@@ -201,7 +202,7 @@ void HerbivoreBase::apply_mortality_factors_today() {
     }
   }
   // make sure that mortality does not exceed 1.0
-  mortality_sum = fmin(1.0, mortality_sum);
+  mortality_sum = std::min(1.0, mortality_sum);
 
   // Call pure virtual function, which is implemented by derived
   // classes
@@ -648,7 +649,7 @@ void HerbivoreCohort::apply_mortality(const double mortality) {
   const double ind_change = -mortality * get_ind_per_km2();
   // apply the change and make sure that the density does not
   // drop below zero because of precision artefacts
-  ind_per_km2 = max(0.0, ind_per_km2 + ind_change);
+  ind_per_km2 = std::max(0.0, ind_per_km2 + ind_change);
   assert(ind_per_km2 >= 0.0);
 }
 

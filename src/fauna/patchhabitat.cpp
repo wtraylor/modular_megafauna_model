@@ -7,6 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "patchhabitat.h"
+#include <algorithm> // for std::max()
 #include <cassert>  // for assert()
 #include "digestibility.h"
 #include "guess.h"
@@ -138,8 +139,8 @@ HabitatForage PatchHabitat::get_available_forage() const {
   // Keep FPC in valid range. If LPJ-GUESS has unreasonable values, we just
   // correct them. It’s not our issue to complain about errors in the
   // vegetation model here.
-  grass_fpc = max(grass_fpc, 0.0);
-  grass_fpc = min(grass_fpc, 1.0);
+  grass_fpc = std::max(grass_fpc, 0.0);
+  grass_fpc = std::min(grass_fpc, 1.0);
   result.grass.set_fpc(grass_fpc);
 
   result.set_nitrogen_content(nitrogen_content);
