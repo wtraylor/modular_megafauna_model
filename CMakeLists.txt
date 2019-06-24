@@ -4,14 +4,64 @@ project (ModularMegafaunaModel VERSION 0.0.0)
 set (CMAKE_CXX_STANDARD 11)  # requires CMake 3.1 or higher
 
 add_library (ModularMegafaunaModel STATIC
+  src/fauna/createherbivores.cpp
+  src/fauna/createherbivores.h
+  src/fauna/digestibility.cpp
+  src/fauna/digestibility.h
+  src/fauna/energetics.cpp
+  src/fauna/energetics.h
+  src/fauna/environment.h
+  src/fauna/feed.cpp
+  src/fauna/feed.h
+  src/fauna/forageclasses.cpp
+  src/fauna/forageclasses.h
+  src/fauna/forageenergy.cpp
+  src/fauna/forageenergy.h
+  src/fauna/foraging.cpp
+  src/fauna/foraging.h
+  src/fauna/framework.cpp
+  src/fauna/framework.h
+  src/fauna/habitat.cpp
+  src/fauna/habitat.h
+  src/fauna/herbivore.cpp
+  src/fauna/herbivore.h
+  src/fauna/hft.cpp
+  src/fauna/hft.h
+  src/fauna/mortality.cpp
+  src/fauna/mortality.h
+  src/fauna/nitrogen.cpp
+  src/fauna/nitrogen.h
+  src/fauna/outputclasses.cpp
+  src/fauna/outputclasses.h
+  src/fauna/outputmodule.cpp
+  src/fauna/outputmodule.h
+  src/fauna/parameters.cpp
+  src/fauna/parameters.h
+  src/fauna/paramreader.cpp
+  src/fauna/paramreader.h
+  src/fauna/patchhabitat.cpp
+  src/fauna/patchhabitat.h
+  src/fauna/pftparameters.cpp
+  src/fauna/pftparameters.h
+  src/fauna/population.cpp
+  src/fauna/population.h
+  src/fauna/reproduction.cpp
+  src/fauna/reproduction.h
+  src/fauna/simulate_day.cpp
+  src/fauna/simulate_day.h
+  src/fauna/simulation_unit.cpp
+  src/fauna/simulation_unit.h
+  src/fauna/snowdepth.cpp
+  src/fauna/snowdepth.h
+  src/fauna/utils.cpp
+  src/fauna/utils.h
   )
-# TODO: All all source files here
 
 # TODO: Explain namespace alias.
 add_library (ModularMegafaunaModel::fauna ALIAS fauna)
 
 target_include_directories (ModularMegafaunaModel
   INTERFACE include
-  PRIVATE src)
+  PRIVATE src/fauna)
 
 add_subdirectory (tests/)
