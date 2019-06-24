@@ -58,7 +58,7 @@ add_library (ModularMegafaunaModel STATIC
   )
 
 # TODO: Explain namespace alias.
-add_library (ModularMegafaunaModel::fauna ALIAS fauna)
+# add_library (ModularMegafaunaModel::fauna ALIAS fauna)
 
 target_include_directories (ModularMegafaunaModel
   INTERFACE include
