@@ -29,8 +29,6 @@ add_library (ModularMegafaunaModel STATIC
   src/fauna/nitrogen.h
   src/fauna/outputclasses.cpp
   src/fauna/outputclasses.h
-  src/fauna/outputmodule.cpp
-  src/fauna/outputmodule.h
   src/fauna/parameters.cpp
   src/fauna/parameters.h
   src/fauna/paramreader.cpp
