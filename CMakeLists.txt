@@ -31,8 +31,6 @@ add_library (ModularMegafaunaModel STATIC
   src/fauna/outputclasses.h
   src/fauna/parameters.cpp
   src/fauna/parameters.h
-  src/fauna/pftparameters.cpp
-  src/fauna/pftparameters.h
   src/fauna/population.cpp
   src/fauna/population.h
   src/fauna/reproduction.cpp
