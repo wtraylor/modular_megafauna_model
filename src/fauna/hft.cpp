@@ -9,7 +9,6 @@
 
 #include "hft.h"
 #include <sstream>  // for is_valid() messages
-#include "outputmodule.h"  // for GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR
 #include "parameters.h"
 
 using namespace Fauna;
@@ -69,11 +68,8 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
   }
   if (name.find(' ') != std::string::npos ||
       name.find(',') != std::string::npos ||
-      name.find(GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR) !=
-          std::string::npos) {
-    stream << "name contains a forbidden character. "
-           << "(' ', ',', or '"
-           << GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR << "')"
+      name.find('_') != std::string::npos) {
+    stream << "name contains a forbidden character: ' ' ',' '_'"
            << std::endl;
     is_valid = false;
   }

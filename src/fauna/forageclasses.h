@@ -48,8 +48,7 @@ extern const std::set<ForageType> FORAGE_TYPES;
  * - unique,
  * - lowercase,
  * - without blank spaces or tabs, newlines etc.,
- * - without the output column header separation character
- *   \ref GuessOutput::HerbivoryOutput::CAPTION_SEPARATOR.
+ * - without comma oder underscore (which might be used to combine column names in the output).
  */
 const std::string& get_forage_type_name(const ForageType);
 
