@@ -14,7 +14,6 @@
 #include "population.h"       // for HftPopulationsMap and PopulationInterface
 #include "simulate_day.h"     // for SimulateDay
 #include "simulation_unit.h"  // for SimulationUnit
-#include "snowdepth.h"        // for GetSnowDepth implementations
 
 using namespace Fauna;
 
@@ -40,17 +39,6 @@ std::auto_ptr<DistributeForage> Simulator::create_distribute_forage() {
       throw std::logic_error(
           "Fauna::Simulator::distribute_forage(): "
           "chosen forage distribution algorithm not implemented");
-  };
-}
-
-std::auto_ptr<GetSnowDepth> Simulator::create_snow_depth_model() const {
-  switch (params.snow_depth_model) {
-    case SD_TEN_TO_ONE:
-      return std::auto_ptr<GetSnowDepth>(new SnowDepthTenToOne());
-    default:
-      throw std::logic_error(
-          "Simulator::create_snow_depth_model(): "
-          "Snow depth model not implemented.");
   };
 }
 

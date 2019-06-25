@@ -13,7 +13,6 @@
 
 namespace Fauna {
 // Forward declarations
-class GetSnowDepth;
 class Hft;
 class HftList;
 class HftPopulationsMap;
@@ -35,12 +34,6 @@ class Simulator {
    * \ref Parameters::forage_distribution not implemented
    */
   Simulator(const Parameters& params);
-
-  /// Construct a snow depth model object for LPJ-GUESS according to parameters
-  /** \throw std::logic_error if
-   * \ref Parameters::snow_depth_model is not implemented.
-   * \return Pointer to newly constructed object. */
-  std::auto_ptr<GetSnowDepth> create_snow_depth_model() const;
 
   /// Create one (empty) herbivore population for one HFT.
   /**
