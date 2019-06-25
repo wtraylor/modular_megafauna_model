@@ -41,8 +41,6 @@ add_library (ModularMegafaunaModel STATIC
   src/fauna/simulation_unit.h
   src/fauna/simulator.cpp
   src/fauna/simulator.h
-  src/fauna/snowdepth.cpp
-  src/fauna/snowdepth.h
   src/fauna/utils.cpp
   src/fauna/utils.h
   )
