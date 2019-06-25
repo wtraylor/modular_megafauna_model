@@ -6,7 +6,7 @@
 /// \date 2017-05-10
 //////////////////////////////////////////////////////////////////////////
 
-#include "framework.h"
+#include "simulator.h"
 #include <stdexcept>  // for std::logic_error, std::invalid_argument
 #include "digestibility.h"    // for GetDigestibility
 #include "herbivore.h"        // for HerbivoreInterface
