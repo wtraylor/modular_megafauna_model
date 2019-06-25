@@ -32,11 +32,6 @@ bool Parameters::is_valid(std::string& messages) const {
       is_valid = false;
     }
 
-  if (free_herbivory_years < 0) {
-    stream << "free_herbivory_years must be >= 0" << std::endl;
-    is_valid = false;
-  }
-
   //------------------------------------------------------------
 
   // convert stream to string

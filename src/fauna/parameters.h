@@ -13,17 +13,6 @@
 
 namespace Fauna {
 
-/// Type of digestibility model, corresponding to one implementation of \ref
-/// Fauna::GetDigestibility
-enum DigestibilityModelType {
-  /// Use \ref PftDigestibility.
-  DM_PFT_FIXED,
-  /// Use \ref DigestibilityFromNPP.
-  DM_NPP,
-  /// Use \ref DigestibilityPachzelt2013.
-  DM_PFT_PACHZELT2013
-};
-
 /// Parameter for selecting algorithm for forage distribution among herbivores
 enum ForageDistributionAlgorithm {
   /// Equal forage distribution: \ref Fauna::DistributeForageEqually
@@ -39,25 +28,13 @@ enum HerbivoreType {
   HT_INDIVIDUAL
 };
 
-/// How to convert snow water equivalent to snow depth.
-enum SnowDepthModel {
-  /// Assume a constant 10:1 ratio of snow water equivalent to snow depth.
-  SD_TEN_TO_ONE
-};
-
 /// Parameters for the herbivory module.
 struct Parameters {
   // alphabetical order
 
-  /// How the forage digestibility of \ref Individual objects is calculated
-  DigestibilityModelType digestibility_model;
-
   /// Algorithm for how to distribute available forage among herbivores.
   /** Default: \ref FD_EQUALLY */
   ForageDistributionAlgorithm forage_distribution;
-
-  /// Simulation years without herbivores (as part of spinup).
-  int free_herbivory_years;
 
   /// Habitat area [km²].
   /** Only relevant if \ref herbivore_type == \ref HT_INDIVIDUAL. */
@@ -70,27 +47,17 @@ struct Parameters {
   /// Which kind of herbivore class to use
   HerbivoreType herbivore_type;
 
-  /// Whether herbivory is enabled.
-  bool ifherbivory;
-
   /// Whether to allow only herbivores of one HFT in each patch (default false).
   bool one_hft_per_patch;
-
-  /// How to convert snow water equivalent from LPJ-GUESS to snow depth.
-  /** Default: \ref SD_TEN_TO_ONE */
-  SnowDepthModel snow_depth_model;
 
   /// Constructor with default (valid!) settings
   Parameters()
       :  // alphabetical order
         forage_distribution(FD_EQUALLY),
-        free_herbivory_years(0),
         habitat_area_km2(100.0),
         herbivore_establish_interval(0),
         herbivore_type(HT_COHORT),
-        ifherbivory(false),
-        one_hft_per_patch(false),
-        snow_depth_model(SD_TEN_TO_ONE) {
+        one_hft_per_patch(false) {
     // Make sure that the default values are implemented
     // correctly
     assert(is_valid());
