@@ -8,7 +8,6 @@
 
 #include "simulator.h"
 #include <stdexcept>  // for std::logic_error, std::invalid_argument
-#include "digestibility.h"    // for GetDigestibility
 #include "herbivore.h"        // for HerbivoreInterface
 #include "hft.h"              // for Hft and HftList
 #include "parameters.h"       // for Fauna::Parameters
@@ -32,21 +31,6 @@ Simulator::Simulator(const Parameters& params)
 // *after* params so that create_distribute_forage() does not
 // cause segmentation fault.
 {}
-
-std::auto_ptr<GetDigestibility> Simulator::create_digestibility_model() const {
-  switch (params.digestibility_model) {
-    case DM_PFT_FIXED:
-      return std::auto_ptr<GetDigestibility>(new PftDigestibility());
-    case DM_NPP:
-      return std::auto_ptr<GetDigestibility>(new DigestibilityFromNPP());
-    case DM_PFT_PACHZELT2013:
-      return std::auto_ptr<GetDigestibility>(new DigestibilityPachzelt2013());
-    default:
-      throw std::logic_error(
-          "Simulator::create_digestibility_model(): "
-          "Digestibility model not implemented.");
-  };
-}
 
 std::auto_ptr<DistributeForage> Simulator::create_distribute_forage() {
   switch (params.forage_distribution) {

@@ -13,7 +13,6 @@
 
 namespace Fauna {
 // Forward declarations
-class GetDigestibility;
 class GetSnowDepth;
 class Hft;
 class HftList;
@@ -36,13 +35,6 @@ class Simulator {
    * \ref Parameters::forage_distribution not implemented
    */
   Simulator(const Parameters& params);
-
-  /// Construct a digestibility model object for LPJ-GUESS according to
-  /// parameters
-  /** \throw std::logic_error if
-   * \ref Parameters::digestibility_model is not implemented.
-   * \return Pointer to newly constructed object. */
-  std::auto_ptr<GetDigestibility> create_digestibility_model() const;
 
   /// Construct a snow depth model object for LPJ-GUESS according to parameters
   /** \throw std::logic_error if
