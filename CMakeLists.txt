@@ -17,8 +17,6 @@ add_library (ModularMegafaunaModel STATIC
   src/fauna/forageenergy.h
   src/fauna/foraging.cpp
   src/fauna/foraging.h
-  src/fauna/framework.cpp
-  src/fauna/framework.h
   src/fauna/habitat.cpp
   src/fauna/habitat.h
   src/fauna/herbivore.cpp
@@ -49,6 +47,8 @@ add_library (ModularMegafaunaModel STATIC
   src/fauna/simulate_day.h
   src/fauna/simulation_unit.cpp
   src/fauna/simulation_unit.h
+  src/fauna/simulator.cpp
+  src/fauna/simulator.h
   src/fauna/snowdepth.cpp
   src/fauna/snowdepth.h
   src/fauna/utils.cpp
