@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date June 2017
 ////////////////////////////////////////////////////////////
-#ifndef HERBIV_PARAMETERS_H
-#define HERBIV_PARAMETERS_H
+#ifndef PARAMETERS_H
+#define PARAMETERS_H
 
 #include <cassert>  // for assert()
 #include <stdexcept>
@@ -114,4 +114,4 @@ struct Parameters {
 
 }  // namespace Fauna
 
-#endif  // HERBIV_PARAMETERS_H
+#endif  // PARAMETERS_H

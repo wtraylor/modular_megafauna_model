@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date 2018-06-16
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_FEED_H
-#define HERBIV_FEED_H
+#ifndef FEED_H
+#define FEED_H
 
 #include <memory>           // for std::auto_ptr
 #include <vector>           // for HerbivoreVector
@@ -97,4 +97,4 @@ class FeedHerbivores {
 };
 
 }  // namespace Fauna
-#endif  // HERBIV_FEED_H
+#endif  // FEED_H

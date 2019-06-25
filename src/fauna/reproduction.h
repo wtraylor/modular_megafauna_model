@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_REPRODUCTION_H
-#define HERBIV_REPRODUCTION_H
+#ifndef REPRODUCTION_H
+#define REPRODUCTION_H
 
 namespace Fauna {
 
@@ -170,4 +170,4 @@ class ReproductionLinear {
 };
 }  // namespace Fauna
 
-#endif  // HERBIV_REPRODUCTION_H
+#endif  // REPRODUCTION_H

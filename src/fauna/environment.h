@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date November 2017
 ////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_ENVIRONMENT_H
-#define HERBIV_ENVIRONMENT_H
+#ifndef ENVIRONMENT_H
+#define ENVIRONMENT_H
 
 namespace Fauna {
 /// Variables describing the habitat that are not forage ⇒ abiotic environment.
@@ -22,4 +22,4 @@ struct HabitatEnvironment {
 };
 }  // namespace Fauna
 
-#endif  // HERBIV_ENVIRONMENT_H
+#endif  // ENVIRONMENT_H

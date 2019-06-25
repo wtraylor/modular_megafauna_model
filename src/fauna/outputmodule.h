@@ -6,8 +6,8 @@
 /// \date May 2017
 //////////////////////////////////////////////////////////////////////////
 
-#ifndef HERBIV_OUTPUTMODULE_H
-#define HERBIV_OUTPUTMODULE_H
+#ifndef OUTPUTMODULE_H
+#define OUTPUTMODULE_H
 
 #include <memory>     // for std::auto_ptr
 #include <stdexcept>  // for std::invalid_argument
@@ -238,4 +238,4 @@ class HerbivoryOutput : public OutputModule {
 bool is_first_day_of_month(int day);
 }  // namespace GuessOutput
 
-#endif  // HERBIV_OUTPUTMODULE_H
+#endif  // OUTPUTMODULE_H

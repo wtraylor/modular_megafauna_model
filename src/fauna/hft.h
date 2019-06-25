@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017
 /////////////////////////////////////////////////////////////////
-#ifndef HERBIV_HFT_H
-#define HERBIV_HFT_H
+#ifndef HFT_H
+#define HFT_H
 
 #include <cmath>  // for pow()
 #include <set>    // for mortality_factors
@@ -472,4 +472,4 @@ class HftList {
 };
 
 }  // namespace Fauna
-#endif  // HERBIV_HFT_H
+#endif  // HFT_H

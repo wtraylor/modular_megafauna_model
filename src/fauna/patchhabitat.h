@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date June 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_PATCHHABITAT_H
-#define HERBIV_PATCHHABITAT_H
+#ifndef PATCHHABITAT_H
+#define PATCHHABITAT_H
 
 #include "habitat.h"
 
@@ -97,4 +97,4 @@ class PatchHabitat : public Habitat {
   Patch& patch;
 };
 }  // namespace Fauna
-#endif  // HERBIV_PATCHHABITAT_H
+#endif  // PATCHHABITAT_H

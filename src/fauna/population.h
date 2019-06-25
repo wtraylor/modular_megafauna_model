@@ -6,8 +6,8 @@
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
 
-#ifndef HERBIV_POPULATION_H
-#define HERBIV_POPULATION_H
+#ifndef POPULATION_H
+#define POPULATION_H
 
 #include <list>
 #include <map>
@@ -256,4 +256,4 @@ class HftPopulationsMap {
 };
 };  // namespace Fauna
 
-#endif  // HERBIV_POPULATION_H
+#endif  // POPULATION_H

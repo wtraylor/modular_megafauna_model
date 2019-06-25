@@ -6,8 +6,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date October 2017
 ///////////////////////////////////////////////////////////
-#ifndef HERBIV_UTILS_H
-#define HERBIV_UTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <cstdlib>  // for std::rand(), srand(), RAND_MAX
 #include <ctime>    // for time(), to init random seed
@@ -87,4 +87,4 @@ class PeriodAverage {
  */
 int get_day_of_month(const int day_of_year);
 }  // namespace Fauna
-#endif  // HERBIV_UTILS_H
+#endif  // UTILS_H

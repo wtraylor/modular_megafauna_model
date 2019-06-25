@@ -3,8 +3,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
 ///////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_CREATEHERBIVORES_H
-#define HERBIV_CREATEHERBIVORES_H
+#ifndef CREATEHERBIVORES_H
+#define CREATEHERBIVORES_H
 
 #include <cassert>  // for assert()
 #include <memory>   // for std::auto_ptr
@@ -94,4 +94,4 @@ class CreateHerbivoreCohort : public CreateHerbivoreCommon {
 };
 
 }  // namespace Fauna
-#endif  // HERBIV_CREATEHERBIVORES_H
+#endif  // CREATEHERBIVORES_H

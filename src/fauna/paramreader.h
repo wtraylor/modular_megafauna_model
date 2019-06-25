@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
 ////////////////////////////////////////////////////////////
-#ifndef HERBIV_PARAMREADER_H
-#define HERBIV_PARAMREADER_H
+#ifndef PARAMREADER_H
+#define PARAMREADER_H
 
 #include <list>          // for MandatoryParamList
 #include <string>        // for strparam
@@ -184,4 +184,4 @@ class ParamReader {
 };
 }  // namespace Fauna
 
-#endif  // HERBIV_PARAMREADER_H
+#endif  // PARAMREADER_H

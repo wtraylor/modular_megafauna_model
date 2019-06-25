@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017
 /////////////////////////////////////////////////////////////////
-#ifndef HERBIV_MORTALITY_H
-#define HERBIV_MORTALITY_H
+#ifndef MORTALITY_H
+#define MORTALITY_H
 
 #include <stdexcept>
 
@@ -220,7 +220,7 @@ class GetStarvationMortalityThreshold {
 };
 }  // namespace Fauna
 
-#endif  // HERBIV_MORTALITY_H
+#endif  // MORTALITY_H
 
 // REFERENCES
 // Illius, A. W., and T. G. O’Connor. 2000. “Resource Heterogeneity and Ungulate

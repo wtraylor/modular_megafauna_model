@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_HERBIVORE_H
-#define HERBIV_HERBIVORE_H
+#ifndef HERBIVORE_H
+#define HERBIVORE_H
 
 #include <memory>           // for std::auto_ptr
 #include "forageclasses.h"  // for ForageMass
@@ -477,4 +477,4 @@ class HerbivoreCohort : public HerbivoreBase {
   double ind_per_km2;
 };
 }  // namespace Fauna
-#endif  // HERBIV_HERBIVORE_H
+#endif  // HERBIVORE_H

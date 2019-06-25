@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date 2018-06-16
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_SIMULATION_UNIT_H
-#define HERBIV_SIMULATION_UNIT_H
+#ifndef SIMULATION_UNIT_H
+#define SIMULATION_UNIT_H
 
 #include <memory>           // for std::auto_ptr
 #include "outputclasses.h"  // for FaunaOut::CombinedData
@@ -71,4 +71,4 @@ class SimulationUnit {
 };
 
 }  // namespace Fauna
-#endif  // HERBIV_SIMULATION_UNIT_H
+#endif  // SIMULATION_UNIT_H

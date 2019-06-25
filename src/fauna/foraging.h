@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017
 ////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_FORAGING_H
-#define HERBIV_FORAGING_H
+#ifndef FORAGING_H
+#define FORAGING_H
 
 #include <string>  // for forage type names
 #include <vector>
@@ -309,7 +309,7 @@ ForageMass get_max_intake_as_total_mass(const ForageFraction& mj_proportions,
                                         const double kg_total);
 }  // namespace Fauna
 
-#endif  // HERBIV_FORAGING_H
+#endif  // FORAGING_H
 
 // Adrian Pachzelt, Anja Rammig, Steven Higgins & Thomas Hickler (2013).
 // Coupling a physiological grazer population model with a generalized model for

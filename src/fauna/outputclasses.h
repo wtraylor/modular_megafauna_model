@@ -6,8 +6,8 @@
 /// \date August 2017
 /// \see \ref sec_herbiv_output
 ////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_OUTPUT_H
-#define HERBIV_OUTPUT_H
+#ifndef OUTPUT_H
+#define OUTPUT_H
 
 #include "environment.h"  // for HabitatEnvironment
 #include "forageclasses.h"
@@ -254,4 +254,4 @@ struct CombinedData {
 };
 }  // namespace FaunaOut
 
-#endif  // HERBIV_OUTPUT_H
+#endif  // OUTPUT_H

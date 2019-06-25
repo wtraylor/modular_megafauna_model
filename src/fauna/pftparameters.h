@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_PFTPARAMETERS_H
-#define HERBIV_PFTPARAMETERS_H
+#ifndef PFTPARAMETERS_H
+#define PFTPARAMETERS_H
 
 #include "forageclasses.h"
 
@@ -90,4 +90,4 @@ struct PftParams {
 };
 
 }  // namespace Fauna
-#endif  // HERBIV_PFTPARAMETERS_H
+#endif  // PFTPARAMETERS_H

@@ -6,8 +6,8 @@
 /// \date July 2017
 /// \see \ref sec_herbiv_energetics
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_ENERGETICS_H
-#define HERBIV_ENERGETICS_H
+#ifndef ENERGETICS_H
+#define ENERGETICS_H
 
 #include <assert.h>
 #include <cmath>  // for pow()
@@ -259,7 +259,7 @@ double get_thermoregulatory_expenditure(const double thermoneutral_rate,
                                         const double ambient_temperature);
 }  // namespace Fauna
 
-#endif  // HERBIV_ENERGETICS_H
+#endif  // ENERGETICS_H
 
 // References
 

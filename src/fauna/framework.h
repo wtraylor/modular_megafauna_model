@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date 2017-05-10
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_FRAMEWORK_H
-#define HERBIV_FRAMEWORK_H
+#ifndef FRAMEWORK_H
+#define FRAMEWORK_H
 
 #include <memory>  // for std::auto_ptr
 #include "feed.h"  // for FeedHerbivores & ForageMass
@@ -112,4 +112,4 @@ class Simulator {
   int days_since_last_establishment;
 };
 }  // namespace Fauna
-#endif  // HERBIV_FRAMEWORK_H
+#endif  // FRAMEWORK_H

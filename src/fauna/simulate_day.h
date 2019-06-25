@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date 2018-06-16
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_SIMULATE_DAY_H
-#define HERBIV_SIMULATE_DAY_H
+#ifndef SIMULATE_DAY_H
+#define SIMULATE_DAY_H
 
 #include <map>              // for ForageDistribution
 #include <vector>           // for HerbivoreVector
@@ -127,4 +127,4 @@ class SimulateDay {
 };
 }  // namespace Fauna
 
-#endif  // HERBIV_SIMULATE_DAY_H
+#endif  // SIMULATE_DAY_H

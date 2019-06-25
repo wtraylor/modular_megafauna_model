@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_FORAGEENERGY_H
-#define HERBIV_FORAGEENERGY_H
+#ifndef FORAGEENERGY_H
+#define FORAGEENERGY_H
 
 #include "forageclasses.h"  // for ForageType
 #include "hft.h"            // for DigestionType
@@ -124,7 +124,7 @@ class GetNetEnergyContentDefault : public GetNetEnergyContentInterface {
 };
 }  // namespace Fauna
 
-#endif  // HERBIV_FORAGEENERGY_H
+#endif  // FORAGEENERGY_H
 
 //////////////////////////////////////////////////////////////////////
 // REFERENCES

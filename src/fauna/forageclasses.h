@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_FORAGECLASSES_H
-#define HERBIV_FORAGECLASSES_H
+#ifndef FORAGECLASSES_H
+#define FORAGECLASSES_H
 
 #include <algorithm> // for std::max(), std::min()
 #include <cassert>  // for assert()
@@ -682,4 +682,4 @@ class HabitatForage {
   ForageBase inedible;
 };
 }  // namespace Fauna
-#endif  // HERBIV_FORAGECLASSES_H
+#endif  // FORAGECLASSES_H

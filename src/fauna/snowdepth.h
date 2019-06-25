@@ -5,8 +5,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date November 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef HERBIV_SNOWDEPTH_H
-#define HERBIV_SNOWDEPTH_H
+#ifndef SNOWDEPTH_H
+#define SNOWDEPTH_H
 
 // forward declarations
 class Patch;
@@ -31,4 +31,4 @@ struct SnowDepthTenToOne : public GetSnowDepth {
   virtual double operator()(const Patch&) const;
 };
 }  // namespace Fauna
-#endif  // HERBIV_SNOWDEPTH_H
+#endif  // SNOWDEPTH_H
