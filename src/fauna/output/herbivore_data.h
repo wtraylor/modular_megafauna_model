@@ -1,70 +1,18 @@
 ///////////////////////////////////////////////////////////////////
 /// \file
-/// \brief Output classes of the herbivory module.
-/// \ingroup group_herbivory
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date August 2017
+/// \brief Habitat output data.
+/// \author Wolfgang Traylor, Senckenberg BiK-F
+/// \date June 2019
 /// \see \ref sec_herbiv_output
 ////////////////////////////////////////////////////////////////////
-#ifndef OUTPUT_H
-#define OUTPUT_H
+#ifndef HERBIVORE_DATA
+#define HERBIVORE_DATA
 
-#include "environment.h"  // for HabitatEnvironment
-#include "forageclasses.h"
-#include "hft.h"  // for MortalityFactor
+#include "hft.h" // for MortalityFactor
+#include "forageclasses.h" // for ForageMass
+#include <map>
 
-namespace FaunaOut {
-class HerbivoreData;  // forward declaration
-
-/// Habitat output data for one time unit.
-/**
- * \see \ref sec_herbiv_outputclasses
- */
-struct HabitatData {
-  /// Constructor, initializing with zero values.
-  HabitatData()
-      : available_forage(),  // already zeros by default.
-        eaten_forage()       // already zeros by default.
-  {}
-
-  /// Available forage in the habitat.
-  Fauna::HabitatForage available_forage;
-
-  /// Forage mass [kgDM/km²/day] eaten by herbivores.
-  /** This equals the sum of \ref HerbivoreData::eaten_forage_per_ind
-   * over all HFTs */
-  Fauna::ForageMass eaten_forage;
-
-  /// Abiotic conditions in the habitat.
-  Fauna::HabitatEnvironment environment;
-
-  //------------------------------------------------------------
-  /** @{ \name Aggregation Functionality */
-  /// Aggregate data of this object with another one.
-  /**
-   * This does no calculations if the partners are the same object, or
-   * one of the weights is zero.
-   * \param other The other object to be merged into this one.
-   * \param this_weight Weight of this object in average building.
-   * \param other_weight Weight of `other` in average building.
-   * \return This object.
-   * \see \ref Fauna::average(),
-   *      \ref Fauna::HabitatForage::merge(),
-   *      \ref Fauna::ForageValues::merge()
-   * \throw std::invalid_argument If either weight is not a positive
-   * number or if both are zero.
-   */
-  HabitatData& merge(const HabitatData& other, const double this_weight,
-                     const double other_weight);
-
-  /// Reset to initial values.
-  void reset() {
-    // Simply call the copy assignment operator
-    this->operator=(HabitatData());
-  }
-  /** @} */  // Aggregation Functionality
-};
-
+namespace Fauna::Output {
 /// Herbivore output data for one time unit.
 /** \see \ref sec_herbiv_outputclasses */
 struct HerbivoreData {
@@ -201,57 +149,6 @@ struct HerbivoreData {
 
   /** @} */  // Aggregation Functionality
 };
+} // namespace fauna::output
 
-/// Output data for herbivores and habitat(s).
-/**
- * This can be data for one \ref Fauna::SimulationUnit (possibly aggregated
- * over a period of time) or for a set of spatial units (aggregated over
- * time and space).
- * \see \ref sec_herbiv_outputclasses
- */
-struct CombinedData {
-  /// Constructor.
-  CombinedData() : datapoint_count(0) {}
-
-  /// How many data points are merged in this object.
-  unsigned int datapoint_count;
-
-  /// Habitat output data.
-  HabitatData habitat_data;
-
-  /// Herbivore output data aggregated by HFT.
-  std::map<const Fauna::Hft*, HerbivoreData> hft_data;
-
-  /// Merge other data into this object.
-  /**
-   * Use this to aggregate (=build averages) over space and time.
-   * \ref datapoint_count is used to weigh the values in
-   * average-building.
-   *
-   * For herbivore data (\ref hft_data), the merge routine creates an
-   * empty \ref HerbivoreData object as a ‘stub’ if it the HFT is found
-   * in one of the merge partners, but not in the other one. This way,
-   * the averages are built correctly across habitats even if in one
-   * habitat, there are no herbivores of one type.
-   *
-   * This does no calculations if the partners are the same object, or
-   * \ref datapoint_count is zero in one of the two objects.
-   * \return This object after merging.
-   *
-   * \see \ref HerbivoreData::merge()
-   * \see \ref HabitatData::merge()
-   */
-  CombinedData& merge(const CombinedData&);
-
-  /// Retrieve aggregated data and reset object.
-  CombinedData reset() {
-    // copy old object
-    CombinedData result = *this;
-    // reset with copy assignment operator
-    this->operator=(CombinedData());
-    return result;
-  }
-};
-}  // namespace FaunaOut
-
-#endif  // OUTPUT_H
+#endif // HERBIVORE_DATA

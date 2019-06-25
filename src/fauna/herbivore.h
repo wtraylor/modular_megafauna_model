@@ -14,7 +14,7 @@
 #include "utils.h"          // for Sex
 
 // Forward declarations
-namespace FaunaOut {
+namespace Fauna::Output {
 class HerbivoreData;
 }
 
@@ -83,7 +83,7 @@ struct HerbivoreInterface {
   virtual double get_kg_per_km2() const = 0;
 
   /// Read current output.
-  virtual const FaunaOut::HerbivoreData& get_todays_output() const = 0;
+  virtual const Output::HerbivoreData& get_todays_output() const = 0;
 
   /// Whether the herbivore object is dead.
   virtual bool is_dead() const = 0;
@@ -146,7 +146,7 @@ class HerbivoreBase : public HerbivoreInterface {
     return *hft;
   }
   virtual double get_kg_per_km2() const;
-  virtual const FaunaOut::HerbivoreData& get_todays_output() const;
+  virtual const Output::HerbivoreData& get_todays_output() const;
   virtual void simulate_day(const int day,
                             const HabitatEnvironment& environment,
                             double& offspring);
@@ -257,7 +257,7 @@ class HerbivoreBase : public HerbivoreInterface {
   const HabitatEnvironment& get_environment() const;
 
   /// Class-internal read/write access to current output.
-  FaunaOut::HerbivoreData& get_todays_output();
+  Output::HerbivoreData& get_todays_output();
 
   /// Access for derived classes to nitrogen management.
   NitrogenInHerbivore& get_nitrogen() { return nitrogen; }
@@ -328,7 +328,7 @@ class HerbivoreBase : public HerbivoreInterface {
   PeriodAverage body_condition_gestation;
 
   // use auto_ptr to reduce dependencies:
-  std::auto_ptr<FaunaOut::HerbivoreData> current_output;
+  std::auto_ptr<Output::HerbivoreData> current_output;
   std::auto_ptr<GetForageDemands> get_forage_demands_per_ind;
   /** @} */  // Helper Classes
 };

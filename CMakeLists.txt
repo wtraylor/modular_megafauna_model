@@ -4,6 +4,12 @@ project (ModularMegafaunaModel VERSION 0.0.0)
 set (CMAKE_CXX_STANDARD 11)  # requires CMake 3.1 or higher
 
 add_library (ModularMegafaunaModel STATIC
+  src/fauna/output/combined_data.cpp
+  src/fauna/output/combined_data.h
+  src/fauna/output/habitat_data.cpp
+  src/fauna/output/habitat_data.h
+  src/fauna/output/herbivore_data.cpp
+  src/fauna/output/herbivore_data.h
   src/fauna/createherbivores.cpp
   src/fauna/createherbivores.h
   src/fauna/energetics.cpp
@@ -27,8 +33,6 @@ add_library (ModularMegafaunaModel STATIC
   src/fauna/mortality.h
   src/fauna/nitrogen.cpp
   src/fauna/nitrogen.h
-  src/fauna/outputclasses.cpp
-  src/fauna/outputclasses.h
   src/fauna/parameters.cpp
   src/fauna/parameters.h
   src/fauna/population.cpp
@@ -49,7 +53,11 @@ add_library (ModularMegafaunaModel STATIC
 # add_library (ModularMegafaunaModel::fauna ALIAS fauna)
 
 target_include_directories (ModularMegafaunaModel
-  INTERFACE include
-  PRIVATE src/fauna)
+  INTERFACE
+  include
+  PRIVATE
+  src/fauna/
+  src/fauna/output/
+  )
 
 add_subdirectory (tests/)

@@ -20,7 +20,6 @@
 #include "herbivore.h"
 #include "hft.h"
 #include "mortality.h"
-#include "outputclasses.h"
 #include "parameters.h"
 #include "population.h"
 #include "reproduction.h"

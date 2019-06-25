@@ -9,7 +9,7 @@
 #define SIMULATION_UNIT_H
 
 #include <memory>           // for std::auto_ptr
-#include "outputclasses.h"  // for FaunaOut::CombinedData
+#include "combined_data.h"
 
 namespace Fauna {
 // forward declaration
@@ -60,11 +60,11 @@ class SimulationUnit {
   void set_initial_establishment_done() { initial_establishment_done = true; }
 
   /// @{ \brief Get temporally aggregated habitat and herbivore output.
-  FaunaOut::CombinedData& get_output() { return current_output; }
-  const FaunaOut::CombinedData& get_output() const { return current_output; }
+  Output::CombinedData& get_output() { return current_output; }
+  const Output::CombinedData& get_output() const { return current_output; }
   /**@}*/  // Output Functions
  private:
-  FaunaOut::CombinedData current_output;
+  Output::CombinedData current_output;
   std::auto_ptr<Habitat> habitat;
   bool initial_establishment_done;
   std::auto_ptr<HftPopulationsMap> populations;

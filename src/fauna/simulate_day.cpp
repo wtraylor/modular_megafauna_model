@@ -33,7 +33,7 @@ SimulateDay::SimulateDay(const int day_of_year, SimulationUnit& simulation_unit,
 
 void SimulateDay::aggregate_output() {
   // Output data of all herbivores for today in this habitat.
-  std::map<const Hft*, std::vector<FaunaOut::HerbivoreData> > hft_output;
+  std::map<const Hft*, std::vector<Output::HerbivoreData> > hft_output;
 
   // Note: If herbivores were not simulated, the HFT output will simply
   // be empty.
@@ -53,14 +53,14 @@ void SimulateDay::aggregate_output() {
 
   // Iterate over HFT output.
   for (std::map<const Hft*,
-                std::vector<FaunaOut::HerbivoreData> >::const_iterator itr =
+                std::vector<Output::HerbivoreData> >::const_iterator itr =
            hft_output.begin();
        itr != hft_output.end(); itr++) {
     const Hft& hft = *itr->first;
     // Create a datapoint for each HFT that can then be merged
     // across habitats and time.
     todays_datapoint.hft_data[&hft] =
-        FaunaOut::HerbivoreData::create_datapoint(itr->second);
+        Output::HerbivoreData::create_datapoint(itr->second);
   }
 
   // HABITAT OUTPUT

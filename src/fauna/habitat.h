@@ -12,7 +12,7 @@
 #include <list>             // for HabitatList
 #include <memory>           // for std::auto_ptr
 #include "forageclasses.h"  // for HabitatForage
-#include "outputclasses.h"  // for FaunaOut::HabitatOutput & HabitatData
+#include "habitat_data.h"   // for HabitatData
 
 namespace Fauna {
 // Forward declaration of classes in the same namespace
@@ -71,16 +71,16 @@ class Habitat {
   int get_day() const { return day_of_year; }
 
   /// The current output data (read-only).
-  const FaunaOut::HabitatData& get_todays_output() const {
+  const Output::HabitatData& get_todays_output() const {
     return current_output;
   }
 
  protected:
   /// Class-internal read/write access to current output data.
-  FaunaOut::HabitatData& get_todays_output() { return current_output; }
+  Output::HabitatData& get_todays_output() { return current_output; }
 
  private:
-  FaunaOut::HabitatData current_output;
+  Output::HabitatData current_output;
   int day_of_year;
 };
 

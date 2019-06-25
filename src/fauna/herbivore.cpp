@@ -16,7 +16,7 @@
 #include "foraging.h"
 #include "hft.h"
 #include "mortality.h"
-#include "outputclasses.h"  // HerbivoreData
+#include "herbivore_data.h"  // HerbivoreData
 #include "reproduction.h"
 
 using namespace Fauna;
@@ -64,7 +64,7 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
 
   // Create other object instances for std::auto_ptr
   current_output =
-      std::auto_ptr<FaunaOut::HerbivoreData>(new FaunaOut::HerbivoreData());
+      std::auto_ptr<Output::HerbivoreData>(new Output::HerbivoreData());
   get_forage_demands_per_ind =
       std::auto_ptr<GetForageDemands>(new GetForageDemands(hft, sex));
 }
@@ -73,7 +73,7 @@ HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex)
     : hft(check_hft_pointer(hft)),
       sex(sex),
       age_days(0),
-      current_output(new FaunaOut::HerbivoreData),
+      current_output(new Output::HerbivoreData),
       get_forage_demands_per_ind(new GetForageDemands(hft, sex)),
       body_condition_gestation(get_hft().gestation_months * 30) {
   // Create energy budget (validity check inside that class)
@@ -83,7 +83,7 @@ HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex)
 
   // Create other object instances for std::auto_ptr
   current_output =
-      std::auto_ptr<FaunaOut::HerbivoreData>(new FaunaOut::HerbivoreData());
+      std::auto_ptr<Output::HerbivoreData>(new Output::HerbivoreData());
   get_forage_demands_per_ind =
       std::auto_ptr<GetForageDemands>(new GetForageDemands(hft, sex));
 }
@@ -96,7 +96,7 @@ HerbivoreBase::HerbivoreBase(const HerbivoreBase& other)
       nitrogen(other.nitrogen),
       // Create new object instances for std::auto_ptr with copy construction:
       energy_budget(new FatmassEnergyBudget(other.get_energy_budget())),
-      current_output(new FaunaOut::HerbivoreData(other.get_todays_output())),
+      current_output(new Output::HerbivoreData(other.get_todays_output())),
       get_forage_demands_per_ind(new GetForageDemands(other.hft, other.sex)) {}
 
 HerbivoreBase& HerbivoreBase::operator=(const HerbivoreBase& other) {
@@ -119,7 +119,7 @@ HerbivoreBase& HerbivoreBase::operator=(const HerbivoreBase& other) {
     *get_forage_demands_per_ind = *other.get_forage_demands_per_ind;
 
     current_output =
-        std::auto_ptr<FaunaOut::HerbivoreData>(new FaunaOut::HerbivoreData());
+        std::auto_ptr<Output::HerbivoreData>(new Output::HerbivoreData());
     *current_output = *other.current_output;
   }
   return *this;
@@ -475,12 +475,12 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
         "Reproduction model not implemented.");
 }
 
-const FaunaOut::HerbivoreData& HerbivoreBase::get_todays_output() const {
+const Output::HerbivoreData& HerbivoreBase::get_todays_output() const {
   assert(current_output.get() != NULL);
   return *current_output;
 }
 
-FaunaOut::HerbivoreData& HerbivoreBase::get_todays_output() {
+Output::HerbivoreData& HerbivoreBase::get_todays_output() {
   assert(current_output.get() != NULL);
   return *current_output;
 }

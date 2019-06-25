@@ -1,74 +1,32 @@
 ///////////////////////////////////////////////////////////////////
 /// \file
-/// \brief Output classes of the herbivory module.
-/// \ingroup group_herbivory
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date August 2017
+/// \brief Herbivore output data.
+/// \author Wolfgang Traylor, Senckenberg BiK-F
+/// \date June 2019
+/// \see \ref sec_herbiv_output
 ////////////////////////////////////////////////////////////////////
-
-#include "outputclasses.h"
-
-using namespace Fauna;
-using namespace FaunaOut;
+#include "herbivore_data.h"
+using namespace Fauna::Output;
 
 namespace {
 /// Mortality–value map.
 typedef std::map<Fauna::MortalityFactor, double> MortMap;
 }  // namespace
 
-HabitatData& HabitatData::merge(const HabitatData& other,
-                                const double this_weight,
-                                const double other_weight) {
-  if (!(this_weight >= 0.0))
-    throw std::invalid_argument(
-        "FaunaOut::HabitatData::merge() "
-        "Parameter `this_weight` is not a >=0.0");
-  if (!(other_weight >= 0.0))
-    throw std::invalid_argument(
-        "FaunaOut::HabitatData::merge() "
-        "Parameter `other_weight` is not a >=0.0");
-  if (this_weight == 0.0 && other_weight == 0.0)
-    throw std::invalid_argument(
-        "FaunaOut::HabitatData::merge() "
-        "Both objects have zero weight");
-
-  // If objects are identical, do nothing.
-  if (&other == this) return *this;
-
-  // Don’t do any calculations if one partner is weighed with zero.
-  if (other_weight == 0.0) return *this;
-  if (this_weight == 0.0) {
-    *this = other;  // copy all values
-    return *this;
-  }
-
-  // Build average for each variable:
-  eaten_forage.merge(other.eaten_forage, this_weight, other_weight);
-  available_forage.merge(other.available_forage, this_weight, other_weight);
-
-  environment.snow_depth =
-      average(this->environment.snow_depth, other.environment.snow_depth,
-              this_weight, other_weight);
-
-  // ADD NEW VARIABLES HERE
-
-  return *this;
-}
-
 HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
                                     const double this_weight,
                                     const double other_weight) {
   if (!(this_weight >= 0.0))
     throw std::invalid_argument(
-        "FaunaOut::HerbivoreData::merge() "
+        "Fauna::Output::HerbivoreData::merge() "
         "Parameter `this_weight` is not a >=0.0");
   if (!(other_weight >= 0.0))
     throw std::invalid_argument(
-        "FaunaOut::HerbivoreData::merge() "
+        "Fauna::Output::HerbivoreData::merge() "
         "Parameter `other_weight` is not a >=0.0");
   if (this_weight == 0.0 && other_weight == 0.0)
     throw std::invalid_argument(
-        "FaunaOut::HerbivoreData::merge() "
+        "Fauna::Output::HerbivoreData::merge() "
         "Both objects have zero weight");
 
   // If objects are identical, do nothing.
@@ -155,7 +113,7 @@ HerbivoreData HerbivoreData::create_datapoint(
     const std::vector<HerbivoreData> vec) {
   if (vec.empty())
     throw std::invalid_argument(
-        "FaunaOut::HerbivoreData::create_datapoint() "
+        "Fauna::Output::HerbivoreData::create_datapoint() "
         "Received empty vector as argument.");
 
   HerbivoreData result;
@@ -203,53 +161,4 @@ HerbivoreData HerbivoreData::create_datapoint(
   return result;
 }
 
-CombinedData& CombinedData::merge(const CombinedData& other) {
-  // If objects are identical, do nothing.
-  if (&other == this) return *this;
 
-  // Don’t do any calculations if one partner is weighed with zero.
-  if (other.datapoint_count == 0) return *this;
-  if (this->datapoint_count == 0) {
-    *this = other;  // copy all values
-    return *this;
-  }
-
-  // ------------------------------------------------------------------
-  // HABITAT DATA
-  habitat_data.merge(other.habitat_data, this->datapoint_count,
-                     other.datapoint_count);
-
-  // ------------------------------------------------------------------
-  // HERBIVORE DATA
-  // Merge herbivore data for each HFT.
-
-  typedef std::map<const Fauna::Hft*, HerbivoreData> HftMap;
-
-  // First, create empty HerbivoreData objects for all HFTs that are not
-  // yet present in this object.
-  for (HftMap::const_iterator itr = other.hft_data.begin();
-       itr != other.hft_data.end(); itr++) {
-    // create new object if HFT not found.
-    if (!hft_data.count(itr->first)) hft_data[itr->first] = HerbivoreData();
-  }
-
-  // Second, merge all herbivore data.
-  for (HftMap::iterator itr = hft_data.begin(); itr != hft_data.end(); itr++) {
-    // try to find this HFT in the other object
-    HftMap::const_iterator found = other.hft_data.find(itr->first);
-
-    // If the other object doesn’t contain this HFT, we use an empty
-    // object.
-    HerbivoreData other_herbi_data;
-    if (found != other.hft_data.end()) other_herbi_data = found->second;
-
-    // Let the class HerbivoreData do the actual merge.
-    itr->second.merge(other_herbi_data, this->datapoint_count,
-                      other.datapoint_count);
-  }
-
-  // increment datapoint counter
-  this->datapoint_count += other.datapoint_count;
-
-  return *this;
-}

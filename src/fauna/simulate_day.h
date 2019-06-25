@@ -10,7 +10,8 @@
 
 #include <map>              // for ForageDistribution
 #include <vector>           // for HerbivoreVector
-#include "outputclasses.h"  // for FaunaOut::CombinedData & HabitatForage
+#include "combined_data.h"  // for Output::CombinedData
+#include "forageclasses.h"  // for HabitatForage
 
 namespace Fauna {
 // Forward declarations
@@ -117,7 +118,7 @@ class SimulateDay {
   HerbivoreVector herbivores;
 
   /// Habitat and herbivore output for this day.
-  FaunaOut::CombinedData todays_datapoint;
+  Output::CombinedData todays_datapoint;
 
   /// All offspring for each HFT today [ind/km²]
   std::map<const Hft*, double> total_offspring;
