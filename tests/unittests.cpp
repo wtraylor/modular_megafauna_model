@@ -22,7 +22,6 @@
 #include "mortality.h"
 #include "outputclasses.h"
 #include "parameters.h"
-#include "paramreader.h"
 #include "population.h"
 #include "reproduction.h"
 #include "simulation_unit.h"

@@ -31,8 +31,6 @@ add_library (ModularMegafaunaModel STATIC
   src/fauna/outputclasses.h
   src/fauna/parameters.cpp
   src/fauna/parameters.h
-  src/fauna/paramreader.cpp
-  src/fauna/paramreader.h
   src/fauna/patchhabitat.cpp
   src/fauna/patchhabitat.h
   src/fauna/pftparameters.cpp
