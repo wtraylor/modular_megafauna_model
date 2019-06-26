@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.14)
 project ("Modular Megafauna Model"
   VERSION 0.0.0
-  DESCRIPTION "A physiological, dynamic herbivore simulator."
+  DESCRIPTION "A physiological, dynamic herbivore simulator in C++."
   LANGUAGES CXX
   )
 
