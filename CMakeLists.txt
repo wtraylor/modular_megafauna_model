@@ -54,7 +54,7 @@ add_library (ModularMegafaunaModel STATIC
 
 # This library uses C++11 features, but does not require it from programs that
 # use this library.
-target_compile_features (ModularMegafaunaModel PRIVATE cxx_stdd_11)
+target_compile_features (ModularMegafaunaModel PRIVATE cxx_std_11)
 
 target_include_directories (ModularMegafaunaModel
   INTERFACE
