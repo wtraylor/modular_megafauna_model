@@ -1,8 +1,6 @@
 cmake_minimum_required (VERSION 3.14)
 project (ModularMegafaunaModel VERSION 0.0.0)
 
-set (CMAKE_CXX_STANDARD 11)  # requires CMake 3.1 or higher
-
 add_library (ModularMegafaunaModel STATIC
   src/fauna/output/combined_data.cpp
   src/fauna/output/combined_data.h
@@ -51,6 +49,10 @@ add_library (ModularMegafaunaModel STATIC
 
 # TODO: Explain namespace alias.
 # add_library (ModularMegafaunaModel::fauna ALIAS fauna)
+
+# This library uses C++11 features, but does not require it from programs that
+# use this library.
+target_compile_features (ModularMegafaunaModel PRIVATE cxx_stdd_11)
 
 target_include_directories (ModularMegafaunaModel
   INTERFACE
