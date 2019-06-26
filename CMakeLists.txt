@@ -60,4 +60,9 @@ target_include_directories (ModularMegafaunaModel
   src/fauna/output/
   )
 
+target_compile_options (ModularMegafaunaModel
+  PRIVATE
+  -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
+  )
+
 add_subdirectory (tests/)
