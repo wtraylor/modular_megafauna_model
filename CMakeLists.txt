@@ -2,12 +2,6 @@ cmake_minimum_required (VERSION 3.14)
 project (ModularMegafaunaModel VERSION 0.0.0)
 
 add_library (ModularMegafaunaModel STATIC
-  src/fauna/output/combined_data.cpp
-  src/fauna/output/combined_data.h
-  src/fauna/output/habitat_data.cpp
-  src/fauna/output/habitat_data.h
-  src/fauna/output/herbivore_data.cpp
-  src/fauna/output/herbivore_data.h
   src/fauna/createherbivores.cpp
   src/fauna/createherbivores.h
   src/fauna/energetics.cpp
@@ -15,6 +9,8 @@ add_library (ModularMegafaunaModel STATIC
   src/fauna/environment.h
   src/fauna/feed.cpp
   src/fauna/feed.h
+  src/fauna/forage_types.cpp
+  src/fauna/forage_types.h
   src/fauna/forageclasses.cpp
   src/fauna/forageclasses.h
   src/fauna/forageenergy.cpp
@@ -31,6 +27,12 @@ add_library (ModularMegafaunaModel STATIC
   src/fauna/mortality.h
   src/fauna/nitrogen.cpp
   src/fauna/nitrogen.h
+  src/fauna/output/combined_data.cpp
+  src/fauna/output/combined_data.h
+  src/fauna/output/habitat_data.cpp
+  src/fauna/output/habitat_data.h
+  src/fauna/output/herbivore_data.cpp
+  src/fauna/output/herbivore_data.h
   src/fauna/parameters.cpp
   src/fauna/parameters.h
   src/fauna/population.cpp
