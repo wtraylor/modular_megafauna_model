@@ -73,4 +73,5 @@ target_compile_options (ModularMegafaunaModel
   -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
   )
 
+add_subdirectory (docs/)
 add_subdirectory (tests/)
