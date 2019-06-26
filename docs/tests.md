@@ -3,13 +3,13 @@ Unit Tests of the Herbivore Module {#page_tests}
 <!-- For doxygen, this is the *page* header -->
 \brief Details on unit tests and test simulations.
 
-Unit Tests of the Herbivore Module {#sec_page_tests}
+Unit Tests of the Herbivore Module {#sec_tests}
 ==================================
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
 
-Unit Tests {#sec_page_unittests}
+Unit Tests {#sec_unittests}
 ----------------------------------
 
 New classes have been introduced with unit-testing and flexibility in mind.
@@ -20,13 +20,13 @@ day of the year.
 
 - All simulation parameters are passed into the model with designated objects
 instead of reading instruction file parameters directly
-(see section \ref sec_page_parameters).
+(see section \ref sec_parameters).
 
 Unit tests use the [Catch](https://github.com/philsquared/Catch)
 framework.
 
 
-Herbivory Test Simulations {#sec_page_testsimulations}
+Herbivory Test Simulations {#sec_testsimulations}
 --------------------------------------------------------
 
 ### Overview
@@ -49,7 +49,7 @@ The HabitatGroup corresponds in a way to the LPJ-GUESS `Gridcell`.
 	!include diagrams.iuml!testsim_classes
 @enduml
 
-\see \ref sec_page_new_testhabitat
+\see \ref sec_new_testhabitat
 
 ### Parameters
 
