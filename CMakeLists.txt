@@ -73,5 +73,9 @@ target_compile_options (ModularMegafaunaModel
   -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
   )
 
-add_subdirectory (docs/)
+option (BUILD_DOC "Build doxygen documentaton" ON)
+if (BUILD_DOC)
+  add_subdirectory (docs/)
+endif()
+
 add_subdirectory (tests/)
