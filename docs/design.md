@@ -120,7 +120,7 @@ The class \ref Fauna::SimulationUnit a habitat and its herbivores (managed by HF
 @enduml
 
 Error Handling {#sec_errorhandling}
-------------------------------------------
+-----------------------------------
 
 ### Exceptions ### {#sec_exceptions}
 The herbivory module uses the C++ standard library exceptions defined in `<stdexcept>`.
@@ -138,10 +138,11 @@ Exceptions are used…:
 - …to check the validity of variables coming from outside of the herbivory module where there are no contracts defined and ensured.
 
 You throw an exception (in this case class `std::invalid_argument`) like this:
-```cpp
-if (/*error occurs/*)
-	throw std::invalid_argument("My error message");
-```
+
+    ```cpp
+    if (/*error occurs/*)
+        throw std::invalid_argument("My error message");
+    ```
 
 Each class makes no assumptions about the simulation framework (e.g. that parameters have been checked), but solely relies on the class contracts in the code documentation.
 
@@ -167,31 +168,9 @@ Assertions are used…:
 - …in code regions that might be expanded later: An assert call serves as a reminder for the developer to implement all necessary dependencies.
 
 Herbivory Parameters {#sec_parameters}
----------------------------------------------
+--------------------------------------
 
-The herbivory module uses the same instruction files and plib
-(\ref plib.h) functionality as the vegetation model.
-In order to separate concerns, all herbivory-related parameters
-are declared and checked in the class \ref Fauna::Parameters, but parsed by the class \ref Fauna::ParamReader.
-ParamReader is the only one being directly dependent on \ref parameters.h and \ref plib.h (apart from \ref FaunaSim::Framework and \ref GuessOutput::HerbivoryOutput).
-
-The principle that parameter member variables put in one class, which also knows to check their validity, but parsed in ParamReader, is also applied in \ref Fauna::Hft and \ref Fauna::PftParams.
-
-@startuml "Interactions of parameter-related classes in the herbivory module."
-	!include diagrams.iuml!parameters_classes
-@enduml
-
-\note The implementation can be called a rather dirty fix around the inflexible design of LPJ-GUESS parameter library.
-Some global constants (checkback and block codes) and global pointers from \ref parameters.h and \ref parameters.cpp are used in \ref parameters.cpp.
-
-An example instruction file is provided in
-`data/ins/herbivores.ins`:
-\snippet herbivores.ins Example Herbivore
-\see \ref sec_new_hft_parameter
-\see \ref sec_new_pft_parameter
-\see \ref sec_new_global_parameter
-
-Following the [Inversion of Control](\ref sec_inversion_of_control) principle, as few classes as possible have direct access to the classes that hold the parameters (\ref Fauna::Hft, \ref Fauna::Parameters, \ref Fauna::PftParams).
+Following the [Inversion of Control](\ref sec_inversion_of_control) principle, as few classes as possible have direct access to the classes that hold the parameters (\ref Fauna::Hft, \ref Fauna::Parameters).
 These classes play the role of the “framework” by calling any client classes only with the very necessary parameters.
 The following diagram gives an overview:
 
@@ -199,34 +178,14 @@ The following diagram gives an overview:
 	!include diagrams.iuml!parameters_access
 @enduml
 
-\bug When printing out the help with \ref plibhelp()
-(by running `guess -help`), the global parameters declared in
-\ref Fauna::ParamReader::declare_parameters() under
-`BLOCK_GLOBAL` appear out of order in the output.
-
-
-
 Herbivory Output {#sec_output}
--------------------------------------
-
-The herbivory module uses the existing LPJ-GUESS API for output.
-This brings some limitations:
-1. The output module needs to be singleton.
-2. The columns of the tables need to be defined in advance.
-That demands a globally defined HFT list.
-3. The tables allow only `double` values, no strings.
-That means that for each “measured” output variable (e.g. `individual density`) *one* table needs be created; the “fixed” variable (in this case `HFT`) has its values in the column.
-“Tidy data” output (*sensu* Wickham, 2014\cite wickham2014tidy), with variables in columns and observations in rows, is therefore not possible.
-4. That means that combining multiple fixed variables (e.g. `ForageType` and `HFT`) leads to bulky column names (“grass_hft1”, “grass_hft2”, “browse_hft1”, etc.), which need to be separated in post-processing software.
-
-\note The units of the output variables vary depending on the expected value range.
-Because LPJ-GUESS output is in fixed-width plaintext numbers, the values must not be too high (cutting the upper digits) nor too small (artefact zeros).
+------------------------------
 
 ### Output Classes {#sec_outputclasses}
 
-Output classes within the herbivory module are collected in the namespace \ref FaunaOut.
-- The two structs \ref FaunaOut::HabitatData and \ref FaunaOut::HerbivoreData are simple data containers.
-- The struct \ref FaunaOut::CombinedData represents one datapoint (‘tupel’/‘observation’) of all output variables in space and time.
+Output classes within the herbivory module are collected in the namespace \ref Fauna::Output.
+- The two structs \ref Fauna::Output::HabitatData and \ref Fauna::Output::HerbivoreData are simple data containers.
+- The struct \ref Fauna::Output::CombinedData represents one datapoint (‘tupel’/‘observation’) of all output variables in space and time.
 
 @startuml "Output classes of the herbivory module."
 	!include diagrams.iuml!outputclasses
@@ -234,8 +193,8 @@ Output classes within the herbivory module are collected in the namespace \ref F
 
 There are three levels of data aggregation:
 
-1) Each day in \ref Simulator::simulate_day(), a new datapoint (\ref FaunaOut::CombinedData) is created for each simulation unit.
-For this, the habitat data is taken as is, but the herbivore data is aggregated per HFT (see \ref FaunaOut::HerbivoreData::create_datapoint()).
+1) Each day in \ref Simulator::simulate_day(), a new datapoint (\ref Fauna::Output::CombinedData) is created for each simulation unit.
+For this, the habitat data is taken as is, but the herbivore data is aggregated per HFT (see \ref Fauna::Output::HerbivoreData::create_datapoint()).
 This level of aggregation is **spatial within one habitat**.
 Here, any variables *per habitat* or *per area* are summed, for instance herbivore densities.
 Variables *per individual* are averaged, using individual density as weight.
@@ -245,10 +204,10 @@ The datapoint for that day is added to the temporal average in the \ref Fauna::S
 This level of aggregation is therefore **temporal across days**.
 
 3) The third level of aggregation takes place in \ref GuessOutput::OutputModule.
-Here, the accumulated temporal averages from the simulation units are combined in spatial units, i.e. [gridcells](\ref Gridcell).
+Here, the accumulated temporal averages from the simulation units are combined in spatial units.
 This level of aggregation is therefore **spatial across habitats**.
 
-The latter two aggregation levels are performed by \ref FaunaOut::CombinedData::merge().
+The latter two aggregation levels are performed by \ref Fauna::Output::CombinedData::merge().
 
 Note that all time-dependent variables are always **per day.**
 For example, there is no such thing like *forage eaten in one year.*
@@ -264,55 +223,13 @@ The pros of this design:
 
 The cons of this design:
 - Strong coupling: The output module is highly dependent on the data structure of the output containers.
-- Multiple responsibilities: \ref GuessOutput::HerbivoryOutput is a monolithic class, violating the [Single Responsibility Principle](\ref sec_single_responsibility).
 - Rigidity of data containers: Ideally, the containers should be oblivious to the details of the data they hold.
-- Lack of modularity: A submodule of, e.g. HerbivoreBase cannot easiliy deliver its own output variable.
+- Lack of modularity: A submodule of, e.g. \ref HerbivoreBase cannot easily deliver its own output variable.
 - Cumbersome extensibility: New output variables need to be introduced in various places (see \ref sec_new_output).
 That is a violation of the [Open/Closed Principle](\ref sec_open_closed).
-- Any variable that is specific to a submodule or interface implementation (e.g. `bodyfat` is specific to HerbivoreBase) will produce undefined values if that submodule is not active.
+- Any variable that is specific to a submodule or interface implementation (e.g. `bodyfat` is specific to \ref HerbivoreBase) will produce undefined values if that submodule is not active.
 The user is then responsible to interpret them as invalid or disable their output.
 So far, there is no check of congruency between [parameters](\ref Fauna::Parameters)/[HFT settings](\ref Fauna::Hft) and the selection of output variables in the output module.
-
-### Output Module {#sec_outputmodule}
-
-The new output module \ref GuessOutput::HerbivoryOutput is
-derived from the abstract class \ref GuessOutput::OutputModule.
-The following diagram shows how it interacts with the LPJ-GUESS output framework and the herbivory module.
-<!--TODO: diagram-->
-@startuml "Class diagram of the connections around class GuessOutput::HerbivoryOutput."
-	!include diagrams.iuml!outputmodule_class
-@enduml
-
-
-The following sequence diagram shows the creation process of \ref GuessOutput::HerbivoryOutput and the calling chain from the framework during simulations.
-The daily output routine is used for all output intervals (daily, monthly, annual,…).
-
-@startuml "Output initialization in LPJ-GUESS. All participating classes have only one instantiation, but only HerbivoryOutput implements formally the Singleton design pattern."
-	!include diagrams.iuml!outputmodule_initialization
-@enduml
-
-
-The output module \ref GuessOutput::HerbivoryOutput is used both in the standard LPJ-GUESS framework and in the test simulations
-(\ref page_tests).
-If the parameter `ifherbivory` is 0, the whole class is deactivated and won’t produce any output or create files.
-This is necessary because some herbivore module parameters that the output module relies on (like \ref Fauna::Parameters::digestibility_model) are not checked if `ifherbivory` is `false`.
-
-While the class \ref GuessOutput::HerbivoryOutput complies with the output module framework of LPJ-GUESS, a few technical improvements
-to \ref GuessOutput::CommonOutput were made:
-- Output interval can be chosen freely with one variable instead of different output files.
-The table structure stays always the same (no month columns).
-- The functions are smaller and better maintainable.
-- The preprocessing of the data (building averages etc.) is done in the data-holding classes.
-This approach honours the \ref sec_single_responsibility to some degree.
-- Functions inherited from \ref GuessOutput::OutputModule, which use classes specific to the LPJ-GUESS vegetation model (\ref Gridcell), delegate to more generic functions.
-These are then also used by \ref FaunaSim::Framework, which is independent of the LPJ-GUESS vegetation.
-- As a substitute for `outlimit()` in \ref commonoutput.cpp, the function \ref GuessOutput::HerbivoryOutput::is_today_included() has been introduced in order to reduce calculations and improve code tidyness.
-  See also: \ref sec_limit_output.
-- The \ref GuessOutput::OutputModuleRegistry instantiates the class. There is only one global instance, but there is no direct way to access that global instance like in the [Singleton design pattern](\ref sec_singleton).
-	To circumvent this restriction (instead of working with a lot of `static` members) the function [get_instance()](\ref GuessOutput::HerbivoryOutput::get_instance()) has been introduced.
-	To assert that no other instance can be created, the constructor throws an exception on second call.
-
-\see \ref sec_new_output
 
 ------------------------------------------------------------
 

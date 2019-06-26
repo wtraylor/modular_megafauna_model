@@ -32,11 +32,6 @@ and write it from scratch.
 If you want to build upon the base functionality, derive it
 from \ref Fauna::HerbivoreBase.
 
-Add a new ID enum element in \ref Fauna::HerbivoreType and make it
-accessible to the instruction file parser by checking for your
-string identifier in \ref Fauna::ParamReader::callback() under
-`CB_HERBIVORE_TYPE`.
-
 Then, derive a new class from \ref Fauna::PopulationInterface to manage and construct your object instances.
 In \ref Fauna::Simulator::create_populations(), create that
 population class.
