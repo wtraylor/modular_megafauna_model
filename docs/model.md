@@ -29,10 +29,6 @@ Large Herbivore Model {#sec_model}
 - What is the problem with β (half-max intake density) in Illius & O’Connor (2000) and Pachzelt et al.?
 - Explain the problem of coexistence: How coexistence could arise theoretically, but why it is practically so difficult.
 - Provide a list of other mechanistic herbivore models.
-- Find a good name for the module:
-	+ Simply “Megafauna Model” perhaps?
-	+ Or “Extensible Megafauna Model”?
-	+ Or “Modular Megafauna Model”? ⇒ LPJ-GUESS-M³
 
 Basic Model Concepts {#sec_basicconcepts}
 ------------------------------------------------
