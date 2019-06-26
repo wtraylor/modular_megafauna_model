@@ -20,6 +20,23 @@ Usage
 -----
 
 ### Compile the Doxygen Documentation
+CMake will automatically compile the doxygen documentation along with the library in a subfolder `docs/` inside the build directory. In there open the `index.html` file with a browser.
+
+```bash
+mkdir build
+cd build
+cmake "<path to the megafauna library>"
+make
+# Open `docs/index.html`.
+```
+
+You can turn off the automatic compilation with the CMake variable `BUILD_DOC`: `cmake -DBUILD_DOC=OFF "<path>"`.
+In order to generate _only_ the documentation, provide the path to the `docs` subfolder to `cmake`: `cmake /path/to/megafauna/docs`.
+
+#### Optional Build Requirements for the Documentation
+- Java Runtime Environment (JRE)
+- [Graphviz](www.graphviz.org), see [here](http://plantuml.com/graphviz-dot) for details.
+- [LaTeX](www.latex-project.org), including [BibTeX](www.bibtex.org).
 
 ### Integrate the Library into a Vegetation Model
 
