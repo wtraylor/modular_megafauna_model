@@ -4,10 +4,10 @@
  * main LPJ-GUESS code.
  * \author Wolfgang Pappa, Senckenberg BiK-F
  * \date May 2017
- * \see \ref page_herbiv_model
- * \see \ref page_herbiv_design
- * \see \ref page_herbiv_tutor
- * \see \ref page_herbiv_tests
+ * \see \ref page_model
+ * \see \ref page_design
+ * \see \ref page_tutor
+ * \see \ref page_tests
  * \see \ref group_herbivory
  */
 
@@ -24,7 +24,7 @@
  * \namespace FaunaSim
  * \brief Namespace for the test simulation framework independent of LPJ-GUESS
  * vegetation.
- * \see \ref sec_herbiv_testsimulations \author Wolfgang Pappa,
+ * \see \ref sec_page_testsimulations \author Wolfgang Pappa,
  * Senckenberg BiK-F \date June 2017
  */
 
@@ -32,7 +32,7 @@
  * \ingroup group_herbivory
  * \namespace FaunaOut
  * \brief Output classes of the herbivory module.
- * \see \ref sec_herbiv_output
+ * \see \ref sec_page_output
  * \author Wolfgang Pappa, Senckenberg BiK-F
  * \date August 2017
  */

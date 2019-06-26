@@ -4,7 +4,7 @@
 /// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
-/// \see \ref sec_herbiv_energetics
+/// \see \ref sec_energetics
 //////////////////////////////////////////////////////////////////////////
 #ifndef ENERGETICS_H
 #define ENERGETICS_H
@@ -241,7 +241,7 @@ inline double get_conductance_cuyler_oeritsland_2004(const double bodymass,
 
 /// Calculate additional energy requirements to keep body temperature.
 /**
- * Please see \ref sec_herbiv_thermoregulation for the formulas and
+ * Please see \ref sec_thermoregulation for the formulas and
  * concepts.
  *
  * \param thermoneutral_rate Thermoneutral expenditure [MJ/ind/day].

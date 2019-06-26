@@ -3,7 +3,7 @@
 /// \brief Habitat output data.
 /// \author Wolfgang Traylor, Senckenberg BiK-F
 /// \date June 2019
-/// \see \ref sec_herbiv_output
+/// \see \ref sec_output
 ////////////////////////////////////////////////////////////////////
 #ifndef HERBIVORE_DATA
 #define HERBIVORE_DATA
@@ -14,7 +14,7 @@
 
 namespace Fauna::Output {
 /// Herbivore output data for one time unit.
-/** \see \ref sec_herbiv_outputclasses */
+/** \see \ref sec_outputclasses */
 struct HerbivoreData {
   /// Constructor, initializing with zero values.
   HerbivoreData()

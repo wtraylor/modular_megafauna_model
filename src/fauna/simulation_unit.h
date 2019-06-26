@@ -17,7 +17,7 @@ class Habitat;
 class HftPopulationsMap;
 
 /// A habitat with the herbivores that live in it.
-/** \see \ref sec_herbiv_designoverview */
+/** \see \ref sec_designoverview */
 class SimulationUnit {
  public:
   /// Constructor

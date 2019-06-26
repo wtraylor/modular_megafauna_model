@@ -3,7 +3,7 @@
 /// \brief Herbivore output data.
 /// \author Wolfgang Traylor, Senckenberg BiK-F
 /// \date June 2019
-/// \see \ref sec_herbiv_output
+/// \see \ref sec_output
 ////////////////////////////////////////////////////////////////////
 #include "herbivore_data.h"
 using namespace Fauna::Output;

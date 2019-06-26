@@ -42,7 +42,7 @@ struct AllometryParameters {
 };
 
 /// Selector for a function of how to calculate whole-body conductance.
-/** \see \ref sec_herbiv_thermoregulation */
+/** \see \ref sec_thermoregulation */
 enum ConductanceModel {
   /// Allometric formula from data by Bradley & Deavers (1980)\cite
   /// bradley1980reexamination
@@ -100,7 +100,7 @@ enum DigestiveLimit {
    *   f_{ad}*M_{ad}^{-0.75} * M^{-0.75} & \text{if } M < M_{ad}
    *   \end{cases}
    * \f]
-   * \image html herbiv_scale_diglimit.svg "Scaling of digestive limit for
+   * \image html scale_diglimit.svg "Scaling of digestive limit for
    * non-mature animals."
    */
   DL_FIXED_FRACTION,
@@ -131,7 +131,7 @@ enum ExpenditureComponent {
   /** See \ref get_expenditure_zhu_et_al_2018() */
   EC_ZHU_2018,
   /// Increased expenditure in lower temperature, see \ref
-  /// sec_herbiv_thermoregulation.
+  /// sec_thermoregulation.
   EC_THERMOREGULATION
 };
 

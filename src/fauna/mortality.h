@@ -79,7 +79,7 @@ class GetSimpleLifespanMortality {
  * of this distribution that projects below zero.”
  * </BLOCKQUOTE>
  *
- * \image html herbiv_starvation_illius_oconnor_2000.png "Starvation mortality
+ * \image html starvation_illius_oconnor_2000.png "Starvation mortality
  * after Illius & O’Connor (2000). The red area indicates the dying part of the
  * cohort. SD = standard deviation."
  *
@@ -137,11 +137,11 @@ class GetSimpleLifespanMortality {
  * the population dynamic. Once the fat reserves of the cohort drop
  * below the peak, chances for recovery are lower.
  *
- * \image html herbiv_starvation_body_condition_shift_abs.png "Absolute change
+ * \image html starvation_body_condition_shift_abs.png "Absolute change
  * in body condition after removing the dead fraction of the cohort. Standard
  * deviation = 0.125"
  *
- * \image html herbiv_starvation_body_condition_shift_rel.png "Relative change
+ * \image html starvation_body_condition_shift_rel.png "Relative change
  * in body condition after removing the dead fraction of the cohort. Standard
  * deviation = 0.125"
  *

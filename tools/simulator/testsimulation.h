@@ -24,7 +24,7 @@ namespace FaunaSim {
 /// model
 /**
  * \see \ref sec_singleton for an explanation of the design pattern used.
- * \see \ref sec_herbiv_testsimulations
+ * \see \ref sec_testsimulations
  */
 class Framework {
  public:

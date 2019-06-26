@@ -22,7 +22,7 @@ class Hft;
 class FeedHerbivores;
 
 /// A vector of herbivore pointers.
-/** Originally defined in \ref herbiv_population.h */
+/** Originally defined in \ref population.h */
 typedef std::vector<HerbivoreInterface*> HerbivoreVector;
 
 /// Function object to simulate one day in one habitat.

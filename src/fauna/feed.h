@@ -17,7 +17,7 @@ namespace Fauna {
 class HerbivoreInterface;
 
 /// A vector of herbivore pointers.
-/** Originally defined in \ref herbiv_population.h */
+/** Originally defined in \ref population.h */
 typedef std::vector<HerbivoreInterface*> HerbivoreVector;
 
 /// Interface for a forage distribution algorithm

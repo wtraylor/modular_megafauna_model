@@ -22,7 +22,7 @@ class SimulationUnit;
 
 /// Central herbivory framework class.
 /**
- * \see \ref sec_herbiv_designoverview
+ * \see \ref sec_designoverview
  * \see \ref sec_inversion_of_control
  */
 class Simulator {

@@ -9,7 +9,7 @@ Object-oriented Design {#sec_object_orientation}
 \tableofcontents
 
 In the Herbivore Module a couple of object-oriented design patterns
-were employed that are explained here along with general 
+were employed that are explained here along with general
 concepts of object-oriented programming.
 
 ## Good Programming Practice ## {#sec_good_practice}
@@ -33,11 +33,11 @@ If a class explicitely defines at least one of the following methods, it should 
 
 ## S-O-L-I-D Design principles ## {#sec_design_solid}
 
-### Single Responsibility Principle {#sec_single_responsibility} 
+### Single Responsibility Principle {#sec_single_responsibility}
 A class should have only a single responsibility:
 A class should have only one reason to change.
 
-### Open/Closed Principle {#sec_open_closed} 
+### Open/Closed Principle {#sec_open_closed}
 A class/module/function should be open for extension, but
 closed for modification.
 
@@ -46,13 +46,13 @@ Objects in a program should be replaceable with instances of
 their subtypes without altering the correctness of that program.
 
 ### Interface Segregation Principle {#sec_interface_segregation}
-Many client-specific interfaces are better than one 
+Many client-specific interfaces are better than one
 general-purpose interface.
 
 ### Dependency Inversion Principle {#sec_dependency_inversion}
 1. High-level modules should not depend on low-level modules.
 Both should depend on abstractions.
-2. Abstractions should not depend on details. 
+2. Abstractions should not depend on details.
 Details should depend on abstractions.
 
 
@@ -84,7 +84,7 @@ Two kinds of dependency injection are used
 
 For example: The \ref Fauna::HftList object is not a global variable, but is instead being passed down from the \ref framework() function to \ref Fauna::Simulator.
 
-In the case of \ref Fauna::Habitat, the \ref Fauna::Simulator is oblivious to the concrete realization of the interface, which makes it possible to substitute parts of the model without changing the framework. 
+In the case of \ref Fauna::Habitat, the \ref Fauna::Simulator is oblivious to the concrete realization of the interface, which makes it possible to substitute parts of the model without changing the framework.
 
 
 ## Design Patterns
@@ -100,7 +100,7 @@ The basic implementation is as follows:
 
     class MySingleton{
     public:
-     static MySingleton& get_instance(){ 
+     static MySingleton& get_instance(){
  	     static MySingleton global_instance; // creates the instance on first call
  	     return global_instance;
      }
@@ -118,7 +118,7 @@ A few classes in the herbivory module employ are built singleton in order to int
 The following classes of the herbivory module are singleton:
 \ref FaunaSim::Framework,
 \ref Fauna::ParamReader.
-The principle of a global single class shows also up in 
+The principle of a global single class shows also up in
 \ref GuessOutput::HerbivoryOutput.
 
 ### Strategy {#sec_strategy}
@@ -129,11 +129,11 @@ Here is a basic implementation:
     struct Strategy {
     	virtual operator()(const int param) const = 0;
     };
-    
+
     struct StrategyOne: public Strategy {
     	virtual operator()(const int param) const{ /*...*/ };
     };
-    
+
     struct StrategyTwo: public Strategy {
     	virtual operator()(const int param) const{ /*...*/ };
     };
@@ -154,7 +154,7 @@ In contrast to simple functions, they could also hold state variables and make u
 Their implemented algorithm can be called by using the object like a function:
 
     Strategy* do_algorithm = new StrategyOne; // just substitute the instantiated class here
-    
+
     int i = 1;
     do_algorithm(i); // this line does not need to change when the strategy is replaced.
 
@@ -182,4 +182,4 @@ The subsystem doesn’t know about the facade.
 
 \author Wolfgang Pappa, Senckenberg BiK-F
 \date May 2017
-\see \ref page_herbiv_design
+\see \ref page_design

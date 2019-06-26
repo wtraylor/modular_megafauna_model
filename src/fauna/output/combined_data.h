@@ -3,7 +3,7 @@
 /// \brief Combined herbivore + habitat output data.
 /// \author Wolfgang Traylor, Senckenberg BiK-F
 /// \date June 2019
-/// \see \ref sec_herbiv_output
+/// \see \ref sec_output
 ////////////////////////////////////////////////////////////////////
 #ifndef COMBINED_DATA_H
 #define COMBINED_DATA_H
@@ -21,7 +21,7 @@ namespace Fauna::Output {
  * This can be data for one \ref Fauna::SimulationUnit (possibly aggregated
  * over a period of time) or for a set of spatial units (aggregated over
  * time and space).
- * \see \ref sec_herbiv_outputclasses
+ * \see \ref sec_outputclasses
  */
 struct CombinedData {
   /// Constructor.

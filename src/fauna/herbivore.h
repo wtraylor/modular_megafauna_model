@@ -33,9 +33,9 @@ class Hft;
  * Each herbivore class has a corresponding implementation of
  * \ref PopulationInterface which creates and manages the
  * herbivores.
- * \see \ref sec_herbiv_new_herbivore_class
+ * \see \ref sec_new_herbivore_class
  * \see \ref PopulationInterface
- * \see \ref sec_herbiv_herbivoredesign
+ * \see \ref sec_herbivoredesign
  */
 struct HerbivoreInterface {
   /// Virtual Destructor
@@ -120,7 +120,7 @@ struct HerbivoreInterface {
    * Sidenote: The function name doesn’t start with `get_` because the
    * function changes the internal state of the object.
    * \return Excreted nitrogen [kgN/km²] (+ tissue nitrogen if dead).
-   * \see \ref sec_herbiv_nitrogen_excretion
+   * \see \ref sec_nitrogen_excretion
    */
   virtual double take_nitrogen_excreta() = 0;
 };
@@ -131,7 +131,7 @@ struct HerbivoreInterface {
  *
  * \note Several member variables are declared as std::auto_ptr. This
  * is done in order to reduce header includes here.
- * \see \ref sec_herbiv_herbivoredesign
+ * \see \ref sec_herbivoredesign
  */
 class HerbivoreBase : public HerbivoreInterface {
  public:
@@ -335,7 +335,7 @@ class HerbivoreBase : public HerbivoreInterface {
 
 /// One herbivore individual
 /**
- * \see \ref sec_herbiv_herbivoredesign
+ * \see \ref sec_herbivoredesign
  */
 class HerbivoreIndividual : public HerbivoreBase {
  public:
@@ -398,7 +398,7 @@ class HerbivoreIndividual : public HerbivoreBase {
  * Any state variables describe mean values across all
  * individuals.
  * All individuals have the same age.
- * \see \ref sec_herbiv_herbivoredesign
+ * \see \ref sec_herbivoredesign
  */
 class HerbivoreCohort : public HerbivoreBase {
  public:
