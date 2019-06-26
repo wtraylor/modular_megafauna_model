@@ -33,6 +33,10 @@ indent_style = tab
 indent_size = 2
 indent_style = space
 
+[bibliography.bib]
+indent_size = 2
+indent_style = space
+
 # TODO:
 #  - Add instruction file
 #  - Add yml file (for gitlab CI)
