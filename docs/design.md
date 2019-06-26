@@ -193,13 +193,13 @@ Output classes within the herbivory module are collected in the namespace \ref F
 
 There are three levels of data aggregation:
 
-1) Each day in \ref Simulator::simulate_day(), a new datapoint (\ref Fauna::Output::CombinedData) is created for each simulation unit.
+1) Each day in \ref Fauna::Simulator::simulate_day(), a new datapoint (\ref Fauna::Output::CombinedData) is created for each simulation unit.
 For this, the habitat data is taken as is, but the herbivore data is aggregated per HFT (see \ref Fauna::Output::HerbivoreData::create_datapoint()).
 This level of aggregation is **spatial within one habitat**.
 Here, any variables *per habitat* or *per area* are summed, for instance herbivore densities.
 Variables *per individual* are averaged, using individual density as weight.
 
-2) The second level of aggregation happens also in \ref Simulator::simulate_day().
+2) The second level of aggregation happens also in \ref Fauna::Simulator::simulate_day().
 The datapoint for that day is added to the temporal average in the \ref Fauna::SimulationUnit object.
 This level of aggregation is therefore **temporal across days**.
 
@@ -224,10 +224,10 @@ The pros of this design:
 The cons of this design:
 - Strong coupling: The output module is highly dependent on the data structure of the output containers.
 - Rigidity of data containers: Ideally, the containers should be oblivious to the details of the data they hold.
-- Lack of modularity: A submodule of, e.g. \ref HerbivoreBase cannot easily deliver its own output variable.
+- Lack of modularity: A submodule of, e.g. \ref Fauna::HerbivoreBase cannot easily deliver its own output variable.
 - Cumbersome extensibility: New output variables need to be introduced in various places (see \ref sec_new_output).
 That is a violation of the [Open/Closed Principle](\ref sec_open_closed).
-- Any variable that is specific to a submodule or interface implementation (e.g. `bodyfat` is specific to \ref HerbivoreBase) will produce undefined values if that submodule is not active.
+- Any variable that is specific to a submodule or interface implementation (e.g. `bodyfat` is specific to \ref Fauna::HerbivoreBase) will produce undefined values if that submodule is not active.
 The user is then responsible to interpret them as invalid or disable their output.
 So far, there is no check of congruency between [parameters](\ref Fauna::Parameters)/[HFT settings](\ref Fauna::Hft) and the selection of output variables in the output module.
 
