@@ -1,6 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
 /// \file
-/// \ingroup group_herbivory
 /// \brief Foraging models and digestive contraints of the herbivory module.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017

@@ -1,6 +1,5 @@
 ////////////////////////////////////////////////////////////
 /// \file
-/// \ingroup group_herbivory
 /// \brief Instruction file parameters of the herbivory module.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date June 2017

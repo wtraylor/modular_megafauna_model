@@ -1,5 +1,4 @@
 /// \brief Classes to construct herbivores.
-/// \ingroup group_herbivory
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
 ///////////////////////////////////////////////////////////////////////////

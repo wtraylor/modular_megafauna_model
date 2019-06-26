@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////
 /// \file
-/// \ingroup group_herbivory
 /// \brief Functions and classes shared across parts of the herbivory
 ///        module.
 /// \author Wolfgang Pappa, Senckenberg BiK-F

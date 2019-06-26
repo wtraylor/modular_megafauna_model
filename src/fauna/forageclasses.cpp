@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 /// \file
-/// \ingroup group_herbivory
 /// \brief Large herbivore forage.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017

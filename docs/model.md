@@ -206,4 +206,3 @@ In order to avoid biases in the output, the patch number (`npatch`) must be a mu
 \see \ref page_design
 \see \ref page_tutor
 \see \ref page_tests
-\see \ref group_herbivory

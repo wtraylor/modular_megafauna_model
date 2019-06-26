@@ -86,4 +86,3 @@ These are the relevant parameters:
 \see \ref page_design
 \see \ref page_model
 \see \ref page_tutor
-\see \ref group_herbivory

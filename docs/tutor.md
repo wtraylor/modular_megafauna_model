@@ -268,4 +268,3 @@ Re-using the code for other vegetation models {#sec_page_reusing_code}
 \see \ref page_design
 \see \ref page_model
 \see \ref page_tests
-\see \ref group_herbivory

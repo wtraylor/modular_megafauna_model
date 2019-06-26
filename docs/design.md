@@ -324,4 +324,3 @@ These are then also used by \ref FaunaSim::Framework, which is independent of th
 \see \ref page_model
 \see \ref page_tutor
 \see \ref page_tests
-\see \ref group_herbivory

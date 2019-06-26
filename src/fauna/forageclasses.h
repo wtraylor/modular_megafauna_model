@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 /// \file
-/// \ingroup group_herbivory
 /// \brief Basic forage-related classes of the herbivory module.
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017
