@@ -1,10 +1,10 @@
 Tutor for the Large Herbivore Module {#page_tutor}
-=========================================================
+==================================================
 <!-- For doxygen, this is the *page* header -->
 \brief Instructions how to use the herbivore module and expand the code base for one’s needs.
 
 Tutor for the Large Herbivore Module {#sec_page_tutor}
-=========================================================
+======================================================
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
@@ -114,7 +114,6 @@ You can implement your own model as a new class or a simple function; just call 
 
 ### How to add a new mortality factor {#sec_page_new_mortality}
 <!-- TODO -->
-If your new mortality factor is starvation-based, it might make sense to add it to the “starvation” output variable in \ref GuessOutput::HerbivoryOutput in the private method `write_datapoint()`.
 
 Forage Tutorials {#sec_page_tutor_forage}
 -------------------------------------------
@@ -182,23 +181,6 @@ Forage net energy content is implemented with the [strategy design pattern](\ref
 
 - Don’t forget to add your identifier as possible values in the message output in \ref Fauna::ParamReader::declare_parameters() and \ref Fauna::ParamReader::callback(), as well as in the example instruction file `data/ins/herbivores.ins`.
 
-LPJ-GUESS–Herbivory Interface {#sec_page_tutor_guess_herbivory_interface}
----------------------------------------------------------------------------
-
-### How to add a new snow depth model {#sec_page_new_snow_depth_model}
-LPJ-GUESS accounts for snow as snow water equivalent (SWE, see \ref Soil::snowpack).
-A snow depth model converts that into the actual snow depth for the herbivory module.
-
-- Implement your algorithm by deriving a new [function class](\ref sec_functors) from \ref Fauna::GetSnowDepth.
-
-- Declare a new enum item in \ref Fauna::SnowDepthModel as an identifier for your model.
-
-- Create an instance of your class in \ref Fauna::Simulator::create_snow_depth_model().
-
-- Add your string identifier in \ref Fauna::ParamReader::callback() under `CB_SNOW_DEPTH_MODEL`.
-
-- Don’t forget to add your identifier as a possible value in the message output in \ref Fauna::ParamReader::declare_parameters() and \ref Fauna::ParamReader::callback(), as well as in the example instruction file `data/ins/herbivores.ins`.
-
 Parameters Tutorials {#sec_page_tutor_parameters}
 ---------------------------------------------------
 
@@ -216,22 +198,6 @@ Global parameters of the herbivory module are declared and parsed by \ref Fauna:
 - Call the plib function \ref declareitem() in \ref Fauna::ParamReader::declare_parameters() (possibly with your own CB_* code).
 - If you wish, add it to `mandatory_global_params` in \ref Fauna::ParamReader::callback() so that it must not be omitted.
 - Extend the example instruction file `data/ins/herbivores.ins`.
-
-### How to add a new PFT parameter {#sec_page_new_pft_parameter}
-
-Herbivory-related PFT parameters are declared and parsed by \ref Fauna::ParamReader, but initialized and checked in \ref Fauna::PftParams.
-
-- Create the member variable in \ref Fauna::PftParams.
-- If the parameters needs its own callback:
-	+ add a new enum item both in \ref parameters.h.
-	+ add a new if statement in \ref Fauna::ParamReader::callback().
-- Declare the parameter in \ref Fauna::ParamReader::declare_parameters()
-	(possibly with your own CB_* code).
-- You can initialize it in \ref Fauna::PftParams::PftParams().
-- Check if the parameter was *parsed* in \ref Fauna::ParamReader::callback(). There, add it to `mandatory_pft_params` to ensure it is not omitted. If it is *not* mandatory, make sure it is initialized with a valid value!
-- Check if the parameter is *valid* in \ref Fauna::PftParams::is_valid().
-- Extend the example instruction files in the directory `data/ins`.
-
 
 ### How to add a new HFT parameter {#sec_page_new_hft_parameter}
 
@@ -252,6 +218,9 @@ Herbivory-related PFT parameters are declared and parsed by \ref Fauna::ParamRea
 Output Tutorials {#sec_page_output_tutor}
 -------------------------------------------
 
+\todo Rewrite output tutorials.
+
+<!--
 ### How to add a new output variable {#sec_page_new_output}
 - Create a new `TableFile` member variable in \ref GuessOutput::HerbivoryOutput.
 	+ Initialize it in the constructor.
@@ -276,6 +245,8 @@ Adjust the return value of \ref GuessOutput::HerbivoryOutput::is_today_included(
 For comparison, see the local function `outlimit()` in \ref commonoutput.cpp.
 
 \see \ref sec_page_output
+
+-->
 
 
 How to add a new test vegetation model {#sec_page_new_testhabitat}

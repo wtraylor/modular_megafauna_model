@@ -1,7 +1,7 @@
-Software Design of the Herbivory Module {#page_design}
-=============================================================
+Software Design of the Megafauna Model {#page_design}
+=====================================================
 <!-- For doxygen, this is the *page* header -->
-\brief Notes on the software design of the LPJ-GUESS herbivory module from a programmer’s perspective.
+\brief Notes on the software design of the herbivore model from a programmer’s perspective.
 
 Software Design of the Herbivory Module {#sec_design}
 ============================================================
@@ -9,16 +9,17 @@ Software Design of the Herbivory Module {#sec_design}
 \tableofcontents
 
 Overview {#sec_designoverview}
--------------------------------------
+------------------------------
 
-The herbivory module differs in its design from the main LPJ-GUESS code in that it aims to apply principles of [object oriented programming](\ref page_object_orientation) as much as possible.
-Its architecture is modular so that different parts can be tested in [unit tests](\ref page_tests).
-This entails that *most* of the code of the herbivory module does not depend on LPJ-GUESS code (compare the section \ref sec_reusing_code).
+The herbivory model aims to apply principles of [object oriented programming](\ref page_object_orientation) as much as possible.
+Its architecture is modular and extensible.
+Each part can be tested in [unit tests](\ref page_tests).
 
 The following UML diagram shows through which interfaces the herbivory module interacts with other components:
 - \ref Fauna::PatchHabitat
 - \ref Fauna::ParamReader
-- \ref GuessOutput::HerbivoryOutput
+
+\todo Update UML diagram to show library and generic vegetation model.
 
 @startuml "Component diagram of the basic interactions of the herbivory module."
 	!include diagrams.iuml!basic_components
@@ -26,11 +27,10 @@ The following UML diagram shows through which interfaces the herbivory module in
 
 The basic simulation design is simple:
 - Each **herbivore** is of one **Herbivore Functional Type** ([HFT](\ref Fauna::Hft)).
-In LPJ-GUESS this would correspond to each \ref Individual being of one Plant Functional Type ([PFT](\ref Pft)).
+In LPJ-GUESS this would correspond to each `Individual` being of one `Pft` (Plant Functional Type).
 - Each herbivore lives in a **habitat** (\ref Fauna::Habitat), grouped in by HFT in **populations** (\ref Fauna::PopulationInterface).
-In LPJ-GUESS this would correspond to a plant \ref Individual growing in a \ref Patch.
-(Note that the herbivory module is completely ignorant of [gridcells](\ref Gridcell) and [stands](\ref Stand)).
-- The **[Simulator](\ref Fauna::Simulator)** is the %framework running the simulation.
+In LPJ-GUESS this would correspond to a plant `Individual` growing in a `Patch`.
+- The **[Simulator](\ref Fauna::Simulator)** is the framework class running the simulation.
 
 @startuml "Most important classes in the herbivory module."
 	!include diagrams.iuml!important_classes
@@ -46,60 +46,8 @@ Similarly, the Habitat does not interact with the herbivores either.
 It does not even *know* about the herbivore populations, as it is capsuled in \ref Fauna::SimulationUnit.
 
 
-### Integration with the LPJ-GUESS Vegetation Model {#sec_lpjguess_integration}
-
-The class \ref Fauna::PatchHabitat is the central class ([facade](\ref sec_facade)) for any interactions between the herbivory module and the LPJ-GUESS vegetation model.
-The life of any PatchHabitat object and its associated herbivores (encapsuled in \ref Fauna::SimulationUnit) depends on the owning Patch object.
-However, the habitat and its herbivores should *not* be manipulated by the vegetation model!
-
-Some new plant properties had to be introduced.
-- They are only herbivory-specific.
-- They potentially depend on global herbivory simulation settings (\ref Fauna::Parameters).
-- They form one logical unit.
-
-For these reasons, they were not simply added to the class \ref Pft, but they are gathered in \ref Fauna::PftParams.
-For the same reasons, they are also parsed by \ref Fauna::ParamReader (see \ref sec_parameters).
-
-@startuml "Class diagram around Fauna::PatchHabitat."
-	!include diagrams.iuml!patchhabitat_interactions
-@enduml
-
-In order to minimize dependencies, PatchHabitat objects are not created by the class \ref Patch, but by the function \ref framework(), as this diagram shows:
-
-@startuml "Sequence diagram of how Fauna::PatchHabitat is constructed."
-	!include diagrams.iuml!patchhabitat_construction
-@enduml
-
-#### Forage Removal {#sec_forageremoval}
-
-Herbivores remove aboveground plant biomass: They reduce \ref Individual::cmass_leaf and \ref Individual::nmass_leaf.
-This is implemented in the function \ref Individual::reduce_biomass().
-
-Several \ref Individual objects can be of the same forage type and appear to the herbivore as one single quantity, which is then reduced by eating.
-\ref Fauna::PatchHabitat::get_available_forage() calls \ref Individual::get_forage_mass() and sums up the quantities (kgDM/km²) for each forage type.
-\ref Fauna::PatchHabitat::remove_eaten_forage() converts the absolute eaten forage (kgDM/km²) into a fraction of remaining forage, which is then passed to \ref Individual::reduce_forage_mass().
-All this works only on the “available” part of the aboveground biomass (see \ref Fauna::PftParams::inaccessible_forage).
-![](patchhabitat_foragereduction.png "Proportional forage removal by Fauna::PatchHabitat")
-
-Eaten carbon leaves the system completely and is registered as a flux to the atmosphere (\ref Fluxes::EATENC).
-Eaten nitrogen is also registered as a flux (\ref Fluxes::EATENN), but returned to the soil pool \ref Soil::nmass_avail (\ref Fluxes::EXCRETEDN).
-
-Even though the nitrogen cycle is closed anyway, is important to have both ingestion and egestion nitrogen fluxes because the \ref MassBalance object would throw error messages otherwise since it is operating on an annual cycle while the herbivory module has a daily scheme.
-
-\see \ref sec_nitrogen_excretion
-
-
-#### Abiotic Environment {#sec_abiotic_environment}
-
-The container \ref Fauna::HabitatEnvironment contains informationen about the current abiotic conditions in a habitat. The are constant within the habitat and for one day.
-
-**Snow:** LPJ-GUESS calculates snow pack as snow water equivalent (\ref Soil::snowpack).
-The herbivory module needs the effective depth of the snow that is covering the ground.
-A “snow depth model” translates snow water equivalent to snow depth.
-New algorithms for snow density can also be implemented: \ref sec_new_snow_depth_model.
-
 Forage Classes {#sec_forageclasses}
-------------------------------------------
+-----------------------------------
 
 The model is designed to make implementation of multiple types of forage (like grass, browse, moss, etc.) easy.
 Each forage type is listed in \ref Fauna::ForageType.
@@ -129,7 +77,7 @@ They can be used for example in algorithms of
 \see \ref sec_new_forage_type
 
 The Herbivore {#sec_herbivoredesign}
--------------------------------------------
+------------------------------------
 
 The simulation framework of the herbivory module can operate with any class that implements \ref Fauna::HerbivoreInterface (\ref sec_liskov_substitution).
 Which class to choose is defined by \ref Fauna::Parameters::herbivore_type.

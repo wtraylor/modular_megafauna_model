@@ -12,9 +12,9 @@ In the Herbivore Module a couple of object-oriented design patterns
 were employed that are explained here along with general
 concepts of object-oriented programming.
 
-## Good Programming Practice ## {#sec_good_practice}
+## Good Programming Practice {#sec_good_practice}
 
-### Information Hiding ### {#sec_information_hiding}
+### Information Hiding {#sec_information_hiding}
 Information or data hiding means that any parts that may be subject to later changes in the software design must not be accessible from other modules or from clients.
 Only the very necessary access may be granted in well-defined, minimal interfaces.
 
@@ -22,7 +22,7 @@ Always assume the worst: If access is given to any other part of the software, t
 
 Declaring class members `private` (**encapsulation**) is one way to data hiding.
 
-### Rule of Three ### {#sec_rule_of_three}
+### Rule of Three {#sec_rule_of_three}
 If a class explicitely defines at least one of the following methods, it should most likely also define the other ones:
 
 - Destructor
@@ -72,7 +72,7 @@ This approach makes the system more modular and extensible.
 Inversion of control is related to the
 [Dependency Inversion Principle](\ref sec_dependency_inversion), which different in that it is concerned about the relationship between high-level and low-level modules rather than the framework design.
 
-### Dependency Injection ####
+### Dependency Injection
 Dependency Injection is a major technique to implement
 inversion of control:
 One object (the framework) supplies the dependencies for another object (the client), which then become a part of the client’s state.
@@ -90,6 +90,8 @@ In the case of \ref Fauna::Habitat, the \ref Fauna::Simulator is oblivious to th
 ## Design Patterns
 
 ### Singleton {#sec_singleton}
+\todo Is the Singleton design pattern still used anywhere?
+
 A class is called *singleton* if it permits only one global
 instantiation in the program.
 This object-oriented approach has advantages over global variables
@@ -113,13 +115,6 @@ The basic implementation is as follows:
 To get access to the instance or trigger the initial instantiation, use `MySingleton::get_instance();`.
 
 Wrapping global variables and free functions into a singleton class is good, but it is better to *avoid singletons all together* and instead follow the principle of [Inversion of Control](\ref sec_inversion_of_control).
-A few classes in the herbivory module employ are built singleton in order to interact in a save manner with the existing LPJ-GUESS framework, namely the declaration of instruction file parameters.
-
-The following classes of the herbivory module are singleton:
-\ref FaunaSim::Framework,
-\ref Fauna::ParamReader.
-The principle of a global single class shows also up in
-\ref GuessOutput::HerbivoryOutput.
 
 ### Strategy {#sec_strategy}
 The strategy design pattern defines a set of interchangable algorithms, each of which are encapsulated in a class that is derived from one abstract interface parent class.
