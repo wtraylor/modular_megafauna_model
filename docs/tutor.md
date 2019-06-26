@@ -137,8 +137,7 @@ Forage Tutorials {#sec_page_tutor_forage}
 
 - Adjust \ref Individual::get_forage_mass() and \ref Individual::reduce_forage_mass().
 
-- Adjust \ref Fauna::PatchHabitat::get_available_forage() to define values for your new forage-specific properties.
-(\ref Fauna::PatchHabitat::remove_eaten_forage() is generic for all forage types and does usually not need to be altered.)
+- Adjust the implementation of \ref Fauna::Habitat::get_available_forage() and \ref Fauna::Habitat::remove_eaten_forage() in your vegetation model.
 
 - Perhaps adjust the digestibility in your chosen \ref Fauna::GetDigestibility implementation.
 

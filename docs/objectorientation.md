@@ -80,7 +80,7 @@ This is a direct alternative to global objects/variables.
 
 Two kinds of dependency injection are used
 1. **Setter Injection:** A client receives its dependency *after* being constructed, via a setter method. This is dangerous, because until initialization through the setter method, the client might be in an invalid state. (Example: \ref Patch::set_herbivory_unit())
-2. **Constructor Injection:** Any object of the client class receives its dependency in the constructor. (Example: \ref Fauna::PatchHabitat::PatchHabitat())
+2. **Constructor Injection:** Any object of the client class receives its dependency in the constructor.
 
 For example: The \ref Fauna::HftList object is not a global variable, but is instead being passed down from the \ref framework() function to \ref Fauna::Simulator.
 

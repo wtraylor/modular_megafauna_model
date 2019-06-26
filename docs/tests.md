@@ -22,20 +22,8 @@ day of the year.
 instead of reading instruction file parameters directly
 (see section \ref sec_page_parameters).
 
-However, those classes that form the bridge to the vegetation
-model can only be tested to a limited degree because it would
-involve instantiating the whole (rather monolithic) vegetation
-model.
-Those classes are:
-\ref Fauna::PatchHabitat,
-\ref Fauna::Parameters,
-
 Unit tests use the [Catch](https://github.com/philsquared/Catch)
 framework.
-
-
-
-
 
 
 Herbivory Test Simulations {#sec_page_testsimulations}

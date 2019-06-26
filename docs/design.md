@@ -16,8 +16,6 @@ Its architecture is modular and extensible.
 Each part can be tested in [unit tests](\ref page_tests).
 
 The following UML diagram shows through which interfaces the herbivory module interacts with other components:
-- \ref Fauna::PatchHabitat
-- \ref Fauna::ParamReader
 
 \todo Update UML diagram to show library and generic vegetation model.
 
