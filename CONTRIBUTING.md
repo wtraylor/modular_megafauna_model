@@ -5,6 +5,9 @@ Version Control
 ---------------
 
 ### Branches
+- The `master` branch is reserved for stable releases, tagged with the version numbers.
+- This repository follows Vincent Driessen’s [Successful Git Branching Model](https://nvie.com/posts/a-successful-git-branching-model/).
+- If you are new to Git branching, check out this tutorial: [Learn Git Branching](https://learngitbranching.js.org/)
 
 ### Release Versioning
 - This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
