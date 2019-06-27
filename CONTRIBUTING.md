@@ -31,6 +31,7 @@ Follow Chris Beams’ guide for crafting your Git commit messages: [How to Write
 > 7. Use the body to explain what and why vs. how
 
 ### Continuous Integration (CI)
+<!--TODO-->
 
 Coding Guidelines
 -----------------
