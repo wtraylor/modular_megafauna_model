@@ -61,6 +61,6 @@ struct HabitatData {
   /** @} */  // Aggregation Functionality
 };
 
-} // namespace fauna::output
+} // namespace Fauna::Output
 
 #endif // HABITAT_DATA_H

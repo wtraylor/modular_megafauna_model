@@ -149,6 +149,6 @@ struct HerbivoreData {
 
   /** @} */  // Aggregation Functionality
 };
-} // namespace fauna::output
+} // namespace Fauna::Output
 
 #endif // HERBIVORE_DATA

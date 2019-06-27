@@ -66,6 +66,6 @@ struct CombinedData {
     return result;
   }
 };
-} // namespace fauna::output
+} // namespace Fauna::Output
 
 #endif // COMBINED_DATA_H
