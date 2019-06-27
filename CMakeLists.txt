@@ -6,6 +6,13 @@ project ("Modular Megafauna Model"
   )
 
 add_library (ModularMegafaunaModel STATIC
+  include/Fauna/forage_types.h
+  src/Fauna/Output/combined_data.cpp
+  src/Fauna/Output/combined_data.h
+  src/Fauna/Output/habitat_data.cpp
+  src/Fauna/Output/habitat_data.h
+  src/Fauna/Output/herbivore_data.cpp
+  src/Fauna/Output/herbivore_data.h
   src/Fauna/createherbivores.cpp
   src/Fauna/createherbivores.h
   src/Fauna/energetics.cpp
@@ -14,7 +21,6 @@ add_library (ModularMegafaunaModel STATIC
   src/Fauna/feed.cpp
   src/Fauna/feed.h
   src/Fauna/forage_types.cpp
-  src/Fauna/forage_types.h
   src/Fauna/forageclasses.cpp
   src/Fauna/forageclasses.h
   src/Fauna/forageenergy.cpp
@@ -31,12 +37,6 @@ add_library (ModularMegafaunaModel STATIC
   src/Fauna/mortality.h
   src/Fauna/nitrogen.cpp
   src/Fauna/nitrogen.h
-  src/Fauna/Output/combined_data.cpp
-  src/Fauna/Output/combined_data.h
-  src/Fauna/Output/habitat_data.cpp
-  src/Fauna/Output/habitat_data.h
-  src/Fauna/Output/herbivore_data.cpp
-  src/Fauna/Output/herbivore_data.h
   src/Fauna/parameters.cpp
   src/Fauna/parameters.h
   src/Fauna/population.cpp
@@ -61,8 +61,9 @@ add_library (ModularMegafaunaModel STATIC
 target_compile_features (ModularMegafaunaModel PRIVATE cxx_std_11)
 
 target_include_directories (ModularMegafaunaModel
-  INTERFACE
-  include
+  PUBLIC
+  include/
+  include/Fauna/
   PRIVATE
   src/Fauna/
   src/Fauna/Output/

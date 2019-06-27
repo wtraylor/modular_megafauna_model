@@ -7,4 +7,6 @@
 #ifndef MEGAFAUNA_H
 #define MEGAFAUNA_H
 
+#include "forage_types.h"
+
 #endif // MEGAFAUNA_H
