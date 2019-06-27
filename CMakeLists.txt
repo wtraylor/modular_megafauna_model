@@ -7,6 +7,9 @@ project ("Modular Megafauna Model"
 
 set (SOURCE_FILES
   include/Fauna/forage_types.h
+  include/Fauna/forage_values.h
+  include/Fauna/grass_forage.h
+  include/Fauna/habitat_forage.h
   src/Fauna/Output/combined_data.cpp
   src/Fauna/Output/combined_data.h
   src/Fauna/Output/habitat_data.cpp
@@ -20,15 +23,17 @@ set (SOURCE_FILES
   src/Fauna/environment.h
   src/Fauna/feed.cpp
   src/Fauna/feed.h
+  src/Fauna/forage_base.cpp
   src/Fauna/forage_types.cpp
-  src/Fauna/forageclasses.cpp
-  src/Fauna/forageclasses.h
+  src/Fauna/forage_values.cpp
   src/Fauna/forageenergy.cpp
   src/Fauna/forageenergy.h
   src/Fauna/foraging.cpp
   src/Fauna/foraging.h
+  src/Fauna/grass_forage.cpp
   src/Fauna/habitat.cpp
   src/Fauna/habitat.h
+  src/Fauna/habitat_forage.cpp
   src/Fauna/herbivore.cpp
   src/Fauna/herbivore.h
   src/Fauna/hft.cpp
@@ -91,10 +96,12 @@ if (BUILD_TESTING)
     src/Fauna/Output/herbivore_data.test.cpp
     src/Fauna/energetics.test.cpp
     src/Fauna/feed.test.cpp
-    src/Fauna/forageclasses.test.cpp
+    src/Fauna/forage_values.test.cpp
     src/Fauna/forageenergy.test.cpp
     src/Fauna/foraging.test.cpp
+    src/Fauna/grass_forage.test.cpp
     src/Fauna/habitat.test.cpp
+    src/Fauna/habitat_forage.test.cpp
     src/Fauna/herbivore.test.cpp
     src/Fauna/hft.test.cpp
     src/Fauna/mortality.test.cpp

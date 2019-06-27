@@ -9,10 +9,11 @@
 
 #include <memory>           // for std::auto_ptr
 #include <vector>           // for HerbivoreVector
-#include "forageclasses.h"  // for ForageDistribution
+#include "forage_values.h"  // for ForageDistribution
 
 namespace Fauna {
 // forward declarations
+class HabitatForage;
 class HerbivoreInterface;
 
 /// A vector of herbivore pointers.

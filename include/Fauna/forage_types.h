@@ -7,10 +7,11 @@
 #ifndef FORAGE_TYPES_H
 #define FORAGE_TYPES_H
 
+#include <cassert>
 #include <set>
 #include <string>
 
-namespace Fauna{
+namespace Fauna {
 
 /// Different types of forage.
 enum ForageType {
@@ -40,10 +41,11 @@ extern const std::set<ForageType> FORAGE_TYPES;
  * - unique,
  * - lowercase,
  * - without blank spaces or tabs, newlines etc.,
- * - without comma oder underscore (which might be used to combine column names in the output).
+ * - without comma oder underscore (which might be used to combine column names
+ * in the output).
  */
 const std::string& get_forage_type_name(const ForageType);
 
-} // namespace Fauna
+}  // namespace Fauna
 
-#endif // FORAGE_TYPES_H
+#endif  // FORAGE_TYPES_H

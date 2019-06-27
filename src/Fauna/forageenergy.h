@@ -7,8 +7,9 @@
 #ifndef FORAGEENERGY_H
 #define FORAGEENERGY_H
 
-#include "forageclasses.h"  // for ForageType
-#include "hft.h"            // for DigestionType
+#include "forage_types.h"
+#include "forage_values.h"
+#include "hft.h"
 
 namespace Fauna {
 

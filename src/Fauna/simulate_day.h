@@ -10,7 +10,7 @@
 #include <map>              // for ForageDistribution
 #include <vector>           // for HerbivoreVector
 #include "combined_data.h"  // for Output::CombinedData
-#include "forageclasses.h"  // for HabitatForage
+#include "habitat_forage.h" // for HabitatForage
 
 namespace Fauna {
 // Forward declarations

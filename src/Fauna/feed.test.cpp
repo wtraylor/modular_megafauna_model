@@ -3,6 +3,7 @@
 #include "dummy_hft.h"
 #include "dummy_population.h"
 #include "feed.h"
+#include "habitat_forage.h"
 #include "parameters.h"
 using namespace Fauna;
 

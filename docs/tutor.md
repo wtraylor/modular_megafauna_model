@@ -115,7 +115,7 @@ Forage Tutorials {#sec_tutor_forage}
 
 ### How to add a new forage type {#sec_new_forage_type}
 
-- Create new enum entry in \ref Fauna::ForageType and add it to \ref Fauna::FORAGE_TYPES by expanding the initializing function `get_all_forage_types()`, which is declared in local namespace in \ref forageclasses.cpp.
+- Create new enum entry in \ref Fauna::ForageType and add it to \ref Fauna::FORAGE_TYPES by expanding the initializing function `get_all_forage_types()`, which is declared in local namespace in \ref forage_types.cpp.
 
 - Add a short name without blanks in \ref Fauna::get_forage_type_name().
 

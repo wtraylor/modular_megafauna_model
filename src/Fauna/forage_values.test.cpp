@@ -1,5 +1,6 @@
 #include <catch2/catch.hpp>
-#include "forageclasses.h"
+#include "forage_values.h"
+
 using namespace Fauna;
 
 TEST_CASE("Fauna::ForageValues", "") {
@@ -226,95 +227,3 @@ TEST_CASE("Fauna::ForageValues", "") {
       CHECK(mj[*ft] / mj.sum() == Approx(prop_mj[*ft] / prop_mj.sum()));
   }
 }
-
-TEST_CASE("Fauna::GrassForage", "") {
-  SECTION("Initialization") {
-    CHECK(GrassForage().get_mass() == 0.0);
-    CHECK(GrassForage().get_digestibility() == 0.0);
-    CHECK(GrassForage().get_fpc() == 0.0);
-  }
-
-  SECTION("Exceptions") {
-    CHECK_THROWS(GrassForage().set_fpc(1.2));
-    CHECK_THROWS(GrassForage().set_fpc(-0.2));
-    CHECK_THROWS(GrassForage().set_mass(-0.2));
-    CHECK_THROWS(GrassForage().set_digestibility(-0.2));
-    CHECK_THROWS(GrassForage().set_digestibility(1.2));
-
-    GrassForage g;
-    CHECK_THROWS(g.set_fpc(0.5));  // mass must be >0.0
-    g.set_mass(1.0);
-    CHECK_THROWS(g.get_fpc());     // illogical state
-    CHECK_THROWS(g.set_fpc(0.0));  // fpc must be >0.0
-  }
-
-  SECTION("sward density") {
-    CHECK(GrassForage().get_sward_density() == 0.0);
-
-    GrassForage g;
-    const double FPC = .234;
-    const double MASS = 1256;
-    g.set_mass(MASS);
-    g.set_fpc(FPC);
-    CHECK(g.get_sward_density() == Approx(MASS / FPC));
-  }
-
-  SECTION("merge") {
-    // merge some arbitrary numbers
-    GrassForage g1, g2;
-    const double W1 = 956;
-    const double W2 = 123;
-    const double M1 = 23;
-    const double M2 = 54;
-    const double D1 = 0.342;
-    const double D2 = 0.56;
-    const double F1 = 0.76;
-    const double F2 = 0.123;
-    g1.set_mass(M1);
-    g2.set_mass(M2);
-    g1.set_digestibility(D1);
-    g2.set_digestibility(D2);
-    g1.set_fpc(F1);
-    g2.set_fpc(F2);
-
-    g1.merge(g2, W1, W2);
-    CHECK(g1.get_mass() == Approx(average(M1, M2, W1, W2)));
-    CHECK(g1.get_digestibility() == Approx(average(D1, D2, W1, W2)));
-    CHECK(g1.get_fpc() == Approx(average(F1, F2, W1, W2)));
-  }
-}
-
-TEST_CASE("Fauna::HabitatForage", "") {
-  HabitatForage hf1 = HabitatForage();
-
-  // Initialization
-  REQUIRE(hf1.get_total().get_mass() == Approx(0.0));
-  REQUIRE(hf1.get_total().get_digestibility() == Approx(0.0));
-
-  SECTION("adding forage") {
-    const double GRASSMASS = 10.0;        // dry matter [kgDM/km²]
-    const double NMASS = GRASSMASS * .1;  // nitrogen [kgN/km²]
-    hf1.grass.set_mass(GRASSMASS);
-    hf1.grass.set_digestibility(0.5);
-    hf1.grass.set_fpc(0.3);
-
-    // Nitrogen
-    CHECK_THROWS(hf1.grass.set_nitrogen_mass(GRASSMASS * 1.1));
-    hf1.grass.set_nitrogen_mass(NMASS);
-    CHECK(hf1.grass.get_nitrogen_mass() == NMASS);
-    CHECK(hf1.get_nitrogen_content()[FT_GRASS] == Approx(NMASS / GRASSMASS));
-    CHECK_THROWS(hf1.grass.set_mass(NMASS * .9));
-
-    // Check value access
-    REQUIRE(hf1.grass.get_mass() == GRASSMASS);
-    CHECK(hf1.grass.get_mass() == hf1.get_mass()[FT_GRASS]);
-    REQUIRE(hf1.get_total().get_mass() == GRASSMASS);
-    CHECK(hf1.get_total().get_mass() == Approx(hf1.get_mass().sum()));
-    REQUIRE(hf1.get_total().get_digestibility() == 0.5);
-  }
-
-  // The member function `merge()` is not tested here
-  // because it is a nothing more than simple wrapper around
-  // the merge functions of ForageBase and its child classes.
-}
-

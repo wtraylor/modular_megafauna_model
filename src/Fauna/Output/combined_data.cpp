@@ -1,4 +1,5 @@
 #include "combined_data.h"
+#include "grass_forage.h"
 #include "hft.h"
 
 using namespace Fauna::Output;

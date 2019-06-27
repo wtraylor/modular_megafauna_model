@@ -6,6 +6,8 @@
 /// \see \ref sec_output
 ////////////////////////////////////////////////////////////////////
 #include "habitat_data.h"
+#include "utils.h"
+
 using namespace Fauna::Output;
 
 HabitatData& HabitatData::merge(const HabitatData& other,

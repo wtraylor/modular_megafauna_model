@@ -8,7 +8,7 @@
 #ifndef HABITAT_DATA_H
 #define HABITAT_DATA_H
 
-#include "forageclasses.h" // for HabitatForage
+#include "habitat_forage.h" // for HabitatForage
 #include "environment.h" // for HabitatEnvironment
 
 namespace Fauna::Output {
