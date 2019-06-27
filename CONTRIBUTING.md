@@ -35,6 +35,18 @@ Follow Chris Beams’ guide for crafting your Git commit messages: [How to Write
 Coding Guidelines
 -----------------
 
+### Repository Structure
+This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pitchfork) for C++ projects.
+Here is a summary of the relevant parts:
+
+- **Namespace Folders:** The `src/` directory has subfolders reflecting the namespaces of the contained components.
+
+- **Separate Header Placement:** Header (`*.h`) and source (`*.cpp`) files are kept together in `src/` if they are _private_ (not part of the library interface). _Public_ headers are placed in `include/` while their corresponding source files remain in `src/`.
+
+- **Coherence:** A header and corresponding source file (= _physical component_)contain code for _logical component._ If in doubt, rather air on the side of granularity and create several individual components.
+
+- **Separate Test Placement:** <!--TODO-->
+
 ### Code Format
 
 ### Object-Oriented Design
