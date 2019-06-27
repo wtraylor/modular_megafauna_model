@@ -7,6 +7,14 @@ Version Control
 ### Branches
 
 ### Release Versioning
+- This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+- Each merge into the `master` branch is a release and should have a Git tag.
+    + The tag’s name is just the exact version, e.g. “0.1.2”.
+    + The tag’s decription should summarize the introduced changes.
+- Before merging into `master`:
+    + Set the new version in `CMakeLists.txt`.
+    + List your changes in `CHANGELOG.md`, following the formatting guidelines there.
+- If you cite this code in a journal publication, consider getting a DOI for the specific model version you used.
 
 ### Commit Messages
 Follow Chris Beams’ guide for crafting your Git commit messages: [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
