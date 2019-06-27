@@ -56,17 +56,18 @@ The default Google layout is exported in the [.clang-format](.clang-format) file
 This repository has a [.editorconfig](.editorconfig) file to define indentation rule for different file types.
 Please install the plugin for your text editor if available: [editorconfig.org/](https://editorconfig.org/)
 
-### Object-Oriented Design
-
 ### Unit Tests
 
 ### Doxygen
 
 #### Bibliography
-[BibTeX](www.bibtex.org) is used for bibliographic references (in addition
-to a list of references in comments at the bottom of each source file).
-The Doxygen command `cite` is used for that.
+[BibTeX](www.bibtex.org) is used for bibliographic references: [docs/bibliography.bib](docs/bibliography.bib).
+The Doxygen command `\cite` is used for that.
 This makes browsing the Doxygen documentation easier.
+
+In general you should not need to put any references to scientific publications in _comments_ in the source code.
+Better you explain everything in a narrative form in the Doxygen _documentation_ and use the `\cite` command for that.
+If you do cite in source code comments, make sure that the reference is uniquely identifiable in `bibliography.bib`.
 
 Use [bibsort](http://ftp.math.utah.edu/pub/bibsort/) to sort the
 bibliography entries by label.

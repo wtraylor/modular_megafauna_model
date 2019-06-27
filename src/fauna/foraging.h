@@ -309,13 +309,3 @@ ForageMass get_max_intake_as_total_mass(const ForageFraction& mj_proportions,
 }  // namespace Fauna
 
 #endif  // FORAGING_H
-
-// Adrian Pachzelt, Anja Rammig, Steven Higgins & Thomas Hickler (2013).
-// Coupling a physiological grazer population model with a generalized model for
-// vegetation dynamics. Ecological Modelling, 263, 92 - 102. Holling, C. S.
-// (1959). The Components of Predation as Revealed by a Study of Small-Mammal
-// Predation of the European Pine Sawfly. The Canadian Entomologist, 91,
-// 293-320. Illius, A. W. & Gordon, I. J. (1992). Modelling the nutritional
-// ecology of ungulate herbivores: evolution of body size and competitive
-// interactions. Oecologia, 89, 428-434. Illius, A. W. & O'Connor, T. G. (2000).
-// Resource Heterogeneity and Ungulate Population Dynamics. Oikos, 89, 283-294.

@@ -259,34 +259,3 @@ double get_thermoregulatory_expenditure(const double thermoneutral_rate,
 }  // namespace Fauna
 
 #endif  // ENERGETICS_H
-
-// References
-
-// Anderson, Kristina J., and Walter Jetz. 2005. “The Broad‐scale Ecology of
-// Energy Expenditure of Endotherms.” _Ecology Letters_ 8 (3): 310–18.
-// https://doi.org/10.1111/j.1461-0248.2005.00723.x.
-
-// S.Robert Bradley and Daniel R Deavers. A re-examination of the relationship
-// between thermal conductance and body weight in mammals. Comparative
-// Biochemistry and Physiology Part A: Physiology, 65(4):465–476, 1980.
-
-// Hudson, Robert J. and Robert G. White (1985). Bioenergetics of wild
-// herbivores. CRC press.
-
-// Peters, Robert Henry (1983). The ecological implications of body size. 1st
-// publ. Cambridge studies in ecology. - Cambridge : Univ. Press, 1982 2.
-// Cambridge [u.a.]: Cambridge Univ.Pr. xii+329.
-
-// Taylor, C. S., H. G. Turner, and G. B. Young. 1981. “Genetic Control of
-// Equilibrium Maintenance Efficiency in Cattle.” _Animal Science_ 33 (2):
-// 179–94. http://journals.cambridge.org/article_S0003356100040617.
-
-// Soppela, Päivi, Mauri Nieminen, and Jouni Timisjärvi (June 1, 1986).
-// “吀ermoregulation in reindeer”. In: Rangifer 6.2, pp. 273–278.
-// doi: 10.7557/2.6.2.659.
-
-// Zhu, Dan, Philippe Ciais, Jinfeng Chang, Gerhard Krinner, Shushi Peng,
-// Nicolas Viovy, Josep Peñuelas, and Sergey Zimov. 2018. “The Large Mean Body
-// Size of Mammalian Herbivores Explains the Productivity Paradox During the
-// Last Glacial Maximum.” _Nature Ecology & Evolution_.
-// https://doi.org/10.1038/s41559-018-0481-y.

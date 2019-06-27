@@ -681,10 +681,3 @@ void HerbivoreCohort::merge(HerbivoreCohort& other) {
   // Change density in other object
   other.ind_per_km2 = 0.0;
 }
-
-// REFERENCES
-// Illius, A. W. & O'Connor, T. G. (2000). Resource heterogeneity and ungulate
-// population dynamics. Oikos, 89, 283-294. Adrian Pachzelt, Anja Rammig, Steven
-// Higgins & Thomas Hickler (2013). Coupling a physiological grazer population
-// model with a generalized model for vegetation dynamics. Ecological Modelling,
-// 263, 92 - 102.

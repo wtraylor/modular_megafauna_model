@@ -124,15 +124,3 @@ class GetNetEnergyContentDefault : public GetNetEnergyContentInterface {
 }  // namespace Fauna
 
 #endif  // FORAGEENERGY_H
-
-//////////////////////////////////////////////////////////////////////
-// REFERENCES
-//////////////////////////////////////////////////////////////////////
-// Foose, Thomas J. 1982. “Trophic Strategies of Ruminant Versus Nonruminant
-// Ungulates.” PhD thesis, University of Chicago. Johnson, D. E., M. M. Borman,
-// and L. R. Rittenhouse. 1982. “Intake, Apparent Utilization and Rate of
-// Digestion in Mares and Cows.” In Proceedings of the Annual Meeting. American
-// Society for Animal Science Western Section. Illius, A. W., and I. J. Gordon.
-// 1992. “Modelling the Nutritional Ecology of Ungulate Herbivores: Evolution of
-// Body Size and Competitive Interactions.” Oecologia 89 (3):428–34.
-// http://link.springer.com/article/10.1007/BF00317422.

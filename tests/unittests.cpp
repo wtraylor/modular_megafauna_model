@@ -2950,8 +2950,3 @@ TEST_CASE("FaunaSim::HabitatGroupList", "") {
 // 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30+31+31+30+31+30) );
 // 	CHECK( is_first_day_of_month(-1+31+28+31+30+31+30+31+31+30+31+30+31) );
 // }
-
-//////////////////////////////////////////////////////////////
-// REFERENCES
-// Blaxter, Kenneth (1989). Energy Metabolism in Animals and Man. CUP Archive.
-// 356 pp.
