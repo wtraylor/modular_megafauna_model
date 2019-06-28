@@ -1,5 +1,6 @@
 #include <catch2/catch.hpp>
 #include "simulation_unit.h"
+#include "dummy_habitat.h"
 using namespace Fauna;
 
 TEST_CASE("Fauna::SimulationUnit") {

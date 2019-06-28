@@ -40,17 +40,6 @@ struct DistributeForageDummy : public DistributeForage {
   }
 };
 
-/// A dummy habitat that does nothing
-class DummyHabitat : public Habitat {
- public:
-  virtual void add_excreted_nitrogen(const double) {}  // deactivated
-  virtual HabitatForage get_available_forage() const { return HabitatForage(); }
-  virtual HabitatEnvironment get_environment() const {
-    return HabitatEnvironment();
-  }
-  int get_day_public() const { return get_day(); }
-};
-
 /// A dummy herbivore that does nothing
 class DummyHerbivore : public HerbivoreInterface {
  public:
