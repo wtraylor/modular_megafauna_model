@@ -84,7 +84,7 @@ find_package(Catch2 REQUIRED)
 add_executable(megafauna_unit_tests
   ${SOURCE_FILES}
   # src/Fauna/Output/combined_data.test.cpp
-  # src/Fauna/Output/habitat_data.test.cpp
+  src/Fauna/Output/habitat_data.test.cpp
   # src/Fauna/Output/herbivore_data.test.cpp
   src/Fauna/energetics.test.cpp
   # src/Fauna/feed.test.cpp

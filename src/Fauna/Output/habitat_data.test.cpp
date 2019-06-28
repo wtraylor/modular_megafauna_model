@@ -1,8 +1,9 @@
 #include <catch2/catch.hpp>
 #include "habitat_data.h"
 using namespace Fauna;
+using namespace Fauna::Output;
 
-TEST_CASE("FaunaOut::HabitatData", "") {
+TEST_CASE("Fauna::Output::HabitatData", "") {
   SECTION("Exceptions") {
     HabitatData d1, d2;
     CHECK_THROWS(d1.merge(d2, 0, 0));
