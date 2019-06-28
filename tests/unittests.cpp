@@ -35,13 +35,3 @@ using namespace FaunaSim;
 }  // anonymous namespace
 
 // TEST CASES IN ALPHABETICAL ORDER, PLEASE
-
-TEST_CASE("Dummies", "") {
-  SECTION("DummyPopulation") {
-    DummyHerbivore dummy1 = DummyHerbivore(&hft1, 1.0);
-    DummyHerbivore dummy2 = DummyHerbivore(&hft1, 0.0);
-    DummyPopulation pop = DummyPopulation(&hft1);
-    pop.create_offspring(1.0);
-    REQUIRE(pop.get_list().size() == 1);
-  }
-}

@@ -109,6 +109,7 @@ add_executable(megafauna_unit_tests
   tests/dummy_herbivore_base.h
   tests/dummy_hft.h
   tests/dummy_population.h
+  tests/dummy_population.test.cpp
   )
 target_include_directories (megafauna_unit_tests
   PRIVATE
