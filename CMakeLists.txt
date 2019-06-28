@@ -102,12 +102,14 @@ add_executable(megafauna_unit_tests
   # src/Fauna/simulation_unit.test.cpp
   # src/Fauna/simulator.test.cpp
   src/Fauna/utils.test.cpp
+  tests/catch_main.cpp
   )
 target_include_directories (megafauna_unit_tests
   PRIVATE
   include/Fauna/
   src/Fauna/
   src/Fauna/Output/
+  tests/
   )
 target_link_libraries (megafauna_unit_tests Catch2::Catch2)
 include (CTest)
