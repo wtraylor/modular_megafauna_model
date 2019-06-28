@@ -1,6 +1,9 @@
 #include <catch2/catch.hpp>
-#include "herbivore.h"
+#include "dummy_herbivore_base.h"
 #include "dummy_hft.h"
+#include "environment.h"
+#include "herbivore.h"
+#include "parameters.h"
 using namespace Fauna;
 
 TEST_CASE("Fauna::HerbivoreBase", "") {

@@ -92,7 +92,7 @@ add_executable(megafauna_unit_tests
   src/Fauna/forageenergy.test.cpp
   src/Fauna/foraging.test.cpp
   src/Fauna/habitat.test.cpp
-  # src/Fauna/herbivore.test.cpp
+  src/Fauna/herbivore.test.cpp
   src/Fauna/hft.test.cpp
   src/Fauna/mortality.test.cpp
   src/Fauna/nitrogen.test.cpp
