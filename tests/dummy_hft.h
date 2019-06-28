@@ -2,10 +2,11 @@
 #define DUMMY_HFT_H
 
 #include <sstream>
+#include "hft.h"
 
 namespace Fauna {
 /// Create a simple, valid HftList
-HftList create_hfts(const int count, const Parameters& params) {
+inline HftList create_hfts(const int count, const Parameters& params) {
   HftList hftlist;
   for (int i = 0; i < count; i++) {
     Hft hft;

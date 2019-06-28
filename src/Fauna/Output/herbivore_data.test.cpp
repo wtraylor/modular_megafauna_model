@@ -1,6 +1,8 @@
 #include <catch2/catch.hpp>
+#include "dummy_hft.h"
 #include "herbivore_data.h"
 using namespace Fauna;
+using namespace Fauna::Output;
 
 TEST_CASE("FaunaOut::HerbivoreData", "") {
   SECTION("Exceptions") {
