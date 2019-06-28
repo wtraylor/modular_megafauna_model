@@ -95,7 +95,7 @@ add_executable(megafauna_unit_tests
   # src/Fauna/herbivore.test.cpp
   # src/Fauna/hft.test.cpp
   # src/Fauna/mortality.test.cpp
-  # src/Fauna/nitrogen.test.cpp
+  src/Fauna/nitrogen.test.cpp
   src/Fauna/parameters.test.cpp
   # src/Fauna/population.test.cpp
   # src/Fauna/reproduction.test.cpp
