@@ -105,6 +105,7 @@ add_executable(megafauna_unit_tests
   tests/catch_main.cpp
   tests/dummy_habitat.h
   tests/dummy_herbivore.h
+  tests/dummy_herbivore.test.cpp
   tests/dummy_herbivore_base.h
   tests/dummy_hft.h
   tests/dummy_population.h

@@ -32,41 +32,11 @@ using namespace Fauna;
 using namespace FaunaOut;
 using namespace FaunaSim;
 
-namespace {
-struct DistributeForageDummy : public DistributeForage {
-  virtual void operator()(const HabitatForage& available,
-                          ForageDistribution& forage_distribution) const {
-    // TODO
-  }
-};
-
 }  // anonymous namespace
 
 // TEST CASES IN ALPHABETICAL ORDER, PLEASE
 
 TEST_CASE("Dummies", "") {
-  Hft hft1;
-  hft1.name = "hft1";
-  SECTION("DummyHerbivore") {
-    // INITIALIZATION
-    CHECK(DummyHerbivore(&hft1, 1.0).get_ind_per_km2() == 1.0);
-    CHECK(DummyHerbivore(&hft1, 0.0).get_ind_per_km2() == 0.0);
-    CHECK(DummyHerbivore(&hft1, 1.0, 25.0).get_bodymass() == 25.0);
-    CHECK(DummyHerbivore(&hft1, 1.0).get_original_demand() == 0.0);
-    DummyHerbivore d(&hft1, 1.0);
-    CHECK(&d.get_hft() == &hft1);
-    CHECK(d.get_eaten() == 0.0);
-    CHECK(d.get_original_demand() == 0.0);
-
-    const ForageMass DEMAND(23.9);
-    d.set_demand(DEMAND);
-    CHECK(d.get_original_demand() == DEMAND);
-
-    const ForageMass EATEN(12.4);
-    d.eat(EATEN, Digestibility(.5));
-    CHECK(d.get_eaten() == EATEN);
-  }
-
   SECTION("DummyPopulation") {
     DummyHerbivore dummy1 = DummyHerbivore(&hft1, 1.0);
     DummyHerbivore dummy2 = DummyHerbivore(&hft1, 0.0);
