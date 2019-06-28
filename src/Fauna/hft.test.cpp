@@ -1,5 +1,6 @@
 #include <catch2/catch.hpp>
 #include "hft.h"
+#include "parameters.h"
 using namespace Fauna;
 
 TEST_CASE("Fauna::Hft", "") {
