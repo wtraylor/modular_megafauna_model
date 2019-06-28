@@ -1,5 +1,7 @@
 #include <catch2/catch.hpp>
+#include "dummy_hft.h"
 #include "foraging.h"
+#include "parameters.h"
 using namespace Fauna;
 
 TEST_CASE("Fauna::HalfMaxIntake") {
