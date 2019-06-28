@@ -98,7 +98,7 @@ add_executable(megafauna_unit_tests
   src/Fauna/nitrogen.test.cpp
   src/Fauna/parameters.test.cpp
   src/Fauna/population.test.cpp
-  # src/Fauna/reproduction.test.cpp
+  src/Fauna/reproduction.test.cpp
   src/Fauna/simulation_unit.test.cpp
   src/Fauna/simulator.test.cpp
   src/Fauna/utils.test.cpp
