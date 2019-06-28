@@ -90,7 +90,7 @@ add_executable(megafauna_unit_tests
   # src/Fauna/feed.test.cpp
   src/Fauna/forageclasses.test.cpp
   src/Fauna/forageenergy.test.cpp
-  # src/Fauna/foraging.test.cpp
+  src/Fauna/foraging.test.cpp
   src/Fauna/habitat.test.cpp
   # src/Fauna/herbivore.test.cpp
   src/Fauna/hft.test.cpp
@@ -105,6 +105,7 @@ add_executable(megafauna_unit_tests
   tests/catch_main.cpp
   tests/dummy_habitat.h
   tests/dummy_herbivore.h
+  tests/dummy_herbivore_base.h
   tests/dummy_hft.h
   tests/dummy_population.h
   )
