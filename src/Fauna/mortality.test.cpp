@@ -63,7 +63,7 @@ TEST_CASE("Fauna::GetStarvationIlliusOConnor2000", "") {
 
     // With full fat reserves there shouldn’t be any considerable
     // mortality
-    CHECK(get_mort(1.0, new_bc) == Approx(0.0));
+    CHECK(get_mort(1.0, new_bc) == Approx(0.0).margin(0.001));
     CHECK(new_bc == Approx(1.0));
 
     // Mortality increases with lower body condition.
