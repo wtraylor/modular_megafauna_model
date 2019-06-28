@@ -1,6 +1,23 @@
 #include <catch2/catch.hpp>
+#include "dummy_hft.h"
+#include "dummy_population.h"
+#include "habitat.h"
+#include "hft.h"
+#include "parameters.h"
 #include "population.h"
 using namespace Fauna;
+
+namespace {
+/// \brief Check if the lengths of the modifiable and the
+/// read-only population vectors match.
+bool population_lists_match(PopulationInterface& pop) {
+  // FIRST the read-only -> no chance for the population
+  // object to change the list.
+  ConstHerbivoreVector readonly = ((const PopulationInterface&)pop).get_list();
+  HerbivoreVector modifiable = pop.get_list();
+  return modifiable.size() == readonly.size();
+}
+}  // namespace
 
 TEST_CASE("Fauna::CohortPopulation", "") {
   // prepare parameters

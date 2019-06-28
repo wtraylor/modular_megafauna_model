@@ -97,13 +97,16 @@ add_executable(megafauna_unit_tests
   # src/Fauna/mortality.test.cpp
   src/Fauna/nitrogen.test.cpp
   src/Fauna/parameters.test.cpp
-  # src/Fauna/population.test.cpp
+  src/Fauna/population.test.cpp
   # src/Fauna/reproduction.test.cpp
   src/Fauna/simulation_unit.test.cpp
   # src/Fauna/simulator.test.cpp
   src/Fauna/utils.test.cpp
   tests/catch_main.cpp
   tests/dummy_habitat.h
+  tests/dummy_herbivore.h
+  tests/dummy_hft.h
+  tests/dummy_population.h
   )
 target_include_directories (megafauna_unit_tests
   PRIVATE

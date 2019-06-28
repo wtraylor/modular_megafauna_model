@@ -1,0 +1,46 @@
+#ifndef DUMMY_POPULATION_H
+#define DUMMY_POPULATION_H
+
+#include "dummy_herbivore.h"
+#include "hft.h"
+#include "population.h"
+
+namespace Fauna {
+/// A population of dummy herbivores
+class DummyPopulation : public PopulationInterface {
+ private:
+  const Hft* hft;
+  std::vector<DummyHerbivore> vec;
+
+ public:
+  DummyPopulation(const Hft* hft) : hft(hft), has_been_purged(false) {}
+
+  /// creates one new herbivore object
+  virtual void create_offspring(const double ind_per_km2) {
+    vec.push_back(DummyHerbivore(hft, ind_per_km2));
+  }
+
+  /// creates one new herbivore object
+  virtual void establish() {
+    vec.push_back(DummyHerbivore(hft, hft->establishment_density));
+  }
+
+  virtual const Hft& get_hft() const { return *hft; }
+
+  virtual std::vector<const HerbivoreInterface*> get_list() const {
+    std::vector<const HerbivoreInterface*> res;
+    for (int i = 0; i < vec.size(); i++) res.push_back(&vec[i]);
+    return res;
+  }
+  virtual std::vector<HerbivoreInterface*> get_list() {
+    std::vector<HerbivoreInterface*> res;
+    for (int i = 0; i < vec.size(); i++) res.push_back(&vec[i]);
+    return res;
+  }
+
+  void purge_of_dead() { has_been_purged = true; }
+  bool has_been_purged;
+};
+}  // namespace Fauna
+
+#endif  // DUMMY_POPULATION_H
