@@ -46,7 +46,7 @@ Here is a summary of the relevant parts:
 
 - **Coherence:** A header and corresponding source file (= _physical component_)contain code for _logical component._ If in doubt, rather air on the side of granularity and create several individual components.
 
-- **Separate Test Placement:** <!--TODO-->
+- **Merged Test Placement:** Any logical/physical unit has its unit test in a file in the same folder with the same file name, but with the suffix `.test.cpp`.
 
 ### Code Format
 The C++ code layout follows the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
