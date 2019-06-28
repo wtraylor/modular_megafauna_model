@@ -1,5 +1,9 @@
 #include <catch2/catch.hpp>
+#include "dummy_herbivore.h"
+#include "dummy_hft.h"
+#include "dummy_population.h"
 #include "feed.h"
+#include "parameters.h"
 using namespace Fauna;
 
 TEST_CASE("Fauna::DistributeForageEqually", "") {
@@ -125,7 +129,6 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
     CHECK(sum <= available.get_mass());
   }
 }
-
 
 TEST_CASE("Fauna::FeedHerbivores") {
   CHECK_THROWS(FeedHerbivores(std::auto_ptr<DistributeForage>(NULL)));

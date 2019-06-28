@@ -87,7 +87,7 @@ add_executable(megafauna_unit_tests
   src/Fauna/Output/habitat_data.test.cpp
   src/Fauna/Output/herbivore_data.test.cpp
   src/Fauna/energetics.test.cpp
-  # src/Fauna/feed.test.cpp
+  src/Fauna/feed.test.cpp
   src/Fauna/forageclasses.test.cpp
   src/Fauna/forageenergy.test.cpp
   src/Fauna/foraging.test.cpp
