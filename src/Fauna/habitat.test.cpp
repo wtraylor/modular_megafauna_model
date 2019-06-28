@@ -1,6 +1,9 @@
 #include <catch2/catch.hpp>
 #include "habitat.h"
+#include "dummy_habitat.h"
+#include "habitat_data.h"
 using namespace Fauna;
+using namespace Fauna::Output;
 
 TEST_CASE("Fauna::Habitat", "") {
   // Since Habitat is an abstract class, we use the simple
