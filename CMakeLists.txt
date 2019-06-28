@@ -80,52 +80,57 @@ target_compile_options (ModularMegafaunaModel
 ##########################  UNIT TESTS  ###################################
 ###########################################################################
 
-find_package(Catch2 REQUIRED)
-add_executable(megafauna_unit_tests
-  ${SOURCE_FILES}
-  src/Fauna/Output/combined_data.test.cpp
-  src/Fauna/Output/habitat_data.test.cpp
-  src/Fauna/Output/herbivore_data.test.cpp
-  src/Fauna/energetics.test.cpp
-  src/Fauna/feed.test.cpp
-  src/Fauna/forageclasses.test.cpp
-  src/Fauna/forageenergy.test.cpp
-  src/Fauna/foraging.test.cpp
-  src/Fauna/habitat.test.cpp
-  src/Fauna/herbivore.test.cpp
-  src/Fauna/hft.test.cpp
-  src/Fauna/mortality.test.cpp
-  src/Fauna/nitrogen.test.cpp
-  src/Fauna/parameters.test.cpp
-  src/Fauna/population.test.cpp
-  src/Fauna/reproduction.test.cpp
-  src/Fauna/simulation_unit.test.cpp
-  src/Fauna/simulator.test.cpp
-  src/Fauna/utils.test.cpp
-  tests/catch_main.cpp
-  tests/dummy_habitat.h
-  tests/dummy_herbivore.h
-  tests/dummy_herbivore.test.cpp
-  tests/dummy_herbivore_base.h
-  tests/dummy_hft.h
-  tests/dummy_population.h
-  tests/dummy_population.test.cpp
-  )
-target_include_directories (megafauna_unit_tests
-  PRIVATE
-  include/Fauna/
-  src/Fauna/
-  src/Fauna/Output/
-  tests/
-  )
-target_link_libraries (megafauna_unit_tests Catch2::Catch2)
-include (CTest)
-include (Catch)
-catch_discover_tests (megafauna_unit_tests)
-target_compile_options (megafauna_unit_tests
-  PRIVATE
-  -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
-  )
+include (CTest)  # Automatically sets BUILD_TESTING=ON by default.
+if (BUILD_TESTING)
+  find_package(Catch2 REQUIRED)
+  include (Catch)
+  add_executable(megafauna_unit_tests
+    ${SOURCE_FILES}
+    src/Fauna/Output/combined_data.test.cpp
+    src/Fauna/Output/habitat_data.test.cpp
+    src/Fauna/Output/herbivore_data.test.cpp
+    src/Fauna/energetics.test.cpp
+    src/Fauna/feed.test.cpp
+    src/Fauna/forageclasses.test.cpp
+    src/Fauna/forageenergy.test.cpp
+    src/Fauna/foraging.test.cpp
+    src/Fauna/habitat.test.cpp
+    src/Fauna/herbivore.test.cpp
+    src/Fauna/hft.test.cpp
+    src/Fauna/mortality.test.cpp
+    src/Fauna/nitrogen.test.cpp
+    src/Fauna/parameters.test.cpp
+    src/Fauna/population.test.cpp
+    src/Fauna/reproduction.test.cpp
+    src/Fauna/simulation_unit.test.cpp
+    src/Fauna/simulator.test.cpp
+    src/Fauna/utils.test.cpp
+    tests/catch_main.cpp
+    tests/dummy_habitat.h
+    tests/dummy_herbivore.h
+    tests/dummy_herbivore.test.cpp
+    tests/dummy_herbivore_base.h
+    tests/dummy_hft.h
+    tests/dummy_population.h
+    tests/dummy_population.test.cpp
+    )
+  target_include_directories (megafauna_unit_tests
+    PRIVATE
+    include/Fauna/
+    src/Fauna/
+    src/Fauna/Output/
+    tests/
+    )
+  # Use the system installation of Catch2 (unless variable `Catch2_DIR` is
+  # specified by the user).
+  target_link_libraries (megafauna_unit_tests Catch2::Catch2)
+  # Let Catch2 automatically convert the TEST_CASE() macro to CTest cases.
+  catch_discover_tests (megafauna_unit_tests)
+  target_compile_options (megafauna_unit_tests
+    PRIVATE
+    -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
+    )
+endif(BUILD_TESTING)
 
 ###########################################################################
 ####################  DOXYGEN DOCUMENTATION  ##############################
