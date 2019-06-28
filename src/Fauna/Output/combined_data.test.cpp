@@ -1,6 +1,9 @@
 #include <catch2/catch.hpp>
 #include "combined_data.h"
+#include "dummy_hft.h"
+#include "parameters.h"
 using namespace Fauna;
+using namespace Fauna::Output;
 
 TEST_CASE("Fauna::Output::CombinedData") {
   CombinedData c1, c2;
