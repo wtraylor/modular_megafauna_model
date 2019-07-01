@@ -12,6 +12,9 @@ Unit Tests of the Herbivore Module {#sec_tests}
 Unit Tests {#sec_unittests}
 ----------------------------------
 
+Unit tests use the [Catch2](https://github.com/catchorg/Catch2) framework and [integrates](https://github.com/catchorg/Catch2/blob/master/docs/cmake-integration.md) it with CTest from CMake.
+To run the unit tests after building the megafauna library, run `ctest` or `./megafauna_unit_tests` in the build directory.
+
 New classes have been introduced with unit-testing and flexibility in mind.
 This has the following implications:
 
@@ -21,10 +24,6 @@ day of the year.
 - All simulation parameters are passed into the model with designated objects
 instead of reading instruction file parameters directly
 (see section \ref sec_parameters).
-
-Unit tests use the [Catch](https://github.com/philsquared/Catch)
-framework.
-
 
 Herbivory Test Simulations {#sec_testsimulations}
 --------------------------------------------------------

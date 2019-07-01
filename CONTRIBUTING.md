@@ -58,7 +58,10 @@ This repository has a [.editorconfig](.editorconfig) file to define indentation 
 Please install the plugin for your text editor if available: [editorconfig.org/](https://editorconfig.org/)
 
 ### Unit Tests
-<!--TODO-->
+Make sure to write a unit test for every logical component.
+If you create a `.cpp` file, there should most likely also be a corresponding `.test.cpp` file that checks the public functions of the class or classes.
+
+Please read the Doxygen page about the testing framework.
 
 ### Doxygen
 
