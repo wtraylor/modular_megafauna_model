@@ -6,21 +6,22 @@ project ("Modular Megafauna Model"
   )
 
 set (SOURCE_FILES
+  include/Fauna/Output/habitat_data.h
+  include/Fauna/environment.h
   include/Fauna/forage_types.h
   include/Fauna/forage_values.h
   include/Fauna/grass_forage.h
+  include/Fauna/habitat.h
   include/Fauna/habitat_forage.h
   src/Fauna/Output/combined_data.cpp
   src/Fauna/Output/combined_data.h
   src/Fauna/Output/habitat_data.cpp
-  src/Fauna/Output/habitat_data.h
   src/Fauna/Output/herbivore_data.cpp
   src/Fauna/Output/herbivore_data.h
   src/Fauna/createherbivores.cpp
   src/Fauna/createherbivores.h
   src/Fauna/energetics.cpp
   src/Fauna/energetics.h
-  src/Fauna/environment.h
   src/Fauna/feed.cpp
   src/Fauna/feed.h
   src/Fauna/forage_base.cpp
@@ -32,7 +33,6 @@ set (SOURCE_FILES
   src/Fauna/foraging.h
   src/Fauna/grass_forage.cpp
   src/Fauna/habitat.cpp
-  src/Fauna/habitat.h
   src/Fauna/habitat_forage.cpp
   src/Fauna/herbivore.cpp
   src/Fauna/herbivore.h
@@ -55,7 +55,7 @@ set (SOURCE_FILES
   src/Fauna/simulator.cpp
   src/Fauna/simulator.h
   src/Fauna/utils.cpp
-  src/Fauna/utils.h
+  include/Fauna/utils.h # TODO: do not include this
   )
 
 add_library (ModularMegafaunaModel STATIC ${SOURCE_FILES})
@@ -71,6 +71,7 @@ target_include_directories (ModularMegafaunaModel
   PUBLIC
   include/
   include/Fauna/
+  include/Fauna/Output/
   PRIVATE
   src/Fauna/
   src/Fauna/Output/

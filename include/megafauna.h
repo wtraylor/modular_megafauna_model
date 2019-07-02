@@ -8,5 +8,8 @@
 #define MEGAFAUNA_H
 
 #include "forage_types.h"
+#include "forage_values.h"
+#include "habitat.h"
+#include "habitat_forage.h"
 
-#endif // MEGAFAUNA_H
+#endif  // MEGAFAUNA_H
