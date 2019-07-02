@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include "testhabitat.h"
 using namespace Fauna;
 

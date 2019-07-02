@@ -12,10 +12,12 @@ Unit Tests of the Herbivore Module {#sec_tests}
 Unit Tests {#sec_unittests}
 ----------------------------------
 
-Unit tests use the [Catch2](https://github.com/catchorg/Catch2) framework and [integrates](https://github.com/catchorg/Catch2/blob/master/docs/cmake-integration.md) it with CTest from CMake.
-To run the unit tests after building the megafauna library, run `ctest` or `./megafauna_unit_tests` in the build directory.
+Unit tests use the [Catch2](https://github.com/catchorg/Catch2) framework in the [single header](https://raw.githubusercontent.com/catchorg/Catch2/master/single_include/catch2/catch.hpp) distribution.
+(The `tests/catch.hpp` file can be updated from time to time.)
+To run the unit tests after building the megafauna library, run `./megafauna_unit_tests` in the build directory.
+To disable building the unit tests, you can call `cmake -DBUILD_TESTING=OFF /path/to/repo`.
 
-New classes have been introduced with unit-testing and flexibility in mind.
+New classes are always introduced with unit-testing and flexibility in mind.
 This has the following implications:
 
 - The herbivore model is ignorant of the absolute date, but only knows the

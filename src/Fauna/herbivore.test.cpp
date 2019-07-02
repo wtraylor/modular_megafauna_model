@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include "dummy_herbivore_base.h"
 #include "dummy_hft.h"
 #include "environment.h"

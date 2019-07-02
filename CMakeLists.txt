@@ -87,8 +87,6 @@ target_compile_options (ModularMegafaunaModel
 
 include (CTest)  # Automatically sets BUILD_TESTING=ON by default.
 if (BUILD_TESTING)
-  find_package(Catch2 REQUIRED)
-  include (Catch)
   add_executable(megafauna_unit_tests
     ${SOURCE_FILES}
     src/Fauna/Output/combined_data.test.cpp
@@ -112,6 +110,7 @@ if (BUILD_TESTING)
     src/Fauna/simulation_unit.test.cpp
     src/Fauna/simulator.test.cpp
     src/Fauna/utils.test.cpp
+    tests/catch.hpp
     tests/catch_main.cpp
     tests/dummy_habitat.h
     tests/dummy_herbivore.h
@@ -128,11 +127,6 @@ if (BUILD_TESTING)
     src/Fauna/Output/
     tests/
     )
-  # Use the system installation of Catch2 (unless variable `Catch2_DIR` is
-  # specified by the user).
-  target_link_libraries (megafauna_unit_tests Catch2::Catch2)
-  # Let Catch2 automatically convert the TEST_CASE() macro to CTest cases.
-  catch_discover_tests (megafauna_unit_tests)
   target_compile_options (megafauna_unit_tests
     PRIVATE
     -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.

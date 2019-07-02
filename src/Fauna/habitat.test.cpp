@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include "habitat.h"
 #include "dummy_habitat.h"
 #include "habitat_data.h"
