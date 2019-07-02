@@ -124,6 +124,7 @@ if (BUILD_TESTING)
   target_include_directories (megafauna_unit_tests
     PRIVATE
     include/Fauna/
+    include/Fauna/Output/
     src/Fauna/
     src/Fauna/Output/
     tests/
