@@ -36,6 +36,12 @@ class Framework {
     return instance;
   }
 
+  /// Print the help text to STDOUT.
+  void print_help();
+
+  /// Print the short usage text to STDERR.
+  void print_usage();
+
   /// Run a simulation
   /** Call this only after ins file has been read.
    * At all critical points, exceptions are caught, but there
@@ -47,24 +53,6 @@ class Framework {
    */
   bool run(const Fauna::Parameters& global_params,
            const Fauna::HftList& hftlist);
-
-  /// Parameter check (called from \ref parameters.cpp).
-  /**
-   * Check if all mandatory parameters have been read, terminates on error.
-   * This is a substitute for \ref plib_callback() in \ref parameters.cpp.
-   * Uses \ref fail() to terminate.
-   */
-  void plib_callback(int callback);
-
-  /// Declare instruction file parameters (called from \ref parameters.cpp).
-  /**
-   * Registers also mandatory parameters in \ref mandatory_parameters.
-   * - \ref declare_parameter() from \ref parameters.h is used for
-   *   regular parameters.
-   * - \ref declareitem from \ref plib.h is used for items with multiple
-   *   values.
-   */
-  void plib_declare_parameters();
 
  private:
   /// Create a new habitat according to preferences.

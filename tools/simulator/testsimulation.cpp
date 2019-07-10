@@ -9,17 +9,11 @@
 #include <cassert>
 #include <cfloat>   // for DBL_MAX
 #include <climits>  // for INT_MAX
-#include "config.h"
-#include "framework.h"
-#include "parameters.h"  // for declare_parameter()
-#include "paramreader.h"
-#include "plib.h"   // for plib() and itemparsed() and declareitem()
-#include "shell.h"  // for dprintf()
-#include "simulation_unit.h"
+#include <iostream>
+#include "megafauna.h"
 
 using namespace Fauna;
 using namespace FaunaSim;
-using namespace GuessOutput;
 
 // Anonymous namespace with definitions local to this file
 namespace {
@@ -45,20 +39,12 @@ double param_monthly_grass_growth[12];
 double param_monthly_snow_depth[12];
 }  // namespace
 
-// The name of the log file to which output from all dprintf and fail calls is
-// sent
-const xtring file_log = "herbivsim.log";
-
 /// Run the test simulation with parameters read from instruction file
 /** \todo Print version, print help */
 int main(int argc, char* argv[]) {
   try {
-    // Set a shell for dprintf() etc
-    set_shell(new CommandLineShell(file_log));
-
-    dprintf(
-        "This is the test simulator for the herbivory module "
-        "of LPJ-GUESS.\n");
+    std::cerr << "This is the test simulator for the Modular Megafauna Model."
+              << std::endl;
 
     // The singleton instance of FaunaSim::Manager
     Framework& framework = Framework::get_instance();
@@ -66,189 +52,64 @@ int main(int argc, char* argv[]) {
     // Read ins file from command line parameters.
     // we expect one argument: the ins file name
     if (argc == 2) {
-      if (std::string(argv[1]) == "-help")
-        plibhelp();
+      if (std::string(argv[1]) == "--help")
+        framework.print_help();
       else {
         // Read the instruction file to obtain simulation settings
         const char* instruction_filename = argv[1];
 
-        if (!fileexists(instruction_filename))
-          fail("Could not open instruction file");
-
-        // let plib parse the instruction script
-        try {
-          // plib doesn’t use exceptions, it just returns zero on error.
-          if (!plib(instruction_filename)) fail("Bad instruction file!");
-        } catch (const std::exception e) {
-          dprintf(
-              "An exception occurred while reading the instruction "
-              "file: \n%s\n",
-              e.what());
-          fail();
-        }
+        std::cerr << "Instruction file is not yet supported." << std::endl;
+        return EXIT_FAILURE;
       }
     } else {
-      fprintf(stderr,
-              "Exactly one parameter expected.\n"
-              "Usage: %s <instruction-script-filename> | -help\n",
-              argv[0]);
-      exit(EXIT_FAILURE);
+      framework.print_usage();
+      return EXIT_FAILURE;
     }
 
     // store the parameters
-    assert(ParamReader::get_instance().parsing_completed());
-    const Parameters params = ParamReader::get_instance().get_params();
-    const HftList hftlist = ParamReader::get_instance().get_hftlist();
+    const Fauna::Parameters params;  // Use default parameters for now.
+    const Fauna::HftList hftlist = construct_makeshift_hfts();
 
     // Run the simulation with the global parameters
     const bool success = framework.run(params, hftlist);
     if (!success) {
-      dprintf("Exiting simulation.");
+      std::cerr << "Exiting simulation." << std::endl;
       return EXIT_FAILURE;
     }
 
   } catch (const std::exception& e) {
-    dprintf("Unhandled exception:\n%s", e.what());
+    std::cerr << "Unhandled exception:\n" << e.what() << std::endl;
     return EXIT_FAILURE;
   }
 
-  dprintf("\nFinished\n");
+  std::cerr << "Successfully finished." << std::endl;
   return EXIT_SUCCESS;
 }
 
 ////////////////////////////////////////////////////////
 
-const int Framework::COORDINATES_PRECISION = 0;
-
 std::auto_ptr<Habitat> Framework::create_habitat() const {
   return std::auto_ptr<Habitat>(new SimpleHabitat(params.habitat));
 }
 
-void Framework::plib_declare_parameters() {
-  static bool parameters_declared = false;
-
-  if (!parameters_declared) {
-    // General options
-    declare_parameter("outputdirectory", &params.outputdirectory,
-                      300,  // string length
-                      "Directory for the output files");
-    mandatory_parameters.push_back("outputdirectory");
-
-    declare_parameter("nyears", &params.nyears, 1, INT_MAX,  // min, max
-                      "Number of simulation years.");
-    mandatory_parameters.push_back("nyears");
-
-    declare_parameter("nhabitat_groups", &params.ngroups, 1,
-                      INT_MAX,  // min, max
-                      "Number of habitat groups.");
-    mandatory_parameters.push_back("nhabitat_groups");
-
-    declare_parameter("nhabitats_per_group", &params.nhabitats_per_group, 1,
-                      INT_MAX,  // min, max
-                      "Number of habitats per group.");
-    mandatory_parameters.push_back("nhabitats_per_group");
-
-    declareitem(
-        "grass_decay", param_monthly_grass_decay, 0.0, DBL_MAX,  // min, max
-        12,                                                      // value count
-        CB_NONE, "12 proportional daily grass decay rates for each month.");
-    mandatory_parameters.push_back("grass_decay");
-
-    declareitem("grass_digestibility", param_grass_digestibility, DBL_MIN,
-                1.0,  // min, max
-                12,   // value count
-                CB_NONE,
-                "12 fractional grass digestibility values, for each month.");
-    mandatory_parameters.push_back("grass_digestibility");
-
-    declare_parameter("grass_fpc", &params.habitat.grass.fpc, 0.0,
-                      1.0,  // min, max
-                      "Foliar Percentage Cover of the grass.");
-    mandatory_parameters.push_back("grass_fpc");
-
-    declareitem(
-        "grass_growth", param_monthly_grass_growth, 0.0, DBL_MAX,  // min, max
-        12,  // value count
-        CB_NONE, "12 proportional daily grass growth rates for each month.");
-    mandatory_parameters.push_back("grass_growth");
-
-    declare_parameter("grass_init_mass", &params.habitat.grass.init_mass, 0.0,
-                      DBL_MAX,  // min, max
-                      "Initial grass biomass [kgDM/km²]");
-    mandatory_parameters.push_back("grass_init_mass");
-
-    declare_parameter("grass_reserve", &params.habitat.grass.reserve, 0.0,
-                      DBL_MAX,  // min, max
-                      "Ungrazable grass reserve [kgDM/km²]");
-    mandatory_parameters.push_back("grass_reserve");
-
-    declare_parameter("grass_saturation", &params.habitat.grass.saturation, 0.0,
-                      DBL_MAX,  // min, max
-                      "Saturation grass biomass [kgDM/km²]");
-    mandatory_parameters.push_back("grass_saturation");
-
-    declareitem("snow_depth", param_monthly_snow_depth, 0.0,
-                DBL_MAX,  // min, max
-                12,       // value count
-                CB_NONE, "12 snow depth values [cm] for each month.");
-    mandatory_parameters.push_back("grass_growth");
-
-    parameters_declared = true;
-  }
+void Framework::print_help() {
+  // We use C++11 raw string literals like a Bash Here Document.
+  std::cout << R"EOF(
+This is a stub help message.
+)EOF";
 }
 
-void Framework::plib_callback(int callback) {
-  // Simply check each global parameter in the list
-  if (callback == CB_CHECKGLOBAL) {
-    for (int i = 0; i < mandatory_parameters.size(); i++) {
-      // Complain if a mandatory parameter is missing
-      const std::string& item = mandatory_parameters[i];
-      if (!itemparsed(item.c_str())) {
-        dprintf("Error: %s was not defined in the instruction file.\n",
-                item.c_str());
-        fail();
-      }
-    }
-
-    // Copy the monthly array values to std::vector
-    params.habitat.grass.decay_monthly.clear();
-    params.habitat.grass.digestibility.clear();
-    params.habitat.grass.growth_monthly.clear();
-    params.habitat.snow_depth_monthly.clear();
-    for (int i = 0; i < 12; i++) {
-      params.habitat.grass.decay_monthly.push_back(
-          param_monthly_grass_decay[i]);
-      params.habitat.grass.digestibility.push_back(
-          param_grass_digestibility[i]);
-      params.habitat.grass.growth_monthly.push_back(
-          param_monthly_grass_growth[i]);
-      params.habitat.snow_depth_monthly.push_back(param_monthly_snow_depth[i]);
-    }
-    assert(params.habitat.grass.decay_monthly.size() == 12);
-    assert(params.habitat.grass.digestibility.size() == 12);
-    assert(params.habitat.grass.growth_monthly.size() == 12);
-    assert(params.habitat.snow_depth_monthly.size() == 12);
-  }
+void Framework::print_usage() {
+  // We use C++11 raw string literals like a Bash Here Document.
+  std::cerr << R"EOF(
+Usage:
+  megafauna_test_simulator <instruction_file>
+  megafauna_test_simulator -help
+)EOF";
 }
 
 bool Framework::run(const Fauna::Parameters& global_params,
                     const HftList& hftlist) {
-  // PREPARE OUTPUT
-  // Since we only use HerbivoryOutput here, we don’t use the
-  // output module registry.
-  // Instead, the relevant functions are called directly.
-  if (params.outputdirectory == "")
-    fail("No output directory given in the .ins file!");
-
-  try {
-    output_channel = new FileOutputChannel(params.outputdirectory.c_str(),
-                                           COORDINATES_PRECISION);
-    herbiv_out.set_hftlist(hftlist);
-    herbiv_out.init();
-  } catch (const std::exception& e) {
-    dprintf("Exception during output initialization:\n%s\n", e.what());
-  }
-
   // PREPARE VARIABLES
 
   // The simulator for the habitats
@@ -256,7 +117,7 @@ bool Framework::run(const Fauna::Parameters& global_params,
   // instruction file.
   Simulator habitat_simulator(global_params);
 
-  dprintf("Creating ecosystem with habitats and herbivores.\n");
+  std::cerr << "Creating ecosystem with habitats and herbivores." << std::endl;
 
   // Container for all the groups, each being a vector of
   // simulation units.
@@ -289,18 +150,19 @@ bool Framework::run(const Fauna::Parameters& global_params,
             new SimulationUnit(create_habitat(), pops)));
 
       } catch (const std::exception& e) {
-        dprintf(
-            "Exception during habitat creation:\n"
-            "group number %d of %d\n"
-            "habitat number %d of %d\n"
-            "Exception message:\n\t%s",
-            g, params.ngroups, h, params.nhabitats_per_group, e.what());
+        std::cerr << "Exception during habitat creation:" << std::endl
+                  << "group number " << g << " of " << params.ngroups << '\n'
+                  << "habitat number " << h << " of "
+                  << params.nhabitats_per_group << '\n'
+                  << "Exception message:\n"
+                  << std::endl
+                  << e.what();
         return false;
       }
     }
   }
 
-  dprintf("Starting simulation.\n");
+  std::cerr << "Starting simulation." << std::endl;
 
   for (int year = 0; year < params.nyears; year++) {
     for (int day_of_year = 0; day_of_year < 365; day_of_year++) {
@@ -315,27 +177,26 @@ bool Framework::run(const Fauna::Parameters& global_params,
           SimulationUnit& simulation_unit = **itr_u;
 
           // VEGATATION AND HERBIVORE SIMULATION
-          const bool do_herbivores =
-              global_params.ifherbivory &&
-              (year >= global_params.free_herbivory_years);
+          const bool do_herbivores = true;
 
           try {
             habitat_simulator.simulate_day(day_of_year, simulation_unit,
                                            do_herbivores);
           } catch (const std::exception& e) {
-            dprintf("Exception during herbivore simulation:\n\%s", e.what());
+            std::cerr << "Exception during herbivore simulation:\n"
+                      << e.what() << std::endl;
             return false;
           }
         }
 
         // Write output
-        herbiv_out.outdaily(
-            group.get_lon(),  // longitude (only for labelling)
-            group.get_lat(),  // latitude  (only for labelling)
-            day_of_year,
-            year,  // simulation_year
-            year,  // calendar_year, the same as there is no calendar
-            group.get_vector());
+        // As a makeshift we just print something to STDOUT.
+        std::cout << group.get_lon() << '\t' << group.get_lat() << '\t'
+                  << day_of_year << '\t' << year << '\t';
+        for (const auto& i : group.get_vector())
+          std::cout
+              << i->get_output().habitat_data.available_forage.grass.get_mass();
+        std::cout << std::endl;
       }  // end of habitat group loop
 
     }  // day loop: end of year
@@ -343,7 +204,8 @@ bool Framework::run(const Fauna::Parameters& global_params,
     // PRINT PROGRESS
     const int progress_interval = params.nyears / 10;  // every 10%
     if (year % progress_interval == 0 || year == params.nyears - 1)
-      dprintf("progress: %d%%\n", (100 * year) / (params.nyears - 1));
+      std::cerr << "Progress: " << (100 * year) / (params.nyears - 1)
+                << std::endl;
   }  // year loop
 
   return true;  // success!
