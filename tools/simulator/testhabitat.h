@@ -8,6 +8,7 @@
 #ifndef TESTHABITATS_H
 #define TESTHABITATS_H
 
+#include <vector>
 #include "habitat.h"
 
 using namespace Fauna;
