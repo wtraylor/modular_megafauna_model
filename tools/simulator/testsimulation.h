@@ -9,7 +9,6 @@
 #define TESTSIMULATION_H
 
 #include <vector>
-#include "outputmodule.h"  // for HerbivoryOutput
 #include "testhabitat.h"   // for SimpleHabitat
 
 namespace Fauna {
@@ -70,9 +69,6 @@ class Framework {
  private:
   /// Create a new habitat according to preferences.
   std::auto_ptr<Fauna::Habitat> create_habitat() const;
-
-  /// Output module
-  GuessOutput::HerbivoryOutput herbiv_out;
 
   /// Parameter values from instruction file
   struct {
