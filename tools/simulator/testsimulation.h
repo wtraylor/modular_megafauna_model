@@ -5,8 +5,8 @@
 /// \date June 2017
 //////////////////////////////////////////////////////////////////////////
 
-#ifndef HERBIV_TESTSIMULATION_H
-#define HERBIV_TESTSIMULATION_H
+#ifndef TESTSIMULATION_H
+#define TESTSIMULATION_H
 
 #include <vector>
 #include "outputmodule.h"  // for HerbivoryOutput
@@ -95,4 +95,4 @@ class Framework {
 };
 }  // namespace FaunaSim
 
-#endif  // HERBIV_TESTSIMULATION_H
+#endif  // TESTSIMULATION_H

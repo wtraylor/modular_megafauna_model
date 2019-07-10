@@ -5,8 +5,8 @@
 /// \date    June 2017
 //////////////////////////////////////////////////////////////////////////
 
-#ifndef HERBIV_TESTHABITATS_H
-#define HERBIV_TESTHABITATS_H
+#ifndef TESTHABITATS_H
+#define TESTHABITATS_H
 
 #include "habitat.h"
 
@@ -271,4 +271,4 @@ class HabitatGroupList {
 };
 }  // namespace FaunaSim
 
-#endif  // HERBIV_TESTHABITATS_H
+#endif  // TESTHABITATS_H
