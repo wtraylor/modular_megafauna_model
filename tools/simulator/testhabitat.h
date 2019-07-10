@@ -9,7 +9,7 @@
 #define TESTHABITATS_H
 
 #include <vector>
-#include "habitat.h"
+#include "megafauna.h"
 
 using namespace Fauna;
 
