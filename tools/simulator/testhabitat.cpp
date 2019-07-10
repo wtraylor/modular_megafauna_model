@@ -7,8 +7,6 @@
 
 #include "testhabitat.h"
 #include <sstream>  // for is_valid() messages
-#include "config.h"
-#include "framework.h"  // for SimulationUnit
 #include "utils.h"
 
 using namespace Fauna;
