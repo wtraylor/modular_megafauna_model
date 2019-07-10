@@ -11,7 +11,8 @@
 #include "habitat_forage.h" // for HabitatForage
 #include "environment.h" // for HabitatEnvironment
 
-namespace Fauna::Output {
+namespace Fauna {
+namespace Output {
 /// Habitat output data for one time unit.
 /**
  * \see \ref sec_outputclasses
@@ -61,6 +62,7 @@ struct HabitatData {
   /** @} */  // Aggregation Functionality
 };
 
-} // namespace Fauna::Output
+} // namespace Fauna
+} // namespace Fauna::Out
 
 #endif // HABITAT_DATA_H
