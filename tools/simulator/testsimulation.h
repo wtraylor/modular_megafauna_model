@@ -42,17 +42,14 @@ class Framework {
   /// Print the short usage text to STDERR.
   void print_usage();
 
-  /// Run a simulation
-  /** Call this only after ins file has been read.
-   * At all critical points, exceptions are caught, but there
-   * is no guarantee that no exception *slips through the cracks*.
-   * \param global_params Instruction file parameters from
-   * the herbivory module not specific to the test simulation.
-   * \param hftlist List of HFTs
+  /// Run a simulation.
+  /**
+   * At all critical points, exceptions are caught.
+   * \param insfile_fauna Path to the instruction file for the megafauna model.
+   * \param insfile_testsim Instruction file for the testsimulator framework.
    * \return true on success, false on failure
    */
-  bool run(const Fauna::Parameters& global_params,
-           const Fauna::HftList& hftlist);
+  bool run(const std::string insfile_fauna, const std::string insfile_testsim);
 
  private:
   /// Create a new habitat according to preferences.

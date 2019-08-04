@@ -50,13 +50,14 @@ int main(int argc, char* argv[]) {
     Framework& framework = Framework::get_instance();
 
     // Read ins file from command line parameters.
-    // we expect one argument: the ins file name
-    if (argc == 2) {
-      if (std::string(argv[1]) == "--help")
+    // We expect two arguments: the two instruction files.
+    if (argc == 3) {
+      if (std::string(argv[1]) == "--help" || std::string(argv[1]) == "-help")
         framework.print_help();
       else {
         // Read the instruction file to obtain simulation settings
-        const char* instruction_filename = argv[1];
+        const std::string insfile_fauna = argv[1];
+        const std::string insfile_testsim = argv[2];
 
         std::cerr << "Instruction file is not yet supported." << std::endl;
         return EXIT_FAILURE;
@@ -66,12 +67,8 @@ int main(int argc, char* argv[]) {
       return EXIT_FAILURE;
     }
 
-    // store the parameters
-    const Fauna::Parameters params;  // Use default parameters for now.
-    const Fauna::HftList hftlist = construct_makeshift_hfts();
-
     // Run the simulation with the global parameters
-    const bool success = framework.run(params, hftlist);
+    const bool success = framework.run(insfile_fauna, insfile_testsim);
     if (!success) {
       std::cerr << "Exiting simulation." << std::endl;
       return EXIT_FAILURE;
@@ -104,13 +101,12 @@ void Framework::print_usage() {
   // We use C++11 raw string literals like a Bash Here Document.
   std::cerr << R"EOF(
 Usage:
-  megafauna_test_simulator <instruction_file>
+  megafauna_test_simulator <fauna_instruction_file> <simulation_instruction_file>
   megafauna_test_simulator -help
 )EOF";
 }
 
-bool Framework::run(const Fauna::Parameters& global_params,
-                    const HftList& hftlist) {
+bool Framework::run(const std::string insfile_fauna, const std::string insfile_testsim) {
   // PREPARE VARIABLES
 
   // The simulator for the habitats
