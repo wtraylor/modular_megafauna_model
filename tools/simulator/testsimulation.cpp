@@ -94,6 +94,7 @@ std::auto_ptr<Habitat> Framework::create_habitat() const {
 
 void Framework::print_help() {
   // We use C++11 raw string literals like a Bash Here Document.
+  // TODO: complete help message
   std::cout << R"EOF(
 This is a stub help message.
 )EOF";
