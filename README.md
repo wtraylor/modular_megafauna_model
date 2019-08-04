@@ -4,6 +4,20 @@ Modular Megafauna Model
 Overview
 --------
 
+The modular megafauna model (M³ or “Triple-M”) is a dynamic, mechanistic, and process-based abstraction of large herbivore populations through space and time.
+Herbivores feed, grow, reproduce, and die on a daily simulation cycle.
+The amount of forage as well as relevant environment variables need to be supplied by the calling program, for instance by a dynamic global vegetation model (DGVM).
+
+The megafauna model itself is spatially inexplicit, but operates in different singular spatial units, which can be mapped to spatially meaningful cells by the calling framework.
+Likewise, the megafauna model is ignorant of calendar dates, but is only aware of the Julian day of the year.
+
+As the name suggests, modularity is a primary design goal.
+Processes and model components can be switched on and off, replaced, and expanded.
+Since this C++ library is Free Software, the scientific community is encouraged to use, study, change, and redistribute the source code.
+
+<!--TODO: Is the name “Triple-M” or M³ appropriate?-->
+<!--TODO: Is Free Software applicable after the license is chosen?-->
+
 Repository Structure
 --------------------
 
