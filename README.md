@@ -53,6 +53,11 @@ Currently no bugs are known to the author.
 If you discover a bug, please use the issue tracker to report it, or fork this repository, fix the bug, and request a pull into the main repository.
 <!--TODO: link to instruction for GitHub workflow-->
 
+Authors
+-------
+
+- Wolfgang Traylor (wolfgang.traylor@senckenberg.de) <!--TODO: Add ORCID-->
+
 License
 -------
 
