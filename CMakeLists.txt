@@ -13,6 +13,7 @@ set (SOURCE_FILES
   include/Fauna/grass_forage.h
   include/Fauna/habitat.h
   include/Fauna/habitat_forage.h
+  include/Fauna/read_insfile.h
   src/Fauna/Output/combined_data.cpp
   src/Fauna/Output/combined_data.h
   src/Fauna/Output/habitat_data.cpp
@@ -46,6 +47,7 @@ set (SOURCE_FILES
   src/Fauna/parameters.h
   src/Fauna/population.cpp
   src/Fauna/population.h
+  src/Fauna/read_insfile.cpp
   src/Fauna/reproduction.cpp
   src/Fauna/reproduction.h
   src/Fauna/simulate_day.cpp
