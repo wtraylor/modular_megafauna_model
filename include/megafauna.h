@@ -12,5 +12,6 @@
 #include "habitat.h"
 #include "habitat_forage.h"
 #include "parameter_reader.h"
+#include "parameters.h"
 
 #endif  // MEGAFAUNA_H
