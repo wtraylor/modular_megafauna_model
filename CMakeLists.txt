@@ -139,15 +139,22 @@ endif(BUILD_TESTING)
 ########################  TEST SIMULATOR  #################################
 ###########################################################################
 
-add_executable (megafauna_test_simulator
-  tools/simulator/testhabitat.cpp
-  tools/simulator/testhabitat.h
-  tools/simulator/testsimulation.cpp
-  tools/simulator/testsimulation.h
+option (BUILD_TEST_SIMULATOR
+  "Whether to build the simple megafauna test simulator."
+  ON
   )
-target_link_libraries (megafauna_test_simulator
-  ModularMegafaunaModel
-  )
+
+if(BUILD_TEST_SIMULATOR)
+  add_executable (megafauna_test_simulator
+    tools/simulator/testhabitat.cpp
+    tools/simulator/testhabitat.h
+    tools/simulator/testsimulation.cpp
+    tools/simulator/testsimulation.h
+    )
+  target_link_libraries (megafauna_test_simulator
+    ModularMegafaunaModel
+    )
+endif(BUILD_TEST_SIMULATOR)
 
 ###########################################################################
 ####################  DOXYGEN DOCUMENTATION  ##############################
