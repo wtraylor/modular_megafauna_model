@@ -49,6 +49,10 @@ Any other dynamic vegetation model can include the megafauna model as an externa
 Known Bugs and Issues
 ---------------------
 
+Currently no bugs are known to the author.
+If you discover a bug, please use the issue tracker to report it, or fork this repository, fix the bug, and request a pull into the main repository.
+<!--TODO: link to instruction for GitHub workflow-->
+
 License
 -------
 
