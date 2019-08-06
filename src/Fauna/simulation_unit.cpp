@@ -6,14 +6,10 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "simulation_unit.h"
-#include "habitat.h"     // for Habitat and Population
-#include "population.h"  // for HftPopulationsMap
+#include "habitat.h"
+#include "population.h"
 
 using namespace Fauna;
-
-//============================================================
-// SimulationUnit
-//============================================================
 
 SimulationUnit::SimulationUnit(Habitat* habitat, HftPopulationsMap* populations)
     :  // move ownership to private unique_ptr objects
