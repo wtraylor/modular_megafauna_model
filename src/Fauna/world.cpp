@@ -16,15 +16,19 @@ World::World(const std::string instruction_filename)
       days_since_last_establishment(get_params().herbivore_establish_interval),
       world_constructor(new WorldConstructor(get_params(), get_hfts())) {}
 
-void World::create_simulation_unit(std::auto_ptr<Habitat> habitat) {
-  std::auto_ptr<HftPopulationsMap> pmap(new HftPopulationsMap());
+void World::create_simulation_unit(Habitat* habitat) {
+  if (habitat == NULL)
+    throw std::invalid_argument(
+        "World::create_simulation_unit(): Pointer to habitat is NULL.");
+
+  HftPopulationsMap* pmap(new HftPopulationsMap());
 
   // Fill the object with one population per HFT.
   for (int i = 0; i < get_hfts().size(); i++) {
     const Hft* phft = &get_hfts()[i];
     pmap->add(world_constructor->create_population(phft));
   }
-  assert(pmap.get() != NULL);
+  assert(pmap != NULL);
   assert(pmap->size() == get_hfts().size());
 
   sim_units.push_back(SimulationUnit(habitat, pmap));

@@ -15,17 +15,15 @@ using namespace Fauna;
 // SimulationUnit
 //============================================================
 
-SimulationUnit::SimulationUnit(std::auto_ptr<Habitat> _habitat,
-                               std::auto_ptr<HftPopulationsMap> _populations)
-    :  // move ownership to private auto_ptr objects
-      habitat(_habitat),
-      populations(_populations),
+SimulationUnit::SimulationUnit(Habitat* habitat, HftPopulationsMap* populations)
+    :  // move ownership to private unique_ptr objects
+      habitat(habitat),
+      populations(populations),
       initial_establishment_done(false) {
-  if (habitat.get() == NULL)
+  if (habitat == NULL)
     throw std::invalid_argument(
-        "Fauna::SimulationUnit::SimulationUnit() "
-        "Pointer to habitat is NULL.");
-  if (populations.get() == NULL)
+        "Fauna::SimulationUnit::SimulationUnit() Pointer to habitat is NULL.");
+  if (populations == NULL)
     throw std::invalid_argument(
         "Fauna::SimulationUnit::SimulationUnit() "
         "Pointer to populations is NULL.");

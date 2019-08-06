@@ -25,9 +25,13 @@ class World {
   /**
    * The new simulation unit will be owned by \ref World and released as soon
    * as the \ref Habitat instance is marked as to be deleted from extern.
-   * \param habitat Habitat instance given externally by the vegetation model.
+   * \param habitat Pointer to an instance of a class that implements \ref
+   * Habitat, given externally by the vegetation model. The World object takes
+   * over ownership of the pointer, but will not delete it before it is marked
+   * as dead (\ref Habitat::kill()) externally.
+   * \throw std::invalid_argument If `habitat` is NULL.
    */
-  void create_simulation_unit(std::auto_ptr<Habitat> habitat);
+  void create_simulation_unit(Habitat* habitat);
 
   /// Get global simulation parameters.
   /**

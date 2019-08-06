@@ -7,7 +7,7 @@
 #ifndef SIMULATION_UNIT_H
 #define SIMULATION_UNIT_H
 
-#include <memory>           // for std::auto_ptr
+#include <memory>
 #include "combined_data.h"
 
 namespace Fauna {
@@ -21,10 +21,13 @@ class SimulationUnit {
  public:
   /// Constructor
   /**
-   * \throw std::invalid_argument If one of the parameters
-   * is NULL.
+   * \param habitat Pointer to the habitat object. SimulationUnit will take
+   * over exclusive ownership of the pointer.
+   * \param populations Pointer to the habitat object. SimulationUnit will take
+   * over exclusive ownership of the pointer.
+   * \throw std::invalid_argument If one of the parameters is NULL.
    */
-  SimulationUnit(std::auto_ptr<Habitat>, std::auto_ptr<HftPopulationsMap>);
+  SimulationUnit(Habitat* habitat, HftPopulationsMap* populations);
 
   /// The habitat where the populations live.
   /** \throw std::logic_error If the private pointer is NULL. */
@@ -64,9 +67,9 @@ class SimulationUnit {
   /**@}*/  // Output Functions
  private:
   Output::CombinedData current_output;
-  std::auto_ptr<Habitat> habitat;
+  std::unique_ptr<Habitat> habitat;
   bool initial_establishment_done;
-  std::auto_ptr<HftPopulationsMap> populations;
+  std::unique_ptr<HftPopulationsMap> populations;
 };
 
 }  // namespace Fauna
