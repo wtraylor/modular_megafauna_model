@@ -5,12 +5,15 @@
 #include "read_insfile.h"
 #include "simulate_day.h"
 #include "simulation_unit.h"
+#include "world_constructor.h"
 
 using namespace Fauna;
 
 World::World(const std::string instruction_filename)
-    : insfile_content(new InsfileContent(read_instruction_file(instruction_filename))),
-      days_since_last_establishment(get_params().herbivore_establish_interval) {}
+    : insfile_content(
+          new InsfileContent(read_instruction_file(instruction_filename))),
+      days_since_last_establishment(get_params().herbivore_establish_interval),
+      world_constructor(new WorldConstructor(get_params(), get_hfts())) {}
 
 void World::create_simulation_unit(std::auto_ptr<Habitat> habitat) {
   std::auto_ptr<HftPopulationsMap> pmap(new HftPopulationsMap());
@@ -18,7 +21,7 @@ void World::create_simulation_unit(std::auto_ptr<Habitat> habitat) {
   // Fill the object with one population per HFT.
   for (int i = 0; i < get_hfts().size(); i++) {
     const Hft* phft = &get_hfts()[i];
-    pmap->add(create_population(phft));
+    pmap->add(world_constructor->create_population(phft));
   }
   assert(pmap.get() != NULL);
   assert(pmap->size() == get_hfts().size());
@@ -65,8 +68,9 @@ void World::simulate_day(const int day_of_year, const bool do_herbivores) {
     // Create function object to delegate all simulations for this day to.
     // TODO: Create function object only once per day and for all simulation
     //       units.
-    SimulateDay simulate_day(day_of_year, sim_unit,
-                             FeedHerbivores(create_distribute_forage()));
+    SimulateDay simulate_day(
+        day_of_year, sim_unit,
+        FeedHerbivores(world_constructor->create_distribute_forage()));
 
     // Call the function object.
     simulate_day(do_herbivores, establish_if_needed);

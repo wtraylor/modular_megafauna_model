@@ -10,9 +10,10 @@ namespace Fauna {
 class Habitat;
 class Hft;
 class HftList;
+class InsfileContent;
 class PopulationInterface;
 class SimulationUnit;
-class InsfileContent;
+class WorldConstructor;
 
 /// Central class to construct and own megafauna habitats and populations.
 class World {
@@ -72,6 +73,9 @@ class World {
    * All objects are owned by \ref World.
    */
   std::list<SimulationUnit> sim_units;
+
+  /// Helper class to construct various elements of the megafauna world.
+  const std::unique_ptr<WorldConstructor> world_constructor;
 };
 }  // namespace Fauna
 #endif  // WORLD_H
