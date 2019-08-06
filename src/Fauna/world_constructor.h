@@ -51,7 +51,7 @@ class WorldConstructor {
 
  private:
   const Parameters& params;
-  const HftList& hftlist
+  const HftList& hftlist;
 };
 }  // namespace Fauna
 #endif  // WORLD_CONSTRUCTOR_H
