@@ -1,12 +1,15 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include <unique_pointer>
+#include <list>
+#include <memory>
 #include "parameters.h"
 
 namespace Fauna {
 // Forward declarations
+class Habitat;
 class Hft;
+class HftList;
 class PopulationInterface;
 class SimulationUnit;
 class InsfileContent;
@@ -59,7 +62,7 @@ class World {
    *
    * Use \ref get_params() and \ref get_hfts() to access content.
    */
-  const std::unique_pointer<InsfileContent> insfile_content;
+  const std::unique_ptr<InsfileContent> insfile_content;
 
   /// List of all the simulation units in the world.
   /**
@@ -68,4 +71,4 @@ class World {
   std::list<SimulationUnit> sim_units;
 };
 }  // namespace Fauna
-#ifndef  // WORLD_H
+#endif  // WORLD_H
