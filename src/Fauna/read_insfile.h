@@ -1,21 +1,26 @@
 #ifndef READ_INSFILE_H
 #define READ_INSFILE_H
 
+#include "hft.h"
+#include "parameters.h"
+
 namespace Fauna {
-// Forward declarations
-struct Parameters;
-class HftList;
+
+/// All global and herbivore parameters in an instruction file.
+struct InsfileContent {
+  /// Herbivore functional types from the instruction file.
+  HftList hftlist;
+  /// Global parameters from the instruction file.
+  Parameters params;
+};
 
 /// Read parameters and HFTs from given instruction file.
 /**
  * \param[in] filename Relative or absolute file path to the instruction file.
- * \param[out] params Object to store global parameters in. Existing values will
- * be overwritten.
- * \param[out] hfts Object to store herbivore parameters in. Existing values
- * will be overwritten.
+ * \return The HFTs and parameters from the instruction file.
+ * \todo Implement this.
  */
-void read_instruction_file(const std::string filename, Parameters& params,
-                           HftList& hfts);
+InsfileContent read_instruction_file(const std::string filename);
 }  // namespace Fauna
 
 #endif  // READ_INSFILE_H

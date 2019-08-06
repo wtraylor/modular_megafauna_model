@@ -13,5 +13,6 @@
 #include "habitat_forage.h"
 #include "parameter_reader.h"
 #include "parameters.h"
+#include "world.h"
 
 #endif  // MEGAFAUNA_H

@@ -13,6 +13,7 @@ set (SOURCE_FILES
   include/Fauna/grass_forage.h
   include/Fauna/habitat.h
   include/Fauna/habitat_forage.h
+  include/Fauna/world.cpp
   src/Fauna/Output/combined_data.cpp
   src/Fauna/Output/combined_data.h
   src/Fauna/Output/habitat_data.cpp
@@ -54,9 +55,10 @@ set (SOURCE_FILES
   src/Fauna/simulate_day.h
   src/Fauna/simulation_unit.cpp
   src/Fauna/simulation_unit.h
-  src/Fauna/simulator.cpp
-  src/Fauna/simulator.h
   src/Fauna/utils.cpp
+  src/Fauna/world.h
+  src/Fauna/world_constructor.cpp
+  src/Fauna/world_constructor.h
   include/Fauna/utils.h # TODO: do not include this
   )
 
@@ -111,8 +113,8 @@ if (BUILD_TESTING)
     src/Fauna/population.test.cpp
     src/Fauna/reproduction.test.cpp
     src/Fauna/simulation_unit.test.cpp
-    src/Fauna/simulator.test.cpp
     src/Fauna/utils.test.cpp
+    src/Fauna/world_constructor.test.cpp
     tests/catch.hpp
     tests/catch_main.cpp
     tests/dummy_habitat.h

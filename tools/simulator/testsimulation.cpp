@@ -106,13 +106,10 @@ Usage:
 )EOF";
 }
 
-bool Framework::run(const std::string insfile_fauna, const std::string insfile_testsim) {
-  // PREPARE VARIABLES
-
-  // The simulator for the habitats
-  // Pass the global parameters that were read from the
-  // instruction file.
-  Simulator habitat_simulator(global_params);
+bool Framework::run(const std::string insfile_fauna,
+                    const std::string insfile_testsim) {
+  Fauna::Parameters global_params;
+  World fauna_world(insfile_fauna);
 
   std::cerr << "Creating ecosystem with habitats and herbivores." << std::endl;
 
