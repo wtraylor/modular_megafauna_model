@@ -27,11 +27,11 @@ std::auto_ptr<PopulationInterface> WorldConstructor::create_population(
   // Create population instance according to selected herbivore type.
   if (get_params().herbivore_type == HT_COHORT) {
     return (std::auto_ptr<PopulationInterface>(new CohortPopulation(
-        CreateHerbivoreCohort(phft, insfile_content.params.get()))));
+        CreateHerbivoreCohort(phft, &get_params()))));
   } else if (get_params().herbivore_type == HT_INDIVIDUAL) {
     const double AREA = 1.0;  // TODO THis is only a test
     return (std::auto_ptr<PopulationInterface>(new IndividualPopulation(
-        CreateHerbivoreIndividual(phft, insfile_content.params.get()))));
+        CreateHerbivoreIndividual(phft, &get_params()))));
     // TODO Where does the area size come from??
     // -> from Habitat (then merge() doesn’t work anymore)
     // -> from Parameters (then CreateHerbivoreIndividual
