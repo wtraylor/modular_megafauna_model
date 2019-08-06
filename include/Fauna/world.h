@@ -64,6 +64,9 @@ class World {
    */
   const std::unique_ptr<InsfileContent> insfile_content;
 
+  /// Number of days since extinct populations were re-established.
+  int days_since_last_establishment;
+
   /// List of all the simulation units in the world.
   /**
    * All objects are owned by \ref World.
