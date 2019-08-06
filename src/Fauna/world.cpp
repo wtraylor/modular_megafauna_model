@@ -1,5 +1,6 @@
 #include "world.h"
 #include <stdexcept>
+#include "feed.h"
 #include "hft.h"
 #include "population.h"
 #include "read_insfile.h"
