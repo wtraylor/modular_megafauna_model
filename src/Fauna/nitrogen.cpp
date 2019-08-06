@@ -6,8 +6,10 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include <algorithm> // for std::max(), std::min()
+#include <cassert>
+#include <cmath>
+#include <stdexcept>
 #include "nitrogen.h"
-#include "forageclasses.h"
 
 using namespace Fauna;
 

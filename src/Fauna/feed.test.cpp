@@ -1,8 +1,9 @@
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include "dummy_herbivore.h"
 #include "dummy_hft.h"
 #include "dummy_population.h"
 #include "feed.h"
+#include "habitat_forage.h"
 #include "parameters.h"
 using namespace Fauna;
 

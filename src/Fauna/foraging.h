@@ -9,9 +9,10 @@
 
 #include <string>  // for forage type names
 #include <vector>
-#include "forageclasses.h"  // for ForageEnergy
-#include "hft.h"            // for DigestionType
-#include "utils.h"          // for Sex
+#include "forage_values.h"  // for ForageEnergy
+#include "habitat_forage.h"
+#include "hft.h"    // for DigestionType
+#include "utils.h"  // for Sex
 
 namespace Fauna {
 /// Function object to calculate forage demands for a herbivore.

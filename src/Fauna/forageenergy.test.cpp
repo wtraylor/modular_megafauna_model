@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include "forageenergy.h"
 using namespace Fauna;
 

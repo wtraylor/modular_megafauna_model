@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include "habitat_data.h"
 using namespace Fauna;
 using namespace Fauna::Output;

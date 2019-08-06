@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.14)
+cmake_minimum_required (VERSION 3.10)
 
 find_package (LATEX COMPONENTS BIBTEX)
 find_package (Java COMPONENTS Runtime)

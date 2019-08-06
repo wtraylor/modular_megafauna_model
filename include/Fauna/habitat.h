@@ -10,7 +10,7 @@
 #include <cassert>          // for assert()
 #include <list>             // for HabitatList
 #include <memory>           // for std::auto_ptr
-#include "forageclasses.h"  // for HabitatForage
+#include "habitat_forage.h" // for HabitatForage
 #include "habitat_data.h"   // for HabitatData
 
 namespace Fauna {

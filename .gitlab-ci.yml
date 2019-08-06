@@ -1,0 +1,38 @@
+image: ubuntu:latest
+
+stages:
+  - build
+  - test
+
+
+# Build documentation and unit tests at once so that we don’t need to install
+# all the Debian packages in another job again.
+build:
+  stage: build
+  before_script:
+    - export DEBIAN_FRONTEND=noninteractive
+    - apt-get update -qq
+    - apt-get install -y -qq
+      cmake
+      default-jre
+      doxygen
+      g++
+      graphviz
+      texlive-base
+  script:
+    - mkdir --parents build
+    - cd build
+    - cmake -DBUILD_DOC=ON ..
+    - make --jobs=2 megafauna_docs megafauna_unit_tests
+  artifacts:
+    paths:
+      - build/megafauna_unit_tests
+      - build/docs/html/
+    expire_in: 20 minutes
+
+unit_tests:
+  stage: test
+  script:
+    - ./build/megafauna_unit_tests
+
+# TODO: Add full test simulation for master & develop branch.

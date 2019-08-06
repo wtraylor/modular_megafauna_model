@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include "dummy_habitat.h"
 #include "dummy_hft.h"
 #include "parameters.h"

@@ -1,7 +1,6 @@
 #ifndef DUMMY_HERBIVORE_H
 #define DUMMY_HERBIVORE_H
 
-#include "forageclasses.h"
 #include "herbivore.h"
 #include "herbivore_data.h"
 

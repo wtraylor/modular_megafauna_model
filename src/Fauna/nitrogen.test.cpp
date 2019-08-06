@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include "nitrogen.h"
 using namespace Fauna;
 

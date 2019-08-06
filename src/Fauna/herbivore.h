@@ -8,22 +8,21 @@
 #define HERBIVORE_H
 
 #include <memory>           // for std::auto_ptr
-#include "forageclasses.h"  // for ForageMass
+#include "forage_values.h"  // for ForageMass
 #include "nitrogen.h"       // for NitrogenInHerbivore
 #include "utils.h"          // for Sex
 
-// Forward declarations
-namespace Fauna::Output {
+namespace Fauna {
+namespace Output {
 class HerbivoreData;
 }
-
-namespace Fauna {
 
 // Forward declaration of classes in the same namespace
 class FatmassEnergyBudget;
 class GetForageDemands;
 class GetNetEnergyContentInterface;
 class HabitatEnvironment;
+class HabitatForage;
 class Hft;
 
 /// Interface of a herbivore of a specific \ref Hft.
