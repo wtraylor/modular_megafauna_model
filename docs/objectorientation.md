@@ -12,6 +12,8 @@ In the Herbivore Module a couple of object-oriented design patterns
 were employed that are explained here along with general
 concepts of object-oriented programming.
 
+\todo Add explanation of the PIMPL idiom (compilation firewall). Compare [How to implement the pimpl idiom by using unique_ptr - Fluent C++](https://www.fluentcpp.com/2017/09/22/make-pimpl-using-unique_ptr/).
+
 ## Good Programming Practice {#sec_good_practice}
 
 ### Information Hiding {#sec_information_hiding}
