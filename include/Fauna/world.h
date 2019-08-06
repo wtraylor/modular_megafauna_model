@@ -36,7 +36,7 @@ class World {
    * settings.
    * \throw std::logic_error If the member variable hasn’t been set.
    */
-  const Parameters& get_params();
+  const Parameters& get_params() const;
 
   /// Iterate through all simulation units and perform simulation for this day.
   /**

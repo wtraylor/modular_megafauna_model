@@ -37,7 +37,7 @@ const HftList& World::get_hfts() {
   return insfile_content->hftlist;
 }
 
-const Parameters& World::get_params() {
+const Parameters& World::get_params() const {
   if (insfile_content.get() == NULL)
     throw std::logic_error(
         "World::get_params(): The member insfile_content is not set.");

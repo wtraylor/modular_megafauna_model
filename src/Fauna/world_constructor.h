@@ -51,13 +51,13 @@ class WorldConstructor {
   std::auto_ptr<HftPopulationsMap> create_populations(const Hft* phft) const;
 
   /// Create new \ref DistributeForage object according to parameters.
-  std::auto_ptr<DistributeForage> create_distribute_forage();
+  std::auto_ptr<DistributeForage> create_distribute_forage() const;
 
   /// Get herbivore functional types.
-  const HftList& get_hftlist() { return hftlist; }
+  const HftList& get_hftlist() const { return hftlist; }
 
   /// Get global parameters.
-  const Parameters& get_params() { return params; }
+  const Parameters& get_params() const { return params; }
 
  private:
   const Parameters& params;

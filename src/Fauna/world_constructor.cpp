@@ -10,7 +10,8 @@ WorldConstructor::WorldConstructor(const Parameters& params,
                                    const HftList& hftlist)
     : params(params), hftlist(hftlist) {}
 
-std::auto_ptr<DistributeForage> WorldConstructor::create_distribute_forage() {
+std::auto_ptr<DistributeForage> WorldConstructor::create_distribute_forage()
+    const {
   switch (get_params().forage_distribution) {
     case FD_EQUALLY:
       return std::auto_ptr<DistributeForage>(new DistributeForageEqually);
