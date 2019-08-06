@@ -9,6 +9,13 @@ class PopulationInterface;
 class HftPopulationsMap;
 class DistributeForage;
 
+/// Helper class of World to create various megafauna components.
+/**
+ * We separate \ref World and \ref WorldConstructor into two classes because
+ * the framework class \ref World should be as slim as possible because it is
+ * exposed in the library interface. Moreover, \ref World cannot be easily
+ * unit-tested since it is constructed with an external instruction file.
+ */
 class WorldConstructor {
  public:
   /// Constructor: only set member variables.
