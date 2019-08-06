@@ -13,7 +13,7 @@ set (SOURCE_FILES
   include/Fauna/grass_forage.h
   include/Fauna/habitat.h
   include/Fauna/habitat_forage.h
-  include/Fauna/world.cpp
+  include/Fauna/world.h
   src/Fauna/Output/combined_data.cpp
   src/Fauna/Output/combined_data.h
   src/Fauna/Output/habitat_data.cpp
@@ -56,7 +56,7 @@ set (SOURCE_FILES
   src/Fauna/simulation_unit.cpp
   src/Fauna/simulation_unit.h
   src/Fauna/utils.cpp
-  src/Fauna/world.h
+  src/Fauna/world.cpp
   src/Fauna/world_constructor.cpp
   src/Fauna/world_constructor.h
   include/Fauna/utils.h # TODO: do not include this
