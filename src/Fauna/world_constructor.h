@@ -1,9 +1,12 @@
 #ifndef WORLD_CONSTRUCTOR_H
 #define WORLD_CONSTRUCTOR_H
 
+#include <memory>
+
 namespace Fauna {
 // Forward declarations
 class Parameters;
+class Hft;
 class HftList;
 class PopulationInterface;
 class HftPopulationsMap;
