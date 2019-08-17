@@ -29,17 +29,12 @@ class SimulationUnit {
    */
   SimulationUnit(Habitat* habitat, HftPopulationsMap* populations);
 
+  /// Default Destructor
+  ~SimulationUnit();
+
   /// The habitat where the populations live.
   /** \throw std::logic_error If the private pointer is NULL. */
-  Habitat& get_habitat() {
-    if (habitat.get() == NULL)
-      throw std::logic_error(
-          "Fauna::SimulationUnit::get_habitat() "
-          "The unique pointer to habitat is NULL. "
-          "The SimulationUnit object lost ownership "
-          "of the Habitat object.");
-    return *habitat;
-  };
+  Habitat& get_habitat();
 
   /// The herbivores that lives in the habitat.
   /** \throw std::logic_error If the private pointer is NULL. */

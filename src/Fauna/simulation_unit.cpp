@@ -24,3 +24,19 @@ SimulationUnit::SimulationUnit(Habitat* habitat, HftPopulationsMap* populations)
         "Fauna::SimulationUnit::SimulationUnit() "
         "Pointer to populations is NULL.");
 }
+
+// The destructor needs to be implemented here in the source file and not
+// inline in the header file. The reason is that std::unique_ptr needs to call
+// the destructor of Fauna::Habitat when it is itself released. But the
+// destructor of Fauna::Habitat is incomplete at compile time.
+SimulationUnit::~SimulationUnit() = default;
+
+Habitat& SimulationUnit::get_habitat() {
+  if (habitat.get() == NULL)
+    throw std::logic_error(
+        "Fauna::SimulationUnit::get_habitat() "
+        "The unique pointer to habitat is NULL. "
+        "The SimulationUnit object lost ownership "
+        "of the Habitat object.");
+  return *habitat;
+};
