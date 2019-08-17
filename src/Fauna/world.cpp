@@ -52,7 +52,7 @@ void World::simulate_day(const int day_of_year, const bool do_herbivores) {
   if (day_of_year < 0 || day_of_year >= 365)
     throw std::invalid_argument(
         "Fauna::World::simulate_day(): Argument 'day_of_year' out of range");
-  for (auto sim_unit : sim_units) {
+  for (auto& sim_unit : sim_units) {
     // If there was no initial establishment yet, we may do this now.
     bool establish_if_needed = !sim_unit.is_initial_establishment_done();
 
