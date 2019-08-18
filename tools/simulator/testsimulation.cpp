@@ -42,6 +42,8 @@ double param_monthly_snow_depth[12];
 /// Run the test simulation with parameters read from instruction file
 /** \todo Print version, print help */
 int main(int argc, char* argv[]) {
+  std::string insfile_fauna;
+  std::string insfile_testsim;
   try {
     std::cerr << "This is the test simulator for the Modular Megafauna Model."
               << std::endl;
@@ -56,8 +58,8 @@ int main(int argc, char* argv[]) {
         framework.print_help();
       else {
         // Read the instruction file to obtain simulation settings
-        const std::string insfile_fauna = argv[1];
-        const std::string insfile_testsim = argv[2];
+        insfile_fauna = argv[1];
+        insfile_testsim = argv[2];
 
         std::cerr << "Instruction file is not yet supported." << std::endl;
         return EXIT_FAILURE;
