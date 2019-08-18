@@ -11,7 +11,6 @@
 #include "forage_values.h"
 #include "habitat.h"
 #include "habitat_forage.h"
-#include "parameter_reader.h"
 #include "parameters.h"
 #include "world.h"
 
