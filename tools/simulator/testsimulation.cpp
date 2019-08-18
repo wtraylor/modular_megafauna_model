@@ -17,18 +17,6 @@ using namespace FaunaSim;
 
 // Anonymous namespace with definitions local to this file
 namespace {
-/// Creates a vector of pointers from a vector of
-/// \ref SimulationUnit objects.
-std::vector<SimulationUnit*> simunit_vector_to_pointers(
-    std::vector<SimulationUnit> vec_input) {
-  std::vector<SimulationUnit*> result;
-  result.reserve(vec_input.size());
-  for (std::vector<SimulationUnit>::iterator itr = vec_input.begin();
-       itr != vec_input.end(); itr++)
-    result.push_back(&*itr);
-  return result;
-}
-
 /// Helper to read parameter \ref LogisticGrass::Parameters::digestibility.
 double param_grass_digestibility[12];
 /// Helper to read parameter \ref LogisticGrass::Parameters::decay_monthly.
