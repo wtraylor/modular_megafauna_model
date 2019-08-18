@@ -53,7 +53,7 @@ class Framework {
 
  private:
   /// Create a new habitat according to preferences.
-  std::auto_ptr<Fauna::Habitat> create_habitat() const;
+  Fauna::Habitat* create_habitat() const;
 
   /// Parameter values from instruction file
   struct {

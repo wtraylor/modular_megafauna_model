@@ -87,8 +87,8 @@ int main(int argc, char* argv[]) {
 
 ////////////////////////////////////////////////////////
 
-std::auto_ptr<Habitat> Framework::create_habitat() const {
-  return std::auto_ptr<Habitat>(new SimpleHabitat(params.habitat));
+Habitat* Framework::create_habitat() const {
+  return new SimpleHabitat(params.habitat);
 }
 
 void Framework::print_help() {
@@ -130,20 +130,7 @@ bool Framework::run(const std::string insfile_fauna,
     // Fill one group with habitats and populations
     for (int h = 0; h < params.nhabitats_per_group; h++) {
       try {
-        // Create herbivore populations for this patch
-        std::auto_ptr<Fauna::HftPopulationsMap> pops;
-        if (global_params.one_hft_per_patch) {
-          // Create only one HFT in the habitat.
-          pops = habitat_simulator.create_populations(
-              &hftlist[h % hftlist.size()]);
-        } else {
-          // Create all HFTs in the habitat.
-          pops = habitat_simulator.create_populations(hftlist);
-        }
-
-        // create a new pair of habitat and populations
-        new_group.add(std::auto_ptr<SimulationUnit>(
-            new SimulationUnit(create_habitat(), pops)));
+        fauna_world.create_simulation_unit(create_habitat());
 
       } catch (const std::exception& e) {
         std::cerr << "Exception during habitat creation:" << std::endl
@@ -176,23 +163,13 @@ bool Framework::run(const std::string insfile_fauna,
           const bool do_herbivores = true;
 
           try {
-            habitat_simulator.simulate_day(day_of_year, simulation_unit,
-                                           do_herbivores);
+            fauna_world.simulate_day(day_of_year, do_herbivores);
           } catch (const std::exception& e) {
             std::cerr << "Exception during herbivore simulation:\n"
                       << e.what() << std::endl;
             return false;
           }
         }
-
-        // Write output
-        // As a makeshift we just print something to STDOUT.
-        std::cout << group.get_lon() << '\t' << group.get_lat() << '\t'
-                  << day_of_year << '\t' << year << '\t';
-        for (const auto& i : group.get_vector())
-          std::cout
-              << i->get_output().habitat_data.available_forage.grass.get_mass();
-        std::cout << std::endl;
       }  // end of habitat group loop
 
     }  // day loop: end of year
