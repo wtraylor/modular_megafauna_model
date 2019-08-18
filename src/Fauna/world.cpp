@@ -16,6 +16,10 @@ World::World(const std::string instruction_filename)
       days_since_last_establishment(get_params().herbivore_establish_interval),
       world_constructor(new WorldConstructor(get_params(), get_hfts())) {}
 
+// The destructor must be implemented here in the source file, where the
+// forward-declared types are complete.
+World::~World() = default;
+
 void World::create_simulation_unit(Habitat* habitat) {
   if (habitat == NULL)
     throw std::invalid_argument(

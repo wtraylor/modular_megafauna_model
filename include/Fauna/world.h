@@ -21,6 +21,9 @@ class World {
   /// Constructor: Read parameters and HFTs from instruction file.
   World(const std::string instruction_filename);
 
+  /// Default destructor.
+  ~World();
+
   /// Compose a new simulation from an external habitat and new populations.
   /**
    * The new simulation unit will be owned by \ref World and released as soon
