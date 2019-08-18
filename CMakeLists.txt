@@ -64,9 +64,6 @@ set (SOURCE_FILES
 
 add_library (ModularMegafaunaModel STATIC ${SOURCE_FILES})
 
-# TODO: Explain namespace alias.
-# add_library (ModularMegafaunaModel::Fauna ALIAS Fauna)
-
 # This library uses C++11 features, but does not require it from programs that
 # use this library.
 target_compile_features (ModularMegafaunaModel PRIVATE cxx_std_11)
