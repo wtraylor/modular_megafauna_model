@@ -48,9 +48,6 @@ int main(int argc, char* argv[]) {
         // Read the instruction file to obtain simulation settings
         insfile_fauna = argv[1];
         insfile_testsim = argv[2];
-
-        std::cerr << "Instruction file is not yet supported." << std::endl;
-        return EXIT_FAILURE;
       }
     } else {
       framework.print_usage();
