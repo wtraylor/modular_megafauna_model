@@ -45,7 +45,6 @@ int main(int argc, char* argv[]) {
       if (std::string(argv[1]) == "--help" || std::string(argv[1]) == "-help")
         framework.print_help();
       else {
-        // Read the instruction file to obtain simulation settings
         insfile_fauna = argv[1];
         insfile_testsim = argv[2];
       }
