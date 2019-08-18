@@ -31,7 +31,9 @@ void World::create_simulation_unit(Habitat* habitat) {
   assert(pmap != NULL);
   assert(pmap->size() == get_hfts().size());
 
-  sim_units.push_back(SimulationUnit(habitat, pmap));
+  // Use emplace_back() instead of push_back() to directly construct the new
+  // SimulationUnit object without copy.
+  sim_units.emplace_back(habitat, pmap);
 }
 
 const HftList& World::get_hfts() {
