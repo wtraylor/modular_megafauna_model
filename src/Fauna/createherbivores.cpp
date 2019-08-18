@@ -40,6 +40,17 @@ double CreateHerbivoreCommon::get_body_condition(const int age_days) const {
   return body_condition;
 }
 
+const Hft& CreateHerbivoreCommon::get_hft() const {
+    assert(hft != NULL);
+    return *hft;
+}
+
+/// Global simulation parameters.
+const Parameters& CreateHerbivoreCommon::get_params() const {
+  assert(parameters != NULL);
+  return *parameters;
+}
+
 //------------------------------------------------------------
 //------ CreateHerbivoreIndividual ---------------------------
 //------------------------------------------------------------

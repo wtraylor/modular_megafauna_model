@@ -24,10 +24,7 @@ class Hft;
 class CreateHerbivoreCommon {
  public:
   /// The herbivore functional type.
-  const Hft& get_hft() const {
-    assert(hft != NULL);
-    return *hft;
-  }
+  const Hft& get_hft() const;
 
  protected:
   /// Protected constructor.
@@ -39,10 +36,7 @@ class CreateHerbivoreCommon {
   double get_body_condition(const int age_days) const;
 
   /// Global simulation parameters.
-  const Parameters& get_params() const {
-    assert(parameters != NULL);
-    return *parameters;
-  }
+  const Parameters& get_params() const;
 
  private:
   const Hft* hft;
