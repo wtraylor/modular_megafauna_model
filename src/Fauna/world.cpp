@@ -1,6 +1,8 @@
 #include "world.h"
+#include <algorithm>
 #include <stdexcept>
 #include "feed.h"
+#include "habitat.h"
 #include "hft.h"
 #include "population.h"
 #include "read_insfile.h"
@@ -58,7 +60,16 @@ void World::simulate_day(const int day_of_year, const bool do_herbivores) {
   if (day_of_year < 0 || day_of_year >= 365)
     throw std::invalid_argument(
         "Fauna::World::simulate_day(): Argument 'day_of_year' out of range");
-  for (auto& sim_unit : sim_units) {
+
+  for (auto iter = sim_units.begin(); iter != sim_units.end();) {
+    SimulationUnit& sim_unit = *iter;
+
+    // Remove invalid simulation units immediately.
+    if (sim_unit.get_habitat().is_dead()) {
+      iter = sim_units.erase(iter);
+      continue;
+    }
+
     // If there was no initial establishment yet, we may do this now.
     bool establish_if_needed = !sim_unit.is_initial_establishment_done();
 
@@ -85,5 +96,7 @@ void World::simulate_day(const int day_of_year, const bool do_herbivores) {
 
     // Call the function object.
     simulate_day(do_herbivores, establish_if_needed);
+
+    iter++;
   }
 }
