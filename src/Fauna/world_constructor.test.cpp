@@ -14,11 +14,10 @@ TEST_CASE("Fauna::WorldConstructor", "") {
   // prepare HFT list
   HftList hftlist = create_hfts(3, params);
 
-  Simulator world_cons(params);
+  WorldConstructor world_cons(params, hftlist);
 
   SECTION("create_populations() for several HFTs") {
-    std::auto_ptr<HftPopulationsMap> pops =
-        world_cons.create_populations(hftlist);
+    std::auto_ptr<HftPopulationsMap> pops = world_cons.create_populations();
     REQUIRE(pops.get() != NULL);
     CHECK(pops->size() == hftlist.size());
     // find all HFTs
