@@ -3,7 +3,7 @@
 
 #include <list>
 #include <memory>
-#include "parameters.h"
+#include "fauna_params.h"
 
 namespace Fauna {
 // Forward declarations
@@ -19,6 +19,15 @@ class WorldConstructor;
 class World {
  public:
   /// Constructor: Read parameters and HFTs from instruction file.
+  /**
+   * \todo Shall this throw an exception on malformed instruction file? The way
+   * the framework() function in LPJ-GUESS is constructed it odes not work well
+   * to catch an exception. So perhaps Fauna::World::World() should just write
+   * to stderr and *then* throw an exception?
+   *
+   * \param instruction_filename Path to the instruction file for the megafauna
+   * model. It contains global settings and herbivore parameters.
+   */
   World(const std::string instruction_filename);
 
   /// Default destructor.
