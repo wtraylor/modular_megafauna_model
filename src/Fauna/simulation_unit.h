@@ -36,6 +36,10 @@ class SimulationUnit {
   /** \throw std::logic_error If the private pointer is NULL. */
   Habitat& get_habitat();
 
+  /// Get a readonly reference to the habitat.
+  /** \throw std::logic_error If the private pointer is NULL. */
+  const Habitat& get_habitat() const;
+
   /// The herbivores that lives in the habitat.
   /** \throw std::logic_error If the private pointer is NULL. */
   HftPopulationsMap& get_populations() {

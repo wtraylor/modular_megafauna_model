@@ -40,3 +40,13 @@ Habitat& SimulationUnit::get_habitat() {
         "of the Habitat object.");
   return *habitat;
 };
+
+const Habitat& SimulationUnit::get_habitat() const {
+  if (habitat.get() == NULL)
+    throw std::logic_error(
+        "Fauna::SimulationUnit::get_habitat() "
+        "The unique pointer to habitat is NULL. "
+        "The SimulationUnit object lost ownership "
+        "of the Habitat object.");
+  return *habitat;
+};
