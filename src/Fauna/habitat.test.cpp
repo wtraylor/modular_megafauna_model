@@ -11,6 +11,12 @@ TEST_CASE("Fauna::Habitat", "") {
 
   DummyHabitat habitat;
 
+  SECTION("kill()") {
+    CHECK(! habitat.is_dead());
+    habitat.kill();
+    CHECK(habitat.is_dead());
+  }
+
   SECTION("init_day()") {
     // init_day()
     CHECK_THROWS(habitat.init_day(-1));
@@ -18,6 +24,9 @@ TEST_CASE("Fauna::Habitat", "") {
     const int DAY = 34;
     habitat.init_day(DAY);
     CHECK(habitat.get_day_public() == DAY);
+
+    habitat.kill();
+    CHECK_THROWS(habitat.init_day(DAY));
   }
 
   SECTION("output") {
