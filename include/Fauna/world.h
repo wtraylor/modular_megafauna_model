@@ -47,8 +47,11 @@ class World {
 
   /// Iterate through all simulation units and perform simulation for this day.
   /**
+   * This is the central access point to start the perform the herbivore
+   * simulations.
+   *
    * If a \ref Habitat instance is marked as dead, the corresponding simulation
-   * unit will be released.
+   * unit will be released from memory.
    * \param day_of_year Current day of year (0 = Jan 1st).
    * \param do_herbivores Whether to perform herbivore simulations. If false,
    * only the output data of the habitats are updated.
