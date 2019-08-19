@@ -57,6 +57,69 @@ The default Google layout is exported in the [.clang-format](.clang-format) file
 This repository has a [.editorconfig](.editorconfig) file to define indentation rule for different file types.
 Please install the plugin for your text editor if available: [editorconfig.org/](https://editorconfig.org/)
 
+#### Naming
+
+- Classes are named in CamelCase with upper-case first letter, e.g. `MyExampleClass`.
+    + Enum types are like classes.
+- Functions are imperative verbs with underscores, e.g. `create_new_herbivores()`.
+- Constants are all-uppercase with underscores, e.g. `MY_GLOBAL_CONSTANT`.
+
+#### Alphabetical Order
+An example class definition in a header file:
+```cpp
+class MyExampleClass{
+ public: // -> public members first
+  /// Constructor
+  MyExampleClass(); // -> constructors are always first
+
+  /// Destructor
+  ~MyExampleClass(); // -> destructor comes next
+
+  // -> The following member functions in alphabetical order:
+  /// Create new herbivore instance.
+  Herbivore* create_herbivore();
+
+  /// Get the type of herbivore.
+  HerbivoreType get_herbivore_type();
+ private:
+  /// Helper function to perform calculations.
+  void my_private_function();
+
+  // -> Finally the private member variables in alph. order:
+  HerbivoreType herbi_type;
+  int var = 10;
+};
+```
+
+In the corresponding source file, _all_ function definitions (both private & public) are in alphabetical order, except for the constructors and destructor, which come first.
+
+If there is more than one class in the header file, separate their function definitions in blocks with big comment captions, for example like this:
+```cpp
+//============================================================
+// HftPopulationsMap
+//============================================================
+```
+
+If there are functions local to this file, put them in an anonymous namespace before any other definitions:
+```cpp
+namespace {
+  int my_local_function(){
+  // ...
+  };
+}
+```
+
+#### Header for Each File
+Begin each `.h` or `.cpp` file with a doxygen header containing a brief description.
+The description will appear in the file list of the generated doxygen documentation.
+Ususally the brief description will be the same for a `.h` and its `.cpp` file.
+```cpp
+/// \file
+/// \brief Management classes of herbivore populations.
+```
+
+<!--TODO: Is this file header enough? Author? Date? License? -->
+
 ### Unit Tests
 Make sure to write a unit test for every logical component.
 If you create a `.cpp` file, there should most likely also be a corresponding `.test.cpp` file that checks the public functions of the class or classes.
