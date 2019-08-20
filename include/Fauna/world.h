@@ -3,7 +3,6 @@
 
 #include <list>
 #include <memory>
-#include "parameters.h"
 
 namespace Fauna {
 // Forward declarations
@@ -11,6 +10,7 @@ class Habitat;
 class Hft;
 class HftList;
 class InsfileContent;
+class Parameters;
 class PopulationInterface;
 class SimulationUnit;
 class WorldConstructor;

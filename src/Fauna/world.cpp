@@ -4,6 +4,7 @@
 #include "feed.h"
 #include "habitat.h"
 #include "hft.h"
+#include "parameters.h"
 #include "population.h"
 #include "read_insfile.h"
 #include "simulate_day.h"
