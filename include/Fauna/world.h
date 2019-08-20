@@ -3,7 +3,7 @@
 
 #include <list>
 #include <memory>
-#include "fauna_params.h"
+#include "parameters.h"
 
 namespace Fauna {
 // Forward declarations
