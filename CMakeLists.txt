@@ -71,9 +71,9 @@ target_compile_features (ModularMegafaunaModel PRIVATE cxx_std_11)
 target_include_directories (ModularMegafaunaModel
   PUBLIC
   include/
+  PRIVATE
   include/Fauna/
   include/Fauna/Output/
-  PRIVATE
   src/Fauna/
   src/Fauna/Output/
   )
@@ -124,6 +124,7 @@ if (BUILD_TESTING)
     )
   target_include_directories (megafauna_unit_tests
     PRIVATE
+    include/
     include/Fauna/
     include/Fauna/Output/
     src/Fauna/

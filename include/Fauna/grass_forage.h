@@ -8,7 +8,7 @@
 #define GRASS_FORAGE_H
 
 #include <cassert>
-#include "forage_base.h"
+#include "Fauna/forage_base.h"
 
 namespace Fauna {
 /// Grass forage in a habitat.
