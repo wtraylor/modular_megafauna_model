@@ -99,21 +99,15 @@ bool Framework::run(const std::string insfile_fauna,
 
   std::cerr << "Creating ecosystem with habitats and herbivores." << std::endl;
 
-  typedef std::vector<SimpleHabitat> HabitatGroup;
-
   // Container for all the groups, each being a vector of
   // simulation units.
-  std::vector<HabitatGroup> groups;
-  groups.reserve(params.nhabitats_per_group);
   for (int g = 0; g < params.ngroups; g++) {
     // Fill one group with habitats and populations
-    groups.emplace_back(HabitatGroup());
     for (int h = 0; h < params.nhabitats_per_group; h++) {
       try {
-        groups.back().emplace_back(SimpleHabitat(params.habitat));
         // We only pass the pointer to the new habitat to the megafauna
         // library, so special care is needed that it will stay valid.
-        fauna_world.create_simulation_unit(&groups.back().back());
+        fauna_world.create_simulation_unit(new SimpleHabitat(params.habitat));
       } catch (const std::exception& e) {
         std::cerr << "Exception during habitat creation:" << std::endl
                   << "group number " << g << " of " << params.ngroups << '\n'
