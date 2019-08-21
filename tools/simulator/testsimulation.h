@@ -56,10 +56,12 @@ class Framework {
   Fauna::Habitat* create_habitat() const;
 
   /// Parameter values from instruction file
+  /** The initialization values are just arbitrary. */
   struct {
-    std::string outputdirectory;
-    int nyears;
-    int nhabitats_per_group, ngroups;
+    std::string outputdirectory = "./";
+    int nyears = 100;
+    int nhabitats_per_group = 4;
+    int ngroups = 3;
     SimpleHabitat::Parameters habitat;
   } params;
 
