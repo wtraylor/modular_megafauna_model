@@ -25,21 +25,17 @@ namespace FaunaSim {
 class LogisticGrass {
  public:
   /// Settings for grass growth
+  /**
+   * The initialization values are just arbitrary.
+   */
   struct Parameters {
-    /// Constructor with arbitrary simple, *valid* values, but no growth.
-    Parameters() : fpc(0.1), init_mass(0.0), reserve(0.1), saturation(1.0) {
-      digestibility.push_back(.5);
-      decay_monthly.push_back(0.0);
-      growth_monthly.push_back(0.0);
-    }
-
     /// Proportional daily rates of grass decay [day^-1]
     /**
      * This is a vector of *daily* decay rates for each month. When
      * the end of the vector is reached, the values are recycled.
      * A vector of length 12 creates the same behaviour every year.
      */
-    std::vector<double> decay_monthly;
+    std::vector<double> decay_monthly = {0.0};
 
     /// Proportional digestibility of the grass [frac].
     /**
@@ -47,11 +43,11 @@ class LogisticGrass {
      * the end of the vector is reached, the values are recycled.
      * A vector of length 12 creates the same behaviour every year.
      */
-    std::vector<double> digestibility;
+    std::vector<double> digestibility = {0.5};
 
     /// \brief Percentage of habitat covered with grass
     ///        (Foliar Percentage Cover) [frac]
-    double fpc;
+    double fpc = 0.1;
 
     /// Proportional daily grass growth rates [day^-1]
     /**
@@ -59,20 +55,20 @@ class LogisticGrass {
      * the end of the vector is reached, the values are recycled.
      * A vector of length 12 creates the same behaviour every year.
      */
-    std::vector<double> growth_monthly;
+    std::vector<double> growth_monthly = {0.0};
 
     /// Initial available forage [kgDM/km²]
     /** This should be smaller than \ref saturation */
-    double init_mass;
+    double init_mass = 0.0;
 
     /// \brief Ungrazable grass biomass reserve, inaccessable
     ///        to herbivores [kgDM/km²]
     /** Owen-Smith (2002) gives value of 20 g/m²*/
-    double reserve;
+    double reserve = 0.1;
 
     /// Saturation grass biomass [kgDM/m²]
     /** Owen-Smith (2002): 200 g/m²*/
-    double saturation;
+    double saturation = 1.0;
 
     /// Check if parameters are valid
     /**
@@ -128,7 +124,7 @@ class SimpleHabitat : public Habitat {
     /// Snow depth [cm] for each month.
     /** When the end of the vector is reached, the values are recycled.
      * A vector of length 12 creates the same behaviour every year. */
-    std::vector<double> snow_depth_monthly;
+    std::vector<double> snow_depth_monthly = {0.0};
   };
 
   /// Constructor with simulation settings.
@@ -137,10 +133,7 @@ class SimpleHabitat : public Habitat {
    * model.
    */
   SimpleHabitat(const SimpleHabitat::Parameters settings)
-      : settings(settings),
-        grass(settings.grass),
-        simulation_month(0),
-        snow_depth(0.0) {}
+      : settings(settings), grass(settings.grass) {}
 
  public:  // ------ Fauna::Habitat implementations ----
   virtual void add_excreted_nitrogen(const double) {}  // disabled
@@ -164,7 +157,7 @@ class SimpleHabitat : public Habitat {
   SimpleHabitat::Parameters settings;
 
   /// Snow depth in cm, as read from \ref Parameters::snow_depth_monthly.
-  double snow_depth;
+  double snow_depth = 0.0;
 
   /// Grass in the habitat
   LogisticGrass grass;
@@ -172,7 +165,7 @@ class SimpleHabitat : public Habitat {
   /// The current simulation month, starting with zero.
   /** We need this to address the current value in
    * \ref Parameters::snow_depth_monthly. */
-  int simulation_month;
+  int simulation_month = 0;
 };
 
 }  // namespace FaunaSim
