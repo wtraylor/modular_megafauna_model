@@ -99,23 +99,21 @@ bool Framework::run(const std::string insfile_fauna,
 
   std::cerr << "Creating ecosystem with habitats and herbivores." << std::endl;
 
+  typedef std::vector<SimpleHabitat> HabitatGroup;
+
   // Container for all the groups, each being a vector of
   // simulation units.
-  HabitatGroupList groups;
+  std::vector<HabitatGroup> groups;
   groups.reserve(params.nhabitats_per_group);
   for (int g = 0; g < params.ngroups; g++) {
-    // This is only for labelling the output:
-    const double lon = (double)g;
-    const double lat = (double)g;
-
-    HabitatGroup& new_group =
-        groups.add(std::auto_ptr<HabitatGroup>(new HabitatGroup(lon, lat)));
-
     // Fill one group with habitats and populations
+    groups.emplace_back(HabitatGroup());
     for (int h = 0; h < params.nhabitats_per_group; h++) {
       try {
-        fauna_world.create_simulation_unit(create_habitat());
-
+        groups.back().emplace_back(SimpleHabitat(params.habitat));
+        // We only pass the pointer to the new habitat to the megafauna
+        // library, so special care is needed that it will stay valid.
+        fauna_world.create_simulation_unit(&groups.back().back());
       } catch (const std::exception& e) {
         std::cerr << "Exception during habitat creation:" << std::endl
                   << "group number " << g << " of " << params.ngroups << '\n'
@@ -133,29 +131,17 @@ bool Framework::run(const std::string insfile_fauna,
 
   for (int year = 0; year < params.nyears; year++) {
     for (int day_of_year = 0; day_of_year < 365; day_of_year++) {
-      // loop through habitat groups
-      for (HabitatGroupList::iterator itr_g = groups.begin();
-           itr_g != groups.end(); itr_g++) {
-        HabitatGroup& group = **itr_g;
-
-        // loop through SimulationUnit objects in this group
-        for (HabitatGroup::iterator itr_u = group.begin(); itr_u != group.end();
-             itr_u++) {
-          SimulationUnit& simulation_unit = **itr_u;
-
-          // VEGATATION AND HERBIVORE SIMULATION
-          const bool do_herbivores = true;
-
-          try {
-            fauna_world.simulate_day(day_of_year, do_herbivores);
-          } catch (const std::exception& e) {
-            std::cerr << "Exception during herbivore simulation:\n"
-                      << e.what() << std::endl;
-            return false;
-          }
-        }
-      }  // end of habitat group loop
-
+      // VEGATATION AND HERBIVORE SIMULATION
+      const bool do_herbivores = true;
+      try {
+        // The Fauna::World class will take care to iterate over all habitat
+        // groups.
+        fauna_world.simulate_day(day_of_year, do_herbivores);
+      } catch (const std::exception& e) {
+        std::cerr << "Exception during herbivore simulation:\n"
+                  << e.what() << std::endl;
+        return false;
+      }
     }  // day loop: end of year
 
     // PRINT PROGRESS
