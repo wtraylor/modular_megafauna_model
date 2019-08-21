@@ -62,6 +62,7 @@ void World::simulate_day(const int day_of_year, const bool do_herbivores) {
     throw std::invalid_argument(
         "Fauna::World::simulate_day(): Argument 'day_of_year' out of range");
 
+  // We use an iterator in order to be able to call std::list::erase().
   for (auto iter = sim_units.begin(); iter != sim_units.end();) {
     SimulationUnit& sim_unit = *iter;
 
