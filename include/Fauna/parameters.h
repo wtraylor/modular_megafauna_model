@@ -74,6 +74,12 @@ struct Parameters {
   OutputWriter output_writer = OW_TEXT_TABLES;
 
   /// Preferences for the \ref TextTableWriter output class.
+  /**
+   * Which tables to write in text files is specified by boolean variables: If
+   * the corresponding member variable is `true`, a file with the same name
+   * plus extension (\ref TextTableWriter::FILE_EXTENSION) will be created in
+   * \ref output_directory.
+   */
   struct {
     /// Relative or absolute path to directory where output files are placed.
     /**
@@ -81,6 +87,9 @@ struct Parameters {
      * If the directory doesn’t exist, it will be created.
      */
     std::string output_directory = "./";
+
+    /// Herbivore mass density per HFT in kg/km².
+    bool mass_density_per_hft = true;
   } text_table_output;
 
   /// Constructor with default (valid!) settings
