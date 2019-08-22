@@ -28,7 +28,7 @@ enum HerbivoreType {
 };
 
 /// Time interval for aggregating output.
-enum OutputInterval{
+enum OutputInterval {
   /// Don’t aggregate output over time, but write every day.
   OI_DAILY,
   /// Aggregate output for each month.
@@ -72,6 +72,16 @@ struct Parameters {
 
   /// The module that writes megafauna output to disk.
   OutputWriter output_writer = OW_TEXT_TABLES;
+
+  /// Preferences for the \ref TextTableWriter output class.
+  struct {
+    /// Relative or absolute path to directory where output files are placed.
+    /**
+     * The names of the output text files within the directory are hard-coded.
+     * If the directory doesn’t exist, it will be created.
+     */
+    std::string output_directory = "./";
+  } text_table_output;
 
   /// Constructor with default (valid!) settings
   Parameters()
