@@ -27,6 +27,18 @@ enum HerbivoreType {
   HT_INDIVIDUAL
 };
 
+/// Time interval for aggregating output.
+enum OutputInterval{
+  /// Don’t aggregate output over time, but write every day.
+  OI_DAILY,
+  /// Aggregate output for each month.
+  OI_MONTHLY,
+  /// Aggregate output for each year.
+  OI_ANNUAL,
+  /// Aggregate output for 10 years intervals.
+  OI_DECADAL
+};
+
 /// Parameter for selecting the output writer implementation.
 enum OutputWriter {
   /// Use class \ref TextTableWriter
@@ -54,6 +66,9 @@ struct Parameters {
 
   /// Whether to allow only herbivores of one HFT in each patch (default false).
   bool one_hft_per_patch;
+
+  /// Time interval for aggregating output.
+  OutputInterval output_interval = OI_ANNUAL;
 
   /// The module that writes megafauna output to disk.
   OutputWriter output_writer = OW_TEXT_TABLES;
