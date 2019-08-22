@@ -52,9 +52,6 @@ class Framework {
   bool run(const std::string insfile_fauna, const std::string insfile_testsim);
 
  private:
-  /// Create a new habitat according to preferences.
-  Fauna::Habitat* create_habitat() const;
-
   /// Parameter values from instruction file
   /** The initialization values are just arbitrary. */
   struct {

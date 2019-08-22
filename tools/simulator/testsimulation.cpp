@@ -71,10 +71,6 @@ int main(int argc, char* argv[]) {
 
 ////////////////////////////////////////////////////////
 
-Habitat* Framework::create_habitat() const {
-  return new SimpleHabitat(params.habitat);
-}
-
 void Framework::print_help() {
   // We use C++11 raw string literals like a Bash Here Document.
   // TODO: complete help message
