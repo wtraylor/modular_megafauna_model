@@ -63,6 +63,7 @@ Please install the plugin for your text editor if available: [editorconfig.org/]
     + Enum types are like classes.
 - Functions are imperative verbs with underscores, e.g. `create_new_herbivores()`.
 - Constants are all-uppercase with underscores, e.g. `MY_GLOBAL_CONSTANT`.
+    + Enum elements are similar to constants, but have additionally a prefix with the initials of the type name. For instance the elements in the enum `ForageType` will all start with `FT_`, like `FT_GRASS`.
 
 #### Alphabetical Order
 An example class definition in a header file:
