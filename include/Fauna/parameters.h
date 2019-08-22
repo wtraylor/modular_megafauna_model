@@ -27,6 +27,12 @@ enum HerbivoreType {
   HT_INDIVIDUAL
 };
 
+/// Parameter for selecting the output writer implementation.
+enum OutputWriter {
+  /// Use class \ref TextTableWriter
+  OW_TEXT_TABLES
+};
+
 /// Parameters for the herbivory module.
 struct Parameters {
   // alphabetical order
@@ -48,6 +54,9 @@ struct Parameters {
 
   /// Whether to allow only herbivores of one HFT in each patch (default false).
   bool one_hft_per_patch;
+
+  /// The module that writes megafauna output to disk.
+  OutputWriter output_writer = OW_TEXT_TABLES;
 
   /// Constructor with default (valid!) settings
   Parameters()
