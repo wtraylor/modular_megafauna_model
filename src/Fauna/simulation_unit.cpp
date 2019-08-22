@@ -6,27 +6,47 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "simulation_unit.h"
-#include "habitat.h"     // for Habitat and Population
-#include "population.h"  // for HftPopulationsMap
+#include "habitat.h"
+#include "population.h"
 
 using namespace Fauna;
 
-//============================================================
-// SimulationUnit
-//============================================================
-
-SimulationUnit::SimulationUnit(std::auto_ptr<Habitat> _habitat,
-                               std::auto_ptr<HftPopulationsMap> _populations)
-    :  // move ownership to private auto_ptr objects
-      habitat(_habitat),
-      populations(_populations),
+SimulationUnit::SimulationUnit(Habitat* habitat, HftPopulationsMap* populations)
+    :  // move ownership to private unique_ptr objects
+      habitat(habitat),
+      populations(populations),
       initial_establishment_done(false) {
-  if (habitat.get() == NULL)
+  if (habitat == NULL)
     throw std::invalid_argument(
-        "Fauna::SimulationUnit::SimulationUnit() "
-        "Pointer to habitat is NULL.");
-  if (populations.get() == NULL)
+        "Fauna::SimulationUnit::SimulationUnit() Pointer to habitat is NULL.");
+  if (populations == NULL)
     throw std::invalid_argument(
         "Fauna::SimulationUnit::SimulationUnit() "
         "Pointer to populations is NULL.");
 }
+
+// The destructor needs to be implemented here in the source file and not
+// inline in the header file. The reason is that std::unique_ptr needs to call
+// the destructor of Fauna::Habitat when it is itself released. But the
+// destructor of Fauna::Habitat is incomplete at compile time.
+SimulationUnit::~SimulationUnit() = default;
+
+Habitat& SimulationUnit::get_habitat() {
+  if (habitat.get() == NULL)
+    throw std::logic_error(
+        "Fauna::SimulationUnit::get_habitat() "
+        "The unique pointer to habitat is NULL. "
+        "The SimulationUnit object lost ownership "
+        "of the Habitat object.");
+  return *habitat;
+};
+
+const Habitat& SimulationUnit::get_habitat() const {
+  if (habitat.get() == NULL)
+    throw std::logic_error(
+        "Fauna::SimulationUnit::get_habitat() "
+        "The unique pointer to habitat is NULL. "
+        "The SimulationUnit object lost ownership "
+        "of the Habitat object.");
+  return *habitat;
+};

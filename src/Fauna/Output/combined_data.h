@@ -12,10 +12,11 @@
 #include "herbivore_data.h"
 
 namespace Fauna {
-  class Hft;
+class Hft;
 }
 
-namespace Fauna::Output {
+namespace Fauna {
+namespace Output {
 /// Output data for herbivores and habitat(s).
 /**
  * This can be data for one \ref Fauna::SimulationUnit (possibly aggregated
@@ -66,6 +67,7 @@ struct CombinedData {
     return result;
   }
 };
-} // namespace Fauna::Output
+}  // namespace Output
+}  // namespace Fauna
 
-#endif // COMBINED_DATA_H
+#endif  // COMBINED_DATA_H

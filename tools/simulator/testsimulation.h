@@ -5,11 +5,10 @@
 /// \date June 2017
 //////////////////////////////////////////////////////////////////////////
 
-#ifndef HERBIV_TESTSIMULATION_H
-#define HERBIV_TESTSIMULATION_H
+#ifndef TESTSIMULATION_H
+#define TESTSIMULATION_H
 
 #include <vector>
-#include "outputmodule.h"  // for HerbivoryOutput
 #include "testhabitat.h"   // for SimpleHabitat
 
 namespace Fauna {
@@ -37,48 +36,32 @@ class Framework {
     return instance;
   }
 
-  /// Run a simulation
-  /** Call this only after ins file has been read.
-   * At all critical points, exceptions are caught, but there
-   * is no guarantee that no exception *slips through the cracks*.
-   * \param global_params Instruction file parameters from
-   * the herbivory module not specific to the test simulation.
-   * \param hftlist List of HFTs
+  /// Print the help text to STDOUT.
+  void print_help();
+
+  /// Print the short usage text to STDERR.
+  void print_usage();
+
+  /// Run a simulation.
+  /**
+   * At all critical points, exceptions are caught.
+   * \param insfile_fauna Path to the instruction file for the megafauna model.
+   * \param insfile_testsim Instruction file for the testsimulator framework.
    * \return true on success, false on failure
    */
-  bool run(const Fauna::Parameters& global_params,
-           const Fauna::HftList& hftlist);
-
-  /// Parameter check (called from \ref parameters.cpp).
-  /**
-   * Check if all mandatory parameters have been read, terminates on error.
-   * This is a substitute for \ref plib_callback() in \ref parameters.cpp.
-   * Uses \ref fail() to terminate.
-   */
-  void plib_callback(int callback);
-
-  /// Declare instruction file parameters (called from \ref parameters.cpp).
-  /**
-   * Registers also mandatory parameters in \ref mandatory_parameters.
-   * - \ref declare_parameter() from \ref parameters.h is used for
-   *   regular parameters.
-   * - \ref declareitem from \ref plib.h is used for items with multiple
-   *   values.
-   */
-  void plib_declare_parameters();
+  bool run(const std::string insfile_fauna, const std::string insfile_testsim);
 
  private:
   /// Create a new habitat according to preferences.
-  std::auto_ptr<Fauna::Habitat> create_habitat() const;
-
-  /// Output module
-  GuessOutput::HerbivoryOutput herbiv_out;
+  Fauna::Habitat* create_habitat() const;
 
   /// Parameter values from instruction file
+  /** The initialization values are just arbitrary. */
   struct {
-    std::string outputdirectory;
-    int nyears;
-    int nhabitats_per_group, ngroups;
+    std::string outputdirectory = "./";
+    int nyears = 100;
+    int nhabitats_per_group = 4;
+    int ngroups = 3;
     SimpleHabitat::Parameters habitat;
   } params;
 
@@ -95,4 +78,4 @@ class Framework {
 };
 }  // namespace FaunaSim
 
-#endif  // HERBIV_TESTSIMULATION_H
+#endif  // TESTSIMULATION_H

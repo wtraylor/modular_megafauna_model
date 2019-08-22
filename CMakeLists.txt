@@ -13,6 +13,8 @@ set (SOURCE_FILES
   include/Fauna/grass_forage.h
   include/Fauna/habitat.h
   include/Fauna/habitat_forage.h
+  include/Fauna/parameters.h
+  include/Fauna/world.h
   src/Fauna/Output/combined_data.cpp
   src/Fauna/Output/combined_data.h
   src/Fauna/Output/habitat_data.cpp
@@ -43,25 +45,24 @@ set (SOURCE_FILES
   src/Fauna/nitrogen.cpp
   src/Fauna/nitrogen.h
   src/Fauna/parameters.cpp
-  src/Fauna/parameters.h
   src/Fauna/population.cpp
   src/Fauna/population.h
+  src/Fauna/read_insfile.cpp
+  src/Fauna/read_insfile.h
   src/Fauna/reproduction.cpp
   src/Fauna/reproduction.h
   src/Fauna/simulate_day.cpp
   src/Fauna/simulate_day.h
   src/Fauna/simulation_unit.cpp
   src/Fauna/simulation_unit.h
-  src/Fauna/simulator.cpp
-  src/Fauna/simulator.h
   src/Fauna/utils.cpp
+  src/Fauna/world.cpp
+  src/Fauna/world_constructor.cpp
+  src/Fauna/world_constructor.h
   include/Fauna/utils.h # TODO: do not include this
   )
 
 add_library (ModularMegafaunaModel STATIC ${SOURCE_FILES})
-
-# TODO: Explain namespace alias.
-# add_library (ModularMegafaunaModel::Fauna ALIAS Fauna)
 
 # This library uses C++11 features, but does not require it from programs that
 # use this library.
@@ -70,9 +71,9 @@ target_compile_features (ModularMegafaunaModel PRIVATE cxx_std_11)
 target_include_directories (ModularMegafaunaModel
   PUBLIC
   include/
+  PRIVATE
   include/Fauna/
   include/Fauna/Output/
-  PRIVATE
   src/Fauna/
   src/Fauna/Output/
   )
@@ -109,8 +110,8 @@ if (BUILD_TESTING)
     src/Fauna/population.test.cpp
     src/Fauna/reproduction.test.cpp
     src/Fauna/simulation_unit.test.cpp
-    src/Fauna/simulator.test.cpp
     src/Fauna/utils.test.cpp
+    src/Fauna/world_constructor.test.cpp
     tests/catch.hpp
     tests/catch_main.cpp
     tests/dummy_habitat.h
@@ -123,6 +124,7 @@ if (BUILD_TESTING)
     )
   target_include_directories (megafauna_unit_tests
     PRIVATE
+    include/
     include/Fauna/
     include/Fauna/Output/
     src/Fauna/
@@ -134,6 +136,27 @@ if (BUILD_TESTING)
     -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
     )
 endif(BUILD_TESTING)
+
+###########################################################################
+########################  TEST SIMULATOR  #################################
+###########################################################################
+
+option (BUILD_TEST_SIMULATOR
+  "Whether to build the simple megafauna test simulator."
+  ON
+  )
+
+if(BUILD_TEST_SIMULATOR)
+  add_executable (megafauna_test_simulator
+    tools/simulator/testhabitat.cpp
+    tools/simulator/testhabitat.h
+    tools/simulator/testsimulation.cpp
+    tools/simulator/testsimulation.h
+    )
+  target_link_libraries (megafauna_test_simulator
+    ModularMegafaunaModel
+    )
+endif(BUILD_TEST_SIMULATOR)
 
 ###########################################################################
 ####################  DOXYGEN DOCUMENTATION  ##############################

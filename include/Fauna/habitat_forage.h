@@ -7,9 +7,9 @@
 #ifndef HABITAT_FORAGE_H
 #define HABITAT_FORAGE_H
 
-#include "forage_types.h"
-#include "forage_values.h"
-#include "grass_forage.h"
+#include "Fauna/forage_types.h"
+#include "Fauna/forage_values.h"
+#include "Fauna/grass_forage.h"
 
 namespace Fauna {
 

@@ -9,6 +9,8 @@
 using namespace Fauna;
 
 void Habitat::init_day(const int today) {
+  if (is_dead())
+    throw std::logic_error("Fauna::Habitat::init_day() The object is dead.");
   if (today < 0 || today >= 365)
     throw std::invalid_argument(
         "Fauna::Habitat::init_day() "

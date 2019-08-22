@@ -7,11 +7,11 @@
 #ifndef HABITAT_H
 #define HABITAT_H
 
-#include <cassert>          // for assert()
-#include <list>             // for HabitatList
-#include <memory>           // for std::auto_ptr
-#include "habitat_forage.h" // for HabitatForage
-#include "habitat_data.h"   // for HabitatData
+#include <cassert>           // for assert()
+#include <list>              // for HabitatList
+#include <memory>            // for std::auto_ptr
+#include "Fauna/Output/habitat_data.h"    // for HabitatData
+#include "Fauna/habitat_forage.h"  // for HabitatForage
 
 namespace Fauna {
 // Forward declaration of classes in the same namespace
@@ -31,14 +31,23 @@ class Habitat {
   virtual ~Habitat() {}
 
   /// Account for nitrogen cycling back to soil (faeces + carcasses).
-  /** \param kgN_per_km2 Nitrogen deposited in habitat [kgN/km²].
-   * \throw std::invalid_argument If `kgN_per_km2 < 0.0`.*/
+  /**
+   * \param kgN_per_km2 Nitrogen deposited in habitat [kgN/km²].
+   * \throw std::invalid_argument If `kgN_per_km2 < 0.0`.
+   * \throw std::logic_error If this object is dead.
+   */
   virtual void add_excreted_nitrogen(const double kgN_per_km2) = 0;
 
   /// Get dry-matter biomass [kgDM/km²] that is available to herbivores to eat.
+  /**
+   * \throw std::logic_error If this object is dead.
+   */
   virtual HabitatForage get_available_forage() const = 0;
 
   /// Get today’s abiotic environmental variables in the habitat.
+  /**
+   * \throw std::logic_error If this object is dead.
+   */
   virtual HabitatEnvironment get_environment() const = 0;
 
   /// Update at the start of the day.
@@ -48,8 +57,18 @@ class Habitat {
    * call this parent function first.
    * \param today Day of the year (0 ≙ Jan 1st).
    * \throw std::invalid_argument If not `0<=today<=364`.
+   * \throw std::logic_error If this object is dead.
    */
   virtual void init_day(const int today);
+
+  /// Whether \ref kill() has been called on this object.
+  bool is_dead() const { return killed; }
+
+  /// Mark the object as dead and to be deleted.
+  /**
+   * Call this when the corresponding vegetation unit is invalid.
+   */
+  void kill() { killed = true; }
 
   /// Remove forage eaten by herbivores.
   /**
@@ -60,6 +79,7 @@ class Habitat {
    * must not exceed available forage.
    * \throw std::logic_error If `eaten_forage` exceeds
    * available forage (**to be implemented in derived classes**).
+   * \throw std::logic_error If this object is dead.
    */
   virtual void remove_eaten_forage(const ForageMass& eaten_forage) {
     get_todays_output().eaten_forage += eaten_forage;
@@ -81,6 +101,7 @@ class Habitat {
  private:
   Output::HabitatData current_output;
   int day_of_year;
+  bool killed = false;
 };
 
 /// A list of \ref Habitat pointers.

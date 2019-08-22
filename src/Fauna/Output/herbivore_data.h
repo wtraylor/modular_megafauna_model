@@ -8,11 +8,12 @@
 #ifndef HERBIVORE_DATA
 #define HERBIVORE_DATA
 
-#include "hft.h" // for MortalityFactor
-#include "forage_values.h" // for ForageMass
 #include <map>
+#include "forage_values.h"  // for ForageMass
+#include "hft.h"            // for MortalityFactor
 
-namespace Fauna::Output {
+namespace Fauna {
+namespace Output {
 /// Herbivore output data for one time unit.
 /** \see \ref sec_outputclasses */
 struct HerbivoreData {
@@ -149,6 +150,7 @@ struct HerbivoreData {
 
   /** @} */  // Aggregation Functionality
 };
-} // namespace Fauna::Output
+}  // namespace Output
+}  // namespace Fauna
 
-#endif // HERBIVORE_DATA
+#endif  // HERBIVORE_DATA

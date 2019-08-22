@@ -7,9 +7,6 @@
 
 #include "testhabitat.h"
 #include <sstream>  // for is_valid() messages
-#include "config.h"
-#include "framework.h"  // for SimulationUnit
-#include "utils.h"
 
 using namespace Fauna;
 using namespace FaunaSim;
@@ -229,46 +226,4 @@ void SimpleHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
         "Eaten grass exceeds available grass.");
   new_grass.set_mass(new_grass.get_mass() - eaten_forage[FT_GRASS]);
   grass.set_forage(new_grass);
-}
-
-//============================================================
-// HabitatGroup
-//============================================================
-
-HabitatGroup::~HabitatGroup() {
-  for (iterator itr = begin(); itr != end(); itr++) delete *itr;
-  vec.clear();
-}
-
-void HabitatGroup::add(std::auto_ptr<SimulationUnit> new_unit) {
-  if (new_unit.get() == NULL)
-    throw std::invalid_argument(
-        "HabitatGroup::add(): "
-        "Received NULL-Pointer as argument.");
-  SimulationUnit* bare_pointer = new_unit.get();
-  new_unit.release();  // release ownership of auto_ptr
-  vec.push_back(bare_pointer);
-}
-
-//============================================================
-// HabitatGroupList
-//============================================================
-
-HabitatGroup& HabitatGroupList::add(std::auto_ptr<HabitatGroup> new_group) {
-  for (const_iterator itr = begin(); itr != end(); itr++)
-    if ((*itr)->get_lon() == new_group->get_lon() &&
-        (*itr)->get_lat() == new_group->get_lat())
-      throw std::logic_error(
-          "FaunaSim::HabitatGroup::add() "
-          "A HabitatGroup object with the same longitude and "
-          "latitude already exists in the list.");
-
-  if (new_group.get() == NULL)
-    throw std::invalid_argument(
-        "HabitatGroupList::add(): "
-        "Received NULL-Pointer as argument.");
-  HabitatGroup* bare_pointer = new_group.get();
-  new_group.release();  // release ownership of auto_ptr
-  vec.push_back(bare_pointer);
-  return *bare_pointer;
 }
