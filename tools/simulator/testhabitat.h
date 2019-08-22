@@ -132,11 +132,17 @@ class SimpleHabitat : public Habitat {
    * \param settings Simulation settings for the vegetation
    * model.
    */
-  SimpleHabitat(const SimpleHabitat::Parameters settings)
-      : settings(settings), grass(settings.grass) {}
+  SimpleHabitat(const SimpleHabitat::Parameters settings,
+                const std::string aggregation_unit)
+      : settings(settings),
+        grass(settings.grass),
+        aggregation_unit(aggregation_unit) {}
 
  public:  // ------ Fauna::Habitat implementations ----
   virtual void add_excreted_nitrogen(const double) {}  // disabled
+  virtual const char* get_aggregation_unit() const {
+    return aggregation_unit.c_str();
+  }
   virtual HabitatForage get_available_forage() const {
     HabitatForage result;
     result.grass = grass.get_forage();
@@ -154,6 +160,7 @@ class SimpleHabitat : public Habitat {
   }
 
  private:
+  const std::string aggregation_unit;
   SimpleHabitat::Parameters settings;
 
   /// Snow depth in cm, as read from \ref Parameters::snow_depth_monthly.

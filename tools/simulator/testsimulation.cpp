@@ -98,12 +98,14 @@ bool Framework::run(const std::string insfile_fauna,
   // Container for all the groups, each being a vector of
   // simulation units.
   for (int g = 0; g < params.ngroups; g++) {
+    const std::string aggregation_unit = std::to_string(g);
     // Fill one group with habitats and populations
     for (int h = 0; h < params.nhabitats_per_group; h++) {
       try {
         // We only pass the pointer to the new habitat to the megafauna
         // library, so special care is needed that it will stay valid.
-        fauna_world.create_simulation_unit(new SimpleHabitat(params.habitat));
+        fauna_world.create_simulation_unit(
+            new SimpleHabitat(params.habitat, aggregation_unit));
       } catch (const std::exception& e) {
         std::cerr << "Exception during habitat creation:" << std::endl
                   << "group number " << g << " of " << params.ngroups << '\n'

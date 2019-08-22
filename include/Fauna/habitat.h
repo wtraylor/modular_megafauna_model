@@ -7,11 +7,11 @@
 #ifndef HABITAT_H
 #define HABITAT_H
 
-#include <cassert>           // for assert()
-#include <list>              // for HabitatList
-#include <memory>            // for std::auto_ptr
-#include "Fauna/Output/habitat_data.h"    // for HabitatData
-#include "Fauna/habitat_forage.h"  // for HabitatForage
+#include <cassert>                      // for assert()
+#include <list>                         // for HabitatList
+#include <memory>                       // for std::auto_ptr
+#include "Fauna/Output/habitat_data.h"  // for HabitatData
+#include "Fauna/habitat_forage.h"       // for HabitatForage
 
 namespace Fauna {
 // Forward declaration of classes in the same namespace
@@ -37,6 +37,25 @@ class Habitat {
    * \throw std::logic_error If this object is dead.
    */
   virtual void add_excreted_nitrogen(const double kgN_per_km2) = 0;
+
+  /// A string identifier for the group of habitats whose output is aggregated.
+  /**
+   * Suppose the vegetation model works in longitude/latitude grid cells and
+   * has three habitats in each grid cell. Output shall be aggregated per grid
+   * cell. Then all habitats in each set of three have the same (unique!)
+   * aggregation unit sting identifier. This could be for instance "10.0/54.0"
+   * for a grid cell at 10° E and 54° N. It’s completely up to the vegetation
+   * model to define a convention for the aggregation unit identifiers.
+   *
+   * You should avoid leading or trailing whitespaces and take care that you
+   * don’t include a character that is used as a field separator in the output
+   * table. Also, the string should not be empty.
+   *
+   * The output of this function should not change within the lifetime of one
+   * class instance: One Habitat object shall not change into another
+   * aggregation unit.
+   */
+  virtual const char* get_aggregation_unit() const = 0;
 
   /// Get dry-matter biomass [kgDM/km²] that is available to herbivores to eat.
   /**
