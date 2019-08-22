@@ -20,6 +20,9 @@ set (SOURCE_FILES
   src/Fauna/Output/habitat_data.cpp
   src/Fauna/Output/herbivore_data.cpp
   src/Fauna/Output/herbivore_data.h
+  src/Fauna/Output/output_writer_interface.h
+  src/Fauna/Output/text_table_writer.h
+  src/Fauna/Output/text_table_writer.cpp
   src/Fauna/createherbivores.cpp
   src/Fauna/createherbivores.h
   src/Fauna/energetics.cpp
@@ -94,6 +97,7 @@ if (BUILD_TESTING)
     src/Fauna/Output/combined_data.test.cpp
     src/Fauna/Output/habitat_data.test.cpp
     src/Fauna/Output/herbivore_data.test.cpp
+    src/Fauna/Output/text_table_writer.test.cpp
     src/Fauna/energetics.test.cpp
     src/Fauna/feed.test.cpp
     src/Fauna/forage_values.test.cpp

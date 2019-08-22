@@ -80,7 +80,7 @@ struct Parameters {
    * plus extension (\ref TextTableWriter::FILE_EXTENSION) will be created in
    * \ref output_directory.
    */
-  struct {
+  struct TextTableWriterOptions {
     /// Relative or absolute path to directory where output files are placed.
     /**
      * The names of the output text files within the directory are hard-coded.
