@@ -1,4 +1,5 @@
 #include "text_table_writer.h"
+#include "datapoint.h"
 
 using namespace Fauna;
 using namespace Fauna::Output;
