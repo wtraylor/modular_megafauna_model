@@ -97,6 +97,7 @@ if (BUILD_TESTING)
   add_executable(megafauna_unit_tests
     ${SOURCE_FILES}
     src/Fauna/Output/combined_data.test.cpp
+    src/Fauna/Output/datapoint.h
     src/Fauna/Output/habitat_data.test.cpp
     src/Fauna/Output/herbivore_data.test.cpp
     src/Fauna/Output/text_table_writer.test.cpp
