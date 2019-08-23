@@ -4,6 +4,8 @@
 using namespace Fauna;
 using namespace Fauna::Output;
 
+const char* TextTableWriter::FILE_EXTENSION = ".tsv";
+
 TextTableWriter::TextTableWriter(
     const OutputInterval interval,
     const Parameters::TextTableWriterOptions& options)

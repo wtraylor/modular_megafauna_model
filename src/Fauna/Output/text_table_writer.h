@@ -33,7 +33,7 @@ class TextTableWriter : public OutputWriterInterface {
    * \throw std::invalid_argument If an HFT name contains whitespaces or the
    * \ref FIELD_SEPARATOR.
    */
-  virtual void write_datapoint(const DataPoint& datapoint);
+  virtual void write_datapoint(const Datapoint& datapoint);
 
   /// Character to separate columns.
   static const char FIELD_SEPARATOR = '\t';
@@ -45,7 +45,6 @@ class TextTableWriter : public OutputWriterInterface {
   const OutputInterval interval;
   const Parameters::TextTableWriterOptions options;
 };
-const char* TextTableWriter::FILE_EXTENSION = ".tsv";
 }  // namespace Output
 }  // namespace Fauna
 
