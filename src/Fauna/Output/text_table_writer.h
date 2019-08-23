@@ -21,6 +21,9 @@ class TextTableWriter : public OutputWriterInterface {
 
   /// Append spatially & temporally aggregated output data to table files.
   void write_datapoint(const DataPoint& datapoint);
+
+  /// Character to separate columns.
+  static const char FIELD_SEPARATOR = '\t';
  private:
   const OutputInterval interval;
   const Parameters::TextTableWriterOptions options;
