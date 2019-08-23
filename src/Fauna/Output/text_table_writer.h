@@ -20,7 +20,7 @@ class TextTableWriter : public OutputWriterInterface {
  public:
   /// Constructor
   /**
-   * Create all files (selected in options) with table headers.
+   * Create all files that are selected in `options` as empty files.
    * \param interval Selector if output is daily/monthly/annual/...
    * \param options Specific user-defined options for this class.
    */
@@ -28,6 +28,11 @@ class TextTableWriter : public OutputWriterInterface {
                   const Parameters::TextTableWriterOptions& options);
 
   /// Append spatially & temporally aggregated output data to table files.
+  /**
+   * \param datapoint The output data to write.
+   * \throw std::invalid_argument If an HFT name contains whitespaces or the
+   * \ref FIELD_SEPARATOR.
+   */
   void write_datapoint(const DataPoint& datapoint);
 
   /// Character to separate columns.
