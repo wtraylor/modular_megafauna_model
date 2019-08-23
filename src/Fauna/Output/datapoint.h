@@ -24,10 +24,10 @@ struct Datapoint {
   CombinedData data;
 
   /// First day of the aggregated time interval.
-  Date first_day;
+  Date first_day = Date(0,0);
 
   /// Last day of the aggregated time interval.
-  Date last_day;
+  Date last_day = Date(0,0);
 };
 
 }  // namespace Output
