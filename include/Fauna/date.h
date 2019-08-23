@@ -26,8 +26,8 @@ class Date {
   bool is_successive(const Date& other_date) const;
 
  private:
-  const unsigned int julian_day;
-  const int year;
+  unsigned int julian_day;
+  int year;
 };
 }  // namespace Fauna
 
