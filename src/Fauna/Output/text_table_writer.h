@@ -8,6 +8,14 @@ namespace Fauna {
 namespace Output {
 
 /// Writes output data to tabular plaintext files.
+/**
+ * \ref Parameters::TextTableWriterOptions contains boolean switches to enable
+ * and disable the creation of different data tables in plaintext files. The
+ * files have the same name as the corresponding boolean variable in
+ * \ref Parameters::TextTableWriterOptions.
+ * All files are created in a directory specified by
+ * \ref Parameters::TextTableWriterOptions::output_directory.
+ */
 class TextTableWriter : public OutputWriterInterface {
  public:
   /// Constructor
