@@ -1,6 +1,7 @@
 #ifndef DATA_POINT_H
 #define DATA_POINT_H
 
+#include <string>
 #include "combined_data.h"
 #include "date.h"
 
