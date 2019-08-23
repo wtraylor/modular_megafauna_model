@@ -2,6 +2,7 @@
 #define DATE_H
 
 namespace Fauna {
+/// Helper class to hold an absolute simulation day.
 class Date {
  public:
   /// Constructor
