@@ -25,11 +25,8 @@ namespace Output {
  * \see \ref sec_outputclasses
  */
 struct CombinedData {
-  /// Constructor.
-  CombinedData() : datapoint_count(0) {}
-
   /// How many data points are merged in this object.
-  unsigned int datapoint_count;
+  unsigned int datapoint_count = 0;
 
   /// Habitat output data.
   HabitatData habitat_data;
