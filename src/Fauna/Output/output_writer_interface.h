@@ -7,12 +7,12 @@ class SimulationUnit;
 
 namespace Output {
 // Forward declarations:
-class DataPoint;
+class Datapoint;
 
 /// Interface class for all classes that implement writing output.
 struct OutputWriterInterface {
   /// Write spatially & temporally aggregated output data.
-  virtual void write_datapoint(const DataPoint& datapoint) = 0;
+  virtual void write_datapoint(const Datapoint& datapoint) = 0;
 };
 }  // namespace Output
 }  // namespace Fauna

@@ -9,4 +9,4 @@ TextTableWriter::TextTableWriter(
     const Parameters::TextTableWriterOptions& options)
     : interval(interval), options(options) {}
 
-void TextTableWriter::write_datapoint(const DataPoint& datapoint) {}
+void TextTableWriter::write_datapoint(const Datapoint& datapoint) {}
