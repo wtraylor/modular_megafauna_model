@@ -37,10 +37,15 @@ class TextTableWriter : public OutputWriterInterface {
 
   /// Character to separate columns.
   static const char FIELD_SEPARATOR = '\t';
+
+  /// File extension for tabular plaintext files.
+  static const char* FILE_EXTENSION;
+
  private:
   const OutputInterval interval;
   const Parameters::TextTableWriterOptions options;
 };
+const char* TextTableWriter::FILE_EXTENSION = ".tsv";
 }  // namespace Output
 }  // namespace Fauna
 
