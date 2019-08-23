@@ -3,7 +3,6 @@
 
 #include "combined_data.h"
 #include "date.h"
-#include "parameters.h"
 
 namespace Fauna {
 namespace Output {
@@ -25,9 +24,6 @@ struct Datapoint {
 
   /// First day of the aggregated time interval.
   Date first_day;
-
-  /// The length of the aggregated time interval.
-  OutputInterval interval;
 
   /// Last day of the aggregated time interval.
   Date last_day;
