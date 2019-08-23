@@ -86,6 +86,7 @@ class MyExampleClass{
 
   /// A public global constant in this class.
   static const int MY_CONSTANT = 10;
+
  private:
   /// Helper function to perform calculations.
   void my_private_function();
