@@ -9,7 +9,7 @@ TEST_CASE("Fauna::Date", "") {
   CHECK_NOTHROW(Date(0, 0));
 
   SECTION("next day within one year") {
-    for (int year = -10; year <= +10; year++)
+    for (int year = -3; year <= +3; year++)
       for (int day = 0; day < 365; day++) {
         const Date d1(day, year);
         // If next_day==365, it’s a leap year.
@@ -24,8 +24,8 @@ TEST_CASE("Fauna::Date", "") {
   }
 
   SECTION("next day at year boundary") {
-    for (int year = -10; year <= +10; year++)
-      for (int next_year = -10; next_year <= +10; next_year++) {
+    for (int year = -3; year <= +3; year++)
+      for (int next_year = -3; next_year <= +3; next_year++) {
         if (year == next_year)
           continue;  // Within-year succession already checked.
         for (int day = 0; day < 366; day++) {
