@@ -62,7 +62,7 @@ Please install the plugin for your text editor if available: [editorconfig.org/]
 - Classes are named in CamelCase with upper-case first letter, e.g. `MyExampleClass`.
     + Enum types are like classes.
 - Functions are imperative verbs with underscores, e.g. `create_new_herbivores()`.
-- Constants are all-uppercase with underscores, e.g. `MY_GLOBAL_CONSTANT`.
+- Constants (outside of function bodies) are all-uppercase with underscores, e.g. `MY_GLOBAL_CONSTANT`.
     + Enum elements are similar to constants, but have additionally a prefix with the initials of the type name. For instance the elements in the enum `ForageType` will all start with `FT_`, like `FT_GRASS`.
 
 #### Alphabetical Order
@@ -82,6 +82,9 @@ class MyExampleClass{
 
   /// Get the type of herbivore.
   HerbivoreType get_herbivore_type();
+
+  /// A public global constant in this class.
+  static const int MY_CONSTANT = 10;
  private:
   /// Helper function to perform calculations.
   void my_private_function();
