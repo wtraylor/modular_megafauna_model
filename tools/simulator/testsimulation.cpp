@@ -125,10 +125,11 @@ bool Framework::run(const std::string insfile_fauna,
     for (int day_of_year = 0; day_of_year < 365; day_of_year++) {
       // VEGATATION AND HERBIVORE SIMULATION
       const bool do_herbivores = true;
+      const Date date(day_of_year, year);
       try {
         // The Fauna::World class will take care to iterate over all habitat
         // groups.
-        fauna_world.simulate_day(day_of_year, do_herbivores);
+        fauna_world.simulate_day(date, do_herbivores);
       } catch (const std::exception& e) {
         std::cerr << "Exception during herbivore simulation:\n"
                   << e.what() << std::endl;

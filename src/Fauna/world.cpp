@@ -1,6 +1,7 @@
 #include "world.h"
 #include <algorithm>
 #include <stdexcept>
+#include "date.h"
 #include "feed.h"
 #include "habitat.h"
 #include "hft.h"
@@ -57,11 +58,7 @@ const Parameters& World::get_params() const {
   return insfile_content->params;
 }
 
-void World::simulate_day(const int day_of_year, const bool do_herbivores) {
-  if (day_of_year < 0 || day_of_year >= 365)
-    throw std::invalid_argument(
-        "Fauna::World::simulate_day(): Argument 'day_of_year' out of range");
-
+void World::simulate_day(const Date& date, const bool do_herbivores) {
   // We use an iterator in order to be able to call std::list::erase().
   for (auto iter = sim_units.begin(); iter != sim_units.end();) {
     SimulationUnit& sim_unit = *iter;
@@ -93,7 +90,7 @@ void World::simulate_day(const int day_of_year, const bool do_herbivores) {
     // TODO: Create function object only once per day and for all simulation
     //       units.
     SimulateDay simulate_day(
-        day_of_year, sim_unit,
+        date.get_julian_day(), sim_unit,
         FeedHerbivores(world_constructor->create_distribute_forage()));
 
     // Call the function object.

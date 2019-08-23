@@ -6,6 +6,7 @@
 
 namespace Fauna {
 // Forward declarations
+class Date;
 class Habitat;
 class Hft;
 class HftList;
@@ -61,12 +62,12 @@ class World {
    *
    * If a \ref Habitat instance is marked as dead, the corresponding simulation
    * unit will be released from memory.
-   * \param day_of_year Current day of year (0 = Jan 1st).
+   * \param date The current simulation day.
    * \param do_herbivores Whether to perform herbivore simulations. If false,
    * only the output data of the habitats are updated.
-   * \throw std::invalid_argument If day_of_year not in [0,364].
+   * \throw std::logic_error If `date` has not been correctly incremented by one day since the last call.
    */
-  void simulate_day(const int day_of_year, const bool do_herbivores);
+  void simulate_day(const Date& date, const bool do_herbivores);
 
  private:
   /// Get the immutable list of herbivore functional types.
