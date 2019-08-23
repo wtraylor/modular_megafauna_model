@@ -7,6 +7,7 @@ project ("Modular Megafauna Model"
 
 set (SOURCE_FILES
   include/Fauna/Output/habitat_data.h
+  include/Fauna/date.h
   include/Fauna/environment.h
   include/Fauna/forage_types.h
   include/Fauna/forage_values.h
@@ -25,6 +26,7 @@ set (SOURCE_FILES
   src/Fauna/Output/text_table_writer.cpp
   src/Fauna/createherbivores.cpp
   src/Fauna/createherbivores.h
+  src/Fauna/date.cpp
   src/Fauna/energetics.cpp
   src/Fauna/energetics.h
   src/Fauna/feed.cpp
@@ -98,6 +100,7 @@ if (BUILD_TESTING)
     src/Fauna/Output/habitat_data.test.cpp
     src/Fauna/Output/herbivore_data.test.cpp
     src/Fauna/Output/text_table_writer.test.cpp
+    src/Fauna/date.test.cpp
     src/Fauna/energetics.test.cpp
     src/Fauna/feed.test.cpp
     src/Fauna/forage_values.test.cpp

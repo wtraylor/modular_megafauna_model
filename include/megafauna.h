@@ -7,6 +7,7 @@
 #ifndef MEGAFAUNA_H
 #define MEGAFAUNA_H
 
+#include "Fauna/date.h"
 #include "Fauna/forage_types.h"
 #include "Fauna/forage_values.h"
 #include "Fauna/habitat.h"
