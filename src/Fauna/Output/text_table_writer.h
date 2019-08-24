@@ -34,6 +34,8 @@ class TextTableWriter : public OutputWriterInterface {
    * \ref FIELD_SEPARATOR.
    * \throw std::invalid_argument If `datapoint.combined_data.datapoint_count`
    * is zero.
+   * \throw std::invalid_argument If `datapoint.interval` does not match the
+   * given \ref OutputInterval.
    */
   virtual void write_datapoint(const Datapoint& datapoint);
 
