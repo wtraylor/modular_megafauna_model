@@ -32,6 +32,8 @@ class TextTableWriter : public OutputWriterInterface {
    * \param datapoint The output data to write.
    * \throw std::invalid_argument If an HFT name contains whitespaces or the
    * \ref FIELD_SEPARATOR.
+   * \throw std::invalid_argument If `datapoint.combined_data.datapoint_count`
+   * is zero.
    */
   virtual void write_datapoint(const Datapoint& datapoint);
 
