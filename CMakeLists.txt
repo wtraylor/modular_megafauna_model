@@ -22,8 +22,8 @@ set (SOURCE_FILES
   src/Fauna/Output/herbivore_data.cpp
   src/Fauna/Output/herbivore_data.h
   src/Fauna/Output/output_writer_interface.h
-  src/Fauna/Output/text_table_writer.h
   src/Fauna/Output/text_table_writer.cpp
+  src/Fauna/Output/text_table_writer.h
   src/Fauna/createherbivores.cpp
   src/Fauna/createherbivores.h
   src/Fauna/date.cpp
