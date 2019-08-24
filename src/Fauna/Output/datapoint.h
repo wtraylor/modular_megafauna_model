@@ -4,6 +4,7 @@
 #include <string>
 #include "combined_data.h"
 #include "date.h"
+#include "date_interval.h"
 
 namespace Fauna {
 namespace Output {
@@ -23,11 +24,8 @@ struct Datapoint {
   /// The aggregated output data itself.
   CombinedData data;
 
-  /// First day of the aggregated time interval.
-  Date first_day = Date(0,0);
-
-  /// Last day of the aggregated time interval.
-  Date last_day = Date(0,0);
+  /// The time frame that is integrated in the data.
+  DateInterval interval = DateInterval(Date(0,0), Date(0,0));
 };
 
 }  // namespace Output
