@@ -170,7 +170,7 @@ endif(BUILD_TEST_SIMULATOR)
 ####################  DOXYGEN DOCUMENTATION  ##############################
 ###########################################################################
 
-option (BUILD_DOC "Build doxygen documentaton" ON)
+option (BUILD_DOC "Build doxygen documentaton" OFF)
 if (BUILD_DOC)
   add_subdirectory (docs/)
 endif()
