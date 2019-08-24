@@ -24,12 +24,12 @@ bool Date::is_successive(const Date& other_date) const {
 }
 
 bool Date::operator==(const Date& rhs) const {
-  return this->get_julian_day() == rhs.get_year() &&
+  return this->get_julian_day() == rhs.get_julian_day() &&
          this->get_year() == rhs.get_year();
 }
 
 bool Date::operator!=(const Date& rhs) const {
-  return this->get_julian_day() == rhs.get_year() &&
+  return this->get_julian_day() == rhs.get_julian_day() &&
          this->get_year() == rhs.get_year();
 }
 
