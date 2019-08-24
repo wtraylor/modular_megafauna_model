@@ -27,6 +27,8 @@ set (SOURCE_FILES
   src/Fauna/createherbivores.cpp
   src/Fauna/createherbivores.h
   src/Fauna/date.cpp
+  src/Fauna/date_interval.cpp
+  src/Fauna/date_interval.h
   src/Fauna/energetics.cpp
   src/Fauna/energetics.h
   src/Fauna/feed.cpp
