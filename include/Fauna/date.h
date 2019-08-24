@@ -25,6 +25,18 @@ class Date {
   /// Whether another Date object represents the following day.
   bool is_successive(const Date& other_date) const;
 
+  /// Whether another \ref Date object specifies the *same* day.
+  bool operator==(const Date& rhs) const;
+
+  /// Whether another \ref Date object specifies a *different* day.
+  bool operator!=(const Date& rhs) const;
+
+  /// Whether another date is *after* this date.
+  bool operator<(const Date& rhs) const;
+
+  /// Whether another date is *before* this date.
+  bool operator>(const Date& rhs) const;
+
  private:
   unsigned int julian_day;
   int year;

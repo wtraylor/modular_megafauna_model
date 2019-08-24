@@ -42,4 +42,30 @@ TEST_CASE("Fauna::Date", "") {
         }
       }
   }
+
+  SECTION("equal dates") {
+    CHECK(Date(0, 0) == Date(0, 0));
+    CHECK(Date(1, 0) == Date(1, 0));
+    CHECK(Date(1, -1) == Date(1, -1));
+  }
+
+  SECTION("unequal dates") {
+    CHECK(Date(0, 0) != Date(0, 3));
+    CHECK(Date(1, 0) != Date(4, 0));
+    CHECK(Date(1, -1) != Date(4, -1));
+  }
+
+  SECTION("date A after date B") {
+    CHECK(Date(0, 4) > Date(0, 3));
+    CHECK(Date(1, 4) > Date(0, 4));
+    CHECK(Date(0, 1) > Date(364, 0));
+    CHECK(Date(0, 1) > Date(365, 0));
+  }
+
+  SECTION("date A before date B") {
+    CHECK(Date(0, 2) < Date(0, 3));
+    CHECK(Date(0, 4) < Date(1, 4));
+    CHECK(Date(365, 0) < Date(0, 1));
+    CHECK(Date(364, 0) < Date(0, 1));
+  }
 }
