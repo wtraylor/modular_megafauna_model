@@ -28,7 +28,9 @@ enum HerbivoreType {
 };
 
 /// Time interval for aggregating output.
-enum OutputInterval {
+// Note that we define it as a strictly typed C++11 enum *class* in order to be
+// able to forward-declare it in other header files.
+enum class OutputInterval {
   /// Don’t aggregate output over time, but write every day.
   OI_DAILY,
   /// Aggregate output for each month.
@@ -68,7 +70,7 @@ struct Parameters {
   bool one_hft_per_patch;
 
   /// Time interval for aggregating output.
-  OutputInterval output_interval = OI_ANNUAL;
+  OutputInterval output_interval = OutputInterval::OI_ANNUAL;
 
   /// The module that writes megafauna output to disk.
   OutputWriter output_writer = OW_TEXT_TABLES;
