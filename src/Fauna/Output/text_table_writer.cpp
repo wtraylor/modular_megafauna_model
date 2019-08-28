@@ -71,14 +71,14 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
             "not implemented.");
     }
     // TODO: Check that aggregation unit has no field separator in it.
-    *f << datapoint.aggregation_unit << FIELD_SEPARATOR;
+    *f << datapoint.aggregation_unit;
   }
 
   // Per HFT Tables
   // TODO: To what precision will be rounded?
   for (const auto i : datapoint.data.hft_data) {
     if (mass_density_per_hft.is_open())
-      mass_density_per_hft << i.second.massdens;
+      mass_density_per_hft << FIELD_SEPARATOR << i.second.massdens;
   }
 }
 
