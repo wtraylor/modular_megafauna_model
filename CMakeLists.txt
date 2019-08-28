@@ -33,6 +33,8 @@ set (SOURCE_FILES
   src/Fauna/energetics.h
   src/Fauna/feed.cpp
   src/Fauna/feed.h
+  src/Fauna/fileystem.cpp
+  src/Fauna/fileystem.h
   src/Fauna/forage_base.cpp
   src/Fauna/forage_types.cpp
   src/Fauna/forage_values.cpp
@@ -106,6 +108,7 @@ if (BUILD_TESTING)
     src/Fauna/date.test.cpp
     src/Fauna/energetics.test.cpp
     src/Fauna/feed.test.cpp
+    src/Fauna/fileystem.test.cpp
     src/Fauna/forage_values.test.cpp
     src/Fauna/forageenergy.test.cpp
     src/Fauna/foraging.test.cpp

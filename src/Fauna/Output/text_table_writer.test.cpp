@@ -1,4 +1,3 @@
-#include <sys/stat.h>
 #include <unistd.h>
 #include <cstdio>
 #include <cstdlib>
@@ -8,19 +7,12 @@
 #include "datapoint.h"
 #include "dummy_hft.h"
 #include "text_table_writer.h"
+#include "fileystem.h"
 
 using namespace Fauna;
 using namespace Fauna::Output;
 
 namespace {
-
-/// Check if a directory exists.
-bool dir_exists(const std::string& path) {
-  struct stat stats;
-  stat(path.c_str(), &stats);
-  return S_ISDIR(stats.st_mode);
-}
-
 /// Create a random output directory name.
 std::string generate_output_dir() {
   std::srand(std::time(nullptr));  // set seed for random generator
@@ -72,7 +64,7 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
     REQUIRE(datapoint.data.datapoint_count > 0);
     writer.write_datapoint(datapoint);
 
-    REQUIRE(dir_exists(opt.output_directory));
+    REQUIRE(directory_exists(opt.output_directory));
 
     const std::string mass_density_per_hft_path =
         opt.output_directory + '/' + "mass_density_per_hft" +
