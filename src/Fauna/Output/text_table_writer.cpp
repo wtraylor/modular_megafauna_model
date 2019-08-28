@@ -18,7 +18,7 @@ TextTableWriter::TextTableWriter(
   // Add all selected output files to list of file streams.
   if (options.mass_density_per_hft) {
     file_streams.push_back(&mass_density_per_hft);
-    mass_density_per_hft.open(dir + "mass_density_per_hft");
+    mass_density_per_hft.open(dir + "/mass_density_per_hft" + FILE_EXTENSION);
   }
   // -> Add new output files here.
 }
