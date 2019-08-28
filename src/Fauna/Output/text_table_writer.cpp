@@ -50,11 +50,6 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
         datapoint.aggregation_unit + "' contains the field delimiter '" +
         FIELD_SEPARATOR + "'");
 
-  /* TODO:
-   * \throw std::logic_error If the \ref OutputInterval is not
-   * implemented.
-   */
-
   if (!captions_written) {
     write_captions(datapoint);
     captions_written = true;
@@ -80,7 +75,6 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
             "Fauna::TextTableWriter::write_datapoint() Output time interval is "
             "not implemented.");
     }
-    // TODO: Check that aggregation unit has no field separator in it.
     *f << datapoint.aggregation_unit;
   }
 
