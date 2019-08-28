@@ -16,7 +16,7 @@ TextTableWriter::TextTableWriter(
   create_directories(dir);
 
   // Add all selected output files to list of file streams.
-  if (options.mass_density_per_hft){
+  if (options.mass_density_per_hft) {
     file_streams.push_back(&mass_density_per_hft);
     mass_density_per_hft.open(dir + "mass_density_per_hft");
   }
@@ -26,14 +26,17 @@ TextTableWriter::TextTableWriter(
 void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   const CombinedData& data = datapoint.data;
 
+  if (!datapoint.interval.matches_output_interval(interval))
+    throw std::invalid_argument(
+        "Fauna::Output::TextTableWriter::write_datapoint() "
+        "Interval of given datapoint does not match user-selected output "
+        "interval.");
+
   /* TODO: \throw std::invalid_argument If an HFT name contains
    * whitespaces or the \ref FIELD_SEPARATOR.
    *
    * \throw std::invalid_argument If
    * `datapoint.combined_data.datapoint_count` is zero.
-   *
-   * \throw std::invalid_argument If `datapoint.interval` does not
-   * match the given \ref OutputInterval.
    *
    * \throw std::invalid_argument If `datapoint.aggregation_unit`
    * contains \ref FIELD_SEPARATOR
@@ -73,11 +76,10 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
 
   // Per HFT Tables
   // TODO: To what precision will be rounded?
-  for (const auto i : datapoint.data.hft_data){
+  for (const auto i : datapoint.data.hft_data) {
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << i.second.massdens;
   }
-
 }
 
 void TextTableWriter::write_captions(const Datapoint& datapoint) {
@@ -105,13 +107,12 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
   }
 
   // Per HFT Tables
-  for (const auto i : datapoint.data.hft_data){
+  for (const auto i : datapoint.data.hft_data) {
     const std::string& hft_name = i.first->name;
 
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << hft_name << FIELD_SEPARATOR;
   }
 
-  for (auto& f : file_streams)
-    *f << std::endl;
+  for (auto& f : file_streams) *f << std::endl;
 }
