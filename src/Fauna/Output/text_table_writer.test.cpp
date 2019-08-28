@@ -93,6 +93,7 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
     }
 
     // The first call should create captions.
+    datapoint.data.datapoint_count = 1;
     REQUIRE(datapoint.data.datapoint_count > 0);
     writer.write_datapoint(datapoint);
 
