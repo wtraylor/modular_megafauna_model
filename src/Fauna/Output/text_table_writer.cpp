@@ -1,5 +1,6 @@
 #include "text_table_writer.h"
 #include "datapoint.h"
+#include "fileystem.h"
 
 using namespace Fauna;
 using namespace Fauna::Output;
@@ -12,14 +13,14 @@ TextTableWriter::TextTableWriter(
     : interval(interval), options(options) {
   const std::string& dir = options.output_directory;
 
+  create_directories(dir);
+
   // Add all selected output files to list of file streams.
   if (options.mass_density_per_hft){
     file_streams.push_back(&mass_density_per_hft);
     mass_density_per_hft.open(dir + "mass_density_per_hft");
   }
   // -> Add new output files here.
-
-  // TODO: create directory & empty files
 }
 
 void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
