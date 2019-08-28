@@ -46,7 +46,7 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
     SECTION("Error on non-annual interval") {
       for (int day = 0; day < 366; day++)
-        for (int year = YEAR - 3; year < YEAR + 3; year++) {
+        for (int year = YEAR; year < YEAR + 3; year++) {
           datapoint.interval = DateInterval(Date(0, YEAR), Date(day, year));
           if ((day != 364 && day != 365) || year != YEAR)
             CHECK_THROWS(writer.write_datapoint(datapoint));
