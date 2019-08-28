@@ -92,16 +92,16 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
   for (auto& f : file_streams) {
     switch (interval) {
       case OutputInterval::Daily:
-        // TODO
+        *f << "day" << FIELD_SEPARATOR << "year" << FIELD_SEPARATOR;
         break;
       case OutputInterval::Monthly:
-        // TODO
+        *f << "month" << FIELD_SEPARATOR << "year" << FIELD_SEPARATOR;
         break;
       case OutputInterval::Annual:
         *f << "year" << FIELD_SEPARATOR;
         break;
       case OutputInterval::Decadal:
-        // TODO
+        *f << "year" << FIELD_SEPARATOR;
         break;
       default:
         std::logic_error(
