@@ -32,9 +32,7 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
         "Interval of given datapoint does not match user-selected output "
         "interval.");
 
-  /* TODO: \throw std::invalid_argument If an HFT name contains
-   * whitespaces or the \ref FIELD_SEPARATOR.
-   *
+  /* TODO:
    * \throw std::invalid_argument If
    * `datapoint.combined_data.datapoint_count` is zero.
    *
@@ -110,6 +108,19 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
   // Per HFT Tables
   for (const auto i : datapoint.data.hft_data) {
     const std::string& hft_name = i.first->name;
+
+    if (hft_name.find(' ') != std::string::npos)
+      throw std::invalid_argument(
+          "Fauna::TextTableWriter::write_captions()"
+          "HFT name contains a space: '" +
+          hft_name + "'");
+
+    if (hft_name.find(FIELD_SEPARATOR) != std::string::npos)
+      throw std::invalid_argument(
+          "Fauna::TextTableWriter::write_captions()"
+          "The HFT name '" +
+          hft_name + "' contains the field delimiter '" + FIELD_SEPARATOR +
+          "'");
 
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << hft_name;

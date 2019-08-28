@@ -70,6 +70,9 @@ class TextTableWriter : public OutputWriterInterface {
    * \param datapoint Any output data with the same structure (e.g. list of
    * HFTs) as following output data points will have.
    * \throw std::logic_error If the \ref OutputInterval is not implemented.
+   *
+   * \throw std::invalid_argument If an HFT name contains whitespaces or the
+   * \ref FIELD_SEPARATOR.
    */
   void write_captions(const Datapoint& datapoint);
 
