@@ -59,7 +59,8 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   for (auto& f : file_streams) {
     switch (interval) {
       case OutputInterval::Daily:
-        // TODO
+        *f << datapoint.interval.get_first().get_julian_day() << FIELD_SEPARATOR
+           << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
         break;
       case OutputInterval::Monthly:
         // TODO
@@ -68,7 +69,7 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
         *f << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
         break;
       case OutputInterval::Decadal:
-        // TODO
+        *f << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
         break;
       default:
         std::logic_error(
