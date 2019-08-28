@@ -63,7 +63,8 @@ Please install the plugin for your text editor if available: [editorconfig.org/]
     + Enum types are like classes.
 - Functions are imperative verbs with underscores, e.g. `create_new_herbivores()`.
 - Constants (outside of function bodies) are all-uppercase with underscores, e.g. `MY_GLOBAL_CONSTANT`.
-    + Enum elements are similar to constants, but have additionally a prefix with the initials of the type name. For instance the elements in the enum `ForageType` will all start with `FT_`, like `FT_GRASS`.
+    + C-style enum elements are similar to constants, but have additionally a prefix with the initials of the type name. For instance the elements in the enum `ForageType` will all start with `FT_`, like `FT_GRASS`.
+    + C++11-style enum class elements don’t have global scope and thus don’t require a prefix. Since the shouting tone of all-uppercase names is distracting, just use CamelCase for the enum members, e.g. `OutputInterval::Annual`.
 - Namespaces are short and lower-case with first letter capitalized, e.g. `Fauna`.
 
 #### Alphabetical Order
