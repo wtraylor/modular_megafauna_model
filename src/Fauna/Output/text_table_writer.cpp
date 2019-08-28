@@ -50,16 +50,16 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   // Write common information for all output tables.
   for (auto& f : file_streams) {
     switch (interval) {
-      case OutputInterval::OI_DAILY:
+      case OutputInterval::Daily:
         // TODO
         break;
-      case OutputInterval::OI_MONTHLY:
+      case OutputInterval::Monthly:
         // TODO
         break;
-      case OutputInterval::OI_ANNUAL:
+      case OutputInterval::Annual:
         *f << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
         break;
-      case OutputInterval::OI_DECADAL:
+      case OutputInterval::Decadal:
         // TODO
         break;
       default:
@@ -84,16 +84,16 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
   // Write common column captions for all output tables.
   for (auto& f : file_streams) {
     switch (interval) {
-      case OutputInterval::OI_DAILY:
+      case OutputInterval::Daily:
         // TODO
         break;
-      case OutputInterval::OI_MONTHLY:
+      case OutputInterval::Monthly:
         // TODO
         break;
-      case OutputInterval::OI_ANNUAL:
+      case OutputInterval::Annual:
         *f << "year" << FIELD_SEPARATOR;
         break;
-      case OutputInterval::OI_DECADAL:
+      case OutputInterval::Decadal:
         // TODO
         break;
       default:

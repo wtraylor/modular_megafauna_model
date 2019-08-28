@@ -32,13 +32,13 @@ enum HerbivoreType {
 // able to forward-declare it in other header files.
 enum class OutputInterval {
   /// Don’t aggregate output over time, but write every day.
-  OI_DAILY,
+  Daily,
   /// Aggregate output for each month.
-  OI_MONTHLY,
+  Monthly,
   /// Aggregate output for each year.
-  OI_ANNUAL,
+  Annual,
   /// Aggregate output for 10 years intervals.
-  OI_DECADAL
+  Decadal
 };
 
 /// Parameter for selecting the output writer implementation.
@@ -70,7 +70,7 @@ struct Parameters {
   bool one_hft_per_patch;
 
   /// Time interval for aggregating output.
-  OutputInterval output_interval = OutputInterval::OI_ANNUAL;
+  OutputInterval output_interval = OutputInterval::Annual;
 
   /// The module that writes megafauna output to disk.
   OutputWriter output_writer = OW_TEXT_TABLES;

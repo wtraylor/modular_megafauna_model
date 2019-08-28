@@ -42,7 +42,7 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
   datapoint.data.datapoint_count = 1;
 
   SECTION("Annual") {
-    TextTableWriter writer(OutputInterval::OI_ANNUAL, opt);
+    TextTableWriter writer(OutputInterval::Annual, opt);
 
     SECTION("Error on non-annual interval") {
       for (int day = 0; day < 366; day++)
