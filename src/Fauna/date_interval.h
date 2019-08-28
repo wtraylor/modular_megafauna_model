@@ -4,6 +4,9 @@
 #include "date.h"
 
 namespace Fauna {
+// Forward Declarations
+enum class OutputInterval : int;
+
 /// Two dates framing a time interval.
 /**
  * The first date must not be after the last date, but they can be the same:
@@ -24,6 +27,10 @@ class DateInterval {
 
   /// Last day of the interval.
   const Date& get_last() const { return last_day; }
+
+  /// Check whether last and first day have the distance of given output
+  /// interval.
+  bool matches_output_interval(const OutputInterval&) const;
 
  private:
   Date first_day, last_day;
