@@ -32,10 +32,11 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
         "Interval of given datapoint does not match user-selected output "
         "interval.");
 
+  if (datapoint.data.datapoint_count == 0)
+    throw std::invalid_argument("Fauna::TextTableWriter::write_datapoint() "
+        "The datapoint_count of given data is zero.");
+
   /* TODO:
-   * \throw std::invalid_argument If
-   * `datapoint.combined_data.datapoint_count` is zero.
-   *
    * \throw std::invalid_argument If `datapoint.aggregation_unit`
    * contains \ref FIELD_SEPARATOR
    *
