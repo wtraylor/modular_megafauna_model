@@ -94,9 +94,9 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
     CHECK(year == YEAR);
     CHECK(agg_unit == AGG_UNIT);
-    CHECK(hft1 == Approx(datapoint.data.hft_data[&HFTS[0]].massdens));
-    CHECK(hft2 == Approx(datapoint.data.hft_data[&HFTS[1]].massdens));
-    CHECK(hft3 == Approx(datapoint.data.hft_data[&HFTS[2]].massdens));
+    CHECK(hft1 == Approx(10.0));
+    CHECK(hft2 == Approx(16.0));
+    CHECK(hft3 == Approx(29.0));
   }
 
   // TODO: Write tests for other intervals.

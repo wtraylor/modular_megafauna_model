@@ -103,7 +103,7 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
             "Fauna::TextTableWriter::write_datapoint() Output time interval is "
             "not implemented.");
     }
-    *f << "agg_unit" << FIELD_SEPARATOR;
+    *f << "agg_unit";
   }
 
   // Per HFT Tables
@@ -111,7 +111,7 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
     const std::string& hft_name = i.first->name;
 
     if (mass_density_per_hft.is_open())
-      mass_density_per_hft << hft_name << FIELD_SEPARATOR;
+      mass_density_per_hft << FIELD_SEPARATOR << hft_name;
   }
 
   for (auto& f : file_streams) *f << std::endl;
