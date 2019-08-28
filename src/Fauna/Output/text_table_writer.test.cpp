@@ -145,6 +145,20 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
       CHECK(hft2 == Approx(datapoint.data.hft_data[&HFTS[1]].massdens));
       CHECK(hft3 == Approx(datapoint.data.hft_data[&HFTS[2]].massdens));
     }
+
+    SECTION("Error on illegal aggregation unit name") {
+      SECTION("Whitespace") {
+        datapoint.aggregation_unit = "agg unit";
+        REQUIRE(datapoint.data.datapoint_count > 0);
+        CHECK_THROWS(writer.write_datapoint(datapoint));
+      }
+      SECTION("Delimiter") {
+        datapoint.aggregation_unit =
+            (std::string) "aggunit" + TextTableWriter::FIELD_SEPARATOR;
+        REQUIRE(datapoint.data.datapoint_count > 0);
+        CHECK_THROWS(writer.write_datapoint(datapoint));
+      }
+    }
   }
 
   // TODO: Write tests for other intervals.

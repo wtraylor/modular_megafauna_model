@@ -33,13 +33,24 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
         "interval.");
 
   if (datapoint.data.datapoint_count == 0)
-    throw std::invalid_argument("Fauna::TextTableWriter::write_datapoint() "
+    throw std::invalid_argument(
+        "Fauna::TextTableWriter::write_datapoint() "
         "The datapoint_count of given data is zero.");
 
+  if (datapoint.aggregation_unit.find(' ') != std::string::npos)
+    throw std::invalid_argument(
+        "Fauna::TextTableWriter::write_datapoint()"
+        "Name of aggregation unit '" +
+        datapoint.aggregation_unit + "' contains a whitespace.");
+
+  if (datapoint.aggregation_unit.find(FIELD_SEPARATOR) != std::string::npos)
+    throw std::invalid_argument(
+        "Fauna::TextTableWriter::write_datapoint()"
+        "Name of aggregation unit '" +
+        datapoint.aggregation_unit + "' contains the field delimiter '" +
+        FIELD_SEPARATOR + "'");
+
   /* TODO:
-   * \throw std::invalid_argument If `datapoint.aggregation_unit`
-   * contains \ref FIELD_SEPARATOR
-   *
    * \throw std::logic_error If the \ref OutputInterval is not
    * implemented.
    */

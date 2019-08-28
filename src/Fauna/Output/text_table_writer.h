@@ -43,16 +43,16 @@ class TextTableWriter : public OutputWriterInterface {
    * calls there is no check whether the data tuples match the column captions.
    *
    * \throw std::invalid_argument If an HFT name contains whitespaces or the
-   * \ref FIELD_SEPARATOR.
+   * \ref FIELD_SEPARATOR (only checked on first call).
    *
-   * \throw std::invalid_argument If `datapoint.combined_data.datapoint_count`
+   * \throw std::invalid_argument If `datapoint.data.datapoint_count`
    * is zero.
    *
    * \throw std::invalid_argument If `datapoint.interval` does not match the
    * given \ref OutputInterval.
    *
    * \throw std::invalid_argument If `datapoint.aggregation_unit` contains
-   * \ref FIELD_SEPARATOR
+   * a whitespace or \ref FIELD_SEPARATOR.
    *
    * \throw std::logic_error If the \ref OutputInterval is not implemented.
    */
