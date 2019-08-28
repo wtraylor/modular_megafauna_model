@@ -64,6 +64,8 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
     REQUIRE(datapoint.data.datapoint_count > 0);
     writer.write_datapoint(datapoint);
 
+    INFO((std::string) "Random output directory: " + opt.output_directory);
+
     REQUIRE(directory_exists(opt.output_directory));
 
     const std::string mass_density_per_hft_path =
