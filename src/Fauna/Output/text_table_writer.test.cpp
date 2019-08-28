@@ -27,9 +27,9 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
   opt.mass_density_per_hft = true;
   opt.output_directory = generate_output_dir();
 
-  const int YEAR = 4;
-  const std::string AGG_UNIT = "unit1";
-  const HftList HFTS = create_hfts(3, Parameters());
+  static const int YEAR = 4;
+  static const std::string AGG_UNIT = "unit1";
+  static const HftList HFTS = create_hfts(3, Parameters());
 
   Datapoint datapoint;
   datapoint.aggregation_unit = AGG_UNIT;
