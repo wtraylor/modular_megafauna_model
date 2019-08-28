@@ -26,6 +26,22 @@ TextTableWriter::TextTableWriter(
 void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   const CombinedData& data = datapoint.data;
 
+  /* TODO: \throw std::invalid_argument If an HFT name contains
+   * whitespaces or the \ref FIELD_SEPARATOR.
+   *
+   * \throw std::invalid_argument If
+   * `datapoint.combined_data.datapoint_count` is zero.
+   *
+   * \throw std::invalid_argument If `datapoint.interval` does not
+   * match the given \ref OutputInterval.
+   *
+   * \throw std::invalid_argument If `datapoint.aggregation_unit`
+   * contains \ref FIELD_SEPARATOR
+   *
+   * \throw std::logic_error If the \ref OutputInterval is not
+   * implemented.
+   */
+
   if (!captions_written) {
     write_captions(datapoint);
     captions_written = true;
