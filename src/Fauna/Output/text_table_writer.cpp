@@ -80,6 +80,7 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << i.second.massdens;
   }
+  mass_density_per_hft << std::endl;
 }
 
 void TextTableWriter::write_captions(const Datapoint& datapoint) {
