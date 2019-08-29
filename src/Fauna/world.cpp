@@ -10,6 +10,7 @@
 #include "read_insfile.h"
 #include "simulate_day.h"
 #include "simulation_unit.h"
+#include "text_table_writer.h"
 #include "world_constructor.h"
 
 using namespace Fauna;
@@ -18,7 +19,20 @@ World::World(const std::string instruction_filename)
     : insfile_content(
           new InsfileContent(read_instruction_file(instruction_filename))),
       days_since_last_establishment(get_params().herbivore_establish_interval),
-      world_constructor(new WorldConstructor(get_params(), get_hfts())) {}
+      world_constructor(new WorldConstructor(get_params(), get_hfts())) {
+  // Create Output::WriterInterface implementation according to selected
+  // setting.
+  switch (get_params().output_format) {
+    case OutputFormat::TextTables:
+      output_writer.reset(new Output::TextTableWriter(
+          get_params().output_interval, get_params().text_table_output));
+      break;
+    default:
+      std::logic_error(
+          "Fauna::World::World() "
+          "Selected output format parameter is not implemented.");
+  }
+}
 
 // The destructor must be implemented here in the source file, where the
 // forward-declared types are complete.

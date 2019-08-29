@@ -16,6 +16,10 @@ class PopulationInterface;
 class SimulationUnit;
 class WorldConstructor;
 
+namespace Output {
+class WriterInterface;
+}
+
 /// Central class to construct and own megafauna habitats and populations.
 class World {
  public:
@@ -28,6 +32,9 @@ class World {
    *
    * \param instruction_filename Path to the instruction file for the megafauna
    * model. It contains global settings and herbivore parameters.
+   *
+   * \throw std::logic_error If selected \ref Parameters::OutputFormat is not
+   * implemented.
    */
   World(const std::string instruction_filename);
 
@@ -88,6 +95,8 @@ class World {
   /// Number of days since extinct populations were re-established.
   int days_since_last_establishment;
 
+  /// Output writer as selected by \ref Parameters::OutputFormat.
+  std::unique_ptr<Output::WriterInterface> output_writer;
 
   /// List of all the simulation units in the world.
   /**
