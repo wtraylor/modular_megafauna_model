@@ -92,7 +92,8 @@ class MyExampleClass{
   /// Helper function to perform calculations.
   void my_private_function();
 
-  // -> Finally the private member variables in alph. order:
+  // -> Finally the private member variables NOT in alphabetical order, but in
+  // the order of desired initialization.
   HerbivoreType herbi_type;
   int var = 10;
 };
