@@ -3,7 +3,7 @@
 
 #include <fstream>
 #include <vector>
-#include "output_writer_interface.h"
+#include "writer_interface.h"
 #include "parameters.h"
 
 namespace Fauna {
