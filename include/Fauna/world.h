@@ -73,9 +73,6 @@ class World {
   /// Get the immutable list of herbivore functional types.
   const HftList& get_hfts();
 
-  /// Number of days since extinct populations were re-established.
-  int days_since_last_establishment;
-
   /// The herbivore functional types as read from the instruction file.
   /**
    * There should be only one immutable list of HFTs and one set of parameters
@@ -86,7 +83,11 @@ class World {
    *
    * Use \ref get_params() and \ref get_hfts() to access content.
    */
-  const std::unique_ptr<InsfileContent> insfile_content;
+  const std::unique_ptr<InsfileContent> insfile_content; // Init this first!
+
+  /// Number of days since extinct populations were re-established.
+  int days_since_last_establishment;
+
 
   /// List of all the simulation units in the world.
   /**
