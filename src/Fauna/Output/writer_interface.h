@@ -1,5 +1,5 @@
-#ifndef OUTPUT_WRITER_INTERFACE_H
-#define OUTPUT_WRITER_INTERFACE_H
+#ifndef WRITER_INTERFACE_H
+#define WRITER_INTERFACE_H
 
 namespace Fauna {
 // Forward declarations:
@@ -10,7 +10,7 @@ namespace Output {
 class Datapoint;
 
 /// Interface class for all classes that implement writing output.
-struct OutputWriterInterface {
+struct WriterInterface {
   /// Write spatially & temporally aggregated output data.
   /**
    * \param datapoint The data to write.
@@ -21,4 +21,4 @@ struct OutputWriterInterface {
 };
 }  // namespace Output
 }  // namespace Fauna
-#endif  // OUTPUT_WRITER_INTERFACE_H
+#endif  // WRITER_INTERFACE_H

@@ -22,7 +22,7 @@ namespace Output {
  * - `mass_density_per_hft`
  *
  */
-class TextTableWriter : public OutputWriterInterface {
+class TextTableWriter : public WriterInterface {
  public:
   /// Constructor
   /**
