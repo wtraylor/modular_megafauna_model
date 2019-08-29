@@ -44,18 +44,18 @@ void World::create_simulation_unit(Habitat* habitat) {
     throw std::invalid_argument(
         "World::create_simulation_unit(): Pointer to habitat is NULL.");
 
-  PopulationList* pmap = new PopulationList();
+  PopulationList* populations = new PopulationList();
 
   // Fill the object with one population per HFT.
   for (int i = 0; i < get_hfts().size(); i++) {
     const Hft* phft = &get_hfts()[i];
-    pmap->add(world_constructor->create_population(phft));
+    populations->add(world_constructor->create_population(phft));
   }
-  assert(pmap != NULL);
+  assert(populations != NULL);
 
   // Use emplace_back() instead of push_back() to directly construct the new
   // SimulationUnit object without copy.
-  sim_units.emplace_back(habitat, pmap);
+  sim_units.emplace_back(habitat, populations);
 }
 
 const HftList& World::get_hfts() {
