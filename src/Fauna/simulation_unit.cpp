@@ -8,10 +8,11 @@
 #include "simulation_unit.h"
 #include "habitat.h"
 #include "population.h"
+#include "population_list.h"
 
 using namespace Fauna;
 
-SimulationUnit::SimulationUnit(Habitat* habitat, HftPopulationsMap* populations)
+SimulationUnit::SimulationUnit(Habitat* habitat, PopulationList* populations)
     :  // move ownership to private unique_ptr objects
       habitat(habitat),
       populations(populations),
@@ -51,22 +52,22 @@ const Habitat& SimulationUnit::get_habitat() const {
   return *habitat;
 };
 
-HftPopulationsMap& SimulationUnit::get_populations() {
+PopulationList& SimulationUnit::get_populations() {
   if (populations.get() == NULL)
     throw std::logic_error(
         "Fauna::SimulationUnit::get_populations() "
         "The unique pointer to populations is NULL. "
         "The SimulationUnit object lost ownership "
-        "of the HftPopulationsMap object.");
+        "of the PopulationList object.");
   return *populations;
 }
 
-const HftPopulationsMap& SimulationUnit::get_populations() const {
+const PopulationList& SimulationUnit::get_populations() const {
   if (populations.get() == NULL)
     throw std::logic_error(
         "Fauna::SimulationUnit::get_populations() "
         "The unique pointer to populations is NULL. "
         "The SimulationUnit object lost ownership "
-        "of the HftPopulationsMap object.");
+        "of the PopulationList object.");
   return *populations;
 }

@@ -57,6 +57,8 @@ set (SOURCE_FILES
   src/Fauna/parameters.cpp
   src/Fauna/population.cpp
   src/Fauna/population.h
+  src/Fauna/population_list.cpp
+  src/Fauna/population_list.h
   src/Fauna/read_insfile.cpp
   src/Fauna/read_insfile.h
   src/Fauna/reproduction.cpp
@@ -122,8 +124,8 @@ if (BUILD_TESTING)
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
     src/Fauna/population.test.cpp
+    src/Fauna/population_list.test.cpp
     src/Fauna/reproduction.test.cpp
-    src/Fauna/simulation_unit.test.cpp
     src/Fauna/utils.test.cpp
     src/Fauna/world_constructor.test.cpp
     tests/catch.hpp

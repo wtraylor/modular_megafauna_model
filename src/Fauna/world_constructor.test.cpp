@@ -3,6 +3,7 @@
 #include "dummy_hft.h"
 #include "parameters.h"
 #include "population.h"
+#include "population_list.h"
 #include "simulation_unit.h"
 #include "world_constructor.h"
 using namespace Fauna;
@@ -17,29 +18,17 @@ TEST_CASE("Fauna::WorldConstructor", "") {
   WorldConstructor world_cons(params, hftlist);
 
   SECTION("create_populations() for several HFTs") {
-    std::auto_ptr<HftPopulationsMap> pops = world_cons.create_populations();
-    REQUIRE(pops.get() != NULL);
-    CHECK(pops->size() == hftlist.size());
-    // find all HFTs
-    HftList::const_iterator itr_hft = hftlist.begin();
-    while (itr_hft != hftlist.end()) {
-      bool found_hft = false;
-      HftPopulationsMap::const_iterator itr_pop = pops->begin();
-      while (itr_pop != pops->end()) {
-        if ((*itr_pop)->get_hft() == *itr_hft) found_hft = true;
-        itr_pop++;
-      }
-      CHECK(found_hft);
-      itr_hft++;
-    }
+    PopulationList* pops = world_cons.create_populations();
+    REQUIRE(pops != NULL);
+    for (auto& hft : hftlist) CHECK(pops->exists(hft));
   }
 
   SECTION("create_populations() for one HFT") {
     const Hft* phft = &hftlist[0];
-    std::auto_ptr<HftPopulationsMap> pops = world_cons.create_populations(phft);
-    REQUIRE(pops.get() != NULL);
-    CHECK(pops->size() == 1);
-    CHECK(&(*(pops->begin()))->get_hft() == phft);
+    PopulationList* pops = world_cons.create_populations(phft);
+    REQUIRE(pops != NULL);
+    CHECK(pops->exists(*phft));
+    CHECK(pops->get(*phft).get_hft() == *phft);
   }
 }
 

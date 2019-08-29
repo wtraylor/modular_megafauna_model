@@ -7,6 +7,7 @@
 #include "hft.h"
 #include "parameters.h"
 #include "population.h"
+#include "population_list.h"
 #include "read_insfile.h"
 #include "simulate_day.h"
 #include "simulation_unit.h"
@@ -43,7 +44,7 @@ void World::create_simulation_unit(Habitat* habitat) {
     throw std::invalid_argument(
         "World::create_simulation_unit(): Pointer to habitat is NULL.");
 
-  HftPopulationsMap* pmap(new HftPopulationsMap());
+  PopulationList* pmap = new PopulationList();
 
   // Fill the object with one population per HFT.
   for (int i = 0; i < get_hfts().size(); i++) {
@@ -51,7 +52,6 @@ void World::create_simulation_unit(Habitat* habitat) {
     pmap->add(world_constructor->create_population(phft));
   }
   assert(pmap != NULL);
-  assert(pmap->size() == get_hfts().size());
 
   // Use emplace_back() instead of push_back() to directly construct the new
   // SimulationUnit object without copy.

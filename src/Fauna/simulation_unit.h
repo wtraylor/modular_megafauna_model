@@ -13,7 +13,7 @@
 namespace Fauna {
 // forward declaration
 class Habitat;
-class HftPopulationsMap;
+class PopulationList;
 
 /// A habitat with the herbivores that live in it.
 /** \see \ref sec_designoverview */
@@ -27,7 +27,7 @@ class SimulationUnit {
    * over exclusive ownership of the pointer.
    * \throw std::invalid_argument If one of the parameters is NULL.
    */
-  SimulationUnit(Habitat* habitat, HftPopulationsMap* populations);
+  SimulationUnit(Habitat* habitat, PopulationList* populations);
 
   /// Default Destructor
   ~SimulationUnit();
@@ -42,11 +42,11 @@ class SimulationUnit {
 
   /// The herbivores that live in the habitat.
   /** \throw std::logic_error If the private pointer is NULL. */
-  HftPopulationsMap& get_populations();
+  PopulationList& get_populations();
 
   /// The read-only handle to all herbivores that live in the habitat.
   /** \throw std::logic_error If the private pointer is NULL. */
-  const HftPopulationsMap& get_populations() const;
+  const PopulationList& get_populations() const;
 
   /// Whether the flag for initial establishment has been set.
   bool is_initial_establishment_done() const {
@@ -58,7 +58,7 @@ class SimulationUnit {
  private:
   std::unique_ptr<Habitat> habitat;
   bool initial_establishment_done;
-  std::unique_ptr<HftPopulationsMap> populations;
+  std::unique_ptr<PopulationList> populations;
 };
 
 }  // namespace Fauna
