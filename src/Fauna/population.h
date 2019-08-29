@@ -10,18 +10,13 @@
 
 #include <list>
 #include <map>
-#include <vector>
 #include "createherbivores.h"  // for CreateHerbivore*
+#include "herbivore_vector.h"
 
 namespace Fauna {
 // forward declarations
 class HerbivoreInterface;
 class Hft;
-
-/// A list of herbivore interface pointers.
-typedef std::vector<HerbivoreInterface*> HerbivoreVector;
-/// A list of read-only herbivore interface pointers.
-typedef std::vector<const HerbivoreInterface*> ConstHerbivoreVector;
 
 /// A container of herbivore objects.
 /**

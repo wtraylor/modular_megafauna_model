@@ -47,6 +47,7 @@ set (SOURCE_FILES
   src/Fauna/habitat_forage.cpp
   src/Fauna/herbivore.cpp
   src/Fauna/herbivore.h
+  src/Fauna/herbivore_vector.h
   src/Fauna/hft.cpp
   src/Fauna/hft.h
   src/Fauna/mortality.cpp

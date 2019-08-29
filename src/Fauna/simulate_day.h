@@ -7,22 +7,17 @@
 #ifndef SIMULATE_DAY_H
 #define SIMULATE_DAY_H
 
-#include <map>              // for ForageDistribution
-#include <vector>           // for HerbivoreVector
-#include "combined_data.h"  // for Output::CombinedData
-#include "habitat_forage.h" // for HabitatForage
+#include <map>
+#include "combined_data.h"
+#include "habitat_forage.h"
+#include "herbivore_vector.h"
 
 namespace Fauna {
 // Forward declarations
-class HerbivoreInterface;
 class SimulationUnit;
 class Habitat;
 class Hft;
 class FeedHerbivores;
-
-/// A vector of herbivore pointers.
-/** Originally defined in \ref population.h */
-typedef std::vector<HerbivoreInterface*> HerbivoreVector;
 
 /// Function object to simulate one day in one habitat.
 /**

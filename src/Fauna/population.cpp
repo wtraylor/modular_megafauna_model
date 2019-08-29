@@ -232,7 +232,7 @@ CohortPopulation::List::iterator CohortPopulation::find_cohort(
   return list.end();  // not found
 }
 
-std::vector<const HerbivoreInterface*> CohortPopulation::get_list() const {
+ConstHerbivoreVector CohortPopulation::get_list() const {
   // We just copy the pointers from the cohort list to the HerbivoreInterface
   // list.
   std::vector<const HerbivoreInterface*> result;
@@ -243,7 +243,7 @@ std::vector<const HerbivoreInterface*> CohortPopulation::get_list() const {
   return result;
 }
 
-std::vector<HerbivoreInterface*> CohortPopulation::get_list() {
+HerbivoreVector CohortPopulation::get_list() {
   // We just copy the pointers from the cohort list to the HerbivoreInterface
   // list.
   std::vector<HerbivoreInterface*> result;
