@@ -100,7 +100,14 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     // Keep track of the establishment cycle.
     days_since_last_establishment++;
 
-    // TODO: Perform establishment.
+    // Establish each HFT if it got extinct.
+    if (establish_if_needed)
+      for (const auto& hft : get_hfts()) {
+        PopulationList& pops = sim_unit.get_populations();
+        if (!pops.exists(hft))
+          pops.add(world_constructor->create_population(&hft));
+        pops.get(hft).establish();
+      }
 
     // Create function object to delegate all simulations for this day to.
     // TODO: Create function object only once per day and for all simulation
