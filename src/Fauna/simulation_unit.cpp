@@ -50,3 +50,23 @@ const Habitat& SimulationUnit::get_habitat() const {
         "of the Habitat object.");
   return *habitat;
 };
+
+HftPopulationsMap& SimulationUnit::get_populations() {
+  if (populations.get() == NULL)
+    throw std::logic_error(
+        "Fauna::SimulationUnit::get_populations() "
+        "The unique pointer to populations is NULL. "
+        "The SimulationUnit object lost ownership "
+        "of the HftPopulationsMap object.");
+  return *populations;
+}
+
+const HftPopulationsMap& SimulationUnit::get_populations() const {
+  if (populations.get() == NULL)
+    throw std::logic_error(
+        "Fauna::SimulationUnit::get_populations() "
+        "The unique pointer to populations is NULL. "
+        "The SimulationUnit object lost ownership "
+        "of the HftPopulationsMap object.");
+  return *populations;
+}

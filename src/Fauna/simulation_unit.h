@@ -40,17 +40,13 @@ class SimulationUnit {
   /** \throw std::logic_error If the private pointer is NULL. */
   const Habitat& get_habitat() const;
 
-  /// The herbivores that lives in the habitat.
+  /// The herbivores that live in the habitat.
   /** \throw std::logic_error If the private pointer is NULL. */
-  HftPopulationsMap& get_populations() {
-    if (populations.get() == NULL)
-      throw std::logic_error(
-          "Fauna::SimulationUnit::get_populations() "
-          "The unique pointer to populations is NULL. "
-          "The SimulationUnit object lost ownership "
-          "of the HftPopulationsMap object.");
-    return *populations;
-  }
+  HftPopulationsMap& get_populations();
+
+  /// The read-only handle to all herbivores that live in the habitat.
+  /** \throw std::logic_error If the private pointer is NULL. */
+  const HftPopulationsMap& get_populations() const;
 
   /// Whether the flag for initial establishment has been set.
   bool is_initial_establishment_done() const {
@@ -59,13 +55,7 @@ class SimulationUnit {
 
   /// Set the flag that initial establishment has been performed.
   void set_initial_establishment_done() { initial_establishment_done = true; }
-
-  /// @{ \brief Get temporally aggregated habitat and herbivore output.
-  Output::CombinedData& get_output() { return current_output; }
-  const Output::CombinedData& get_output() const { return current_output; }
-  /**@}*/  // Output Functions
  private:
-  Output::CombinedData current_output;
   std::unique_ptr<Habitat> habitat;
   bool initial_establishment_done;
   std::unique_ptr<HftPopulationsMap> populations;
