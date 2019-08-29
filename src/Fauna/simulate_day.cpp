@@ -80,12 +80,6 @@ void SimulateDay::create_offspring() {
   }
 }
 
-void SimulateDay::do_establishment() {
-  // TODO: Establish with given HFT list.
-  // PopulationList& pops = simulation_unit.get_populations().establish(hftlist);
-  simulation_unit.set_initial_establishment_done();
-}
-
 HabitatForage SimulateDay::get_corrected_forage(const Habitat& habitat) {
   // available forage in the habitat [kgDM/km²]
   HabitatForage available_forage = habitat.get_available_forage();
@@ -99,8 +93,7 @@ HabitatForage SimulateDay::get_corrected_forage(const Habitat& habitat) {
   return available_forage;
 }
 
-void SimulateDay::operator()(const bool do_herbivores,
-                             const bool establish_if_needed) {
+void SimulateDay::operator()(const bool do_herbivores) {
   if (day_of_year < 0 || day_of_year >= 365)
     throw std::invalid_argument(
         "SimulateDay::operator()() "
@@ -115,8 +108,6 @@ void SimulateDay::operator()(const bool do_herbivores,
     // the herbivore objects are removed from memory in purge_of_dead()
     // below.
     simulation_unit.get_populations().kill_nonviable();
-
-    if (establish_if_needed) do_establishment();
 
     simulate_herbivores();
 

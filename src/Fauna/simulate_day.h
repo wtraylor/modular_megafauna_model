@@ -42,7 +42,6 @@ class SimulateDay {
   /// Simulate one day.
   /**
    * - Initiailize habitat.
-   * - Establish herbivores if needed.
    * - Simulate herbivores.
    * - Feed herbivores.
    * - Aggregate output.
@@ -52,11 +51,8 @@ class SimulateDay {
    * \param do_herbivores Whether the herbivore objects shall be
    * simulated. Otherwise only the habitat is initialized and the
    * output aggregated.
-   * \param establish_if_needed Whether (re-)establishment shall be
-   * done for those HFTs that have no population. (This needs
-   * `do_herbivores==true`.)
    */
-  void operator()(const bool do_herbivores, const bool establish_if_needed);
+  void operator()(const bool do_herbivores);
 
  private:  // HELPER FUNCTIONS
   /// Merge HFT and habitat output into output of simulation unit.
@@ -69,9 +65,6 @@ class SimulateDay {
    * cycle.
    */
   void create_offspring();
-
-  /// Iterate through HFTs and (re-)establish if they are not there.
-  void do_establishment();
 
   /// Read available forage and set it to zero if it is very low.
   /**

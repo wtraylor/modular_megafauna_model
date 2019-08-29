@@ -90,7 +90,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     // and need to be re-established.
     // Note that re-establishment is only activated if the interval length is
     // a positive number.
-    if (days_since_last_establishment ==
+    if (days_since_last_establishment >=
             get_params().herbivore_establish_interval &&
         get_params().herbivore_establish_interval > 0) {
       establish_if_needed = true;
@@ -100,6 +100,8 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     // Keep track of the establishment cycle.
     days_since_last_establishment++;
 
+    // TODO: Perform establishment.
+
     // Create function object to delegate all simulations for this day to.
     // TODO: Create function object only once per day and for all simulation
     //       units.
@@ -108,7 +110,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
         FeedHerbivores(world_constructor->create_distribute_forage()));
 
     // Call the function object.
-    simulate_day(do_herbivores, establish_if_needed);
+    simulate_day(do_herbivores);
 
     iter++;
   }
