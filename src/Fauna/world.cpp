@@ -108,7 +108,10 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
         PopulationList& pops = sim_unit.get_populations();
         if (!pops.exists(hft))
           pops.add(world_constructor->create_population(&hft));
-        pops.get(hft).establish();
+
+        PopulationInterface& p = pops.get(hft);
+        if (p.get_list().empty())
+          pops.get(hft).establish();
       }
 
     // Create function object to delegate all simulations for this day to.
