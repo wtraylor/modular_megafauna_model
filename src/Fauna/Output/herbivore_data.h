@@ -133,6 +133,9 @@ struct HerbivoreData {
    * all mortality factors are included because all merged datapoints
    * have the same weight.
    *
+   * \note Despite the name, this function has nothing to do with
+   * \ref Output::Datapoint.
+   *
    * \throw std::invalid_argument If length of vector `data` is zero.
    */
   static HerbivoreData create_datapoint(const std::vector<HerbivoreData> data);
