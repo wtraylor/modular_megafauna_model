@@ -8,7 +8,7 @@
 #define SIMULATE_DAY_H
 
 #include <map>
-#include "combined_data.h"
+#include "environment.h"
 #include "habitat_forage.h"
 #include "herbivore_vector.h"
 
@@ -44,20 +44,15 @@ class SimulateDay {
    * - Initiailize habitat.
    * - Simulate herbivores.
    * - Feed herbivores.
-   * - Aggregate output.
    * - Create potential offspring.
    * - Delete dead herbivores.
    *
    * \param do_herbivores Whether the herbivore objects shall be
-   * simulated. Otherwise only the habitat is initialized and the
-   * output aggregated.
+   * simulated. Otherwise only the habitat is initialized.
    */
   void operator()(const bool do_herbivores);
 
  private:  // HELPER FUNCTIONS
-  /// Merge HFT and habitat output into output of simulation unit.
-  void aggregate_output();
-
   /// Create the offspring counted in \ref total_offspring.
   /**
    * For each HFT, let the PopulationInterface object create herbivores.
@@ -103,9 +98,6 @@ class SimulateDay {
 
   /// Pointers to all herbivores in the habitat.
   HerbivoreVector herbivores;
-
-  /// Habitat and herbivore output for this day.
-  Output::CombinedData todays_datapoint;
 
   /// All offspring for each HFT today [ind/km²]
   std::map<const Hft*, double> total_offspring;
