@@ -8,6 +8,7 @@
 #define SIMULATION_UNIT_H
 
 #include <memory>
+#include "combined_data.h"
 
 namespace Fauna {
 // forward declaration
@@ -38,6 +39,13 @@ class SimulationUnit {
   /// Get a readonly reference to the habitat.
   /** \throw std::logic_error If the private pointer is NULL. */
   const Habitat& get_habitat() const;
+
+  /// Get combined output from habitat and herbivores together.
+  /**
+   * \see \ref HerbivoreInterface::get_todays_output()
+   * \see \ref Habitat::get_todays_output()
+   */
+  Output::CombinedData get_output() const;
 
   /// The herbivores that live in the habitat.
   /** \throw std::logic_error If the private pointer is NULL. */
