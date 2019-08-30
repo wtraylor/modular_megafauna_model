@@ -16,4 +16,6 @@ TEST_CASE("Fauna::DateInterval", "") {
               !is_not_annual);
       }
   }
+
+  // TODO Check for other output interval matches
 }
