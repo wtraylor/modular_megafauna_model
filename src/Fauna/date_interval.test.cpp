@@ -8,25 +8,29 @@ TEST_CASE("Fauna::DateInterval", "") {
   static const int YEAR = 4;  // arbitrary
 
   SECTION("OutputInterval::extend") {
-    DateInterval interval(Date(0, 0), Date(0, 0));
+    static const Date D0(0,4);
+    static const Date D1(10, 23); // a little ahead
+    static const Date D2(17, 19); // in between
+    static const Date D3(17, 0); // a little before
+    DateInterval interval(D0,D0);
 
-    REQUIRE(interval.get_first() == Date(0, 0));
-    REQUIRE(interval.get_last() == Date(0, 0));
+    interval.extend(D0);
+    CHECK(interval.get_first() == interval.get_last());
+    CHECK(interval.get_first() == D0);
 
-    // Extend to the back
-    interval.extend(Date(10, 1));
-    CHECK(interval.get_first() == Date(0, 0));
-    CHECK(interval.get_last() == Date(10, 1));
+    interval.extend(D1);
+    CHECK(interval.get_first() == D0);
+    CHECK(interval.get_last() == D1);
 
-    // No changes
-    interval.extend(Date(50, 0));
-    CHECK(interval.get_first() == Date(0, 0));
-    CHECK(interval.get_last() == Date(10, 1));
+    // no changes
+    interval.extend(D2);
+    CHECK(interval.get_first() == D0);
+    CHECK(interval.get_last() == D1);
 
-    // Extend to the front
-    interval.extend(Date(120, -1));
-    CHECK(interval.get_first() == Date(120, -1));
-    CHECK(interval.get_last() == Date(10, 1));
+    interval.extend(D3);
+    CHECK(interval.get_first() == D3);
+    CHECK(interval.get_last() == D1);
+
   }
 
   SECTION("OutputInterval::Annual") {

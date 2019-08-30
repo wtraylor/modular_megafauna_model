@@ -109,6 +109,7 @@ if (BUILD_TESTING)
     src/Fauna/Output/herbivore_data.test.cpp
     src/Fauna/Output/text_table_writer.test.cpp
     src/Fauna/date.test.cpp
+    src/Fauna/date_interval.test.cpp
     src/Fauna/energetics.test.cpp
     src/Fauna/feed.test.cpp
     src/Fauna/fileystem.test.cpp

@@ -12,6 +12,13 @@ DateInterval::DateInterval(const Date first, const Date last)
         "Fauna::DateInterval::DateInterval() Last day is before first day.");
 }
 
+void DateInterval::extend(const Date& new_date){
+  if (new_date < first_day)
+    first_day = new_date;
+  else if (new_date > last_day)
+    last_day = new_date;
+}
+
 bool DateInterval::matches_output_interval(
     const OutputInterval& output_interval) const {
   switch (output_interval) {

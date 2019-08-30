@@ -22,6 +22,13 @@ class DateInterval {
    */
   DateInterval(const Date first, const Date last);
 
+  /// Expand the time interval just enough to include a new date.
+  /**
+   * If the new date is already covered by the interval, nothing is changed.
+   * \param new_date The new day to be included in the interval.
+   */
+  void extend(const Date& new_date);
+
   /// First day of the interval.
   const Date& get_first() const { return first_day; }
 
