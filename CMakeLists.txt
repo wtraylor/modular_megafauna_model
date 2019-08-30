@@ -74,6 +74,9 @@ set (SOURCE_FILES
   src/Fauna/world_constructor.cpp
   src/Fauna/world_constructor.h
   include/Fauna/utils.h # TODO: do not include this
+
+  src/Fauna/makeshift.h
+  src/Fauna/makeshift.cpp
   )
 
 add_library (ModularMegafaunaModel STATIC ${SOURCE_FILES})

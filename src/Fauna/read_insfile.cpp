@@ -1,7 +1,8 @@
 #include "read_insfile.h"
+#include "makeshift.h"
 
 using namespace Fauna;
 
 InsfileContent Fauna::read_instruction_file(const std::string filename) {
-  return InsfileContent();
+  return InsfileContent({construct_makeshift_hfts(), Parameters()});
 }
