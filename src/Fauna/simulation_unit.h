@@ -8,7 +8,6 @@
 #define SIMULATION_UNIT_H
 
 #include <memory>
-#include "combined_data.h"
 
 namespace Fauna {
 // forward declaration
