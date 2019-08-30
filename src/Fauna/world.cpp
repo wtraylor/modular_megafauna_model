@@ -1,6 +1,7 @@
 #include "world.h"
 #include <algorithm>
 #include <stdexcept>
+#include "aggregator.h"
 #include "date.h"
 #include "feed.h"
 #include "habitat.h"
@@ -20,7 +21,8 @@ World::World(const std::string instruction_filename)
     : insfile_content(
           new InsfileContent(read_instruction_file(instruction_filename))),
       days_since_last_establishment(get_params().herbivore_establish_interval),
-      world_constructor(new WorldConstructor(get_params(), get_hfts())) {
+      world_constructor(new WorldConstructor(get_params(), get_hfts())),
+      output_aggregator(new Output::Aggregator()) {
   // Create Output::WriterInterface implementation according to selected
   // setting.
   switch (get_params().output_format) {
@@ -119,6 +121,18 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     // Call the function object.
     simulate_day(do_herbivores);
 
+    // Aggregate output.
+    assert(output_aggregator.get() != NULL);
+    output_aggregator->add(date, sim_unit.get_habitat().get_aggregation_unit(),
+                           sim_unit.get_output());
+
     iter++;
   }
+
+  // Write output when it’s ready.
+  assert(output_writer.get() != NULL);
+  if (output_aggregator->get_interval().matches_output_interval(
+          get_params().output_interval))
+    for (const auto& datapoint : output_aggregator->retrieve())
+      output_writer->write_datapoint(datapoint);
 }

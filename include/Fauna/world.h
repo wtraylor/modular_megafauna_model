@@ -17,8 +17,9 @@ class SimulationUnit;
 class WorldConstructor;
 
 namespace Output {
+class Aggregator;
 class WriterInterface;
-}
+}  // namespace Output
 
 /// Central class to construct and own megafauna habitats and populations.
 class World {
@@ -72,7 +73,8 @@ class World {
    * \param date The current simulation day.
    * \param do_herbivores Whether to perform herbivore simulations. If false,
    * only the output data of the habitats are updated.
-   * \throw std::logic_error If `date` has not been correctly incremented by one day since the last call.
+   * \throw std::logic_error If `date` has not been correctly incremented by one
+   * day since the last call.
    */
   void simulate_day(const Date& date, const bool do_herbivores);
 
@@ -90,10 +92,13 @@ class World {
    *
    * Use \ref get_params() and \ref get_hfts() to access content.
    */
-  const std::unique_ptr<InsfileContent> insfile_content; // Init this first!
+  const std::unique_ptr<InsfileContent> insfile_content;  // Init this first!
 
   /// Number of days since extinct populations were re-established.
   int days_since_last_establishment;
+
+  /// Collects output data per time interval and aggregation unit.
+  std::unique_ptr<Output::Aggregator> output_aggregator;
 
   /// Output writer as selected by \ref Parameters::OutputFormat.
   std::unique_ptr<Output::WriterInterface> output_writer;
