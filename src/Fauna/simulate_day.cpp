@@ -31,45 +31,6 @@ SimulateDay::SimulateDay(const int day_of_year, SimulationUnit& simulation_unit,
       herbivores(simulation_unit.get_populations().get_all_herbivores()),
       simulation_unit(simulation_unit) {}
 
-void SimulateDay::aggregate_output() {
-  // Output data of all herbivores for today in this habitat.
-  std::map<const Hft*, std::vector<Output::HerbivoreData> > hft_output;
-
-  // Note: If herbivores were not simulated, the HFT output will simply
-  // be empty.
-
-  // GATHER HERBIVORE OUTPUT
-  // Loop through all herbivores: gather output.
-  for (HerbivoreVector::iterator itr_h = herbivores.begin();
-       itr_h != herbivores.end(); itr_h++) {
-    HerbivoreInterface& herbivore = **itr_h;
-
-    // Add the output of this herbivore to the vector of output
-    // data for this HFT.
-    hft_output[&herbivore.get_hft()].push_back(herbivore.get_todays_output());
-  }
-
-  // MERGE HFT OUTPUT
-
-  // Iterate over HFT output.
-  for (std::map<const Hft*, std::vector<Output::HerbivoreData> >::const_iterator
-           itr = hft_output.begin();
-       itr != hft_output.end(); itr++) {
-    const Hft& hft = *itr->first;
-    // Create a datapoint for each HFT that can then be merged
-    // across habitats and time.
-    todays_datapoint.hft_data[&hft] =
-        Output::HerbivoreData::create_datapoint(itr->second);
-  }
-
-  // HABITAT OUTPUT
-  // Add the habitat data to the output even if no herbivores are simulated.
-  const Habitat& const_habitat = simulation_unit.get_habitat();
-  todays_datapoint.habitat_data = const_habitat.get_todays_output();
-  // The output data container is now one complete datapoint.
-  todays_datapoint.datapoint_count = 1;
-}
-
 void SimulateDay::create_offspring() {
   for (std::map<const Hft*, double>::iterator itr = total_offspring.begin();
        itr != total_offspring.end(); itr++) {
@@ -118,8 +79,6 @@ void SimulateDay::operator()(const bool do_herbivores) {
     simulation_unit.get_habitat().remove_eaten_forage(
         forage_before_feeding.get_mass() - available_forage.get_mass());
   }
-
-  aggregate_output();
 
   simulation_unit.get_habitat().add_excreted_nitrogen(excreted_nitrogen);
 

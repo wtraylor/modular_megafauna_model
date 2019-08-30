@@ -16,6 +16,8 @@ set (SOURCE_FILES
   include/Fauna/habitat_forage.h
   include/Fauna/parameters.h
   include/Fauna/world.h
+  src/Fauna/Output/aggregator.cpp
+  src/Fauna/Output/aggregator.h
   src/Fauna/Output/combined_data.cpp
   src/Fauna/Output/combined_data.h
   src/Fauna/Output/habitat_data.cpp
@@ -103,6 +105,7 @@ include (CTest)  # Automatically sets BUILD_TESTING=ON by default.
 if (BUILD_TESTING)
   add_executable(megafauna_unit_tests
     ${SOURCE_FILES}
+    src/Fauna/Output/aggregator.test.cpp
     src/Fauna/Output/combined_data.test.cpp
     src/Fauna/Output/datapoint.h
     src/Fauna/Output/habitat_data.test.cpp
