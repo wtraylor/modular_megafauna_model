@@ -106,3 +106,19 @@ bool Fauna::file_exists(const std::string& path) {
   std::ifstream f(path.c_str());
   return f.good();
 }
+
+void Fauna::remove_directory(const std::string& path) {
+  if (!system(NULL))
+    throw std::runtime_error(
+        "Fauna::remove_directory() System shell is not available.");
+  if (!directory_exists(path))
+    throw std::invalid_argument(
+        "Fauna:remove_directory() "
+        "Directory does not exist: '" +
+        path + "'");
+#if defined(_WIN32)
+  system("rd /s /q ...");
+#else
+  system(("rm -r -f '" + path + "'").c_str());
+#endif
+}

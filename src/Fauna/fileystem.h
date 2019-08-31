@@ -31,6 +31,18 @@ bool directory_exists(const std::string path);
  */
 bool file_exists(const std::string& path);
 
+/// Delete a directory recursively.
+/**
+ * \warning Don’t use this function (in its current implementation) for the
+ * actual simulation code. It uses `system()` to call to the shell, but might
+ * fail without warning.
+ * \param path The absolute or relative path to the directory.
+ * \throw std::invalid_argument If `path` does not exist.
+ * \throw std::runtime_error If the system shell is not available throuh
+ * `system()`.
+ */
+void remove_directory(const std::string& path);
+
 }  // namespace Fauna
 
 #endif  // FILESYSTEM_H

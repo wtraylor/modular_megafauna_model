@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "fileystem.h"
+#include <fstream>
 
 using namespace Fauna;
 
@@ -41,6 +42,45 @@ TEST_CASE("Fauna::file_exists()", "") {
   CHECK(file_exists("/usr/bin/env"));
   CHECK(!file_exists("/this_is_a_random_string"));
   CHECK(!file_exists("this_is_a_random_string"));
+}
+
+TEST_CASE("Fauna::remove_directory()", "") {
+  CHECK_THROWS(remove_directory("/this_is_a_random_string"));
+  CHECK_THROWS(remove_directory("this_is_a_random_string"));
+
+  static const std::string FOLDER = "remove_directory";
+
+  create_directories(FOLDER);
+  REQUIRE(directory_exists(FOLDER));
+
+  SECTION("Delete empty directory") {
+    remove_directory(FOLDER);
+    CHECK(!directory_exists(FOLDER));
+  }
+
+  SECTION("Delete directory with subdirs") {
+    create_directories(FOLDER + "/subdir1");
+    REQUIRE(directory_exists(FOLDER + "/subdir1"));
+    create_directories(FOLDER + "/subdir2");
+    REQUIRE(directory_exists(FOLDER + "/subdir2"));
+    remove_directory(FOLDER);
+    CHECK(!directory_exists(FOLDER));
+  }
+
+  SECTION("Delete directory with files") {
+    std::ofstream f1(FOLDER + "/file1");
+    f1 << "content";
+    f1.close();
+    REQUIRE(file_exists(FOLDER + "/file1"));
+
+    std::ofstream f2(FOLDER + "/file2");
+    f2 << "content";
+    f2.close();
+    REQUIRE(file_exists(FOLDER + "/file2"));
+
+    remove_directory(FOLDER);
+    CHECK(!directory_exists(FOLDER));
+  }
 }
 
 #endif  // __gnu_linux__
