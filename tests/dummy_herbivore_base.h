@@ -1,6 +1,6 @@
 #ifndef DUMMY_HERBIVORE_BASE_H
 #define DUMMY_HERBIVORE_BASE_H
-#include "herbivore.h"
+#include "herbivore_base.h"
 
 namespace Fauna {
 /// Dummy class to test \ref HerbivoreBase

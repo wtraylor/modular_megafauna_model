@@ -7,7 +7,7 @@
 
 #include "simulation_unit.h"
 #include "habitat.h"
-#include "herbivore.h"
+#include "herbivore_interface.h"
 #include "population.h"
 #include "population_list.h"
 

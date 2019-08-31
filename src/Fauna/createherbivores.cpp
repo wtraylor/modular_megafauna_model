@@ -7,7 +7,8 @@
 
 #include "createherbivores.h"
 #include <stdexcept>
-#include "herbivore.h"
+#include "herbivore_individual.h"
+#include "herbivore_cohort.h"
 #include "hft.h"
 #include "parameters.h"
 

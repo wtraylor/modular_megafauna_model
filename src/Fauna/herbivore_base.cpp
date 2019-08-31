@@ -1,28 +1,14 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Herbivore interfaces and classes.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date July 2017
-//////////////////////////////////////////////////////////////////////////
-
-#include "herbivore.h"
-#include <algorithm> // for std::max(), std::min()
-#include <cfloat>  // for DBL_MAX
-#include <stdexcept>
-#include "energetics.h"    // for FatmassEnergyBudget
-#include "environment.h"   // for HabitatEnvironment
-#include "forageenergy.h"  // for GetNetEnergyContentInterface
+#include "herbivore_base.h"
+#include "energetics.h"
+#include "environment.h"
+#include "forageenergy.h"
 #include "foraging.h"
+#include "herbivore_data.h"
 #include "hft.h"
 #include "mortality.h"
-#include "herbivore_data.h"  // HerbivoreData
 #include "reproduction.h"
 
 using namespace Fauna;
-
-//============================================================
-// HerbivoreBase
-//============================================================
 
 HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
                              const Hft* hft,
@@ -122,16 +108,6 @@ HerbivoreBase& HerbivoreBase::operator=(const HerbivoreBase& other) {
     *current_output = *other.current_output;
   }
   return *this;
-}
-
-Hft const* HerbivoreBase::check_hft_pointer(const Hft* _hft) {
-  // Exception error message is like from a constructor because that’s
-  // where this function gets called.
-  if (_hft == NULL)
-    throw std::invalid_argument(
-        "Fauna::HerbivoreBase::HerbivoreBase() "
-        "Parameter `hft` is NULL.");
-  return _hft;
 }
 
 void HerbivoreBase::apply_mortality_factors_today() {
@@ -249,6 +225,16 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
 
   // Ingest the nitrogen
   nitrogen.ingest(N_kg_per_ind.sum() * get_ind_per_km2());
+}
+
+Hft const* HerbivoreBase::check_hft_pointer(const Hft* _hft) {
+  // Exception error message is like from a constructor because that’s
+  // where this function gets called.
+  if (_hft == NULL)
+    throw std::invalid_argument(
+        "Fauna::HerbivoreBase::HerbivoreBase() "
+        "Parameter `hft` is NULL.");
+  return _hft;
 }
 
 double HerbivoreBase::get_bodyfat() const {
@@ -551,133 +537,4 @@ double HerbivoreBase::take_nitrogen_excreta() {
     return nitrogen.reset_excreta();
   else
     return nitrogen.reset_total();
-}
-
-//============================================================
-// HerbivoreIndividual
-//============================================================
-
-HerbivoreIndividual::HerbivoreIndividual(const int age_days,
-                                         const double body_condition,
-                                         const Hft* hft, const Sex sex,
-                                         const double area_km2)
-    : HerbivoreBase(age_days, body_condition, hft, sex),
-      area_km2(area_km2),
-      dead(false) {
-  if (area_km2 <= 0.0)
-    throw std::invalid_argument(
-        "Fauna::HerbivoreIndividual::HerbivoreIndividual() "
-        "area_km2 <=0.0");
-}
-
-HerbivoreIndividual::HerbivoreIndividual(const Hft* hft, const Sex sex,
-                                         const double area_km2)
-    : HerbivoreBase(hft, sex), area_km2(area_km2), dead(false) {
-  if (area_km2 <= 0.0)
-    throw std::invalid_argument(
-        "Fauna::HerbivoreIndividual::HerbivoreIndividual() "
-        "area_km2 <=0.0");
-}
-
-HerbivoreIndividual::HerbivoreIndividual(const HerbivoreIndividual& other)
-    : HerbivoreBase(other), area_km2(other.area_km2), dead(other.dead) {}
-
-HerbivoreIndividual& HerbivoreIndividual::operator=(
-    const HerbivoreIndividual& other) {
-  HerbivoreBase::operator=(other);
-  area_km2 = other.area_km2;
-  dead = other.dead;
-  return *this;
-}
-
-void HerbivoreIndividual::apply_mortality(const double mortality) {
-  if (mortality < 0.0 || mortality > 1.0)
-    throw std::invalid_argument(
-        "Fauna::HerbivoreCohort::apply_mortality() "
-        "Parameter \"mortality\" out of range.");
-  // Save some calculations for the simple cases of 0.0 and 1.0
-  if (mortality == 0.0) return;
-  if (mortality == 1.0) {
-    dead = true;
-    return;
-  }
-  // Death is a stochastic event
-  if (get_random_fraction() < mortality) dead = true;
-}
-
-//============================================================
-// HerbivoreCohort
-//============================================================
-
-HerbivoreCohort::HerbivoreCohort(const int age_days,
-                                 const double body_condition, const Hft* hft,
-                                 const Sex sex, const double ind_per_km2)
-    : HerbivoreBase(age_days, body_condition, hft, sex),
-      ind_per_km2(ind_per_km2) {
-  if (ind_per_km2 < 0.0)
-    throw std::invalid_argument(
-        "Fauna::HerbivoreIndividual::HerbivoreIndividual() "
-        "ind_per_km2 <0.0");
-}
-
-HerbivoreCohort::HerbivoreCohort(const Hft* hft, const Sex sex,
-                                 const double ind_per_km2)
-    : HerbivoreBase(hft, sex),  // parent establishment constructor
-      ind_per_km2(ind_per_km2) {
-  if (ind_per_km2 < 0.0)
-    throw std::invalid_argument(
-        "Fauna::HerbivoreIndividual::HerbivoreIndividual() "
-        "ind_per_km2 <0.0");
-}
-
-HerbivoreCohort::HerbivoreCohort(const HerbivoreCohort& other)
-    : HerbivoreBase(other), ind_per_km2(other.ind_per_km2) {}
-
-HerbivoreCohort& HerbivoreCohort::operator=(const HerbivoreCohort& other) {
-  HerbivoreBase::operator=(other);
-  ind_per_km2 = other.ind_per_km2;
-  return *this;
-}
-
-void HerbivoreCohort::apply_mortality(const double mortality) {
-  if (mortality < 0.0 || mortality > 1.0)
-    throw std::invalid_argument(
-        "Fauna::HerbivoreCohort::apply_mortality() "
-        "Parameter \"mortality\" out of range.");
-  // change of individual density [ind/km²]
-  const double ind_change = -mortality * get_ind_per_km2();
-  // apply the change and make sure that the density does not
-  // drop below zero because of precision artefacts
-  ind_per_km2 = std::max(0.0, ind_per_km2 + ind_change);
-  assert(ind_per_km2 >= 0.0);
-}
-
-bool HerbivoreCohort::is_dead() const { return get_ind_per_km2() <= 0.0; }
-
-void HerbivoreCohort::merge(HerbivoreCohort& other) {
-  if (!is_same_age(other))
-    throw std::invalid_argument(
-        "Fauna::HerbivoreCohort::merge() "
-        "The other cohort is not the same age.");
-  if (this->get_sex() != other.get_sex())
-    throw std::invalid_argument(
-        "Fauna::HerbivoreCohort::merge() "
-        "The other cohort is not the same sex.");
-  if (this->get_hft() != other.get_hft())
-    throw std::invalid_argument(
-        "Fauna::HerbivoreCohort::merge() "
-        "The other cohort is not the same HFT.");
-
-  // Merge energy budget
-  this->get_energy_budget().merge(other.get_energy_budget(),
-                                  this->get_ind_per_km2(),
-                                  other.get_ind_per_km2());
-
-  // Merge nitrogen
-  this->get_nitrogen().merge(other.get_nitrogen());
-
-  // sum up density
-  this->ind_per_km2 += other.ind_per_km2;
-  // Change density in other object
-  other.ind_per_km2 = 0.0;
 }

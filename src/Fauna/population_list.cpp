@@ -1,5 +1,5 @@
 #include "population_list.h"
-#include "herbivore.h"
+#include "herbivore_interface.h"
 #include "hft.h"
 #include "population.h"
 

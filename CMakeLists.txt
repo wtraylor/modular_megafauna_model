@@ -47,8 +47,13 @@ set (SOURCE_FILES
   src/Fauna/grass_forage.cpp
   src/Fauna/habitat.cpp
   src/Fauna/habitat_forage.cpp
-  src/Fauna/herbivore.cpp
-  src/Fauna/herbivore.h
+  src/Fauna/herbivore_base.cpp
+  src/Fauna/herbivore_base.h
+  src/Fauna/herbivore_cohort.cpp
+  src/Fauna/herbivore_cohort.h
+  src/Fauna/herbivore_individual.cpp
+  src/Fauna/herbivore_individual.h
+  src/Fauna/herbivore_interface.h
   src/Fauna/herbivore_vector.h
   src/Fauna/hft.cpp
   src/Fauna/hft.h
@@ -125,7 +130,9 @@ if (BUILD_TESTING)
     src/Fauna/grass_forage.test.cpp
     src/Fauna/habitat.test.cpp
     src/Fauna/habitat_forage.test.cpp
-    src/Fauna/herbivore.test.cpp
+    src/Fauna/herbivore_base.test.cpp
+    src/Fauna/herbivore_cohort.test.cpp
+    src/Fauna/herbivore_individual.test.cpp
     src/Fauna/hft.test.cpp
     src/Fauna/mortality.test.cpp
     src/Fauna/nitrogen.test.cpp

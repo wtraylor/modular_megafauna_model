@@ -1,7 +1,7 @@
 #ifndef DUMMY_HERBIVORE_H
 #define DUMMY_HERBIVORE_H
 
-#include "herbivore.h"
+#include "herbivore_interface.h"
 #include "herbivore_data.h"
 
 namespace Fauna {

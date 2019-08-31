@@ -9,7 +9,8 @@
 #include <cmath>      // for round() and ceil()
 #include <sstream>    // for std::ostringstream
 #include <stdexcept>  // for std::out_of_range
-#include "herbivore.h"
+#include "herbivore_individual.h"
+#include "herbivore_cohort.h"
 #include "hft.h"
 
 using namespace Fauna;

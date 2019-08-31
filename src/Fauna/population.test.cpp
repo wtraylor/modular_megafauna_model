@@ -2,6 +2,8 @@
 #include "dummy_hft.h"
 #include "dummy_population.h"
 #include "habitat.h"
+#include "herbivore_cohort.h"
+#include "herbivore_individual.h"
 #include "hft.h"
 #include "parameters.h"
 #include "population.h"

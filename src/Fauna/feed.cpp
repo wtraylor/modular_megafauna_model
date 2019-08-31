@@ -6,8 +6,8 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "feed.h"
-#include "habitat.h"    // for Habitat and Population
-#include "herbivore.h"  // for HerbivoreInterface
+#include "habitat.h"
+#include "herbivore_interface.h"
 
 using namespace Fauna;
 
