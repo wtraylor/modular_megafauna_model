@@ -68,4 +68,30 @@ TEST_CASE("Fauna::Date", "") {
     CHECK(Date(365, 0) < Date(0, 1));
     CHECK(Date(364, 0) < Date(0, 1));
   }
+
+  SECTION("get_month()") {
+    // January
+    CHECK(Date(0, 0).get_month() == 0);
+    CHECK(Date(30, 0).get_month() == 0);
+    CHECK(Date(30, 0).get_month(true) == 0);
+
+    // February
+    CHECK(Date(31, 0).get_month() == 1);
+    CHECK(Date(31 + 27, 0).get_month() == 1);
+    CHECK(Date(31 + 28, 0).get_month(true) == 1);
+
+    // March
+    CHECK(Date(31 + 28, 0).get_month() == 2);
+    CHECK(Date(31 + 28 + 31, 0).get_month(true) == 2);
+    CHECK(Date(31 + 28 + 31 - 1, 0).get_month() == 2);
+
+    // April
+    CHECK(Date(31 + 28 + 31, 0).get_month() == 3);
+
+    // December
+    CHECK(Date(364, 0).get_month() == 11);
+    CHECK(Date(364, 0).get_month(true) == 11);
+    CHECK(Date(365, 0).get_month() == 11);
+    CHECK(Date(365, 0).get_month(true) == 11);
+  }
 }
