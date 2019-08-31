@@ -66,7 +66,15 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
            << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
         break;
       case OutputInterval::Monthly:
-        // TODO
+        // We don’t know if this is a 365-days year or a leap year. We
+        // calculate the month number assuming it’s not a leap year.
+        // Then we take the last day of the month period to get the month
+        // number. This is because in a leap year the first day of the month
+        // would shift to the last day of the preceding month (for after
+        // February). The last day of the month can be shifted forward, but
+        // will not leave the month period.
+        *f << datapoint.interval.get_last().get_month() << FIELD_SEPARATOR
+          << datapoint.interval.get_last().get_year() << FIELD_SEPARATOR;
         break;
       case OutputInterval::Annual:
         *f << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
