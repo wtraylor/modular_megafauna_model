@@ -29,6 +29,7 @@ class TextTableWriter : public WriterInterface {
    * Create all files that are selected in `options` as empty files.
    * \param interval Selector if output is daily/monthly/annual/...
    * \param options Specific user-defined options for this class.
+   * \throw std::runtime_error If one of the output files already exists.
    */
   TextTableWriter(const OutputInterval interval,
                   const Parameters::TextTableWriterOptions& options);
@@ -65,6 +66,9 @@ class TextTableWriter : public WriterInterface {
   static const char* FILE_EXTENSION;
 
  private:
+  /// Throw an exception if output file already exists.
+  static void check_file_exists(const std::string& path);
+
   /// Write the first line in the output files: column headers
   /**
    * \param datapoint Any output data with the same structure (e.g. list of

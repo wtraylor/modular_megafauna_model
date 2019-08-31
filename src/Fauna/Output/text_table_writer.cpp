@@ -17,13 +17,23 @@ TextTableWriter::TextTableWriter(
 
   // Add all selected output files to list of file streams.
   if (options.mass_density_per_hft) {
+    const std::string path = dir + "/mass_density_per_hft" + FILE_EXTENSION;
+    check_file_exists(path);
     file_streams.push_back(&mass_density_per_hft);
-    mass_density_per_hft.open(dir + "/mass_density_per_hft" + FILE_EXTENSION);
+    mass_density_per_hft.open(path);
   }
   // -> Add new output files here.
 
   // Set precision for all output streams.
   for (auto& s : file_streams) s->precision(options.precision);
+}
+
+void TextTableWriter::check_file_exists(const std::string& path) {
+  if (file_exists(path))
+    throw std::runtime_error(
+        "Fauna::Output::TextTableWriter "
+        "Output file already exists: '" +
+        path + "'");
 }
 
 void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
@@ -74,7 +84,7 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
         // February). The last day of the month can be shifted forward, but
         // will not leave the month period.
         *f << datapoint.interval.get_last().get_month() << FIELD_SEPARATOR
-          << datapoint.interval.get_last().get_year() << FIELD_SEPARATOR;
+           << datapoint.interval.get_last().get_year() << FIELD_SEPARATOR;
         break;
       case OutputInterval::Annual:
         *f << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;

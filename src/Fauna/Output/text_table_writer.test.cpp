@@ -47,6 +47,9 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
   opt.mass_density_per_hft = true;
   opt.output_directory = generate_output_dir();
 
+
+  REQUIRE(!directory_exists(opt.output_directory));
+
   INFO((std::string) "Random output directory: " + opt.output_directory);
 
   static const int YEAR = 4;
@@ -75,6 +78,10 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
     std::ifstream mass_density_per_hft(mass_density_per_hft_path);
     REQUIRE(mass_density_per_hft.good());
+
+    SECTION("File already exists") {
+      CHECK_THROWS(TextTableWriter(OutputInterval::Annual, opt));
+    }
 
     SECTION("Error on non-annual interval") {
       for (int day = 0; day < 366; day++)
@@ -163,4 +170,8 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
   // It is probably good enough to only check for the annual output. The other
   // output schemes are very similarly implemented.
+
+  // Delete directory recursively.
+  if (directory_exists(opt.output_directory))
+      remove_directory(opt.output_directory);
 }
