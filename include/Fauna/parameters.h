@@ -90,8 +90,15 @@ struct Parameters {
      */
     std::string output_directory = "./";
 
+    /// Number of figures after the decimal point.
+    unsigned int precision = 3;
+
+    /** @{ \name Output Files */
+
     /// Herbivore mass density per HFT in kg/km².
     bool mass_density_per_hft = true;
+
+    /** @} */  // Output Files
   } text_table_output;
 
   /// Constructor with default (valid!) settings

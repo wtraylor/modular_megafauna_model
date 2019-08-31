@@ -21,6 +21,9 @@ TextTableWriter::TextTableWriter(
     mass_density_per_hft.open(dir + "/mass_density_per_hft" + FILE_EXTENSION);
   }
   // -> Add new output files here.
+
+  // Set precision for all output streams.
+  for (auto& s : file_streams) s->precision(options.precision);
 }
 
 void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
@@ -80,7 +83,6 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   }
 
   // Per HFT Tables
-  // TODO: To what precision will be rounded?
   for (const auto i : datapoint.data.hft_data) {
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << i.second.massdens;
