@@ -6,12 +6,13 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "simulate_day.h"
-#include "environment.h"      // for HabitatEnvironment
-#include "feed.h"             // for FeedHerbivores
-#include "habitat.h"          // for Habitat and Population
-#include "herbivore.h"        // for HerbivoreInterface
-#include "population.h"       // for HftPopulationsMap and PopulationInterface
-#include "simulation_unit.h"  // for SimulationUnit
+#include "environment.h"
+#include "feed.h"
+#include "habitat.h"
+#include "herbivore.h"
+#include "population.h"
+#include "population_list.h"
+#include "simulation_unit.h"
 
 using namespace Fauna;
 
@@ -30,71 +31,14 @@ SimulateDay::SimulateDay(const int day_of_year, SimulationUnit& simulation_unit,
       herbivores(simulation_unit.get_populations().get_all_herbivores()),
       simulation_unit(simulation_unit) {}
 
-void SimulateDay::aggregate_output() {
-  // Output data of all herbivores for today in this habitat.
-  std::map<const Hft*, std::vector<Output::HerbivoreData> > hft_output;
-
-  // Note: If herbivores were not simulated, the HFT output will simply
-  // be empty.
-
-  // GATHER HERBIVORE OUTPUT
-  // Loop through all herbivores: gather output.
-  for (HerbivoreVector::iterator itr_h = herbivores.begin();
-       itr_h != herbivores.end(); itr_h++) {
-    HerbivoreInterface& herbivore = **itr_h;
-
-    // Add the output of this herbivore to the vector of output
-    // data for this HFT.
-    hft_output[&herbivore.get_hft()].push_back(herbivore.get_todays_output());
-  }
-
-  // MERGE HFT OUTPUT
-
-  // Iterate over HFT output.
-  for (std::map<const Hft*,
-                std::vector<Output::HerbivoreData> >::const_iterator itr =
-           hft_output.begin();
-       itr != hft_output.end(); itr++) {
-    const Hft& hft = *itr->first;
-    // Create a datapoint for each HFT that can then be merged
-    // across habitats and time.
-    todays_datapoint.hft_data[&hft] =
-        Output::HerbivoreData::create_datapoint(itr->second);
-  }
-
-  // HABITAT OUTPUT
-  // Add the habitat data to the output even if no herbivores are simulated.
-  const Habitat& const_habitat = simulation_unit.get_habitat();
-  todays_datapoint.habitat_data = const_habitat.get_todays_output();
-  // The output data container is now one complete datapoint.
-  todays_datapoint.datapoint_count = 1;
-  // Merge today’s output into temporal aggregation of the simulation
-  // unit.
-  simulation_unit.get_output().merge(todays_datapoint);
-}
-
 void SimulateDay::create_offspring() {
   for (std::map<const Hft*, double>::iterator itr = total_offspring.begin();
        itr != total_offspring.end(); itr++) {
     const Hft* hft = itr->first;
     const double offspring = itr->second;
     if (offspring > 0.0)
-      simulation_unit.get_populations()[*hft].create_offspring(offspring);
+      simulation_unit.get_populations().get(*hft).create_offspring(offspring);
   }
-}
-
-void SimulateDay::do_establishment() {
-  // iterate through HFT populations
-  HftPopulationsMap& pops = simulation_unit.get_populations();
-  for (HftPopulationsMap::iterator itr_p = pops.begin(); itr_p != pops.end();
-       itr_p++) {
-    PopulationInterface& pop = **itr_p;  // one population
-    const Hft& hft = pop.get_hft();
-
-    // Let the population handle the establishment
-    if (pop.get_list().empty()) pop.establish();
-  }
-  simulation_unit.set_initial_establishment_done();
 }
 
 HabitatForage SimulateDay::get_corrected_forage(const Habitat& habitat) {
@@ -110,8 +54,7 @@ HabitatForage SimulateDay::get_corrected_forage(const Habitat& habitat) {
   return available_forage;
 }
 
-void SimulateDay::operator()(const bool do_herbivores,
-                             const bool establish_if_needed) {
+void SimulateDay::operator()(const bool do_herbivores) {
   if (day_of_year < 0 || day_of_year >= 365)
     throw std::invalid_argument(
         "SimulateDay::operator()() "
@@ -120,14 +63,12 @@ void SimulateDay::operator()(const bool do_herbivores,
   // pass the current date into the herbivore module
   simulation_unit.get_habitat().init_day(day_of_year);
 
-  if (do_herbivores && !simulation_unit.get_populations().empty()) {
+  if (do_herbivores) {
     // Kill herbivore populations below the minimum density threshold here
     // so that simulate_herbivores() can take the nitrogen back before
     // the herbivore objects are removed from memory in purge_of_dead()
     // below.
     simulation_unit.get_populations().kill_nonviable();
-
-    if (establish_if_needed) do_establishment();
 
     simulate_herbivores();
 
@@ -138,8 +79,6 @@ void SimulateDay::operator()(const bool do_herbivores,
     simulation_unit.get_habitat().remove_eaten_forage(
         forage_before_feeding.get_mass() - available_forage.get_mass());
   }
-
-  aggregate_output();
 
   simulation_unit.get_habitat().add_excreted_nitrogen(excreted_nitrogen);
 

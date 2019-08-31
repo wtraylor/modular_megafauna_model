@@ -9,7 +9,7 @@ class Parameters;
 class Hft;
 class HftList;
 class PopulationInterface;
-class HftPopulationsMap;
+class PopulationList;
 class DistributeForage;
 
 /// Helper class of World to create various megafauna components.
@@ -27,11 +27,11 @@ class WorldConstructor {
   /// Create one (empty) herbivore population for one HFT.
   /**
    * \param phft Pointer to the Hft.
-   * \throw std::logic_error if \ref Parameters::herbivore_type
-   * is not implemented
+   * \throw std::logic_error if \ref Parameters::herbivore_type is not
+   * implemented
    * \return Pointer to new object.
    */
-  std::auto_ptr<PopulationInterface> create_population(const Hft* phft) const;
+  PopulationInterface* create_population(const Hft* phft) const;
 
   /// Instantiate populations for all HFTs in one \ref Habitat.
   /**
@@ -39,16 +39,16 @@ class WorldConstructor {
    * implemented
    * \return Pointer to new object
    */
-  std::auto_ptr<HftPopulationsMap> create_populations() const;
+  PopulationList* create_populations() const;
 
-  /// Instantiate a populaton of only one \ref Hft for one \ref Habitat.
+  /// Instantiate a population of only one \ref Hft for one \ref Habitat.
   /**
    * \param phft Pointer to the one \ref Hft.
    * \throw std::logic_error if \ref Parameters::herbivore_type is not
    * implemented.
    * \return Pointer to new object.
    */
-  std::auto_ptr<HftPopulationsMap> create_populations(const Hft* phft) const;
+  PopulationList* create_populations(const Hft* phft) const;
 
   /// Create new \ref DistributeForage object according to parameters.
   std::auto_ptr<DistributeForage> create_distribute_forage() const;

@@ -10,18 +10,13 @@
 
 #include <list>
 #include <map>
-#include <vector>
 #include "createherbivores.h"  // for CreateHerbivore*
+#include "herbivore_vector.h"
 
 namespace Fauna {
 // forward declarations
 class HerbivoreInterface;
 class Hft;
-
-/// A list of herbivore interface pointers.
-typedef std::vector<HerbivoreInterface*> HerbivoreVector;
-/// A list of read-only herbivore interface pointers.
-typedef std::vector<const HerbivoreInterface*> ConstHerbivoreVector;
 
 /// A container of herbivore objects.
 /**
@@ -170,89 +165,6 @@ class CohortPopulation : public PopulationInterface {
   List list;
 };
 
-/// Helper class managing object instances of \ref PopulationInterface
-/**
- * There is one \ref PopulationInterface object per \ref Hft.
- *
- * \ref PopulationInterface object instances passed to this class are
- * owned by this class and will be deleted in the destructor.
- * Because ownership is unique, copy constructor and copy
- * assignment operator are deleted (\ref sec_rule_of_three).
- * In order to pass an instance of \ref HftPopulationsMap
- * between functions, std::auto_ptr can be used.
- */
-class HftPopulationsMap {
- public:
-  /// Constructor
-  HftPopulationsMap() : last_all_herbivores_count(0) {}
-
-  /// Destructor, delete all \ref PopulationInterface instances.
-  virtual ~HftPopulationsMap();
-
-  /// Add a new \ref PopulationInterface object for a HFT
-  /**
-   * \param new_pop Pointer to a newly created object. The
-   * object will be owned by this \ref HftPopulationsMap
-   * and deleted in the destructor.
-   * \throw std::logic_error if a population of that HFT already
-   * exists
-   * \throw std::invalid_argument if `new_pop==NULL`
-   */
-  void add(std::auto_ptr<PopulationInterface> new_pop);
-
-  /// Get pointers to all (alive!) herbivores of all populations.
-  /**
-   * \see Warning in \ref PopulationInterface::get_list().
-   * \return Pointers to all living herbivores in all
-   * populations. Guaranteed no NULL pointers.
-   */
-  HerbivoreVector get_all_herbivores();
-
-  /// Access to a population by HFT.
-  /**
-   * Uses \ref Hft::operator==() for comparison.
-   * \throw std::invalid_argument if `hft` not in the vector */
-  PopulationInterface& operator[](const Hft&);
-
-  /// Kill populations whose density is below minimum threshold.
-  /**
-   * If a population has a total density of less than
-   * \ref Hft::minimum_density_threshold, all of the herbivores are
-   * killed (\ref HerbivoreInterface::kill()).
-   */
-  void kill_nonviable();
-
-  /// Delete all dead herbivores.
-  /** Iterate over all populations and call
-   * \ref PopulationInterface::purge_of_dead(). */
-  virtual void purge_of_dead() {
-    for (iterator itr = begin(); itr != end(); itr++) (*itr)->purge_of_dead();
-  }
-
-  //------------------------------------------------------------
-  /** @{ \name Wrapper around std::vector
-   * Equivalents to methods in Standard Library Container std::vector.*/
-  typedef std::vector<PopulationInterface*>::iterator iterator;
-  typedef std::vector<PopulationInterface*>::const_iterator const_iterator;
-  iterator begin() { return vec.begin(); }
-  const_iterator begin() const { return vec.begin(); }
-  iterator end() { return vec.end(); }
-  const_iterator end() const { return vec.end(); }
-  bool empty() const { return vec.empty(); }
-  int size() const { return vec.size(); }
-  /** @} */  // Container Functionality
- private:
-  std::vector<PopulationInterface*> vec;
-
-  // see comment in get_all_herbivores()
-  int last_all_herbivores_count;
-
-  // Deleted copy constructor and copy assignment operator.
-  // If they were not deleted, the unique ownership of the
-  // PopulationInterface objects could be lost.
-  HftPopulationsMap(const HftPopulationsMap& other);
-  HftPopulationsMap& operator=(const HftPopulationsMap& other);
-};
 };  // namespace Fauna
 
 #endif  // POPULATION_H

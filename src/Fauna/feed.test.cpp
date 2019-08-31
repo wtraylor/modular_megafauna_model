@@ -5,6 +5,7 @@
 #include "feed.h"
 #include "habitat_forage.h"
 #include "parameters.h"
+#include "population_list.h"
 using namespace Fauna;
 
 TEST_CASE("Fauna::DistributeForageEqually", "") {
@@ -13,16 +14,15 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
   const int IND_PER_HFT = 10;
   const int IND_TOTAL = HFT_COUNT * IND_PER_HFT;  // dummy herbivores total
   const HftList hftlist = create_hfts(HFT_COUNT, Parameters());
-  HftPopulationsMap popmap;
+  PopulationList pops;
   for (HftList::const_iterator itr = hftlist.begin(); itr != hftlist.end();
        itr++) {
     // create new population
-    std::auto_ptr<PopulationInterface> new_pop(new DummyPopulation(&*itr));
+    PopulationInterface* new_pop = new DummyPopulation(&*itr);
     // fill with herbivores
     for (int i = 1; i <= IND_PER_HFT; i++) new_pop->create_offspring(1.0);
     // add newly created dummy population
-    popmap.add(new_pop);
-    //
+    pops.add(new_pop);
   }
 
   // CREATE DEMAND MAP
@@ -30,18 +30,10 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
   // loop through all herbivores and fill the distribution
   // object with pointer to herbivore and zero demands (to be
   // filled later)
-  for (HftPopulationsMap::iterator itr_pop = popmap.begin();
-       itr_pop != popmap.end(); itr_pop++) {
-    PopulationInterface& pop = **(itr_pop);
-    HerbivoreVector vec = pop.get_list();
-    // loop through herbivores in the population
-    for (HerbivoreVector::iterator itr_her = vec.begin(); itr_her != vec.end();
-         itr_her++) {
-      HerbivoreInterface* pherbivore = *itr_her;
-      // create with zero demands
-      static const ForageMass ZERO_DEMAND;
-      demands[pherbivore] = ZERO_DEMAND;
-    }
+  for (auto& h : pops.get_all_herbivores()) {
+    // create with zero demands
+    static const ForageMass ZERO_DEMAND;
+    demands[h] = ZERO_DEMAND;
   }
 
   // PREPARE AVAILABLE FORAGE

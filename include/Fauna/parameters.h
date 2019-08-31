@@ -28,21 +28,23 @@ enum HerbivoreType {
 };
 
 /// Time interval for aggregating output.
-enum OutputInterval {
+// Note that we define it as a strictly typed C++11 enum *class* in order to be
+// able to forward-declare it in other header files.
+enum class OutputInterval {
   /// Don’t aggregate output over time, but write every day.
-  OI_DAILY,
+  Daily,
   /// Aggregate output for each month.
-  OI_MONTHLY,
+  Monthly,
   /// Aggregate output for each year.
-  OI_ANNUAL,
+  Annual,
   /// Aggregate output for 10 years intervals.
-  OI_DECADAL
+  Decadal
 };
 
 /// Parameter for selecting the output writer implementation.
-enum OutputWriter {
-  /// Use class \ref TextTableWriter
-  OW_TEXT_TABLES
+enum class OutputFormat {
+  /// Use class \ref TextTableWriter.
+  TextTables
 };
 
 /// Parameters for the herbivory module.
@@ -67,11 +69,11 @@ struct Parameters {
   /// Whether to allow only herbivores of one HFT in each patch (default false).
   bool one_hft_per_patch;
 
-  /// Time interval for aggregating output.
-  OutputInterval output_interval = OI_ANNUAL;
-
   /// The module that writes megafauna output to disk.
-  OutputWriter output_writer = OW_TEXT_TABLES;
+  OutputFormat output_format = OutputFormat::TextTables;
+
+  /// Time interval for aggregating output.
+  OutputInterval output_interval = OutputInterval::Annual;
 
   /// Preferences for the \ref TextTableWriter output class.
   /**
@@ -88,8 +90,15 @@ struct Parameters {
      */
     std::string output_directory = "./";
 
+    /// Number of figures after the decimal point.
+    unsigned int precision = 3;
+
+    /** @{ \name Output Files */
+
     /// Herbivore mass density per HFT in kg/km².
     bool mass_density_per_hft = true;
+
+    /** @} */  // Output Files
   } text_table_output;
 
   /// Constructor with default (valid!) settings

@@ -62,8 +62,9 @@ Please install the plugin for your text editor if available: [editorconfig.org/]
 - Classes are named in CamelCase with upper-case first letter, e.g. `MyExampleClass`.
     + Enum types are like classes.
 - Functions are imperative verbs with underscores, e.g. `create_new_herbivores()`.
-- Constants (outside of function bodies) are all-uppercase with underscores, e.g. `MY_GLOBAL_CONSTANT`.
-    + Enum elements are similar to constants, but have additionally a prefix with the initials of the type name. For instance the elements in the enum `ForageType` will all start with `FT_`, like `FT_GRASS`.
+- Global constants as well as static const member and function variables are all-uppercase with underscores, e.g. `MY_GLOBAL_CONSTANT`.
+    + C-style enum elements are similar to constants, but have additionally a prefix with the initials of the type name. For instance the elements in the enum `ForageType` will all start with `FT_`, like `FT_GRASS`.
+    + C++11-style enum class elements don’t have global scope and thus don’t require a prefix. Since the shouting tone of all-uppercase names is distracting, just use CamelCase for the enum members, e.g. `OutputInterval::Annual`.
 - Namespaces are short and lower-case with first letter capitalized, e.g. `Fauna`.
 
 #### Alphabetical Order
@@ -91,7 +92,8 @@ class MyExampleClass{
   /// Helper function to perform calculations.
   void my_private_function();
 
-  // -> Finally the private member variables in alph. order:
+  // -> Finally the private member variables NOT in alphabetical order, but in
+  // the order of desired initialization.
   HerbivoreType herbi_type;
   int var = 10;
 };

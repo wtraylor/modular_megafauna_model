@@ -16,21 +16,27 @@ set (SOURCE_FILES
   include/Fauna/habitat_forage.h
   include/Fauna/parameters.h
   include/Fauna/world.h
+  src/Fauna/Output/aggregator.cpp
+  src/Fauna/Output/aggregator.h
   src/Fauna/Output/combined_data.cpp
   src/Fauna/Output/combined_data.h
   src/Fauna/Output/habitat_data.cpp
   src/Fauna/Output/herbivore_data.cpp
   src/Fauna/Output/herbivore_data.h
-  src/Fauna/Output/output_writer_interface.h
-  src/Fauna/Output/text_table_writer.h
+  src/Fauna/Output/writer_interface.h
   src/Fauna/Output/text_table_writer.cpp
+  src/Fauna/Output/text_table_writer.h
   src/Fauna/createherbivores.cpp
   src/Fauna/createherbivores.h
   src/Fauna/date.cpp
+  src/Fauna/date_interval.cpp
+  src/Fauna/date_interval.h
   src/Fauna/energetics.cpp
   src/Fauna/energetics.h
   src/Fauna/feed.cpp
   src/Fauna/feed.h
+  src/Fauna/fileystem.cpp
+  src/Fauna/fileystem.h
   src/Fauna/forage_base.cpp
   src/Fauna/forage_types.cpp
   src/Fauna/forage_values.cpp
@@ -43,6 +49,7 @@ set (SOURCE_FILES
   src/Fauna/habitat_forage.cpp
   src/Fauna/herbivore.cpp
   src/Fauna/herbivore.h
+  src/Fauna/herbivore_vector.h
   src/Fauna/hft.cpp
   src/Fauna/hft.h
   src/Fauna/mortality.cpp
@@ -52,6 +59,8 @@ set (SOURCE_FILES
   src/Fauna/parameters.cpp
   src/Fauna/population.cpp
   src/Fauna/population.h
+  src/Fauna/population_list.cpp
+  src/Fauna/population_list.h
   src/Fauna/read_insfile.cpp
   src/Fauna/read_insfile.h
   src/Fauna/reproduction.cpp
@@ -65,6 +74,9 @@ set (SOURCE_FILES
   src/Fauna/world_constructor.cpp
   src/Fauna/world_constructor.h
   include/Fauna/utils.h # TODO: do not include this
+
+  src/Fauna/makeshift.h
+  src/Fauna/makeshift.cpp
   )
 
 add_library (ModularMegafaunaModel STATIC ${SOURCE_FILES})
@@ -96,14 +108,17 @@ include (CTest)  # Automatically sets BUILD_TESTING=ON by default.
 if (BUILD_TESTING)
   add_executable(megafauna_unit_tests
     ${SOURCE_FILES}
+    src/Fauna/Output/aggregator.test.cpp
     src/Fauna/Output/combined_data.test.cpp
     src/Fauna/Output/datapoint.h
     src/Fauna/Output/habitat_data.test.cpp
     src/Fauna/Output/herbivore_data.test.cpp
     src/Fauna/Output/text_table_writer.test.cpp
     src/Fauna/date.test.cpp
+    src/Fauna/date_interval.test.cpp
     src/Fauna/energetics.test.cpp
     src/Fauna/feed.test.cpp
+    src/Fauna/fileystem.test.cpp
     src/Fauna/forage_values.test.cpp
     src/Fauna/forageenergy.test.cpp
     src/Fauna/foraging.test.cpp
@@ -116,8 +131,8 @@ if (BUILD_TESTING)
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
     src/Fauna/population.test.cpp
+    src/Fauna/population_list.test.cpp
     src/Fauna/reproduction.test.cpp
-    src/Fauna/simulation_unit.test.cpp
     src/Fauna/utils.test.cpp
     src/Fauna/world_constructor.test.cpp
     tests/catch.hpp
@@ -170,7 +185,7 @@ endif(BUILD_TEST_SIMULATOR)
 ####################  DOXYGEN DOCUMENTATION  ##############################
 ###########################################################################
 
-option (BUILD_DOC "Build doxygen documentaton" ON)
+option (BUILD_DOC "Build doxygen documentaton" OFF)
 if (BUILD_DOC)
   add_subdirectory (docs/)
 endif()

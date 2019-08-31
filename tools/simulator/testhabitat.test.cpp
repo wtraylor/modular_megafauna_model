@@ -1,6 +1,8 @@
 #include "catch.hpp"
+#include "population_list.h"
 #include "testhabitat.h"
 using namespace Fauna;
+using namespace FaunaSim;
 
 TEST_CASE("FaunaSim::LogisticGrass", "") {
   LogisticGrass::Parameters grass_settings;
@@ -184,7 +186,7 @@ TEST_CASE("FaunaSim::HabitatGroup", "") {
   for (int i = 1; i < 5; i++) {
     // create a simulation unit
     std::auto_ptr<Habitat> habitat(new DummyHabitat());
-    std::auto_ptr<HftPopulationsMap> populations(new HftPopulationsMap());
+    PopulationList* populations = new PopulationList();
     std::auto_ptr<SimulationUnit> simunit(
         new SimulationUnit(habitat, populations));
     // add it to the group
@@ -216,7 +218,7 @@ TEST_CASE("FaunaSim::HabitatGroupList", "") {
     for (int j = 1; j < 4; j++) {
       // create a simulation unit
       std::auto_ptr<Habitat> habitat(new DummyHabitat());
-      std::auto_ptr<HftPopulationsMap> populations(new HftPopulationsMap());
+      PopulationList* populations = new PopulationList();
       std::auto_ptr<SimulationUnit> simunit(
           new SimulationUnit(habitat, populations));
       // add it to the group

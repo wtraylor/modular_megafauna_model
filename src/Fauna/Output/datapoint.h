@@ -4,6 +4,7 @@
 #include <string>
 #include "combined_data.h"
 #include "date.h"
+#include "date_interval.h"
 
 namespace Fauna {
 namespace Output {
@@ -11,7 +12,12 @@ namespace Output {
 /// Simple container for spatially and temporally aggregated output data.
 /**
  * \ref CombinedData already holds and aggregates output data, but this class
- * additionally contains the relevant metadata for *what* the data represents.
+ * additionally contains the relevant metadata for *what* the data represent.
+ *
+ * This struct holds the data from one or several \ref Fauna::SimulationUnit
+ * objects that comprise one **aggregation unit**
+ * (\ref Fauna::Habitat::get_aggregation_unit). The data are aggregated over a
+ * time period given by the \ref interval property.
  */
 struct Datapoint {
   /// Identifier of the spatial aggregation unit.
@@ -23,11 +29,11 @@ struct Datapoint {
   /// The aggregated output data itself.
   CombinedData data;
 
-  /// First day of the aggregated time interval.
-  Date first_day = Date(0,0);
-
-  /// Last day of the aggregated time interval.
-  Date last_day = Date(0,0);
+  /// The time frame that is integrated in the data.
+  /**
+   * \see Fauna::OutputInterval
+   */
+  DateInterval interval = DateInterval(Date(0,0), Date(0,0));
 };
 
 }  // namespace Output

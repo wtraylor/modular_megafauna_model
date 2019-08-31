@@ -7,22 +7,17 @@
 #ifndef SIMULATE_DAY_H
 #define SIMULATE_DAY_H
 
-#include <map>              // for ForageDistribution
-#include <vector>           // for HerbivoreVector
-#include "combined_data.h"  // for Output::CombinedData
-#include "habitat_forage.h" // for HabitatForage
+#include <map>
+#include "environment.h"
+#include "habitat_forage.h"
+#include "herbivore_vector.h"
 
 namespace Fauna {
 // Forward declarations
-class HerbivoreInterface;
 class SimulationUnit;
 class Habitat;
 class Hft;
 class FeedHerbivores;
-
-/// A vector of herbivore pointers.
-/** Originally defined in \ref population.h */
-typedef std::vector<HerbivoreInterface*> HerbivoreVector;
 
 /// Function object to simulate one day in one habitat.
 /**
@@ -47,26 +42,17 @@ class SimulateDay {
   /// Simulate one day.
   /**
    * - Initiailize habitat.
-   * - Establish herbivores if needed.
    * - Simulate herbivores.
    * - Feed herbivores.
-   * - Aggregate output.
    * - Create potential offspring.
    * - Delete dead herbivores.
    *
    * \param do_herbivores Whether the herbivore objects shall be
-   * simulated. Otherwise only the habitat is initialized and the
-   * output aggregated.
-   * \param establish_if_needed Whether (re-)establishment shall be
-   * done for those HFTs that have no population. (This needs
-   * `do_herbivores==true`.)
+   * simulated. Otherwise only the habitat is initialized.
    */
-  void operator()(const bool do_herbivores, const bool establish_if_needed);
+  void operator()(const bool do_herbivores);
 
  private:  // HELPER FUNCTIONS
-  /// Merge HFT and habitat output into output of simulation unit.
-  void aggregate_output();
-
   /// Create the offspring counted in \ref total_offspring.
   /**
    * For each HFT, let the PopulationInterface object create herbivores.
@@ -74,9 +60,6 @@ class SimulateDay {
    * cycle.
    */
   void create_offspring();
-
-  /// Iterate through HFTs and (re-)establish if they are not there.
-  void do_establishment();
 
   /// Read available forage and set it to zero if it is very low.
   /**
@@ -115,9 +98,6 @@ class SimulateDay {
 
   /// Pointers to all herbivores in the habitat.
   HerbivoreVector herbivores;
-
-  /// Habitat and herbivore output for this day.
-  Output::CombinedData todays_datapoint;
 
   /// All offspring for each HFT today [ind/km²]
   std::map<const Hft*, double> total_offspring;
