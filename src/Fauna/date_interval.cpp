@@ -25,7 +25,7 @@ bool DateInterval::matches_output_interval(
     case OutputInterval::Daily:
       return get_first() == get_last();
     case OutputInterval::Monthly:
-      // TODO
+      // TODO: Implement check for monthly output
       throw std::logic_error(
           "Fauna::DateInterval::matches_output_interval() "
           "OutputInterval::Monthly not yet implemented.");
