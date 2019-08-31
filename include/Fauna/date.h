@@ -8,7 +8,7 @@ class Date {
   /// Constructor
   /**
    * \param julian_day Day of the year. A value of zero equals January 1st. A
-   * value of 365 will only be valid in leap years.
+   * value of 365 is valid because it might be a leap year.
    * \param year An arbitrary year number. This could be a calendar year
    * or an abstract simulation year counter.
    * \throw std::invalid_argument If `julian_day` not in interval
@@ -23,6 +23,11 @@ class Date {
   int get_year() const { return year; }
 
   /// Whether another Date object represents the following day.
+  /**
+   * This assumes a non-leap year: A Julian day of 364 (0==Jan 1st) can be
+   * followed by a Julian day of 0. The last day of a leap year (365) will
+   * *also* be validly followed by day 0.
+   */
   bool is_successive(const Date& other_date) const;
 
   /// Whether another \ref Date object specifies the *same* day.
