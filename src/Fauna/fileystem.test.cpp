@@ -28,11 +28,12 @@ TEST_CASE("Fauna::create_directories()", "") {
   }
 }
 
-#endif  // __gnu_linux__
-
 TEST_CASE("Fauna::directory_exists()", "") {
   // On a unix system, the /bin directory will always be there.
   CHECK(directory_exists("/bin"));
   CHECK(!directory_exists("/this_is_a_random_string"));
   CHECK(!directory_exists("this_is_a_random_string"));
 }
+
+#endif  // __gnu_linux__
+
