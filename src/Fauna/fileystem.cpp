@@ -1,6 +1,7 @@
 #include "fileystem.h"
 #include <errno.h>
 #include <sys/stat.h>
+#include <fstream>
 #include <iostream>
 #include <stdexcept>
 #if defined(_WIN32)
@@ -101,3 +102,7 @@ bool Fauna::directory_exists(const std::string path) {
 #endif
 }
 
+bool Fauna::file_exists(const std::string& path) {
+  std::ifstream f(path.c_str());
+  return f.good();
+}

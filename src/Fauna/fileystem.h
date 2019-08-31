@@ -22,6 +22,15 @@ void create_directories(const std::string path, const mode_t mode = 0755);
  * \return True if `path` exists, false if not.
  */
 bool directory_exists(const std::string path);
+
+/// Check whether a file in the filesystem exists.
+/**
+ * This function works for Windows und Unix systems.
+ * \param path The absolute or relative path to the file in question.
+ * \return True if `path` exists, false if not.
+ */
+bool file_exists(const std::string& path);
+
 }  // namespace Fauna
 
 #endif  // FILESYSTEM_H

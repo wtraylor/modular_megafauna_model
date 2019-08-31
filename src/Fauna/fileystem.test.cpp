@@ -35,5 +35,13 @@ TEST_CASE("Fauna::directory_exists()", "") {
   CHECK(!directory_exists("this_is_a_random_string"));
 }
 
+TEST_CASE("Fauna::file_exists()", "") {
+  // Check for some files that are certainly there in a UNIX system.
+  CHECK(file_exists("/bin/sh"));
+  CHECK(file_exists("/usr/bin/env"));
+  CHECK(!file_exists("/this_is_a_random_string"));
+  CHECK(!file_exists("this_is_a_random_string"));
+}
+
 #endif  // __gnu_linux__
 
