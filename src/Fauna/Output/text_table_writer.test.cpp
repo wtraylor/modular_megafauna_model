@@ -161,5 +161,6 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
     }
   }
 
-  // TODO: Write tests for other intervals.
+  // It is probably good enough to only check for the annual output. The other
+  // output schemes are very similarly implemented.
 }
