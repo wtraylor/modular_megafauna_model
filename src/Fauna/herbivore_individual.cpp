@@ -1,4 +1,5 @@
 #include "herbivore_individual.h"
+#include "stochasticity.h"
 
 using namespace Fauna;
 
@@ -47,6 +48,7 @@ void HerbivoreIndividual::apply_mortality(const double mortality) {
     return;
   }
   // Death is a stochastic event
-  if (get_random_fraction() < mortality) dead = true;
+  static const int SEED = 9345; // TODO: Replace this with variable seed.
+  if (get_random_fraction(SEED) < mortality) dead = true;
 }
 

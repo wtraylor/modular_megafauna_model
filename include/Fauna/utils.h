@@ -8,8 +8,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <cstdlib>  // for std::rand(), srand(), RAND_MAX
-#include <ctime>    // for time(), to init random seed
 #include <deque>
 
 namespace Fauna {
@@ -29,18 +27,6 @@ enum Sex { SEX_FEMALE, SEX_MALE };
 double average(const double a, const double b, const double weight_a = 1.0,
                const double weight_b = 1.0);
 
-/// Get a random number in the interval [0,1]
-/**
- * For stochastic mortality.
- *
- * This implementation simply uses the standard library
- * function `rand()` with the current time as random seed.
- */
-inline double get_random_fraction() {
-  // initialize random seed
-  srand(time(NULL));
-  return (double)rand() / RAND_MAX;
-}
 
 /// Average of a `double` value over a given time period.
 /**

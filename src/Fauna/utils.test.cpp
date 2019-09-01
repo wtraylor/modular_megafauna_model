@@ -16,14 +16,6 @@ TEST_CASE("Fauna::average()", "") {
   CHECK(average(-1.0, 1.0) == Approx(0.0));
 }
 
-TEST_CASE("Fauna::get_random_fraction", "") {
-  for (int i = 0; i < 100; i++) {
-    const double r = get_random_fraction();
-    CHECK(r <= 1.0);
-    CHECK(r >= 0.0);
-  }
-}
-
 TEST_CASE("Fauna::PeriodAverage") {
   CHECK_THROWS(PeriodAverage(-1));
   CHECK_THROWS(PeriodAverage(0));
