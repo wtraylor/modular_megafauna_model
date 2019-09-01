@@ -8,7 +8,7 @@
 #include "simulation_unit.h"
 #include "habitat.h"
 #include "herbivore_interface.h"
-#include "population.h"
+#include "population_interface.h"
 #include "population_list.h"
 
 using namespace Fauna;
@@ -53,7 +53,7 @@ const Habitat& SimulationUnit::get_habitat() const {
   return *habitat;
 };
 
-Output::CombinedData SimulationUnit::get_output() const{
+Output::CombinedData SimulationUnit::get_output() const {
   Output::CombinedData result;
 
   // HERBIVORES

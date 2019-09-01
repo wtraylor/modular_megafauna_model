@@ -10,7 +10,7 @@
 #include "feed_herbivores.h"
 #include "habitat.h"
 #include "herbivore_interface.h"
-#include "population.h"
+#include "population_interface.h"
 #include "population_list.h"
 #include "simulation_unit.h"
 

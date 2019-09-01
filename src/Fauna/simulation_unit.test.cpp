@@ -1,6 +1,5 @@
 #include "catch.hpp"
 #include "dummy_habitat.h"
-#include "population.h"
 #include "population_list.h"
 #include "simulation_unit.h"
 using namespace Fauna;

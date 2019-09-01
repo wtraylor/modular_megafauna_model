@@ -1,8 +1,9 @@
 #include "world_constructor.h"
+#include "cohort_population.h"
 #include "forage_distribution_algorithms.h"
 #include "hft.h"
+#include "individual_population.h"
 #include "parameters.h"
-#include "population.h"
 #include "population_list.h"
 
 using namespace Fauna;

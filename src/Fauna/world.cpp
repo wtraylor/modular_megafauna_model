@@ -7,7 +7,7 @@
 #include "habitat.h"
 #include "hft.h"
 #include "parameters.h"
-#include "population.h"
+#include "population_interface.h"
 #include "population_list.h"
 #include "read_insfile.h"
 #include "simulate_day.h"

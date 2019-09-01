@@ -26,6 +26,8 @@ set (SOURCE_FILES
   src/Fauna/Output/writer_interface.h
   src/Fauna/Output/text_table_writer.cpp
   src/Fauna/Output/text_table_writer.h
+  src/Fauna/cohort_population.cpp
+  src/Fauna/cohort_population.h
   src/Fauna/createherbivores.cpp
   src/Fauna/createherbivores.h
   src/Fauna/date.cpp
@@ -59,13 +61,15 @@ set (SOURCE_FILES
   src/Fauna/herbivore_vector.h
   src/Fauna/hft.cpp
   src/Fauna/hft.h
+  src/Fauna/individual_population.cpp
+  src/Fauna/individual_population.h
   src/Fauna/mortality.cpp
   src/Fauna/mortality.h
   src/Fauna/nitrogen.cpp
   src/Fauna/nitrogen.h
   src/Fauna/parameters.cpp
-  src/Fauna/population.cpp
-  src/Fauna/population.h
+  src/Fauna/population_interface.cpp
+  src/Fauna/population_interface.h
   src/Fauna/population_list.cpp
   src/Fauna/population_list.h
   src/Fauna/read_insfile.cpp
@@ -121,6 +125,7 @@ if (BUILD_TESTING)
     src/Fauna/Output/habitat_data.test.cpp
     src/Fauna/Output/herbivore_data.test.cpp
     src/Fauna/Output/text_table_writer.test.cpp
+    src/Fauna/cohort_population.test.cpp
     src/Fauna/date.test.cpp
     src/Fauna/date_interval.test.cpp
     src/Fauna/energetics.test.cpp
@@ -137,10 +142,10 @@ if (BUILD_TESTING)
     src/Fauna/herbivore_cohort.test.cpp
     src/Fauna/herbivore_individual.test.cpp
     src/Fauna/hft.test.cpp
+    src/Fauna/individual_population.test.cpp
     src/Fauna/mortality.test.cpp
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
-    src/Fauna/population.test.cpp
     src/Fauna/population_list.test.cpp
     src/Fauna/reproduction.test.cpp
     src/Fauna/utils.test.cpp

@@ -2,7 +2,7 @@
 #include "dummy_habitat.h"
 #include "dummy_hft.h"
 #include "parameters.h"
-#include "population.h"
+#include "population_interface.h"
 #include "population_list.h"
 #include "simulation_unit.h"
 #include "world_constructor.h"

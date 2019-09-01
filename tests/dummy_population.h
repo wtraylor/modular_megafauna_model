@@ -3,7 +3,7 @@
 
 #include "dummy_herbivore.h"
 #include "hft.h"
-#include "population.h"
+#include "population_interface.h"
 
 namespace Fauna {
 /// A population of dummy herbivores
