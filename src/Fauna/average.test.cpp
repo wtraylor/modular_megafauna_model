@@ -1,5 +1,5 @@
+#include "average.h"
 #include "catch.hpp"
-#include "utils.h"
 
 using namespace Fauna;
 

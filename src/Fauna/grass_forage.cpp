@@ -5,7 +5,7 @@
 /// \date June 2019
 //////////////////////////////////////////////////////////////////////////
 #include "grass_forage.h"
-#include "utils.h"
+#include "average.h"
 
 using namespace Fauna;
 

@@ -6,7 +6,7 @@
 /// \see \ref sec_output
 ////////////////////////////////////////////////////////////////////
 #include "habitat_data.h"
-#include "utils.h"
+#include "average.h"
 
 using namespace Fauna::Output;
 

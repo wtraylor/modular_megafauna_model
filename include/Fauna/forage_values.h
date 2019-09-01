@@ -9,8 +9,8 @@
 
 #include <cmath>
 #include <map>
+#include "Fauna/average.h"
 #include "Fauna/forage_types.h"
-#include "Fauna/utils.h"
 
 namespace Fauna {
 class HerbivoreInterface;  // for ForageDistribution

@@ -1,11 +1,4 @@
-//////////////////////////////////////////////////////////
-/// \file
-/// \brief Functions and classes shared across parts of the herbivory
-///        module.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date October 2017
-///////////////////////////////////////////////////////////
-#include "utils.h"
+#include "average.h"
 #include <cassert>  // for assert()
 #include <cmath>    // for NAN and INFINITY
 #include <stdexcept>

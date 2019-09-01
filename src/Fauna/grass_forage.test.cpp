@@ -1,6 +1,6 @@
+#include "average.h"
 #include "catch.hpp"
 #include "grass_forage.h"
-#include "utils.h"
 
 using namespace Fauna;
 

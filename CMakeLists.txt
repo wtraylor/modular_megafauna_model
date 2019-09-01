@@ -7,6 +7,7 @@ project ("Modular Megafauna Model"
 
 set (SOURCE_FILES
   include/Fauna/Output/habitat_data.h
+  include/Fauna/average.h
   include/Fauna/date.h
   include/Fauna/environment.h
   include/Fauna/forage_types.h
@@ -26,6 +27,7 @@ set (SOURCE_FILES
   src/Fauna/Output/text_table_writer.cpp
   src/Fauna/Output/text_table_writer.h
   src/Fauna/Output/writer_interface.h
+  src/Fauna/average.cpp
   src/Fauna/breeding_season.cpp
   src/Fauna/breeding_season.h
   src/Fauna/cohort_population.cpp
@@ -88,11 +90,9 @@ set (SOURCE_FILES
   src/Fauna/simulate_day.h
   src/Fauna/simulation_unit.cpp
   src/Fauna/simulation_unit.h
-  src/Fauna/utils.cpp
   src/Fauna/world.cpp
   src/Fauna/world_constructor.cpp
   src/Fauna/world_constructor.h
-  include/Fauna/utils.h # TODO: do not include this
 
   src/Fauna/makeshift.h
   src/Fauna/makeshift.cpp
@@ -133,6 +133,7 @@ if (BUILD_TESTING)
     src/Fauna/Output/habitat_data.test.cpp
     src/Fauna/Output/herbivore_data.test.cpp
     src/Fauna/Output/text_table_writer.test.cpp
+    src/Fauna/average.test.cpp
     src/Fauna/breeding_season.test.cpp
     src/Fauna/cohort_population.test.cpp
     src/Fauna/date.test.cpp
@@ -160,7 +161,6 @@ if (BUILD_TESTING)
     src/Fauna/parameters.test.cpp
     src/Fauna/population_list.test.cpp
     src/Fauna/reproduction_models.test.cpp
-    src/Fauna/utils.test.cpp
     src/Fauna/world_constructor.test.cpp
     tests/catch.hpp
     tests/catch_main.cpp

@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////
-/// \file
-/// \brief Functions and classes shared across parts of the herbivory
-///        module.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date October 2017
-///////////////////////////////////////////////////////////
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef AVERAGE_H
+#define AVERAGE_H
 
 #include <deque>
 
@@ -63,4 +56,4 @@ class PeriodAverage {
 };
 
 }  // namespace Fauna
-#endif  // UTILS_H
+#endif  // AVERAGE_H
