@@ -48,7 +48,7 @@ void HerbivoreIndividual::apply_mortality(const double mortality) {
     return;
   }
   // Death is a stochastic event
-  static const int SEED = 9345; // TODO: Replace this with variable seed.
-  if (get_random_fraction(SEED) < mortality) dead = true;
+  const int seed = get_today();
+  if (get_random_fraction(seed) < mortality) dead = true;
 }
 
