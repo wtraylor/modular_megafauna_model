@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include "hft.h"
+#include "hft_list.h"
 
 namespace Fauna {
 /// Create a simple, valid HftList

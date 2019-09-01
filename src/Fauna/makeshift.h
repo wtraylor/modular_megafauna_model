@@ -3,7 +3,7 @@
 #ifndef MAKESHIFT_H
 #define MAKESHIFT_H
 
-#include "hft.h"
+#include "hft_list.h"
 
 namespace Fauna {
 /// Create some sample HFTs.

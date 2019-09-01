@@ -1,7 +1,7 @@
 #ifndef READ_INSFILE_H
 #define READ_INSFILE_H
 
-#include "hft.h"
+#include "hft_list.h"
 #include "parameters.h"
 
 namespace Fauna {

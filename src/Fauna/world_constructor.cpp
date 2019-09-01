@@ -2,6 +2,7 @@
 #include "cohort_population.h"
 #include "forage_distribution_algorithms.h"
 #include "hft.h"
+#include "hft_list.h"
 #include "individual_population.h"
 #include "parameters.h"
 #include "population_list.h"

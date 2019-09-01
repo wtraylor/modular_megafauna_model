@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "combined_data.h"
 #include "dummy_hft.h"
+#include "hft_list.h"
 #include "parameters.h"
 using namespace Fauna;
 using namespace Fauna::Output;

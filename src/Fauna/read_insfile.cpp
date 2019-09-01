@@ -1,4 +1,5 @@
 #include "read_insfile.h"
+#include "hft.h"
 #include "makeshift.h"
 
 using namespace Fauna;

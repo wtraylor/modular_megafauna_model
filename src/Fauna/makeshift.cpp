@@ -1,4 +1,5 @@
 #include "makeshift.h"
+#include "hft.h"
 
 using namespace Fauna;
 
