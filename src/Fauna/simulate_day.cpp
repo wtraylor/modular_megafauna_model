@@ -7,7 +7,7 @@
 
 #include "simulate_day.h"
 #include "environment.h"
-#include "feed.h"
+#include "feed_herbivores.h"
 #include "habitat.h"
 #include "herbivore_interface.h"
 #include "population.h"

@@ -33,11 +33,13 @@ set (SOURCE_FILES
   src/Fauna/date_interval.h
   src/Fauna/energetics.cpp
   src/Fauna/energetics.h
-  src/Fauna/feed.cpp
-  src/Fauna/feed.h
+  src/Fauna/feed_herbivores.cpp
+  src/Fauna/feed_herbivores.h
   src/Fauna/fileystem.cpp
   src/Fauna/fileystem.h
   src/Fauna/forage_base.cpp
+  src/Fauna/forage_distribution_algorithms.cpp
+  src/Fauna/forage_distribution_algorithms.h
   src/Fauna/forage_types.cpp
   src/Fauna/forage_values.cpp
   src/Fauna/forageenergy.cpp
@@ -122,8 +124,9 @@ if (BUILD_TESTING)
     src/Fauna/date.test.cpp
     src/Fauna/date_interval.test.cpp
     src/Fauna/energetics.test.cpp
-    src/Fauna/feed.test.cpp
+    src/Fauna/feed_herbivores.test.cpp
     src/Fauna/fileystem.test.cpp
+    src/Fauna/forage_distribution_algorithms.test.cpp
     src/Fauna/forage_values.test.cpp
     src/Fauna/forageenergy.test.cpp
     src/Fauna/foraging.test.cpp

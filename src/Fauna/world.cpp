@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include "aggregator.h"
 #include "date.h"
-#include "feed.h"
+#include "feed_herbivores.h"
 #include "habitat.h"
 #include "hft.h"
 #include "parameters.h"
@@ -110,8 +110,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
           pops.add(world_constructor->create_population(&hft));
 
         PopulationInterface& p = pops.get(hft);
-        if (p.get_list().empty())
-          pops.get(hft).establish();
+        if (p.get_list().empty()) pops.get(hft).establish();
       }
 
     // Create function object to delegate all simulations for this day to.

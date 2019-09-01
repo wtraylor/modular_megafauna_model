@@ -1,5 +1,5 @@
 #include "world_constructor.h"
-#include "feed.h"
+#include "forage_distribution_algorithms.h"
 #include "hft.h"
 #include "parameters.h"
 #include "population.h"

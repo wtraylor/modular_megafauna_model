@@ -1,19 +1,11 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Function objects to distribute forage among herbivores.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date 2018-06-16
-//////////////////////////////////////////////////////////////////////////
-#ifndef FEED_H
-#define FEED_H
+#ifndef FORAGE_DISTRIBUTION_ALGORITHMS_H
+#define FORAGE_DISTRIBUTION_ALGORITHMS_H
 
-#include <memory>
-#include <vector>
+// TODO: Can we forward-declare the typedef ForageDistribution?
 #include "forage_values.h"
-#include "herbivore_vector.h"
 
 namespace Fauna {
-// forward declarations
+// Forward Declarations
 class HabitatForage;
 
 /// Interface for a forage distribution algorithm
@@ -67,30 +59,5 @@ struct DistributeForageEqually : public DistributeForage {
                           ForageDistribution& forage_distribution) const;
 };
 
-/// Function object to feed herbivores.
-class FeedHerbivores {
- public:
-  /// Constructor.
-  /**
-   * \param distribute_forage Strategy object for
-   * calculating the forage portions.
-   * \throw std::invalid_argument If `distribute_forage==NULL`. */
-  FeedHerbivores(std::auto_ptr<DistributeForage> distribute_forage);
-
-  /// Feed the herbivores.
-  /**
-   * \param[in,out] available Available forage mass in the
-   * habitat. This will be reduced by the amount of eaten
-   * forage.
-   * \param[in,out] herbivores Herbivore objects that are
-   * being fed by calling \ref HerbivoreInterface::eat().
-   */
-  void operator()(HabitatForage& available,
-                  const HerbivoreVector& herbivores) const;
-
- private:
-  std::auto_ptr<DistributeForage> distribute_forage;
-};
-
 }  // namespace Fauna
-#endif  // FEED_H
+#endif  // FORAGE_DISTRIBUTION_ALGORITHMS_H
