@@ -28,8 +28,8 @@ set (SOURCE_FILES
   src/Fauna/Output/text_table_writer.h
   src/Fauna/cohort_population.cpp
   src/Fauna/cohort_population.h
-  src/Fauna/createherbivores.cpp
-  src/Fauna/createherbivores.h
+  src/Fauna/create_herbivores.cpp
+  src/Fauna/create_herbivores.h
   src/Fauna/date.cpp
   src/Fauna/date_interval.cpp
   src/Fauna/date_interval.h

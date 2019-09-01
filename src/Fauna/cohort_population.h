@@ -3,7 +3,7 @@
 
 #include "population_interface.h"
 #include <list>
-#include "createherbivores.h"
+#include "create_herbivores.h"
 
 namespace Fauna {
 

@@ -5,7 +5,7 @@
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
 
-#include "createherbivores.h"
+#include "create_herbivores.h"
 #include <stdexcept>
 #include "herbivore_individual.h"
 #include "herbivore_cohort.h"
