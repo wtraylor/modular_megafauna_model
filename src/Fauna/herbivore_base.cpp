@@ -8,7 +8,7 @@
 #include "hft.h"
 #include "mortality_factors.h"
 #include "net_energy_models.h"
-#include "reproduction.h"
+#include "reproduction_models.h"
 
 using namespace Fauna;
 

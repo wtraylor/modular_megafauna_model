@@ -4,37 +4,12 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef REPRODUCTION_H
-#define REPRODUCTION_H
+#ifndef REPRODUCTION_MODELS_H
+#define REPRODUCTION_MODELS_H
+
+#include "breeding_season.h"
 
 namespace Fauna {
-
-/// Helper class for reproduction within a breeding season.
-class BreedingSeason {
- public:
-  /// Constructor.
-  /**
-   * \param breeding_season_start The day of the year (0=Jan 1st)
-   * at which the breeding season starts.
-   * \param breeding_season_length Length of the breeding season
-   * in days [1--365].
-   */
-  BreedingSeason(const int breeding_season_start,
-                 const int breeding_season_length);
-
-  /// Whether given day (0=Jan 1st) is in the breeding season.
-  /**
-   * \throw std::invalid_argument If `day` is not in [0,364].
-   */
-  bool is_in_season(const int day) const;
-
-  /// Convert an annual reproduction rate to a daily one in season.
-  double annual_to_daily_rate(const double annual) const;
-
- private:
-  int start;   // day of year (0=Jan 1st)
-  int length;  // number of days
-};
 
 /// Reproduction model following Illius & O’Connor (2000)
 /**
@@ -169,4 +144,4 @@ class ReproductionLinear {
 };
 }  // namespace Fauna
 
-#endif  // REPRODUCTION_H
+#endif  // REPRODUCTION_MODELS_H

@@ -23,9 +23,11 @@ set (SOURCE_FILES
   src/Fauna/Output/habitat_data.cpp
   src/Fauna/Output/herbivore_data.cpp
   src/Fauna/Output/herbivore_data.h
-  src/Fauna/Output/writer_interface.h
   src/Fauna/Output/text_table_writer.cpp
   src/Fauna/Output/text_table_writer.h
+  src/Fauna/Output/writer_interface.h
+  src/Fauna/breeding_season.cpp
+  src/Fauna/breeding_season.h
   src/Fauna/cohort_population.cpp
   src/Fauna/cohort_population.h
   src/Fauna/create_herbivores.cpp
@@ -80,8 +82,8 @@ set (SOURCE_FILES
   src/Fauna/population_list.h
   src/Fauna/read_insfile.cpp
   src/Fauna/read_insfile.h
-  src/Fauna/reproduction.cpp
-  src/Fauna/reproduction.h
+  src/Fauna/reproduction_models.cpp
+  src/Fauna/reproduction_models.h
   src/Fauna/simulate_day.cpp
   src/Fauna/simulate_day.h
   src/Fauna/simulation_unit.cpp
@@ -131,6 +133,7 @@ if (BUILD_TESTING)
     src/Fauna/Output/habitat_data.test.cpp
     src/Fauna/Output/herbivore_data.test.cpp
     src/Fauna/Output/text_table_writer.test.cpp
+    src/Fauna/breeding_season.test.cpp
     src/Fauna/cohort_population.test.cpp
     src/Fauna/date.test.cpp
     src/Fauna/date_interval.test.cpp
@@ -156,7 +159,7 @@ if (BUILD_TESTING)
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
     src/Fauna/population_list.test.cpp
-    src/Fauna/reproduction.test.cpp
+    src/Fauna/reproduction_models.test.cpp
     src/Fauna/utils.test.cpp
     src/Fauna/world_constructor.test.cpp
     tests/catch.hpp
