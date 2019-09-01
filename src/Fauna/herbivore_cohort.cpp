@@ -1,5 +1,5 @@
 #include "herbivore_cohort.h"
-#include "energetics.h"
+#include "fatmass_energy_budget.h"
 #include "hft.h"
 
 using namespace Fauna;

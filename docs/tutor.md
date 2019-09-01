@@ -46,7 +46,7 @@ population class.
 	+ Add new possible string value for the HFT parameter `expenditure_components` in \ref Fauna::ParamReader::declare_parameters().
 	+ Adjust \ref Fauna::ParamReader::callback() under `callback == CB_EXPENDITURE_COMPONENTS`.
 	+ Expand the comment in the instruction file `data/ins/herbivores.ins`.
-- Implement your algorithm as a free function or a class. See \ref energetics.h for examples.
+- Implement your algorithm as a free function or a class. See \ref expenditure_components.h for examples.
 - Call your model in \ref Fauna::HerbivoreBase::get_todays_expenditure().
 - Update the UML diagram in \ref sec_herbivorebase.
 

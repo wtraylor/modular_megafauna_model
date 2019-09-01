@@ -33,8 +33,10 @@ set (SOURCE_FILES
   src/Fauna/date.cpp
   src/Fauna/date_interval.cpp
   src/Fauna/date_interval.h
-  src/Fauna/energetics.cpp
-  src/Fauna/energetics.h
+  src/Fauna/expenditure_components.cpp
+  src/Fauna/expenditure_components.h
+  src/Fauna/fatmass_energy_budget.cpp
+  src/Fauna/fatmass_energy_budget.h
   src/Fauna/feed_herbivores.cpp
   src/Fauna/feed_herbivores.h
   src/Fauna/fileystem.cpp
@@ -132,7 +134,8 @@ if (BUILD_TESTING)
     src/Fauna/cohort_population.test.cpp
     src/Fauna/date.test.cpp
     src/Fauna/date_interval.test.cpp
-    src/Fauna/energetics.test.cpp
+    src/Fauna/expenditure_components.test.cpp
+    src/Fauna/fatmass_energy_budget.test.cpp
     src/Fauna/feed_herbivores.test.cpp
     src/Fauna/fileystem.test.cpp
     src/Fauna/forage_distribution_algorithms.test.cpp
