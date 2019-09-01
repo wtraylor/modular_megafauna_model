@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "forageenergy.h"
+#include "net_energy_models.h"
 using namespace Fauna;
 
 TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {

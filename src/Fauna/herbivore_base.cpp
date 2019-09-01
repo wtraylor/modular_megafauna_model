@@ -1,7 +1,7 @@
 #include "herbivore_base.h"
 #include "energetics.h"
 #include "environment.h"
-#include "forageenergy.h"
+#include "net_energy_models.h"
 #include "get_forage_demands.h"
 #include "herbivore_data.h"
 #include "hft.h"

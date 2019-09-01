@@ -5,7 +5,7 @@
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
 
-#include "forageenergy.h"
+#include "net_energy_models.h"
 
 using namespace Fauna;
 

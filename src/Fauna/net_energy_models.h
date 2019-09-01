@@ -4,8 +4,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef FORAGEENERGY_H
-#define FORAGEENERGY_H
+#ifndef NET_ENERGY_MODELS_H
+#define NET_ENERGY_MODELS_H
 
 #include "forage_types.h"
 #include "forage_values.h"
@@ -124,4 +124,4 @@ class GetNetEnergyContentDefault : public GetNetEnergyContentInterface {
 };
 }  // namespace Fauna
 
-#endif  // FORAGEENERGY_H
+#endif  // NET_ENERGY_MODELS_H

@@ -44,8 +44,6 @@ set (SOURCE_FILES
   src/Fauna/forage_distribution_algorithms.h
   src/Fauna/forage_types.cpp
   src/Fauna/forage_values.cpp
-  src/Fauna/forageenergy.cpp
-  src/Fauna/forageenergy.h
   src/Fauna/foraging_limits.cpp
   src/Fauna/foraging_limits.h
   src/Fauna/get_forage_demands.cpp
@@ -69,6 +67,8 @@ set (SOURCE_FILES
   src/Fauna/individual_population.h
   src/Fauna/mortality.cpp
   src/Fauna/mortality.h
+  src/Fauna/net_energy_models.cpp
+  src/Fauna/net_energy_models.h
   src/Fauna/nitrogen.cpp
   src/Fauna/nitrogen.h
   src/Fauna/parameters.cpp
@@ -137,7 +137,6 @@ if (BUILD_TESTING)
     src/Fauna/fileystem.test.cpp
     src/Fauna/forage_distribution_algorithms.test.cpp
     src/Fauna/forage_values.test.cpp
-    src/Fauna/forageenergy.test.cpp
     src/Fauna/foraging_limits.test.cpp
     src/Fauna/get_forage_demands.test.cpp
     src/Fauna/grass_forage.test.cpp
@@ -150,6 +149,7 @@ if (BUILD_TESTING)
     src/Fauna/hft_list.test.cpp
     src/Fauna/individual_population.test.cpp
     src/Fauna/mortality.test.cpp
+    src/Fauna/net_energy_models.test.cpp
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
     src/Fauna/population_list.test.cpp

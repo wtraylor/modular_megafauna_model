@@ -140,7 +140,7 @@ Forage Tutorials {#sec_tutor_forage}
 
 - Herbivores
 	+ Check all foraging and digestion limits (\ref foraging_limits.h) whether they need to be expanded.
-	+ Check also all models for net energy content (\ref forageenergy.h).
+	+ Check also all models for net energy content (\ref net_energy_models.h).
 	+ Probably you will need to implement [a new diet composer](\ref sec_new_diet) or adjust existing ones.
 
 - Test Simulations
