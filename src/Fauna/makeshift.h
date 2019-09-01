@@ -1,7 +1,7 @@
 // Temporary file with some classes/routines that serve testing purpose until
 // the instruction file reader and output are done.
-#ifndef MAKESHIFT_H
-#define MAKESHIFT_H
+#ifndef FAUNA_MAKESHIFT_H
+#define FAUNA_MAKESHIFT_H
 
 #include "hft_list.h"
 
@@ -10,4 +10,4 @@ namespace Fauna {
 HftList construct_makeshift_hfts();
 }  // namespace Fauna
 
-#endif  // MAKESHIFT_H
+#endif  // FAUNA_MAKESHIFT_H

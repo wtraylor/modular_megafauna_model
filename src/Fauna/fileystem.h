@@ -1,5 +1,5 @@
-#ifndef FILESYSTEM_H
-#define FILESYSTEM_H
+#ifndef FAUNA_FILESYSTEM_H
+#define FAUNA_FILESYSTEM_H
 
 #include <string>
 
@@ -45,4 +45,4 @@ void remove_directory(const std::string& path);
 
 }  // namespace Fauna
 
-#endif  // FILESYSTEM_H
+#endif  // FAUNA_FILESYSTEM_H

@@ -1,5 +1,5 @@
-#ifndef HERBIVORE_COHORT_H
-#define HERBIVORE_COHORT_H
+#ifndef FAUNA_HERBIVORE_COHORT_H
+#define FAUNA_HERBIVORE_COHORT_H
 
 #include "herbivore_base.h"
 
@@ -90,4 +90,4 @@ class HerbivoreCohort : public HerbivoreBase {
 };
 
 }  // namespace Fauna
-#endif  // HERBIVORE_COHORT_H
+#endif  // FAUNA_HERBIVORE_COHORT_H

@@ -1,5 +1,5 @@
-#ifndef AGGREGATOR_H
-#define AGGREGATOR_H
+#ifndef FAUNA_OUTPUT_AGGREGATOR_H
+#define FAUNA_OUTPUT_AGGREGATOR_H
 
 #include "datapoint.h"
 
@@ -56,4 +56,4 @@ class Aggregator {
 }  // namespace Output
 }  // namespace Fauna
 
-#endif  // AGGREGATOR_H
+#endif  // FAUNA_OUTPUT_AGGREGATOR_H

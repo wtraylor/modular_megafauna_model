@@ -1,5 +1,5 @@
-#ifndef HERBIVORE_INTERFACE_H
-#define HERBIVORE_INTERFACE_H
+#ifndef FAUNA_HERBIVORE_INTERFACE_H
+#define FAUNA_HERBIVORE_INTERFACE_H
 
 #include "forage_values.h"
 
@@ -113,4 +113,4 @@ struct HerbivoreInterface {
 
 }  // namespace Fauna
 
-#endif  // HERBIVORE_INTERFACE_H
+#endif  // FAUNA_HERBIVORE_INTERFACE_H

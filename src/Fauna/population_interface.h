@@ -1,5 +1,5 @@
-#ifndef POPULATION_INTERFACE_H
-#define POPULATION_INTERFACE_H
+#ifndef FAUNA_POPULATION_INTERFACE_H
+#define FAUNA_POPULATION_INTERFACE_H
 
 
 #include "herbivore_vector.h"
@@ -74,4 +74,4 @@ struct PopulationInterface {
 
 }
 
-#endif // POPULATION_INTERFACE_H
+#endif // FAUNA_POPULATION_INTERFACE_H

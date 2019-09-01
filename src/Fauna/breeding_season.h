@@ -1,5 +1,5 @@
-#ifndef BREEDING_SEASON_H
-#define BREEDING_SEASON_H
+#ifndef FAUNA_BREEDING_SEASON_H
+#define FAUNA_BREEDING_SEASON_H
 
 namespace Fauna {
 
@@ -32,4 +32,4 @@ class BreedingSeason {
 
 }  // namespace Fauna
 
-#endif  // BREEDING_SEASON_H
+#endif  // FAUNA_BREEDING_SEASON_H

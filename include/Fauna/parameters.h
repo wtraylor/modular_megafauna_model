@@ -4,8 +4,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date June 2017
 ////////////////////////////////////////////////////////////
-#ifndef PARAMETERS_H
-#define PARAMETERS_H
+#ifndef FAUNA_PARAMETERS_H
+#define FAUNA_PARAMETERS_H
 
 #include <cassert>  // for assert()
 #include <stdexcept>
@@ -132,4 +132,4 @@ struct Parameters {
 
 }  // namespace Fauna
 
-#endif  // PARAMETERS_H
+#endif  // FAUNA_PARAMETERS_H

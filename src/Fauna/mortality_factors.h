@@ -4,8 +4,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017
 /////////////////////////////////////////////////////////////////
-#ifndef MORTALITY_FACTORS_H
-#define MORTALITY_FACTORS_H
+#ifndef FAUNA_MORTALITY_FACTORS_H
+#define FAUNA_MORTALITY_FACTORS_H
 
 #include <stdexcept>
 
@@ -219,4 +219,4 @@ class GetStarvationMortalityThreshold {
 };
 }  // namespace Fauna
 
-#endif  // MORTALITY_FACTORS_H
+#endif  // FAUNA_MORTALITY_FACTORS_H

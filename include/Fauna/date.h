@@ -1,5 +1,5 @@
-#ifndef DATE_H
-#define DATE_H
+#ifndef FAUNA_DATE_H
+#define FAUNA_DATE_H
 
 #include <array>
 
@@ -81,4 +81,4 @@ class Date {
 };
 }  // namespace Fauna
 
-#endif  // DATE_H
+#endif  // FAUNA_DATE_H

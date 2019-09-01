@@ -5,8 +5,8 @@
 /// \date April 2018
 //////////////////////////////////////////////////////////////////////////
 
-#ifndef NITROGEN_H
-#define NITROGEN_H
+#ifndef FAUNA_NITROGEN_H
+#define FAUNA_NITROGEN_H
 
 namespace Fauna {
 /// Time of ingesta to pass digestion [hours].
@@ -129,4 +129,4 @@ class NitrogenInHerbivore {
 };
 }  // namespace Fauna
 
-#endif  //  NITROGEN_H
+#endif  //  FAUNA_NITROGEN_H

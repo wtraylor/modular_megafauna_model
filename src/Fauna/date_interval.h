@@ -1,5 +1,5 @@
-#ifndef DATE_INTERVAL_H
-#define DATE_INTERVAL_H
+#ifndef FAUNA_DATE_INTERVAL_H
+#define FAUNA_DATE_INTERVAL_H
 
 #include "date.h"
 
@@ -44,4 +44,4 @@ class DateInterval {
 };
 }  // namespace Fauna
 
-#endif  // DATE_INTERVAL_H
+#endif  // FAUNA_DATE_INTERVAL_H

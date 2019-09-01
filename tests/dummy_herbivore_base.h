@@ -1,5 +1,5 @@
-#ifndef DUMMY_HERBIVORE_BASE_H
-#define DUMMY_HERBIVORE_BASE_H
+#ifndef TESTS_DUMMY_HERBIVORE_BASE_H
+#define TESTS_DUMMY_HERBIVORE_BASE_H
 #include "herbivore_base.h"
 
 namespace Fauna {
@@ -37,4 +37,4 @@ class HerbivoreBaseDummy : public HerbivoreBase {
 };
 }  // namespace Fauna
 
-#endif // DUMMY_HERBIVORE_BASE_H
+#endif // TESTS_DUMMY_HERBIVORE_BASE_H

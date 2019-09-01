@@ -1,5 +1,5 @@
-#ifndef HERBIVORE_BASE_H
-#define HERBIVORE_BASE_H
+#ifndef FAUNA_HERBIVORE_BASE_H
+#define FAUNA_HERBIVORE_BASE_H
 
 #include <memory>
 #include "herbivore_interface.h"
@@ -224,4 +224,4 @@ class HerbivoreBase : public HerbivoreInterface {
 };
 
 }  // namespace Fauna
-#endif  // HERBIVORE_BASE_H
+#endif  // FAUNA_HERBIVORE_BASE_H

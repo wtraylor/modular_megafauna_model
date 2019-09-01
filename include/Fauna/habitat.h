@@ -4,8 +4,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef HABITAT_H
-#define HABITAT_H
+#ifndef FAUNA_HABITAT_H
+#define FAUNA_HABITAT_H
 
 #include <cassert>                      // for assert()
 #include <list>                         // for HabitatList
@@ -126,4 +126,4 @@ class Habitat {
 /// A list of \ref Habitat pointers.
 typedef std::list<const Habitat*> HabitatList;
 }  // namespace Fauna
-#endif  // HABITAT_H
+#endif  // FAUNA_HABITAT_H

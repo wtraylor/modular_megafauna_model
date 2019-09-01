@@ -1,5 +1,5 @@
-#ifndef READ_INSFILE_H
-#define READ_INSFILE_H
+#ifndef FAUNA_READ_INSFILE_H
+#define FAUNA_READ_INSFILE_H
 
 #include "hft_list.h"
 #include "parameters.h"
@@ -23,4 +23,4 @@ struct InsfileContent {
 InsfileContent read_instruction_file(const std::string filename);
 }  // namespace Fauna
 
-#endif  // READ_INSFILE_H
+#endif  // FAUNA_READ_INSFILE_H

@@ -1,5 +1,5 @@
-#ifndef HERBIVORE_INDIVIDUAL_H
-#define HERBIVORE_INDIVIDUAL_H
+#ifndef FAUNA_HERBIVORE_INDIVIDUAL_H
+#define FAUNA_HERBIVORE_INDIVIDUAL_H
 
 #include "herbivore_base.h"
 
@@ -65,4 +65,4 @@ class HerbivoreIndividual : public HerbivoreBase {
   bool dead;
 };
 }  // namespace Fauna
-#endif  // HERBIVORE_INDIVIDUAL_H
+#endif  // FAUNA_HERBIVORE_INDIVIDUAL_H

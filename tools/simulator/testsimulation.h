@@ -5,8 +5,8 @@
 /// \date June 2017
 //////////////////////////////////////////////////////////////////////////
 
-#ifndef TESTSIMULATION_H
-#define TESTSIMULATION_H
+#ifndef FAUNA_TESTSIMULATION_H
+#define FAUNA_TESTSIMULATION_H
 
 #include <vector>
 #include "testhabitat.h"   // for SimpleHabitat
@@ -75,4 +75,4 @@ class Framework {
 };
 }  // namespace FaunaSim
 
-#endif  // TESTSIMULATION_H
+#endif  // FAUNA_TESTSIMULATION_H

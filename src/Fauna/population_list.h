@@ -1,5 +1,5 @@
-#ifndef POPULATION_LIST_H
-#define POPULATION_LIST_H
+#ifndef FAUNA_POPULATION_LIST_H
+#define FAUNA_POPULATION_LIST_H
 
 #include <list>
 #include <memory>
@@ -76,4 +76,4 @@ class PopulationList {
 };
 }  // namespace Fauna
 
-#endif  // POPULATION_LIST_H
+#endif  // FAUNA_POPULATION_LIST_H

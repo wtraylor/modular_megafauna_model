@@ -4,8 +4,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date May 2017
 /////////////////////////////////////////////////////////////////
-#ifndef HFT_H
-#define HFT_H
+#ifndef FAUNA_HFT_H
+#define FAUNA_HFT_H
 
 #include <cmath>  // for pow()
 #include <set>    // for mortality_factors
@@ -379,4 +379,4 @@ struct Hft {
 };
 
 }  // namespace Fauna
-#endif  // HFT_H
+#endif  // FAUNA_HFT_H

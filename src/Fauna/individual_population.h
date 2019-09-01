@@ -1,5 +1,5 @@
-#ifndef INDIVIDUAL_POPULATION_H
-#define INDIVIDUAL_POPULATION_H
+#ifndef FAUNA_INDIVIDUAL_POPULATION_H
+#define FAUNA_INDIVIDUAL_POPULATION_H
 
 #include <list>
 #include <map>
@@ -45,4 +45,4 @@ class IndividualPopulation : public PopulationInterface {
   std::map<Sex, double> incomplete_offspring;
 };
 }  // namespace Fauna
-#endif  // INDIVIDUAL_POPULATION_H
+#endif  // FAUNA_INDIVIDUAL_POPULATION_H

@@ -1,5 +1,5 @@
-#ifndef DUMMY_HFT_H
-#define DUMMY_HFT_H
+#ifndef TESTS_DUMMY_HFT_H
+#define TESTS_DUMMY_HFT_H
 
 #include <sstream>
 #include "hft.h"
@@ -28,4 +28,4 @@ inline HftList create_hfts(const int count, const Parameters& params) {
 }
 }  // namespace Fauna
 
-#endif  // DUMMY_HFT_H
+#endif  // TESTS_DUMMY_HFT_H

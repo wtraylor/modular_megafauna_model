@@ -1,5 +1,5 @@
-#ifndef FEED_HERBIVORES_H
-#define FEED_HERBIVORES_H
+#ifndef FAUNA_FEED_HERBIVORES_H
+#define FAUNA_FEED_HERBIVORES_H
 
 #include <memory>
 #include "herbivore_vector.h"
@@ -36,4 +36,4 @@ class FeedHerbivores {
 
 }  // namespace Fauna
 
-#endif  // FEED_HERBIVORES_H
+#endif  // FAUNA_FEED_HERBIVORES_H

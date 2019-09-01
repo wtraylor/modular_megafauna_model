@@ -1,5 +1,5 @@
-#ifndef POPULATION_LISTS_MATCH_H
-#define POPULATION_LISTS_MATCH_H
+#ifndef TESTS_POPULATION_LISTS_MATCH_H
+#define TESTS_POPULATION_LISTS_MATCH_H
 
 #include "herbivore_vector.h"
 #include "population_interface.h"
@@ -16,4 +16,4 @@ inline bool population_lists_match(PopulationInterface& pop) {
   return modifiable.size() == readonly.size();
 }
 
-#endif  // POPULATION_LISTS_MATCH_H
+#endif  // TESTS_POPULATION_LISTS_MATCH_H

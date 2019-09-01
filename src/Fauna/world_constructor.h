@@ -1,5 +1,5 @@
-#ifndef WORLD_CONSTRUCTOR_H
-#define WORLD_CONSTRUCTOR_H
+#ifndef FAUNA_WORLD_CONSTRUCTOR_H
+#define FAUNA_WORLD_CONSTRUCTOR_H
 
 #include <memory>
 
@@ -64,4 +64,4 @@ class WorldConstructor {
   const HftList& hftlist;
 };
 }  // namespace Fauna
-#endif  // WORLD_CONSTRUCTOR_H
+#endif  // FAUNA_WORLD_CONSTRUCTOR_H

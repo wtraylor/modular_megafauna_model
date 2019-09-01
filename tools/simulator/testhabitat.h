@@ -5,8 +5,8 @@
 /// \date    June 2017
 //////////////////////////////////////////////////////////////////////////
 
-#ifndef TESTHABITATS_H
-#define TESTHABITATS_H
+#ifndef FAUNA_TESTHABITATS_H
+#define FAUNA_TESTHABITATS_H
 
 #include <vector>
 #include "megafauna.h"
@@ -177,4 +177,4 @@ class SimpleHabitat : public Habitat {
 
 }  // namespace FaunaSim
 
-#endif  // TESTHABITATS_H
+#endif  // FAUNA_TESTHABITATS_H

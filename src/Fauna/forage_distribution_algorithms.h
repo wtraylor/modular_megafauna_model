@@ -1,5 +1,5 @@
-#ifndef FORAGE_DISTRIBUTION_ALGORITHMS_H
-#define FORAGE_DISTRIBUTION_ALGORITHMS_H
+#ifndef FAUNA_FORAGE_DISTRIBUTION_ALGORITHMS_H
+#define FAUNA_FORAGE_DISTRIBUTION_ALGORITHMS_H
 
 // TODO: Can we forward-declare the typedef ForageDistribution?
 #include "forage_values.h"
@@ -60,4 +60,4 @@ struct DistributeForageEqually : public DistributeForage {
 };
 
 }  // namespace Fauna
-#endif  // FORAGE_DISTRIBUTION_ALGORITHMS_H
+#endif  // FAUNA_FORAGE_DISTRIBUTION_ALGORITHMS_H

@@ -4,8 +4,8 @@
 /// \author Wolfgang Traylor, Senckenberg BiK-F
 /// \date June 2019
 //////////////////////////////////////////////////////////////////////////
-#ifndef FORAGE_BASE_H
-#define FORAGE_BASE_H
+#ifndef FAUNA_FORAGE_BASE_H
+#define FAUNA_FORAGE_BASE_H
 
 #include <stdexcept>
 
@@ -58,4 +58,4 @@ class ForageBase {
                          const double other_weight);
 };
 }  // namespace Fauna
-#endif  // FORAGE_BASE_H
+#endif  // FAUNA_FORAGE_BASE_H

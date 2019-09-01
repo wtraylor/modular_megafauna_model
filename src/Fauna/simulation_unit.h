@@ -4,8 +4,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date 2018-06-16
 //////////////////////////////////////////////////////////////////////////
-#ifndef SIMULATION_UNIT_H
-#define SIMULATION_UNIT_H
+#ifndef FAUNA_SIMULATION_UNIT_H
+#define FAUNA_SIMULATION_UNIT_H
 
 #include <memory>
 #include "combined_data.h"
@@ -69,4 +69,4 @@ class SimulationUnit {
 };
 
 }  // namespace Fauna
-#endif  // SIMULATION_UNIT_H
+#endif  // FAUNA_SIMULATION_UNIT_H

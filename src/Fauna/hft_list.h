@@ -1,5 +1,5 @@
-#ifndef HFT_LIST_H
-#define HFT_LIST_H
+#ifndef FAUNA_HFT_LIST_H
+#define FAUNA_HFT_LIST_H
 
 #include <stdexcept>
 #include <vector>
@@ -81,4 +81,4 @@ class HftList {
 };
 
 }  // namespace Fauna
-#endif  // HFT_LIST_H
+#endif  // FAUNA_HFT_LIST_H

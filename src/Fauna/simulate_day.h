@@ -4,8 +4,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date 2018-06-16
 //////////////////////////////////////////////////////////////////////////
-#ifndef SIMULATE_DAY_H
-#define SIMULATE_DAY_H
+#ifndef FAUNA_SIMULATE_DAY_H
+#define FAUNA_SIMULATE_DAY_H
 
 #include <map>
 #include "environment.h"
@@ -107,4 +107,4 @@ class SimulateDay {
 };
 }  // namespace Fauna
 
-#endif  // SIMULATE_DAY_H
+#endif  // FAUNA_SIMULATE_DAY_H

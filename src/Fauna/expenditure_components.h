@@ -1,5 +1,5 @@
-#ifndef EXPENDITURE_COMPONENTS_H
-#define EXPENDITURE_COMPONENTS_H
+#ifndef FAUNA_EXPENDITURE_COMPONENTS_H
+#define FAUNA_EXPENDITURE_COMPONENTS_H
 
 #include <assert.h>
 #include <cmath>
@@ -156,4 +156,4 @@ double get_thermoregulatory_expenditure(const double thermoneutral_rate,
                                         const double ambient_temperature);
 }  // namespace Fauna
 
-#endif  // EXPENDITURE_COMPONENTS_H
+#endif  // FAUNA_EXPENDITURE_COMPONENTS_H

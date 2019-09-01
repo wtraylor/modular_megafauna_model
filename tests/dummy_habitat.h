@@ -1,5 +1,5 @@
-#ifndef DUMMY_HABITAT_H
-#define DUMMY_HABITAT_H
+#ifndef TESTS_DUMMY_HABITAT_H
+#define TESTS_DUMMY_HABITAT_H
 
 #include "habitat.h"
 
@@ -18,4 +18,4 @@ class DummyHabitat : public Habitat {
 
 }
 
-#endif // DUMMY_HABITAT_H
+#endif // TESTS_DUMMY_HABITAT_H

@@ -1,5 +1,5 @@
-#ifndef WRITER_INTERFACE_H
-#define WRITER_INTERFACE_H
+#ifndef FAUNA_OUTPUT_WRITER_INTERFACE_H
+#define FAUNA_OUTPUT_WRITER_INTERFACE_H
 
 namespace Fauna {
 // Forward declarations:
@@ -21,4 +21,4 @@ struct WriterInterface {
 };
 }  // namespace Output
 }  // namespace Fauna
-#endif  // WRITER_INTERFACE_H
+#endif  // FAUNA_OUTPUT_WRITER_INTERFACE_H

@@ -1,5 +1,5 @@
-#ifndef AVERAGE_H
-#define AVERAGE_H
+#ifndef FAUNA_AVERAGE_H
+#define FAUNA_AVERAGE_H
 
 #include <deque>
 
@@ -56,4 +56,4 @@ class PeriodAverage {
 };
 
 }  // namespace Fauna
-#endif  // AVERAGE_H
+#endif  // FAUNA_AVERAGE_H

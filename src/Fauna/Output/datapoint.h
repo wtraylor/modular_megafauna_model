@@ -1,5 +1,5 @@
-#ifndef DATA_POINT_H
-#define DATA_POINT_H
+#ifndef FAUNA_OUTPUT_DATA_POINT_H
+#define FAUNA_OUTPUT_DATA_POINT_H
 
 #include <string>
 #include "combined_data.h"
@@ -39,4 +39,4 @@ struct Datapoint {
 }  // namespace Output
 }  // namespace Fauna
 
-#endif  // DATA_POINT_H
+#endif  // FAUNA_OUTPUT_DATA_POINT_H

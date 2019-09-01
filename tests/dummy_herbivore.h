@@ -1,5 +1,5 @@
-#ifndef DUMMY_HERBIVORE_H
-#define DUMMY_HERBIVORE_H
+#ifndef TESTS_DUMMY_HERBIVORE_H
+#define TESTS_DUMMY_HERBIVORE_H
 
 #include "herbivore_interface.h"
 #include "herbivore_data.h"
@@ -65,4 +65,4 @@ class DummyHerbivore : public HerbivoreInterface {
 };
 }  // namespace Fauna
 
-#endif  // DUMMY_HERBIVORE_H
+#endif  // TESTS_DUMMY_HERBIVORE_H

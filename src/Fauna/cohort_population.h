@@ -1,5 +1,5 @@
-#ifndef COHORT_POPULATION_H
-#define COHORT_POPULATION_H
+#ifndef FAUNA_COHORT_POPULATION_H
+#define FAUNA_COHORT_POPULATION_H
 
 #include "population_interface.h"
 #include <list>
@@ -56,4 +56,4 @@ class CohortPopulation : public PopulationInterface {
   List list;
 };
 }
-#endif // COHORT_POPULATION_H
+#endif // FAUNA_COHORT_POPULATION_H

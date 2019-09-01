@@ -4,8 +4,8 @@
 /// \author Wolfgang Traylor, Senckenberg BiK-F
 /// \date June 2019
 //////////////////////////////////////////////////////////////////////////
-#ifndef FORAGE_VALUES_H
-#define FORAGE_VALUES_H
+#ifndef FAUNA_FORAGE_VALUES_H
+#define FAUNA_FORAGE_VALUES_H
 
 #include <cmath>
 #include <map>
@@ -447,4 +447,4 @@ ForageFraction convert_mj_to_kg_proportionally(
     const ForageEnergyContent& mj_per_kg, const ForageFraction& mj_proportions);
 
 }  // namespace Fauna
-#endif  // FORAGE_VALUES_H
+#endif  // FAUNA_FORAGE_VALUES_H

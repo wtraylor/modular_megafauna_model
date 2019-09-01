@@ -5,8 +5,8 @@
 /// \date July 2017
 /// \see \ref sec_energetics
 //////////////////////////////////////////////////////////////////////////
-#ifndef ENERGETICS_H
-#define ENERGETICS_H
+#ifndef FAUNA_ENERGETICS_H
+#define FAUNA_ENERGETICS_H
 
 #include <assert.h>
 #include <cmath>  // for pow()
@@ -15,4 +15,4 @@
 namespace Fauna {
 }  // namespace Fauna
 
-#endif  // ENERGETICS_H
+#endif  // FAUNA_ENERGETICS_H

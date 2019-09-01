@@ -1,5 +1,5 @@
-#ifndef FATMASS_ENERGY_BUDGET_H
-#define FATMASS_ENERGY_BUDGET_H
+#ifndef FAUNA_FATMASS_ENERGY_BUDGET_H
+#define FAUNA_FATMASS_ENERGY_BUDGET_H
 
 namespace Fauna {
 
@@ -98,4 +98,4 @@ class FatmassEnergyBudget {
   static const double FACTOR_CATABOLISM;
 };
 }
-#endif  // FATMASS_ENERGY_BUDGET_H
+#endif  // FAUNA_FATMASS_ENERGY_BUDGET_H

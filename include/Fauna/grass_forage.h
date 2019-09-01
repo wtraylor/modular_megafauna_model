@@ -4,8 +4,8 @@
 /// \author Wolfgang Traylor, Senckenberg BiK-F
 /// \date June 2019
 //////////////////////////////////////////////////////////////////////////
-#ifndef GRASS_FORAGE_H
-#define GRASS_FORAGE_H
+#ifndef FAUNA_GRASS_FORAGE_H
+#define FAUNA_GRASS_FORAGE_H
 
 #include <cassert>
 #include "Fauna/forage_base.h"
@@ -77,4 +77,4 @@ class GrassForage : public ForageBase {
   }
 };
 }  // namespace Fauna
-#endif // GRASS_FORAGE_H
+#endif // FAUNA_GRASS_FORAGE_H

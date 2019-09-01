@@ -4,8 +4,8 @@
 /// \author Wolfgang Pappa, Senckenberg BiK-F
 /// \date July 2017
 //////////////////////////////////////////////////////////////////////////
-#ifndef REPRODUCTION_MODELS_H
-#define REPRODUCTION_MODELS_H
+#ifndef FAUNA_REPRODUCTION_MODELS_H
+#define FAUNA_REPRODUCTION_MODELS_H
 
 #include "breeding_season.h"
 
@@ -144,4 +144,4 @@ class ReproductionLinear {
 };
 }  // namespace Fauna
 
-#endif  // REPRODUCTION_MODELS_H
+#endif  // FAUNA_REPRODUCTION_MODELS_H

@@ -1,5 +1,5 @@
-#ifndef DUMMY_POPULATION_H
-#define DUMMY_POPULATION_H
+#ifndef TESTS_DUMMY_POPULATION_H
+#define TESTS_DUMMY_POPULATION_H
 
 #include "dummy_herbivore.h"
 #include "hft.h"
@@ -43,4 +43,4 @@ class DummyPopulation : public PopulationInterface {
 };
 }  // namespace Fauna
 
-#endif  // DUMMY_POPULATION_H
+#endif  // TESTS_DUMMY_POPULATION_H

@@ -1,5 +1,5 @@
-#ifndef STOCHASTICITY_H
-#define STOCHASTICITY_H
+#ifndef FAUNA_STOCHASTICITY_H
+#define FAUNA_STOCHASTICITY_H
 
 #include <cstdlib>
 #include <ctime>
@@ -21,4 +21,4 @@ inline double get_random_fraction(const unsigned int seed) {
 }
 
 }  // namespace Fauna
-#endif  // STOCHASTICITY_H
+#endif  // FAUNA_STOCHASTICITY_H

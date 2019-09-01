@@ -1,5 +1,5 @@
-#ifndef GET_FORAGE_DEMANDS_H
-#define GET_FORAGE_DEMANDS_H
+#ifndef FAUNA_GET_FORAGE_DEMANDS_H
+#define FAUNA_GET_FORAGE_DEMANDS_H
 
 #include "forage_values.h"
 #include "habitat_forage.h"
@@ -180,4 +180,4 @@ class GetForageDemands {
 
 }  // namespace Fauna
 
-#endif  // GET_FORAGE_DEMANDS_H
+#endif  // FAUNA_GET_FORAGE_DEMANDS_H

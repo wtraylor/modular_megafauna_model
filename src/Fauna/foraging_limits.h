@@ -1,5 +1,5 @@
-#ifndef FORAGING_LIMITS_H
-#define FORAGING_LIMITS_H
+#ifndef FAUNA_FORAGING_LIMITS_H
+#define FAUNA_FORAGING_LIMITS_H
 
 #include "forage_values.h"
 #include "hft.h"
@@ -125,4 +125,4 @@ class HalfMaxIntake {
 
 }
 
-#endif // FORAGING_LIMITS_H
+#endif // FAUNA_FORAGING_LIMITS_H
