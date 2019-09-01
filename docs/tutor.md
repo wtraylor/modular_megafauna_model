@@ -61,7 +61,7 @@ They are called in \ref Fauna::GetForageDemands::get_max_foraging().
 	+ In \ref Fauna::ParamReader::callback() add a string identifier for your implementation under `CB_FORAGING_LIMITS` (also in the error message).
 	+ Add that identifier in the help message under \ref Fauna::ParamReader::declare_parameters().
 	+ Document your option in the example instruction file `data/ins/herbivores.ins`.
-- Implement your foraging limit (preferably as a function object in the file \ref foraging.h, but you can do as you wish).
+- Implement your foraging limit (preferably as a function object in the file \ref foraging_limits.h, but you can do as you wish).
 Make sure that an exception is thrown if it is called with an unknown forage type.
 - Call your implementation in \ref Fauna::GetForageDemands::get_max_foraging().
 - Update the UML diagram in \ref sec_herbivorebase.
@@ -139,7 +139,7 @@ Forage Tutorials {#sec_tutor_forage}
 - Extend \ref Fauna::GetNetEnergyContentDefault.
 
 - Herbivores
-	+ Check all foraging and digestion limits (\ref foraging.h) whether they need to be expanded.
+	+ Check all foraging and digestion limits (\ref foraging_limits.h) whether they need to be expanded.
 	+ Check also all models for net energy content (\ref forageenergy.h).
 	+ Probably you will need to implement [a new diet composer](\ref sec_new_diet) or adjust existing ones.
 

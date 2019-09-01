@@ -46,8 +46,10 @@ set (SOURCE_FILES
   src/Fauna/forage_values.cpp
   src/Fauna/forageenergy.cpp
   src/Fauna/forageenergy.h
-  src/Fauna/foraging.cpp
-  src/Fauna/foraging.h
+  src/Fauna/foraging_limits.cpp
+  src/Fauna/foraging_limits.h
+  src/Fauna/get_forage_demands.cpp
+  src/Fauna/get_forage_demands.h
   src/Fauna/grass_forage.cpp
   src/Fauna/habitat.cpp
   src/Fauna/habitat_forage.cpp
@@ -136,7 +138,8 @@ if (BUILD_TESTING)
     src/Fauna/forage_distribution_algorithms.test.cpp
     src/Fauna/forage_values.test.cpp
     src/Fauna/forageenergy.test.cpp
-    src/Fauna/foraging.test.cpp
+    src/Fauna/foraging_limits.test.cpp
+    src/Fauna/get_forage_demands.test.cpp
     src/Fauna/grass_forage.test.cpp
     src/Fauna/habitat.test.cpp
     src/Fauna/habitat_forage.test.cpp

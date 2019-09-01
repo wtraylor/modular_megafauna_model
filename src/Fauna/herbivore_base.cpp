@@ -2,7 +2,7 @@
 #include "energetics.h"
 #include "environment.h"
 #include "forageenergy.h"
-#include "foraging.h"
+#include "get_forage_demands.h"
 #include "herbivore_data.h"
 #include "hft.h"
 #include "mortality.h"
