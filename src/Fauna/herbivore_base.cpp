@@ -6,7 +6,7 @@
 #include "get_forage_demands.h"
 #include "herbivore_data.h"
 #include "hft.h"
-#include "mortality.h"
+#include "mortality_factors.h"
 #include "net_energy_models.h"
 #include "reproduction.h"
 

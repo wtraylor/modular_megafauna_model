@@ -67,8 +67,8 @@ set (SOURCE_FILES
   src/Fauna/hft_list.h
   src/Fauna/individual_population.cpp
   src/Fauna/individual_population.h
-  src/Fauna/mortality.cpp
-  src/Fauna/mortality.h
+  src/Fauna/mortality_factors.cpp
+  src/Fauna/mortality_factors.h
   src/Fauna/net_energy_models.cpp
   src/Fauna/net_energy_models.h
   src/Fauna/nitrogen.cpp
@@ -151,7 +151,7 @@ if (BUILD_TESTING)
     src/Fauna/hft.test.cpp
     src/Fauna/hft_list.test.cpp
     src/Fauna/individual_population.test.cpp
-    src/Fauna/mortality.test.cpp
+    src/Fauna/mortality_factors.test.cpp
     src/Fauna/net_energy_models.test.cpp
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp

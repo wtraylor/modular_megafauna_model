@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "mortality.h"
+#include "mortality_factors.h"
 using namespace Fauna;
 
 TEST_CASE("Fauna::GetBackgroundMortality", "") {

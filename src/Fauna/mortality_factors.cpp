@@ -5,7 +5,7 @@
 /// \date May 2017
 /////////////////////////////////////////////////////////////////
 
-#include "mortality.h"
+#include "mortality_factors.h"
 #include <algorithm> // for std::min()
 #include <cassert>  // for assert()
 #include <cmath>    // for pow()
