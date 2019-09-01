@@ -18,16 +18,16 @@ TEST_CASE("Fauna::HerbivoreIndividual", "") {
 
   // exceptions (only specific to HerbivoreIndividual)
   // invalid area
-  CHECK_THROWS(HerbivoreIndividual(AGE, BC, &hft, SEX_MALE, -1.0));
-  CHECK_THROWS(HerbivoreIndividual(AGE, BC, &hft, SEX_MALE, 0.0));
-  CHECK_THROWS(HerbivoreIndividual(&hft, SEX_MALE, -1.0));
-  CHECK_THROWS(HerbivoreIndividual(&hft, SEX_MALE, 0.0));
+  CHECK_THROWS(HerbivoreIndividual(AGE, BC, &hft, Sex::Male, -1.0));
+  CHECK_THROWS(HerbivoreIndividual(AGE, BC, &hft, Sex::Male, 0.0));
+  CHECK_THROWS(HerbivoreIndividual(&hft, Sex::Male, -1.0));
+  CHECK_THROWS(HerbivoreIndividual(&hft, Sex::Male, 0.0));
 
   // birth constructor
-  REQUIRE(HerbivoreIndividual(&hft, SEX_MALE, AREA).get_area_km2() ==
+  REQUIRE(HerbivoreIndividual(&hft, Sex::Male, AREA).get_area_km2() ==
           Approx(AREA));
   // establishment constructor
-  REQUIRE(HerbivoreIndividual(AGE, BC, &hft, SEX_MALE, AREA).get_area_km2() ==
+  REQUIRE(HerbivoreIndividual(AGE, BC, &hft, Sex::Male, AREA).get_area_km2() ==
           Approx(AREA));
 
   SECTION("Mortality") {
@@ -35,7 +35,7 @@ TEST_CASE("Fauna::HerbivoreIndividual", "") {
 
     // create with zero fat reserves
     const double BC_DEAD = 0.0;  // body condition
-    HerbivoreIndividual ind(AGE, BC_DEAD, &hft, SEX_MALE, AREA);
+    HerbivoreIndividual ind(AGE, BC_DEAD, &hft, Sex::Male, AREA);
 
     // after one simulation day it should be dead
     double offspring_dump;   // ignored

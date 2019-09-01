@@ -5,7 +5,9 @@
 #include "habitat_forage.h"
 
 namespace Fauna {
+// Forward Declarations
 class Hft;
+enum class Sex;
 
 /// Function object to calculate forage demands for a herbivore.
 /**

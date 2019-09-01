@@ -7,6 +7,9 @@
 
 namespace Fauna {
 
+// Forward Declarations
+enum class Sex;
+
 /// A population of \ref HerbivoreCohort objects.
 class CohortPopulation : public PopulationInterface {
  public:  // ------ PopulationInterface -------

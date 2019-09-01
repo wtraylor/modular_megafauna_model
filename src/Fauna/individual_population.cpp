@@ -24,7 +24,7 @@ void IndividualPopulation::create_offspring_by_sex(const Sex sex,
   // Now create herbivore objects.
   static const double AGE_DAYS = 0;  // age in days
   for (int i = 1; i <= ind_count; i++)
-    list.push_back(create_individual(AGE_DAYS, SEX_MALE));
+    list.push_back(create_individual(AGE_DAYS, Sex::Male));
 }
 
 void IndividualPopulation::create_offspring(const double ind_per_km2) {
@@ -34,8 +34,8 @@ void IndividualPopulation::create_offspring(const double ind_per_km2) {
         "Fauna::IndividualPopulation::create() "
         "Parameter `ind_per_km2` is negative.");
   if (ind_per_km2 > 0.0) {
-    create_offspring_by_sex(SEX_MALE, ind_per_km2 / 2.0);
-    create_offspring_by_sex(SEX_FEMALE, ind_per_km2 / 2.0);
+    create_offspring_by_sex(Sex::Male, ind_per_km2 / 2.0);
+    create_offspring_by_sex(Sex::Female, ind_per_km2 / 2.0);
   }
 }
 
@@ -74,7 +74,7 @@ void IndividualPopulation::establish() {
     // even numbers
     for (int i = 1; i <= count; i++) {
       list.push_back(create_individual(age_years * 365,
-                                       i % 2 == 0 ? SEX_FEMALE : SEX_MALE));
+                                       i % 2 == 0 ? Sex::Female : Sex::Male));
     }
   }
   assert(ind_count_remainder == 0);

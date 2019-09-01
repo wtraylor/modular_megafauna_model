@@ -1,5 +1,6 @@
 #include "get_forage_demands.h"
 #include "foraging_limits.h"
+#include "herbivore_base.h"
 #include "hft.h"
 using namespace Fauna;
 
@@ -15,7 +16,7 @@ GetForageDemands::GetForageDemands(const Hft* hft, const Sex sex)
 }
 
 double GetForageDemands::get_bodymass_adult() const {
-  if (sex == SEX_MALE)
+  if (sex == Sex::Male)
     return get_hft().bodymass_male;
   else
     return get_hft().bodymass_female;
@@ -81,7 +82,7 @@ ForageMass GetForageDemands::get_max_digestion() const {
     // mass-related expenditure. (See doxygen doc of `DL_FIXED_FRACTION` for
     // details.)
     const double bodymass_adult =
-        sex == SEX_MALE ? get_hft().bodymass_male : get_hft().bodymass_female;
+        sex == Sex::Male ? get_hft().bodymass_male : get_hft().bodymass_female;
     if (bodymass < bodymass_adult)
       fraction = fraction / pow(bodymass_adult, -0.75) * pow(bodymass, -0.75);
     return get_max_intake_as_total_mass(diet_composition, energy_content,

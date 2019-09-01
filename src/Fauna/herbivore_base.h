@@ -1,16 +1,19 @@
 #ifndef HERBIVORE_BASE_H
 #define HERBIVORE_BASE_H
 
+#include <memory>
 #include "herbivore_interface.h"
 #include "nitrogen.h"
-#include <memory>
 
-namespace Fauna{
+namespace Fauna {
 
-  // Forward Declarations
-  class FatmassEnergyBudget;
-  class GetNetEnergyContentInterface;
-  class GetForageDemands;
+// Forward Declarations
+class FatmassEnergyBudget;
+class GetNetEnergyContentInterface;
+class GetForageDemands;
+
+/// The sex of a herbivore
+enum class Sex { Female, Male };
 
 /// Abstract base class for herbivores.
 /**
@@ -220,5 +223,5 @@ class HerbivoreBase : public HerbivoreInterface {
   /** @} */  // Helper Classes
 };
 
-}
+}  // namespace Fauna
 #endif  // HERBIVORE_BASE_H

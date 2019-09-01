@@ -29,8 +29,8 @@ void CohortPopulation::create_offspring(const double ind_per_km2) {
         "ind_per_km2 < 0.0");
 
   if (ind_per_km2 != 0.0) {
-    create_offspring_by_sex(SEX_MALE, ind_per_km2 / 2.0);
-    create_offspring_by_sex(SEX_FEMALE, ind_per_km2 / 2.0);
+    create_offspring_by_sex(Sex::Male, ind_per_km2 / 2.0);
+    create_offspring_by_sex(Sex::Female, ind_per_km2 / 2.0);
   }
 }
 
@@ -59,12 +59,12 @@ void CohortPopulation::establish() {
     // add males
     list.push_back(create_cohort(
         get_hft().establishment_density / cohort_count,  // [ind/km²]
-        age, SEX_MALE));
+        age, Sex::Male));
 
     // add females
     list.push_back(create_cohort(
         get_hft().establishment_density / cohort_count,  // [ind/km²]
-        age, SEX_FEMALE));
+        age, Sex::Female));
   }
 }
 

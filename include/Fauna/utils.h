@@ -11,8 +11,6 @@
 #include <deque>
 
 namespace Fauna {
-/// The sex of a herbivore
-enum Sex { SEX_FEMALE, SEX_MALE };
 
 /// Build weighted average of two numbers.
 /**

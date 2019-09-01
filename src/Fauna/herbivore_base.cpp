@@ -248,7 +248,7 @@ double HerbivoreBase::get_bodymass() const {
 }
 
 double HerbivoreBase::get_bodymass_adult() const {
-  if (get_sex() == SEX_MALE)
+  if (get_sex() == Sex::Male)
     return get_hft().bodymass_male;
   else
     return get_hft().bodymass_female;
@@ -341,7 +341,7 @@ ForageEnergyContent HerbivoreBase::get_net_energy_content(
 double HerbivoreBase::get_potential_bodymass() const {
   // age of physical maturity in years
   const double maturity_age =
-      ((get_sex() == SEX_MALE) ? get_hft().maturity_age_phys_male
+      ((get_sex() == Sex::Male) ? get_hft().maturity_age_phys_male
                                : get_hft().maturity_age_phys_female);
 
   if (get_age_years() >= maturity_age)
@@ -424,7 +424,7 @@ double HerbivoreBase::get_todays_expenditure() const {
 }
 
 double HerbivoreBase::get_todays_offspring_proportion() const {
-  if (get_sex() == SEX_MALE || get_age_years() < get_hft().maturity_age_sex)
+  if (get_sex() == Sex::Male || get_age_years() < get_hft().maturity_age_sex)
     return 0.0;
 
   // Several models use a BreedingSeason object, so we create one right
@@ -501,7 +501,7 @@ void HerbivoreBase::simulate_day(const int day,
   age_days++;
 
   /// - Update records.
-  if (get_sex() == SEX_FEMALE)  // (males don’t need this for reproduction)
+  if (get_sex() == Sex::Female)  // (males don’t need this for reproduction)
     body_condition_gestation.add_value(get_fatmass() / get_max_fatmass());
 
   /// - Update maximum fat mass and gain in \ref Fauna::FatmassEnergyBudget.

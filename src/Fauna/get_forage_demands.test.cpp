@@ -1,12 +1,14 @@
 #include "catch.hpp"
 #include "dummy_hft.h"
 #include "get_forage_demands.h"
-using namespace Fauna;
+#include "herbivore_base.h"
 #include "parameters.h"
+
+using namespace Fauna;
 
 TEST_CASE("Fauna::GetForageDemands") {
   // constructor exceptions
-  CHECK_THROWS(GetForageDemands(NULL, SEX_MALE));
+  CHECK_THROWS(GetForageDemands(NULL, Sex::Male));
 
   const Parameters params;
   Hft hft = create_hfts(1, params)[0];
@@ -20,7 +22,7 @@ TEST_CASE("Fauna::GetForageDemands") {
 
   SECTION("Check some exceptions.") {
     // Create the object.
-    GetForageDemands gfd(&hft, SEX_FEMALE);
+    GetForageDemands gfd(&hft, Sex::Female);
 
     // Exception because not initialized.
     CHECK_THROWS(gfd(1.0));
@@ -49,7 +51,7 @@ TEST_CASE("Fauna::GetForageDemands") {
   SECTION("Grazer with Fixed Fraction") {
     hft.diet_composer = DC_PURE_GRAZER;
     hft.digestive_limit = DL_FIXED_FRACTION;
-    GetForageDemands gfd(&hft, SEX_FEMALE);  // create object
+    GetForageDemands gfd(&hft, Sex::Female);  // create object
     const double DIG_FRAC = 0.03;  // max. intake as fraction of body mass
     hft.digestive_limit_fixed = DIG_FRAC;
     avail.grass.set_mass(999999);  // Lots of live grass (but nothing else).

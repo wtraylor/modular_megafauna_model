@@ -53,7 +53,7 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
       const int AGE = 10;
       const double BC = 0.0;  // starved to death!
       const double AREA = 10.0;
-      HerbivoreIndividual dead(AGE, BC, &hft, SEX_FEMALE, AREA);
+      HerbivoreIndividual dead(AGE, BC, &hft, Sex::Female, AREA);
       double offspring_dump;
       HabitatEnvironment env;
       dead.simulate_day(0, env, offspring_dump);

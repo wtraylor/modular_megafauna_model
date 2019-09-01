@@ -7,14 +7,14 @@
 
 #include <cassert>  // for assert()
 #include <memory>   // for std::auto_ptr
-#include "utils.h"  // for Sex
 
 namespace Fauna {
-// forward declarations
+// Forward Declarations
 class HerbivoreCohort;
 class HerbivoreIndividual;
-class Parameters;
 class Hft;
+class Parameters;
+enum class Sex;
 
 /// Parent class for \ref CreateHerbivoreIndividual and \ref
 /// CreateHerbivoreCohort

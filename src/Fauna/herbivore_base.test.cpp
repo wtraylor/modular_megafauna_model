@@ -17,18 +17,18 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
 
   // Let’s throw some exceptions
   CHECK_THROWS(HerbivoreBaseDummy(-1, 0.5, &hft,  // age_days
-                                  SEX_MALE));
+                                  Sex::Male));
   CHECK_THROWS(HerbivoreBaseDummy(100, 0.5, NULL,  // hft== NULL
-                                  SEX_MALE));
+                                  Sex::Male));
   CHECK_THROWS(HerbivoreBaseDummy(100, 1.1, &hft,  // body_conditon
-                                  SEX_MALE));
+                                  Sex::Male));
   CHECK_THROWS(HerbivoreBaseDummy(100, -0.1, &hft,  // body_conditon
-                                  SEX_MALE));
+                                  Sex::Male));
 
   SECTION("Body mass") {
     SECTION("Birth") {
       // call the birth constructor
-      const HerbivoreBaseDummy birth(&hft, SEX_MALE);
+      const HerbivoreBaseDummy birth(&hft, Sex::Male);
 
       REQUIRE(&birth.get_hft() == &hft);
       REQUIRE(birth.get_age_days() == 0);
@@ -54,7 +54,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
         const int AGE_YEARS = hft.maturity_age_phys_male / 2;
         const int AGE_DAYS = AGE_YEARS * 365;
         const HerbivoreBaseDummy male_young(AGE_DAYS, BODY_COND, &hft,
-                                            SEX_MALE);
+                                            Sex::Male);
         REQUIRE(male_young.get_age_days() == AGE_DAYS);
         REQUIRE(male_young.get_age_years() == AGE_YEARS);
         CHECK(male_young.get_bodymass() < hft.bodymass_male);
@@ -67,7 +67,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
         const int AGE_YEARS = hft.maturity_age_phys_female / 2;
         const int AGE_DAYS = AGE_YEARS * 365;
         const HerbivoreBaseDummy female_young(AGE_DAYS, BODY_COND, &hft,
-                                              SEX_FEMALE);
+                                              Sex::Female);
         REQUIRE(female_young.get_age_days() == AGE_DAYS);
         REQUIRE(female_young.get_age_years() == AGE_YEARS);
         CHECK(female_young.get_bodymass() < hft.bodymass_female);
@@ -83,7 +83,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
         const int AGE_YEARS = hft.maturity_age_phys_male;
         const int AGE_DAYS = AGE_YEARS * 365;
         const HerbivoreBaseDummy male_adult(AGE_DAYS, BODY_COND, &hft,
-                                            SEX_MALE);
+                                            Sex::Male);
         // AGE
         REQUIRE(male_adult.get_age_days() == AGE_DAYS);
         REQUIRE(male_adult.get_age_years() == AGE_YEARS);
@@ -103,7 +103,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
         const int AGE_YEARS = hft.maturity_age_phys_female;
         const int AGE_DAYS = AGE_YEARS * 365;
         const HerbivoreBaseDummy female_adult(hft.maturity_age_phys_male * 365,
-                                              BODY_COND, &hft, SEX_FEMALE);
+                                              BODY_COND, &hft, Sex::Female);
         // AGE
         REQUIRE(female_adult.get_age_days() == AGE_DAYS);
         REQUIRE(female_adult.get_age_years() == AGE_YEARS);
@@ -127,7 +127,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
 
       SECTION("Male") {
         const HerbivoreBaseDummy male_adult(hft.maturity_age_phys_male * 365,
-                                            BODY_COND, &hft, SEX_MALE);
+                                            BODY_COND, &hft, Sex::Male);
         // BODY MASS
         CHECK(male_adult.get_potential_bodymass() == Approx(hft.bodymass_male));
         CHECK(male_adult.get_lean_bodymass() + male_adult.get_max_fatmass() ==
@@ -141,7 +141,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
 
       SECTION("Female") {
         const HerbivoreBaseDummy female_adult(hft.maturity_age_phys_male * 365,
-                                              BODY_COND, &hft, SEX_FEMALE);
+                                              BODY_COND, &hft, Sex::Female);
         // BODY MASS
         CHECK(female_adult.get_potential_bodymass() ==
               Approx(hft.bodymass_female));
