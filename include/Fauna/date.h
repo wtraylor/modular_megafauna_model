@@ -5,22 +5,6 @@
 
 namespace Fauna {
 
-/// The number of days in each month in a 365-days (non-leap) year.
-const std::array<int, 12> MONTH_LENGTH = {
-    31,  // Jan
-    28,  // Feb
-    31,  // Mar
-    30,  // Apr
-    31,  // May
-    30,  // Jun
-    31,  // Jul
-    31,  // Aug
-    30,  // Sep
-    31,  // Oct
-    30,  // Nov
-    31   // Dec
-};
-
 /// Helper class to hold an absolute simulation day.
 class Date {
  public:
@@ -34,6 +18,15 @@ class Date {
    * [0,365].
    */
   Date(const unsigned int julian_day, const int year);
+
+  /// Get the day of the month (0 = 1st).
+  /**
+   * \see Note on leap year in \ref get_month().
+   * \param leap_year If false, a 365-days year is assumed with February
+   * counting 28 days. If true, February has 29 days.
+   * \return The day of the month for this date object.
+   */
+  unsigned int get_day_of_month(bool leap_year = false) const;
 
   /// Day of the year (counting from 0 == Jan 1st).
   unsigned int get_julian_day() const { return julian_day; }
@@ -74,6 +67,15 @@ class Date {
   bool operator>(const Date& rhs) const;
 
  private:
+  /// The number of days in each month in a 365-days (non-leap) year.
+  static const std::array<int, 12> MONTH_LENGTH;
+
+  /// The Julian day of the first of each month in a 365-days (non-leap) year.
+  static const std::array<int, 12> FIRST_OF_MONTH;
+
+  /// The Julian day of the first of each month in a 366-days (leap) year.
+  static const std::array<int, 12> FIRST_OF_MONTH_LEAP;
+
   unsigned int julian_day;
   int year;
 };

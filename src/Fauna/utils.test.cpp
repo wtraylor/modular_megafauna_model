@@ -16,16 +16,6 @@ TEST_CASE("Fauna::average()", "") {
   CHECK(average(-1.0, 1.0) == Approx(0.0));
 }
 
-TEST_CASE("Fauna::get_day_of_month()") {
-  CHECK_THROWS(get_day_of_month(-1));
-  CHECK_THROWS(get_day_of_month(365));
-  // Just check some arbitrary dates
-  CHECK(get_day_of_month(0) == 0);        // Jan 1st
-  CHECK(get_day_of_month(364) == 30);     // Dec. 1st
-  CHECK(get_day_of_month(32) == 1);       // Feb. 2nd
-  CHECK(get_day_of_month(31 + 28) == 0);  // Mar. 1st
-}
-
 TEST_CASE("Fauna::get_random_fraction", "") {
   for (int i = 0; i < 100; i++) {
     const double r = get_random_fraction();

@@ -78,12 +78,5 @@ class PeriodAverage {
   int count;  // const
 };
 
-/// The day of the month (0 = 1st).
-/**
- * A year of 365 days is assumed.
- * \param day_of_year Day of the year starting with 0 = Jan. 1st.
- * \throw std::invalid_argument If `day_of_year` not in [0,364].
- */
-int get_day_of_month(const int day_of_year);
 }  // namespace Fauna
 #endif  // UTILS_H
