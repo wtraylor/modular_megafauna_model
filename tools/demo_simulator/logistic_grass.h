@@ -1,24 +1,11 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief   \ref Fauna::Habitat implementations for testing purpose.
-/// \author  Wolfgang Pappa, Senckenberg BiK-F
-/// \date    June 2017
-//////////////////////////////////////////////////////////////////////////
-
-#ifndef FAUNA_TESTHABITATS_H
-#define FAUNA_TESTHABITATS_H
-
+#ifndef FAUNA_DEMO_LOGISTIC_GRASS_H
+#define FAUNA_DEMO_LOGISTIC_GRASS_H
 #include <vector>
+#include <string>
 #include "megafauna.h"
 
-using namespace Fauna;
-
-// forward declarations
 namespace Fauna {
-class SimulationUnit;
-}
-
-namespace FaunaSim {
+namespace Demo {
 
 /// Helper class for performing simple grass growth to test herbivore
 /// functionality
@@ -113,68 +100,7 @@ class LogisticGrass {
   int simulation_month;
 };
 
-/// A herbivore habitat independent of the LPJ-GUESS framework for testing.
-class SimpleHabitat : public Habitat {
- public:
-  /// Simulation parameters for a \ref SimpleHabitat object.
-  struct Parameters {
-    /// Parameters for logistic grass growth.
-    LogisticGrass::Parameters grass;
+}  // namespace Demo
+}  // namespace Fauna
 
-    /// Snow depth [cm] for each month.
-    /** When the end of the vector is reached, the values are recycled.
-     * A vector of length 12 creates the same behaviour every year. */
-    std::vector<double> snow_depth_monthly = {0.0};
-  };
-
-  /// Constructor with simulation settings.
-  /**
-   * \param settings Simulation settings for the vegetation
-   * model.
-   */
-  SimpleHabitat(const SimpleHabitat::Parameters settings,
-                const std::string aggregation_unit)
-      : settings(settings),
-        grass(settings.grass),
-        aggregation_unit(aggregation_unit) {}
-
- public:  // ------ Fauna::Habitat implementations ----
-  virtual void add_excreted_nitrogen(const double) {}  // disabled
-  virtual const char* get_aggregation_unit() const {
-    return aggregation_unit.c_str();
-  }
-  virtual HabitatForage get_available_forage() const {
-    HabitatForage result;
-    result.grass = grass.get_forage();
-    return result;
-  }
-  virtual HabitatEnvironment get_environment() const;
-  virtual void init_day(const int today);
-  virtual void remove_eaten_forage(const ForageMass& eaten_forage);
-
- protected:
-  /// Perform daily growth.
-  /** \param day_of_year January 1st = 0 */
-  virtual void grow_daily(const int day_of_year) {
-    grass.grow_daily(day_of_year);
-  }
-
- private:
-  const std::string aggregation_unit;
-  SimpleHabitat::Parameters settings;
-
-  /// Snow depth in cm, as read from \ref Parameters::snow_depth_monthly.
-  double snow_depth = 0.0;
-
-  /// Grass in the habitat
-  LogisticGrass grass;
-
-  /// The current simulation month, starting with zero.
-  /** We need this to address the current value in
-   * \ref Parameters::snow_depth_monthly. */
-  int simulation_month = 0;
-};
-
-}  // namespace FaunaSim
-
-#endif  // FAUNA_TESTHABITATS_H
+#endif  // FAUNA_DEMO_LOGISTIC_GRASS_H

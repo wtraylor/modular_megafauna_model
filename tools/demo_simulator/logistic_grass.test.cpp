@@ -1,8 +1,8 @@
 #include "catch.hpp"
-#include "population_list.h"
-#include "testhabitat.h"
+#include "logistic_grass.h"
+
 using namespace Fauna;
-using namespace FaunaSim;
+using namespace Fauna::Demo;
 
 TEST_CASE("FaunaSim::LogisticGrass", "") {
   LogisticGrass::Parameters grass_settings;
@@ -133,99 +133,3 @@ TEST_CASE("FaunaSim::LogisticGrass", "") {
   }
 }
 
-TEST_CASE("FaunaSim::SimpleHabitat", "") {
-  SimpleHabitat::Parameters settings;
-  settings.grass.init_mass = 1.0;
-  settings.grass.saturation = 3.0;
-
-  // create a habitat with some populations
-  const Fauna::Parameters params;
-  Simulator sim(params);
-  SimpleHabitat habitat(settings);
-
-  SECTION("Initialization") {
-    CHECK(habitat.get_available_forage().grass.get_fpc() ==
-          Approx(settings.grass.fpc));
-    CHECK(habitat.get_available_forage().grass.get_mass() ==
-          Approx(settings.grass.init_mass));
-    CHECK(habitat.get_available_forage().grass.get_digestibility() ==
-          Approx(settings.grass.digestibility[0]));
-  }
-
-  SECTION("Remove forage") {
-    const HabitatForage avail = habitat.get_available_forage();
-
-    SECTION("Remove some forage") {
-      const ForageMass eaten = avail.get_mass() * 0.5;
-      habitat.remove_eaten_forage(eaten);
-      // check each forage type with Approx()
-      for (ForageMass::const_iterator i = eaten.begin(); i != eaten.end(); i++)
-        CHECK(habitat.get_available_forage().get_mass()[i->first] ==
-              Approx(avail.get_mass()[i->first] - i->second));
-    }
-
-    SECTION("Remove all forage") {
-      const ForageMass eaten = avail.get_mass();
-      habitat.remove_eaten_forage(eaten);
-      for (ForageMass::const_iterator i = eaten.begin(); i != eaten.end(); i++)
-        CHECK(habitat.get_available_forage().get_mass()[i->first] ==
-              Approx(0.0));
-    }
-
-    SECTION("Remove more forage than is available") {
-      const ForageMass too_much = avail.get_mass() * 1.1;
-      CHECK_THROWS(habitat.remove_eaten_forage(too_much));
-    }
-  }
-}
-
-TEST_CASE("FaunaSim::HabitatGroup", "") {
-  // Make sure the group creates its habitats
-  HabitatGroup group(1.0, 1.0);  // lon,lat
-  group.reserve(5);
-  for (int i = 1; i < 5; i++) {
-    // create a simulation unit
-    std::auto_ptr<Habitat> habitat(new DummyHabitat());
-    PopulationList* populations = new PopulationList();
-    std::auto_ptr<SimulationUnit> simunit(
-        new SimulationUnit(habitat, populations));
-    // add it to the group
-    group.add(simunit);
-    // Check if it has been added properly
-    CHECK(group.size() == i);
-    CHECK(group.get_vector().size() == i);
-  }
-  // Make sure the references are pointing correctly to the objects
-  const std::vector<SimulationUnit*> refs = group.get_vector();
-  HabitatGroup::const_iterator itr = group.begin();
-  int j = 0;
-  while (itr != group.end()) {
-    CHECK(refs[j] == *itr);
-    j++;
-    itr++;
-  }
-}
-
-TEST_CASE("FaunaSim::HabitatGroupList", "") {
-  // Make sure the group creates its habitats
-  HabitatGroupList gl;
-  gl.reserve(5);
-
-  // add some habitat groups
-  for (int i = 1; i < 5; i++) {
-    HabitatGroup& group =
-        gl.add(std::auto_ptr<HabitatGroup>(new HabitatGroup(i, i)));
-    for (int j = 1; j < 4; j++) {
-      // create a simulation unit
-      std::auto_ptr<Habitat> habitat(new DummyHabitat());
-      PopulationList* populations = new PopulationList();
-      std::auto_ptr<SimulationUnit> simunit(
-          new SimulationUnit(habitat, populations));
-      // add it to the group
-      group.add(simunit);
-    }
-    CHECK(gl.size() == i);
-  }
-  // Don’t allow adding a group with same coordinates twice
-  CHECK_THROWS(gl.add(std::auto_ptr<HabitatGroup>(new HabitatGroup(1, 1))));
-}

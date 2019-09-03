@@ -171,6 +171,12 @@ if (BUILD_TESTING)
     tests/dummy_hft.h
     tests/dummy_population.h
     tests/dummy_population.test.cpp
+    tools/demo_simulator/logistic_grass.cpp
+    tools/demo_simulator/logistic_grass.h
+    tools/demo_simulator/logistic_grass.test.cpp
+    tools/demo_simulator/simple_habitat.cpp
+    tools/demo_simulator/simple_habitat.h
+    tools/demo_simulator/simple_habitat.test.cpp
     )
   target_include_directories (megafauna_unit_tests
     PRIVATE
@@ -188,25 +194,27 @@ if (BUILD_TESTING)
 endif(BUILD_TESTING)
 
 ###########################################################################
-########################  TEST SIMULATOR  #################################
+########################  DEMO SIMULATOR  #################################
 ###########################################################################
 
-option (BUILD_TEST_SIMULATOR
-  "Whether to build the simple megafauna test simulator."
+option (BUILD_DEMO_SIMULATOR
+  "Whether to build the simple megafauna demo simulator."
   ON
   )
 
-if(BUILD_TEST_SIMULATOR)
-  add_executable (megafauna_test_simulator
-    tools/simulator/testhabitat.cpp
-    tools/simulator/testhabitat.h
-    tools/simulator/testsimulation.cpp
-    tools/simulator/testsimulation.h
+if(BUILD_DEMO_SIMULATOR)
+  add_executable (megafauna_demo_simulator
+    tools/demo_simulator/demo_simulator.cpp
+    tools/demo_simulator/demo_simulator.h
+    tools/demo_simulator/logistic_grass.cpp
+    tools/demo_simulator/logistic_grass.h
+    tools/demo_simulator/simple_habitat.cpp
+    tools/demo_simulator/simple_habitat.h
     )
-  target_link_libraries (megafauna_test_simulator
+  target_link_libraries (megafauna_demo_simulator
     ModularMegafaunaModel
     )
-endif(BUILD_TEST_SIMULATOR)
+endif()
 
 ###########################################################################
 ####################  DOXYGEN DOCUMENTATION  ##############################

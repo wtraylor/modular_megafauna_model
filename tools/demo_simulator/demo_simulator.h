@@ -1,25 +1,17 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Test simulations for the herbivory module.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date June 2017
-//////////////////////////////////////////////////////////////////////////
-
-#ifndef FAUNA_TESTSIMULATION_H
-#define FAUNA_TESTSIMULATION_H
+#ifndef FAUNA_DEMO_SIMULATOR_H
+#define FAUNA_DEMO_SIMULATOR_H
 
 #include <vector>
-#include "testhabitat.h"
+#include "simple_habitat.h"
 
 namespace Fauna {
 // forward declaration
 class Habitat;
 class HftList;
 class Parameters;
-}  // namespace Fauna
-namespace FaunaSim {
-/// Performs test simulations for herbivores outside of the LPJ-GUESS vegetation
-/// model
+
+namespace Demo {
+/// Performs demo simulations for the Modular Megafauna Model.
 /**
  * \see \ref sec_singleton for an explanation of the design pattern used.
  * \see \ref sec_testsimulations
@@ -46,10 +38,10 @@ class Framework {
   /**
    * At all critical points, exceptions are caught.
    * \param insfile_fauna Path to the instruction file for the megafauna model.
-   * \param insfile_testsim Instruction file for the testsimulator framework.
+   * \param insfile_demo Instruction file for the demo simulator framework.
    * \return true on success, false on failure
    */
-  bool run(const std::string insfile_fauna, const std::string insfile_testsim);
+  bool run(const std::string insfile_fauna, const std::string insfile_demo);
 
  private:
   /// Parameter values from instruction file
@@ -73,6 +65,7 @@ class Framework {
   /// Deleted assignment constructor
   void operator=(Framework const&);  // don’t implement, it’s deleted
 };
-}  // namespace FaunaSim
+}  // namespace Demo
+}  // namespace Fauna
 
-#endif  // FAUNA_TESTSIMULATION_H
+#endif  // FAUNA_DEMO_SIMULATOR_H

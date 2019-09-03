@@ -1,11 +1,4 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Herbivory test simulation independent of the LPJ-GUESS %framework.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date June 2017
-//////////////////////////////////////////////////////////////////////////
-
-#include "testsimulation.h"
+#include "demo_simulator.h"
 #include <cassert>
 #include <cfloat>
 #include <climits>
@@ -13,7 +6,7 @@
 #include "megafauna.h"
 
 using namespace Fauna;
-using namespace FaunaSim;
+using namespace Fauna::Demo;
 
 // Anonymous namespace with definitions local to this file
 namespace {
@@ -27,13 +20,13 @@ double param_monthly_grass_growth[12];
 double param_monthly_snow_depth[12];
 }  // namespace
 
-/// Run the test simulation with parameters read from instruction file
+/// Run the demo simulation with parameters read from instruction file
 /** \todo Print version, print help */
 int main(int argc, char* argv[]) {
   std::string insfile_fauna;
-  std::string insfile_testsim;
+  std::string insfile_demo;
   try {
-    std::cerr << "This is the test simulator for the Modular Megafauna Model."
+    std::cerr << "This is the demo simulator for the Modular Megafauna Model."
               << std::endl;
 
     // The singleton instance of FaunaSim::Manager
@@ -46,7 +39,7 @@ int main(int argc, char* argv[]) {
         framework.print_help();
       else {
         insfile_fauna = argv[1];
-        insfile_testsim = argv[2];
+        insfile_demo = argv[2];
       }
     } else {
       framework.print_usage();
@@ -54,7 +47,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Run the simulation with the global parameters
-    const bool success = framework.run(insfile_fauna, insfile_testsim);
+    const bool success = framework.run(insfile_fauna, insfile_demo);
     if (!success) {
       std::cerr << "Exiting simulation." << std::endl;
       return EXIT_FAILURE;
@@ -83,13 +76,13 @@ void Framework::print_usage() {
   // We use C++11 raw string literals like a Bash Here Document.
   std::cerr << R"EOF(
 Usage:
-  megafauna_test_simulator <fauna_instruction_file> <simulation_instruction_file>
-  megafauna_test_simulator -help
+  megafauna_demo_simulator <fauna_instruction_file> <simulation_instruction_file>
+  megafauna_demo_simulator -help
 )EOF";
 }
 
 bool Framework::run(const std::string insfile_fauna,
-                    const std::string insfile_testsim) {
+                    const std::string insfile_demo) {
   Fauna::Parameters global_params;
   World fauna_world(insfile_fauna);
 
