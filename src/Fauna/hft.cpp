@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "hft.h"
-#include <sstream>  // for is_valid() messages
+#include <sstream>
 #include "parameters.h"
 
 using namespace Fauna;

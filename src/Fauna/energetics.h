@@ -9,7 +9,7 @@
 #define FAUNA_ENERGETICS_H
 
 #include <assert.h>
-#include <cmath>  // for pow()
+#include <cmath>
 #include <stdexcept>
 
 namespace Fauna {

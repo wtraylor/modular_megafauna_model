@@ -9,8 +9,8 @@
 #define HERBIVORE_DATA
 
 #include <map>
-#include "forage_values.h"  // for ForageMass
-#include "hft.h"            // for MortalityFactor
+#include "forage_values.h"
+#include "hft.h"
 
 namespace Fauna {
 namespace Output {

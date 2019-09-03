@@ -9,7 +9,7 @@
 #define FAUNA_TESTSIMULATION_H
 
 #include <vector>
-#include "testhabitat.h"   // for SimpleHabitat
+#include "testhabitat.h"
 
 namespace Fauna {
 // forward declaration

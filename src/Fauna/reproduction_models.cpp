@@ -6,8 +6,8 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "reproduction_models.h"
-#include <cassert>  // for assert()
-#include <cmath>    // for exp()
+#include <cassert>
+#include <cmath>
 #include <stdexcept>
 
 using namespace Fauna;

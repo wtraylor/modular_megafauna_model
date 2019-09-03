@@ -5,7 +5,7 @@
 /// \date April 2018
 //////////////////////////////////////////////////////////////////////////
 
-#include <algorithm> // for std::max(), std::min()
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <stdexcept>

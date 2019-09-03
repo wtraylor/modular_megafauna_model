@@ -6,9 +6,9 @@
 /////////////////////////////////////////////////////////////////
 
 #include "mortality_factors.h"
-#include <algorithm> // for std::min()
-#include <cassert>  // for assert()
-#include <cmath>    // for pow()
+#include <algorithm>
+#include <cassert>
+#include <cmath>
 #include <stdexcept>
 
 using namespace Fauna;

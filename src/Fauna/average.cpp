@@ -1,6 +1,6 @@
 #include "average.h"
-#include <cassert>  // for assert()
-#include <cmath>    // for NAN and INFINITY
+#include <cassert>
+#include <cmath>
 #include <stdexcept>
 
 using namespace Fauna;

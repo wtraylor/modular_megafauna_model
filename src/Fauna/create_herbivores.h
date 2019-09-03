@@ -5,8 +5,8 @@
 #ifndef FAUNA_CREATE_HERBIVORES_H
 #define FAUNA_CREATE_HERBIVORES_H
 
-#include <cassert>  // for assert()
-#include <memory>   // for std::auto_ptr
+#include <cassert>
+#include <memory>
 
 namespace Fauna {
 // Forward Declarations

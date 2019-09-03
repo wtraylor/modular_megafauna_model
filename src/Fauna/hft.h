@@ -7,11 +7,11 @@
 #ifndef FAUNA_HFT_H
 #define FAUNA_HFT_H
 
-#include <cmath>  // for pow()
-#include <set>    // for mortality_factors
+#include <cmath>
+#include <set>
 #include <stdexcept>
 #include <string>
-#include <utility>  // for std::pair
+#include <utility>
 #include <vector>
 
 namespace Fauna {

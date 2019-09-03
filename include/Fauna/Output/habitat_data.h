@@ -8,8 +8,8 @@
 #ifndef FAUNA_OUTPUT_HABITAT_DATA_H
 #define FAUNA_OUTPUT_HABITAT_DATA_H
 
-#include "Fauna/habitat_forage.h" // for HabitatForage
-#include "Fauna/environment.h" // for HabitatEnvironment
+#include "Fauna/habitat_forage.h"
+#include "Fauna/environment.h"
 
 namespace Fauna {
 namespace Output {

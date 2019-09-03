@@ -7,8 +7,8 @@
 
 #include "testsimulation.h"
 #include <cassert>
-#include <cfloat>   // for DBL_MAX
-#include <climits>  // for INT_MAX
+#include <cfloat>
+#include <climits>
 #include <iostream>
 #include "megafauna.h"
 

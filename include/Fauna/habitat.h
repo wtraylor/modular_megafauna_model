@@ -7,11 +7,11 @@
 #ifndef FAUNA_HABITAT_H
 #define FAUNA_HABITAT_H
 
-#include <cassert>                      // for assert()
-#include <list>                         // for HabitatList
-#include <memory>                       // for std::auto_ptr
-#include "Fauna/Output/habitat_data.h"  // for HabitatData
-#include "Fauna/habitat_forage.h"       // for HabitatForage
+#include <cassert>
+#include <list>
+#include <memory>
+#include "Fauna/Output/habitat_data.h"
+#include "Fauna/habitat_forage.h"
 
 namespace Fauna {
 // Forward declaration of classes in the same namespace

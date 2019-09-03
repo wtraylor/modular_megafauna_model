@@ -7,7 +7,7 @@
 #ifndef FAUNA_PARAMETERS_H
 #define FAUNA_PARAMETERS_H
 
-#include <cassert>  // for assert()
+#include <cassert>
 #include <stdexcept>
 
 namespace Fauna {
