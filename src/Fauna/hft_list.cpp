@@ -1,5 +1,4 @@
 #include "hft_list.h"
-#include "hft.h"
 
 using namespace Fauna;
 
