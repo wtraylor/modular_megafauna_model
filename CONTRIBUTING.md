@@ -134,6 +134,11 @@ If you create a `.cpp` file, there should most likely also be a corresponding `.
 
 Please read the Doxygen page about the testing framework.
 
+### Code Checking Tools
+
+Run [cppclean](https://github.com/myint/cppclean) on the code to find unnecessary `#include`s, unnecessary functions, and a lot more.
+Execute the helper script `./tools/cppclean.sh` in the Bash.
+
 ### Doxygen
 
 #### Bibliography
