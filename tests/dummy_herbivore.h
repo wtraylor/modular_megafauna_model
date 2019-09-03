@@ -34,7 +34,7 @@ class DummyHerbivore : public HerbivoreInterface {
   virtual double get_kg_per_km2() const { return bodymass * ind_per_km2; }
 
   virtual const Output::HerbivoreData& get_todays_output() const {
-    static Output::HerbivoreData dummy_output;
+    static const Output::HerbivoreData dummy_output;
     return dummy_output;
   }
 
