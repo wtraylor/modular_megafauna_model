@@ -6,6 +6,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "simulation_unit.h"
+#include "combined_data.h"
 #include "habitat.h"
 #include "herbivore_interface.h"
 #include "population_interface.h"

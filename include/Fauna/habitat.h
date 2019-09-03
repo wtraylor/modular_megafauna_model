@@ -11,10 +11,9 @@
 #include <list>
 #include <memory>
 #include "Fauna/Output/habitat_data.h"
-#include "Fauna/habitat_forage.h"
 
 namespace Fauna {
-// Forward declaration of classes in the same namespace
+// Forward Declarations
 class HabitatEnvironment;
 
 /// Abstract class of a homogenous spatial unit populated by herbivores

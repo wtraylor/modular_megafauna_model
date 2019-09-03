@@ -8,12 +8,15 @@
 #define FAUNA_SIMULATION_UNIT_H
 
 #include <memory>
-#include "combined_data.h"
 
 namespace Fauna {
 // forward declaration
 class Habitat;
 class PopulationList;
+
+namespace Output {
+class CombinedData;
+}
 
 /// A habitat with the herbivores that live in it.
 /** \see \ref sec_designoverview */
@@ -62,6 +65,7 @@ class SimulationUnit {
 
   /// Set the flag that initial establishment has been performed.
   void set_initial_establishment_done() { initial_establishment_done = true; }
+
  private:
   std::unique_ptr<Habitat> habitat;
   bool initial_establishment_done;

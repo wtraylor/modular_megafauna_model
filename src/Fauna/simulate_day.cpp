@@ -6,7 +6,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "simulate_day.h"
-#include "environment.h"
 #include "feed_herbivores.h"
 #include "habitat.h"
 #include "herbivore_interface.h"

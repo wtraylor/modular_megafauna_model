@@ -4,6 +4,7 @@
 #include <climits>
 #include <iostream>
 #include "megafauna.h"
+#include "simple_habitat.h"
 
 using namespace Fauna;
 using namespace Fauna::Demo;

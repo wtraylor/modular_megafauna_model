@@ -3,9 +3,9 @@
 #ifndef FAUNA_MAKESHIFT_H
 #define FAUNA_MAKESHIFT_H
 
-#include "hft_list.h"
-
 namespace Fauna {
+class HftList;
+
 /// Create some sample HFTs.
 HftList construct_makeshift_hfts();
 }  // namespace Fauna

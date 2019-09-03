@@ -2,10 +2,11 @@
 #define TESTS_DUMMY_POPULATION_H
 
 #include "dummy_herbivore.h"
-#include "hft.h"
 #include "population_interface.h"
 
 namespace Fauna {
+class Hft;
+
 /// A population of dummy herbivores
 class DummyPopulation : public PopulationInterface {
  private:

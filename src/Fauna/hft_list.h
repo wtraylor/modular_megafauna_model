@@ -3,10 +3,10 @@
 
 #include <stdexcept>
 #include <vector>
+#include "hft.h"
 
 namespace Fauna {
 // Forward Declarations
-class Hft;
 class Parameters;
 
 /// A set of herbivore functional types, unique by name

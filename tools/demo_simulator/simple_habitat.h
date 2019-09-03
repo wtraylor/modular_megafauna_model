@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "logistic_grass.h"
-#include "megafauna.h"
 
 using namespace Fauna;
 

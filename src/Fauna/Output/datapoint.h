@@ -3,7 +3,6 @@
 
 #include <string>
 #include "combined_data.h"
-#include "date.h"
 #include "date_interval.h"
 
 namespace Fauna {

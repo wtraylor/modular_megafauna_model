@@ -6,7 +6,6 @@
 namespace Fauna {
 // Forward Declarations
 class Date;
-class SimulationUnit;
 
 namespace Output {
 /// Aggregates output from different simulation units over time.

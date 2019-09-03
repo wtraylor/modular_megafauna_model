@@ -2,9 +2,6 @@
 #define FAUNA_OUTPUT_WRITER_INTERFACE_H
 
 namespace Fauna {
-// Forward declarations:
-class SimulationUnit;
-
 namespace Output {
 // Forward declarations:
 class Datapoint;
@@ -18,6 +15,8 @@ struct WriterInterface {
    * is zero.
    */
   virtual void write_datapoint(const Datapoint& datapoint) = 0;
+
+  // TODO: add virtual destructor
 };
 }  // namespace Output
 }  // namespace Fauna

@@ -8,11 +8,9 @@ namespace Fauna {
 // Forward declarations
 class Date;
 class Habitat;
-class Hft;
 class HftList;
 class InsfileContent;
 class Parameters;
-class PopulationInterface;
 class SimulationUnit;
 class WorldConstructor;
 

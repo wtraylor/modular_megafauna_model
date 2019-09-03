@@ -5,12 +5,8 @@
 #include "simple_habitat.h"
 
 namespace Fauna {
-// forward declaration
-class Habitat;
-class HftList;
-class Parameters;
-
 namespace Demo {
+
 /// Performs demo simulations for the Modular Megafauna Model.
 /**
  * \see \ref sec_singleton for an explanation of the design pattern used.
