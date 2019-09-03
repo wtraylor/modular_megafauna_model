@@ -9,18 +9,6 @@
 using namespace Fauna;
 using namespace Fauna::Demo;
 
-// Anonymous namespace with definitions local to this file
-namespace {
-/// Helper to read parameter \ref LogisticGrass::Parameters::digestibility.
-double param_grass_digestibility[12];
-/// Helper to read parameter \ref LogisticGrass::Parameters::decay_monthly.
-double param_monthly_grass_decay[12];
-/// Helper to read parameter \ref LogisticGrass::Parameters::growth_monthly.
-double param_monthly_grass_growth[12];
-/// Helper to read parameter \ref LogisticGrass::Parameters::snow_depth_monthly.
-double param_monthly_snow_depth[12];
-}  // namespace
-
 /// Run the demo simulation with parameters read from instruction file
 /** \todo Print version, print help */
 int main(int argc, char* argv[]) {
