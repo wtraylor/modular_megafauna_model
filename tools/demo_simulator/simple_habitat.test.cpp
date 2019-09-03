@@ -5,15 +5,17 @@
 using namespace Fauna;
 using namespace Fauna::Demo;
 
-TEST_CASE("FaunaSim::SimpleHabitat", "") {
+TEST_CASE("Fauna::Demo::SimpleHabitat", "") {
   SimpleHabitat::Parameters settings;
   settings.grass.init_mass = 1.0;
   settings.grass.saturation = 3.0;
 
   // create a habitat with some populations
   const Fauna::Parameters params;
-  Simulator sim(params);
-  SimpleHabitat habitat(settings);
+  static const std::string AGG_UNIT = "aggregation_unit";
+  SimpleHabitat habitat(settings, AGG_UNIT);
+
+  CHECK(habitat.get_aggregation_unit() == AGG_UNIT);
 
   SECTION("Initialization") {
     CHECK(habitat.get_available_forage().grass.get_fpc() ==

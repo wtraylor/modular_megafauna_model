@@ -4,7 +4,7 @@
 using namespace Fauna;
 using namespace Fauna::Demo;
 
-TEST_CASE("FaunaSim::LogisticGrass", "") {
+TEST_CASE("Fauna::Demo::LogisticGrass", "") {
   LogisticGrass::Parameters grass_settings;
   grass_settings.reserve = 2.0;  // just an arbitrary positive number
   grass_settings.init_mass = 1.0;
