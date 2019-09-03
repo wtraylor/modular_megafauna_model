@@ -8,6 +8,10 @@ class Datapoint;
 
 /// Interface class for all classes that implement writing output.
 struct WriterInterface {
+  /// Virtual Destructor
+  /** Destructor must be virtual in an interface. */
+  virtual ~WriterInterface() {}
+
   /// Write spatially & temporally aggregated output data.
   /**
    * \param datapoint The data to write.
@@ -15,8 +19,6 @@ struct WriterInterface {
    * is zero.
    */
   virtual void write_datapoint(const Datapoint& datapoint) = 0;
-
-  // TODO: add virtual destructor
 };
 }  // namespace Output
 }  // namespace Fauna
