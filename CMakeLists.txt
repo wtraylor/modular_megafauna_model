@@ -32,8 +32,12 @@ set (SOURCE_FILES
   src/Fauna/breeding_season.h
   src/Fauna/cohort_population.cpp
   src/Fauna/cohort_population.h
-  src/Fauna/create_herbivores.cpp
-  src/Fauna/create_herbivores.h
+  src/Fauna/create_herbivore_cohort.cpp
+  src/Fauna/create_herbivore_cohort.h
+  src/Fauna/create_herbivore_common.cpp
+  src/Fauna/create_herbivore_common.h
+  src/Fauna/create_herbivore_individual.cpp
+  src/Fauna/create_herbivore_individual.h
   src/Fauna/date.cpp
   src/Fauna/date_interval.cpp
   src/Fauna/date_interval.h
