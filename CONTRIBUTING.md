@@ -40,7 +40,7 @@ Coding Guidelines
 This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pitchfork) for C++ projects.
 Here is a summary of the relevant parts:
 
-- **Namespace Folders:** The `src/` directory has subfolders reflecting the namespaces of the contained components.
+- **Namespace Folders:** The `src/` directory has subfolders reflecting the namespaces of the contained components. To minimize the danger of name collision, the header **include guards** contain the namespace hierarchy also, e.g. `FAUNA_OUTPUT_HABITAT_DATA_H`.
 
 - **Separate Header Placement:** Header (`*.h`) and source (`*.cpp`) files are kept together in `src/` if they are _private_ (not part of the library interface). _Public_ headers are placed in `include/` while their corresponding source files remain in `src/`.
 
@@ -59,7 +59,13 @@ Please install the plugin for your text editor if available: [editorconfig.org/]
 
 #### Naming
 
-- **Classes** are named in CamelCase with upper-case first letter, e.g. `MyExampleClass`.
+- **Files** are always lower-case with underscores to separate words.
+    + Header files end with `.h`, source files with `.cpp`, and the corresponding unit test files with `.test.cpp`.
+    + If a file only contains one class, name the file like the class.
+    + If a file contains several classes, use a plural like `net_energy_models.h`.
+    + If a file contains a collection of functionality, use an abstract grouping noun, e.g. `stochasticity.h` or `nitrogen.h`.
+
+- **Classes** are named in CamelCase with upper-case first letter, e.g. `MyExampleClass`. Don’t repeat the namespace in the class name (avoid something like `Output::OutputDataClass`).
     + **Enum** types are like classes.
 
 - **Functions** are imperative verbs with underscores, e.g. `create_new_herbivores()`.
