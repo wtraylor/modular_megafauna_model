@@ -1,12 +1,11 @@
-///////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Combined herbivore + habitat output data.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-/// \see \ref sec_output
-////////////////////////////////////////////////////////////////////
-#ifndef COMBINED_DATA_H
-#define COMBINED_DATA_H
+/**
+ * \file
+ * \brief Combined herbivore + habitat output data.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_OUTPUT_COMBINED_DATA_H
+#define FAUNA_OUTPUT_COMBINED_DATA_H
 
 #include "habitat_data.h"
 #include "herbivore_data.h"
@@ -67,4 +66,4 @@ struct CombinedData {
 }  // namespace Output
 }  // namespace Fauna
 
-#endif  // COMBINED_DATA_H
+#endif  // FAUNA_OUTPUT_COMBINED_DATA_H

@@ -1,10 +1,11 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Classes for the spatial units where herbivores live.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date May 2017
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief The spatial unit where herbivores live in.
+ * \copyright ...
+ * \date 2019
+ */
 #include "habitat.h"
+#include "habitat_forage.h"
 
 using namespace Fauna;
 

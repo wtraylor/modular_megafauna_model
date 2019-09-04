@@ -1,7 +1,13 @@
+/**
+ * \file
+ * \brief Collect output of over space and time.
+ * \copyright ...
+ * \date 2019
+ */
 #include "aggregator.h"
 #include "date.h"
 #include "habitat.h"
-#include "herbivore.h"
+#include "herbivore_interface.h"
 #include "population_list.h"
 #include "simulation_unit.h"
 using namespace Fauna;

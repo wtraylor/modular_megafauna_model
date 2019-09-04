@@ -1,11 +1,11 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Definition of forage types (grass, browse, etc.)
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-//////////////////////////////////////////////////////////////////////////
-#ifndef FORAGE_TYPES_H
-#define FORAGE_TYPES_H
+/**
+ * \file
+ * \brief Definition of forage types (grass, browse, etc.)
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_FORAGE_TYPES_H
+#define FAUNA_FORAGE_TYPES_H
 
 #include <cassert>
 #include <set>
@@ -48,4 +48,4 @@ const std::string& get_forage_type_name(const ForageType);
 
 }  // namespace Fauna
 
-#endif  // FORAGE_TYPES_H
+#endif  // FAUNA_FORAGE_TYPES_H

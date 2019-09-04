@@ -1,5 +1,11 @@
-#ifndef HERBIVORE_VECTOR_H
-#define HERBIVORE_VECTOR_H
+/**
+ * \file
+ * \brief Type definitions of vectors of herbivore pointers.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_HERBIVORE_VECTOR_H
+#define FAUNA_HERBIVORE_VECTOR_H
 #include <vector>
 
 namespace Fauna {
@@ -13,4 +19,4 @@ typedef std::vector<HerbivoreInterface*> HerbivoreVector;
 typedef std::vector<const HerbivoreInterface*> ConstHerbivoreVector;
 
 }  // namespace Fauna
-#endif  // HERBIVORE_VECTOR_H
+#endif  // FAUNA_HERBIVORE_VECTOR_H

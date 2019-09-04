@@ -1,13 +1,13 @@
-////////////////////////////////////////////////////////////
-/// \file
-/// \brief Instruction file parameters of the herbivory module.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date June 2017
-////////////////////////////////////////////////////////////
-#ifndef PARAMETERS_H
-#define PARAMETERS_H
+/**
+ * \file
+ * \brief Global parameters for the megafauna library.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_PARAMETERS_H
+#define FAUNA_PARAMETERS_H
 
-#include <cassert>  // for assert()
+#include <cassert>
 #include <stdexcept>
 
 namespace Fauna {
@@ -132,4 +132,4 @@ struct Parameters {
 
 }  // namespace Fauna
 
-#endif  // PARAMETERS_H
+#endif  // FAUNA_PARAMETERS_H

@@ -1,6 +1,12 @@
-#ifndef DUMMY_HERBIVORE_BASE_H
-#define DUMMY_HERBIVORE_BASE_H
-#include "herbivore.h"
+/**
+ * \file
+ * \brief Implementation of herbivore base class for unit tests.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef TESTS_DUMMY_HERBIVORE_BASE_H
+#define TESTS_DUMMY_HERBIVORE_BASE_H
+#include "herbivore_base.h"
 
 namespace Fauna {
 /// Dummy class to test \ref HerbivoreBase
@@ -37,4 +43,4 @@ class HerbivoreBaseDummy : public HerbivoreBase {
 };
 }  // namespace Fauna
 
-#endif // DUMMY_HERBIVORE_BASE_H
+#endif // TESTS_DUMMY_HERBIVORE_BASE_H

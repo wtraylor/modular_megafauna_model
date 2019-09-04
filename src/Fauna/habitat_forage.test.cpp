@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::HabitatForage.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "habitat_forage.h"
 

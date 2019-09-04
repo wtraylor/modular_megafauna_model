@@ -1,11 +1,11 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Function objects to perform simulations in the herbivore model.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date 2018-06-16
-//////////////////////////////////////////////////////////////////////////
-#ifndef SIMULATE_DAY_H
-#define SIMULATE_DAY_H
+/**
+ * \file
+ * \brief Function object to perform simulations in the herbivore model.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_SIMULATE_DAY_H
+#define FAUNA_SIMULATE_DAY_H
 
 #include <map>
 #include "environment.h"
@@ -107,4 +107,4 @@ class SimulateDay {
 };
 }  // namespace Fauna
 
-#endif  // SIMULATE_DAY_H
+#endif  // FAUNA_SIMULATE_DAY_H

@@ -1,15 +1,14 @@
-///////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Habitat output data.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-/// \see \ref sec_output
-////////////////////////////////////////////////////////////////////
-#ifndef HABITAT_DATA_H
-#define HABITAT_DATA_H
+/**
+ * \file
+ * \brief Output data of a habitat.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_OUTPUT_HABITAT_DATA_H
+#define FAUNA_OUTPUT_HABITAT_DATA_H
 
-#include "Fauna/habitat_forage.h" // for HabitatForage
-#include "Fauna/environment.h" // for HabitatEnvironment
+#include "Fauna/habitat_forage.h"
+#include "Fauna/environment.h"
 
 namespace Fauna {
 namespace Output {
@@ -65,4 +64,4 @@ struct HabitatData {
 } // namespace Fauna
 } // namespace Fauna::Out
 
-#endif // HABITAT_DATA_H
+#endif // FAUNA_OUTPUT_HABITAT_DATA_H

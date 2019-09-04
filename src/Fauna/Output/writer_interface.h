@@ -1,16 +1,23 @@
-#ifndef WRITER_INTERFACE_H
-#define WRITER_INTERFACE_H
+/**
+ * \file
+ * \brief Abstract definition for output writing classes.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_OUTPUT_WRITER_INTERFACE_H
+#define FAUNA_OUTPUT_WRITER_INTERFACE_H
 
 namespace Fauna {
-// Forward declarations:
-class SimulationUnit;
-
 namespace Output {
 // Forward declarations:
 class Datapoint;
 
 /// Interface class for all classes that implement writing output.
 struct WriterInterface {
+  /// Virtual Destructor
+  /** Destructor must be virtual in an interface. */
+  virtual ~WriterInterface() {}
+
   /// Write spatially & temporally aggregated output data.
   /**
    * \param datapoint The data to write.
@@ -21,4 +28,4 @@ struct WriterInterface {
 };
 }  // namespace Output
 }  // namespace Fauna
-#endif  // WRITER_INTERFACE_H
+#endif  // FAUNA_OUTPUT_WRITER_INTERFACE_H

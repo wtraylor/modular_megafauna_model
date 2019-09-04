@@ -177,6 +177,6 @@ The subsystem doesn’t know about the facade.
 	facade ..> subsystem.class3 : <<call>>
 @enduml
 
-\author Wolfgang Pappa, Senckenberg BiK-F
+\author Wolfgang Traylor, Senckenberg BiK-F
 \date May 2017
 \see \ref page_design

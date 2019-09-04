@@ -1,9 +1,9 @@
 /' PlantUML diagrams for the herbivory module.
- ' author: Wolfgang Pappa, Senckenberg BiK-F
+ ' author: Wolfgang Traylor, Senckenberg BiK-F
  ' date: August 2017
- ' 
+ '
  ' PlantUML is free software under the GPL license.
- ' See http://plantuml.com 
+ ' See http://plantuml.com
  '
  ' Please keep the **alphabetical order** of the diagrams.
  '/
@@ -18,9 +18,9 @@
 	node "Instruction Files" as insfiles
 	guess        <..  patchhabitat
 	patchhabitat  --  herbivory
-	herbivory     --  herbivoutput 
+	herbivory     --  herbivoutput
 	herbivoutput  ..> outputfiles : write
-	herbivory     --  paramreader 
+	herbivory     --  paramreader
 	paramreader   ..> insfiles  : read
 @enduml
 
@@ -44,7 +44,7 @@
 		exception <|-- logic_error
 		exception <|-- runtime_error
 		logic_error <|-- invalid_argument
-		logic_error <|-- out_of_range 
+		logic_error <|-- out_of_range
 	}
 @enduml
 
@@ -142,7 +142,7 @@
       EC_ALLOMETRIC,
       EC_TAYLOR_1981,
       EC_THERMOREGULATION
-    } 
+    }
 	}
 	HerbivoreBase  ..> "*" "Energy Expenditure"
     package "Digestive Limit" <<rectangle>>  {
@@ -151,14 +151,14 @@
       DL_ALLOMETRIC,
       DL_FIXED_FRACTION,
       DL_ILLIUS_GORDON_1992
-    } 
+    }
   HerbivoreBase  ..> "1" "Digestive Limit"
 	package "Foraging Limits" <<rectangle>>  {
     enum ForagingLimit{
       FL_ILLIUS_OCONNOR_2000
       FL_GENERAL_FUNCTIONAL_RESPONSE
     }
-	} 
+	}
 	HerbivoreBase  ..> "*" "Foraging Limits"
 	package "Mortality" <<rectangle>> {
 		class GetBackgroundMortality           <<functor>>
@@ -177,7 +177,7 @@
 	namespace Fauna{
 		class Simulator
 		abstract Habitat
-		interface HerbivoreInterface 
+		interface HerbivoreInterface
 		class Hft
 		interface PopulationInterface
 		Simulator            ..> SimulationUnit : <<use>>
@@ -299,8 +299,8 @@ competition      -down-> feeding
 @enduml
 
 @startuml (id=outputmodule_class)
-	hide members 
-	annotation "Output Directory" as outputdirectory 
+	hide members
+	annotation "Output Directory" as outputdirectory
 	namespace GuessOutput{
 		class HerbivoryOutput <<singleton>>
 		abstract OutputChannel
@@ -378,7 +378,7 @@ competition      -down-> feeding
 
 	framework    -> gridcell : <<create>>
 	activate gridcell
-	
+
 	gridcell     -> patch : <<create>>
 	activate patch
 
@@ -449,7 +449,7 @@ competition      -down-> feeding
 	namespace FaunaSim{
 		Framework                 ..> Fauna.Parameters
 		Framework                 ..> Fauna.Hft
-	} 
+	}
 @enduml
 
 @startuml (id=parameters_classes)
@@ -509,8 +509,8 @@ competition      -down-> feeding
 
 @startuml (id=testsim_classes)
 	hide members
-	hide methods 
-	annotation "parameters.h" as parameters 
+	hide methods
+	annotation "parameters.h" as parameters
 	namespace FaunaSim {
 		class "Framework" <<singleton>>
 		class HabitatGroup
@@ -522,7 +522,7 @@ competition      -down-> feeding
 	}
 	namespace Fauna {
 		class "ParamReader"   <<singleton>>
-		abstract Habitat 
+		abstract Habitat
 		Simulator     ..> Habitat                        : <<call>>
 		SimulationUnit *-> Habitat
 	}
@@ -531,7 +531,7 @@ competition      -down-> feeding
 	FaunaSim.Framework ..> Fauna.ParamReader              : <<use>>
 	FaunaSim.Framework .up.> .parameters                    : <<use>>
 	FaunaSim.Framework ..> Fauna.Simulator                : <<create>>
-	FaunaSim.Framework *-left-> "1" .GuessOutput.HerbivoryOutput   
+	FaunaSim.Framework *-left-> "1" .GuessOutput.HerbivoryOutput
 	FaunaSim.Framework .left.> .GuessOutput.FileOutputChannel : <<create>>
 	FaunaSim.Framework ..> "*" FaunaSim.HabitatGroup      : <<create>>
 	annotation "main()" as main

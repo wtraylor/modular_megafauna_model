@@ -1,5 +1,11 @@
-#ifndef WORLD_H
-#define WORLD_H
+/**
+ * \file
+ * \brief Central management of all herbivores and habitats.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_WORLD_H
+#define FAUNA_WORLD_H
 
 #include <list>
 #include <memory>
@@ -8,11 +14,9 @@ namespace Fauna {
 // Forward declarations
 class Date;
 class Habitat;
-class Hft;
 class HftList;
 class InsfileContent;
 class Parameters;
-class PopulationInterface;
 class SimulationUnit;
 class WorldConstructor;
 
@@ -113,4 +117,4 @@ class World {
   const std::unique_ptr<WorldConstructor> world_constructor;
 };
 }  // namespace Fauna
-#endif  // WORLD_H
+#endif  // FAUNA_WORLD_H

@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::DateInterval.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "date_interval.h"
 #include "parameters.h"

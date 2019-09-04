@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::Output::Aggregator.
+ * \copyright ...
+ * \date 2019
+ */
 #include "aggregator.h"
 #include "catch.hpp"
 

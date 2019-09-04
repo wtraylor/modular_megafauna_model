@@ -40,7 +40,7 @@ Coding Guidelines
 This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pitchfork) for C++ projects.
 Here is a summary of the relevant parts:
 
-- **Namespace Folders:** The `src/` directory has subfolders reflecting the namespaces of the contained components.
+- **Namespace Folders:** The `src/` directory has subfolders reflecting the namespaces of the contained components. To minimize the danger of name collision, the header **include guards** contain the namespace hierarchy also, e.g. `FAUNA_OUTPUT_HABITAT_DATA_H`.
 
 - **Separate Header Placement:** Header (`*.h`) and source (`*.cpp`) files are kept together in `src/` if they are _private_ (not part of the library interface). _Public_ headers are placed in `include/` while their corresponding source files remain in `src/`.
 
@@ -59,13 +59,22 @@ Please install the plugin for your text editor if available: [editorconfig.org/]
 
 #### Naming
 
-- Classes are named in CamelCase with upper-case first letter, e.g. `MyExampleClass`.
-    + Enum types are like classes.
-- Functions are imperative verbs with underscores, e.g. `create_new_herbivores()`.
-- Global constants as well as static const member and function variables are all-uppercase with underscores, e.g. `MY_GLOBAL_CONSTANT`.
-    + C-style enum elements are similar to constants, but have additionally a prefix with the initials of the type name. For instance the elements in the enum `ForageType` will all start with `FT_`, like `FT_GRASS`.
-    + C++11-style enum class elements don’t have global scope and thus don’t require a prefix. Since the shouting tone of all-uppercase names is distracting, just use CamelCase for the enum members, e.g. `OutputInterval::Annual`.
-- Namespaces are short and lower-case with first letter capitalized, e.g. `Fauna`.
+- **Files** are always lower-case with underscores to separate words.
+    + Header files end with `.h`, source files with `.cpp`, and the corresponding unit test files with `.test.cpp`.
+    + If a file only contains one class, name the file like the class.
+    + If a file contains several classes, use a plural like `net_energy_models.h`.
+    + If a file contains a collection of functionality, use an abstract grouping noun, e.g. `stochasticity.h` or `nitrogen.h`.
+
+- **Classes** are named in CamelCase with upper-case first letter, e.g. `MyExampleClass`. Don’t repeat the namespace in the class name (avoid something like `Output::OutputDataClass`).
+    + **Enum** types are like classes.
+
+- **Functions** are imperative verbs with underscores, e.g. `create_new_herbivores()`.
+
+- Global **constants** as well as static const member and function variables are all-uppercase with underscores, e.g. `MY_GLOBAL_CONSTANT`.
+    + C-style **enum elements** are similar to constants, but have additionally a prefix with the initials of the type name. For instance the elements in the enum `ForageType` will all start with `FT_`, like `FT_GRASS`.
+    + C++11-style **enum class elements** don’t have global scope and thus don’t require a prefix. Since the shouting tone of all-uppercase names is distracting, just use CamelCase for the enum members, e.g. `OutputInterval::Annual`.
+
+- **Namespaces** are short and lower-case with first letter capitalized, e.g. `Fauna`.
 
 #### Alphabetical Order
 An example class definition in a header file:
@@ -121,18 +130,34 @@ namespace {
 Begin each `.h` or `.cpp` file with a doxygen header containing a brief description.
 The description will appear in the file list of the generated doxygen documentation.
 Ususally the brief description will be the same for a `.h` and its `.cpp` file.
+If it is only one class in the header file, you can also copy the `\brief` description from that class.
+Here is an example:
+
 ```cpp
-/// \file
-/// \brief Management classes of herbivore populations.
+/**
+ * \file
+ * \brief Management classes of herbivore populations.
+ * \copyright <TODO: fill in license of the project>
+ * \date <current year>
+ */
 ```
 
-<!--TODO: Is this file header enough? Author? Date? License? -->
+We omit the `\author` field because it might be difficult to keep track of all authors who have contributed.
+(That’s what version control is for.)
+Instead, all contributors of the project shall be listed collectively in the “Authors” section of the `README.md`.
+
+The `\date` field is only relevant for the copyright. (Use Git to see when the file has been changed.)
 
 ### Unit Tests
 Make sure to write a unit test for every logical component.
 If you create a `.cpp` file, there should most likely also be a corresponding `.test.cpp` file that checks the public functions of the class or classes.
 
 Please read the Doxygen page about the testing framework.
+
+### Code Checking Tools
+
+Run [cppclean](https://github.com/myint/cppclean) on the code to find unnecessary `#include`s, unnecessary functions, and a lot more.
+Execute the helper script `./tools/cppclean.sh` in the Bash.
 
 ### Doxygen
 

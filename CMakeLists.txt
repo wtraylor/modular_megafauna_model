@@ -7,6 +7,7 @@ project ("Modular Megafauna Model"
 
 set (SOURCE_FILES
   include/Fauna/Output/habitat_data.h
+  include/Fauna/average.h
   include/Fauna/date.h
   include/Fauna/environment.h
   include/Fauna/forage_types.h
@@ -23,57 +24,79 @@ set (SOURCE_FILES
   src/Fauna/Output/habitat_data.cpp
   src/Fauna/Output/herbivore_data.cpp
   src/Fauna/Output/herbivore_data.h
-  src/Fauna/Output/writer_interface.h
   src/Fauna/Output/text_table_writer.cpp
   src/Fauna/Output/text_table_writer.h
-  src/Fauna/createherbivores.cpp
-  src/Fauna/createherbivores.h
+  src/Fauna/Output/writer_interface.h
+  src/Fauna/average.cpp
+  src/Fauna/breeding_season.cpp
+  src/Fauna/breeding_season.h
+  src/Fauna/cohort_population.cpp
+  src/Fauna/cohort_population.h
+  src/Fauna/create_herbivore_cohort.cpp
+  src/Fauna/create_herbivore_cohort.h
+  src/Fauna/create_herbivore_common.cpp
+  src/Fauna/create_herbivore_common.h
+  src/Fauna/create_herbivore_individual.cpp
+  src/Fauna/create_herbivore_individual.h
   src/Fauna/date.cpp
   src/Fauna/date_interval.cpp
   src/Fauna/date_interval.h
-  src/Fauna/energetics.cpp
-  src/Fauna/energetics.h
-  src/Fauna/feed.cpp
-  src/Fauna/feed.h
+  src/Fauna/expenditure_components.cpp
+  src/Fauna/expenditure_components.h
+  src/Fauna/fatmass_energy_budget.cpp
+  src/Fauna/fatmass_energy_budget.h
+  src/Fauna/feed_herbivores.cpp
+  src/Fauna/feed_herbivores.h
   src/Fauna/fileystem.cpp
   src/Fauna/fileystem.h
   src/Fauna/forage_base.cpp
+  src/Fauna/forage_distribution_algorithms.cpp
+  src/Fauna/forage_distribution_algorithms.h
   src/Fauna/forage_types.cpp
   src/Fauna/forage_values.cpp
-  src/Fauna/forageenergy.cpp
-  src/Fauna/forageenergy.h
-  src/Fauna/foraging.cpp
-  src/Fauna/foraging.h
+  src/Fauna/foraging_limits.cpp
+  src/Fauna/foraging_limits.h
+  src/Fauna/get_forage_demands.cpp
+  src/Fauna/get_forage_demands.h
   src/Fauna/grass_forage.cpp
   src/Fauna/habitat.cpp
   src/Fauna/habitat_forage.cpp
-  src/Fauna/herbivore.cpp
-  src/Fauna/herbivore.h
+  src/Fauna/herbivore_base.cpp
+  src/Fauna/herbivore_base.h
+  src/Fauna/herbivore_cohort.cpp
+  src/Fauna/herbivore_cohort.h
+  src/Fauna/herbivore_individual.cpp
+  src/Fauna/herbivore_individual.h
+  src/Fauna/herbivore_interface.h
   src/Fauna/herbivore_vector.h
   src/Fauna/hft.cpp
   src/Fauna/hft.h
-  src/Fauna/mortality.cpp
-  src/Fauna/mortality.h
+  src/Fauna/hft_list.cpp
+  src/Fauna/hft_list.h
+  src/Fauna/individual_population.cpp
+  src/Fauna/individual_population.h
+  src/Fauna/mortality_factors.cpp
+  src/Fauna/mortality_factors.h
+  src/Fauna/net_energy_models.cpp
+  src/Fauna/net_energy_models.h
   src/Fauna/nitrogen.cpp
   src/Fauna/nitrogen.h
   src/Fauna/parameters.cpp
-  src/Fauna/population.cpp
-  src/Fauna/population.h
+  src/Fauna/population_interface.cpp
+  src/Fauna/population_interface.h
   src/Fauna/population_list.cpp
   src/Fauna/population_list.h
   src/Fauna/read_insfile.cpp
   src/Fauna/read_insfile.h
-  src/Fauna/reproduction.cpp
-  src/Fauna/reproduction.h
+  src/Fauna/reproduction_models.cpp
+  src/Fauna/reproduction_models.h
   src/Fauna/simulate_day.cpp
   src/Fauna/simulate_day.h
   src/Fauna/simulation_unit.cpp
   src/Fauna/simulation_unit.h
-  src/Fauna/utils.cpp
   src/Fauna/world.cpp
   src/Fauna/world_constructor.cpp
   src/Fauna/world_constructor.h
-  include/Fauna/utils.h # TODO: do not include this
 
   src/Fauna/makeshift.h
   src/Fauna/makeshift.cpp
@@ -114,26 +137,34 @@ if (BUILD_TESTING)
     src/Fauna/Output/habitat_data.test.cpp
     src/Fauna/Output/herbivore_data.test.cpp
     src/Fauna/Output/text_table_writer.test.cpp
+    src/Fauna/average.test.cpp
+    src/Fauna/breeding_season.test.cpp
+    src/Fauna/cohort_population.test.cpp
     src/Fauna/date.test.cpp
     src/Fauna/date_interval.test.cpp
-    src/Fauna/energetics.test.cpp
-    src/Fauna/feed.test.cpp
+    src/Fauna/expenditure_components.test.cpp
+    src/Fauna/fatmass_energy_budget.test.cpp
+    src/Fauna/feed_herbivores.test.cpp
     src/Fauna/fileystem.test.cpp
+    src/Fauna/forage_distribution_algorithms.test.cpp
     src/Fauna/forage_values.test.cpp
-    src/Fauna/forageenergy.test.cpp
-    src/Fauna/foraging.test.cpp
+    src/Fauna/foraging_limits.test.cpp
+    src/Fauna/get_forage_demands.test.cpp
     src/Fauna/grass_forage.test.cpp
     src/Fauna/habitat.test.cpp
     src/Fauna/habitat_forage.test.cpp
-    src/Fauna/herbivore.test.cpp
+    src/Fauna/herbivore_base.test.cpp
+    src/Fauna/herbivore_cohort.test.cpp
+    src/Fauna/herbivore_individual.test.cpp
     src/Fauna/hft.test.cpp
-    src/Fauna/mortality.test.cpp
+    src/Fauna/hft_list.test.cpp
+    src/Fauna/individual_population.test.cpp
+    src/Fauna/mortality_factors.test.cpp
+    src/Fauna/net_energy_models.test.cpp
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
-    src/Fauna/population.test.cpp
     src/Fauna/population_list.test.cpp
-    src/Fauna/reproduction.test.cpp
-    src/Fauna/utils.test.cpp
+    src/Fauna/reproduction_models.test.cpp
     src/Fauna/world_constructor.test.cpp
     tests/catch.hpp
     tests/catch_main.cpp
@@ -144,6 +175,12 @@ if (BUILD_TESTING)
     tests/dummy_hft.h
     tests/dummy_population.h
     tests/dummy_population.test.cpp
+    tools/demo_simulator/logistic_grass.cpp
+    tools/demo_simulator/logistic_grass.h
+    tools/demo_simulator/logistic_grass.test.cpp
+    tools/demo_simulator/simple_habitat.cpp
+    tools/demo_simulator/simple_habitat.h
+    tools/demo_simulator/simple_habitat.test.cpp
     )
   target_include_directories (megafauna_unit_tests
     PRIVATE
@@ -161,25 +198,27 @@ if (BUILD_TESTING)
 endif(BUILD_TESTING)
 
 ###########################################################################
-########################  TEST SIMULATOR  #################################
+########################  DEMO SIMULATOR  #################################
 ###########################################################################
 
-option (BUILD_TEST_SIMULATOR
-  "Whether to build the simple megafauna test simulator."
+option (BUILD_DEMO_SIMULATOR
+  "Whether to build the simple megafauna demo simulator."
   ON
   )
 
-if(BUILD_TEST_SIMULATOR)
-  add_executable (megafauna_test_simulator
-    tools/simulator/testhabitat.cpp
-    tools/simulator/testhabitat.h
-    tools/simulator/testsimulation.cpp
-    tools/simulator/testsimulation.h
+if(BUILD_DEMO_SIMULATOR)
+  add_executable (megafauna_demo_simulator
+    tools/demo_simulator/demo_simulator.cpp
+    tools/demo_simulator/demo_simulator.h
+    tools/demo_simulator/logistic_grass.cpp
+    tools/demo_simulator/logistic_grass.h
+    tools/demo_simulator/simple_habitat.cpp
+    tools/demo_simulator/simple_habitat.h
     )
-  target_link_libraries (megafauna_test_simulator
+  target_link_libraries (megafauna_demo_simulator
     ModularMegafaunaModel
     )
-endif(BUILD_TEST_SIMULATOR)
+endif()
 
 ###########################################################################
 ####################  DOXYGEN DOCUMENTATION  ##############################

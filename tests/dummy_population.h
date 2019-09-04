@@ -1,11 +1,18 @@
-#ifndef DUMMY_POPULATION_H
-#define DUMMY_POPULATION_H
+/**
+ * \file
+ * \brief Population implementation for unit tests.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef TESTS_DUMMY_POPULATION_H
+#define TESTS_DUMMY_POPULATION_H
 
 #include "dummy_herbivore.h"
-#include "hft.h"
-#include "population.h"
+#include "population_interface.h"
 
 namespace Fauna {
+class Hft;
+
 /// A population of dummy herbivores
 class DummyPopulation : public PopulationInterface {
  private:
@@ -43,4 +50,4 @@ class DummyPopulation : public PopulationInterface {
 };
 }  // namespace Fauna
 
-#endif  // DUMMY_POPULATION_H
+#endif  // TESTS_DUMMY_POPULATION_H

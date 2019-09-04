@@ -233,7 +233,7 @@ So far, there is no check of congruency between [parameters](\ref Fauna::Paramet
 
 ------------------------------------------------------------
 
-\author Wolfgang Pappa, Senckenberg BiK-F
+\author Wolfgang Traylor, Senckenberg BiK-F
 \date May 2017
 \see \ref page_object_orientation
 \see \ref page_model

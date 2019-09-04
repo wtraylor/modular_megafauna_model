@@ -1,5 +1,11 @@
-#ifndef DUMMY_HABITAT_H
-#define DUMMY_HABITAT_H
+/**
+ * \file
+ * \brief Habitat implementation for unit tests.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef TESTS_DUMMY_HABITAT_H
+#define TESTS_DUMMY_HABITAT_H
 
 #include "habitat.h"
 
@@ -18,4 +24,4 @@ class DummyHabitat : public Habitat {
 
 }
 
-#endif // DUMMY_HABITAT_H
+#endif // TESTS_DUMMY_HABITAT_H

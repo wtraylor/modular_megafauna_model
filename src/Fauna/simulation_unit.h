@@ -1,19 +1,22 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Simulation unit: a habitat + herbivore populations.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date 2018-06-16
-//////////////////////////////////////////////////////////////////////////
-#ifndef SIMULATION_UNIT_H
-#define SIMULATION_UNIT_H
+/**
+ * \file
+ * \brief Simulation unit: a habitat + herbivore populations.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_SIMULATION_UNIT_H
+#define FAUNA_SIMULATION_UNIT_H
 
 #include <memory>
-#include "combined_data.h"
 
 namespace Fauna {
 // forward declaration
 class Habitat;
 class PopulationList;
+
+namespace Output {
+class CombinedData;
+}
 
 /// A habitat with the herbivores that live in it.
 /** \see \ref sec_designoverview */
@@ -62,6 +65,7 @@ class SimulationUnit {
 
   /// Set the flag that initial establishment has been performed.
   void set_initial_establishment_done() { initial_establishment_done = true; }
+
  private:
   std::unique_ptr<Habitat> habitat;
   bool initial_establishment_done;
@@ -69,4 +73,4 @@ class SimulationUnit {
 };
 
 }  // namespace Fauna
-#endif  // SIMULATION_UNIT_H
+#endif  // FAUNA_SIMULATION_UNIT_H

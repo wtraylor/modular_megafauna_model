@@ -46,7 +46,7 @@ population class.
 	+ Add new possible string value for the HFT parameter `expenditure_components` in \ref Fauna::ParamReader::declare_parameters().
 	+ Adjust \ref Fauna::ParamReader::callback() under `callback == CB_EXPENDITURE_COMPONENTS`.
 	+ Expand the comment in the instruction file `data/ins/herbivores.ins`.
-- Implement your algorithm as a free function or a class. See \ref energetics.h for examples.
+- Implement your algorithm as a free function or a class. See \ref expenditure_components.h for examples.
 - Call your model in \ref Fauna::HerbivoreBase::get_todays_expenditure().
 - Update the UML diagram in \ref sec_herbivorebase.
 
@@ -61,7 +61,7 @@ They are called in \ref Fauna::GetForageDemands::get_max_foraging().
 	+ In \ref Fauna::ParamReader::callback() add a string identifier for your implementation under `CB_FORAGING_LIMITS` (also in the error message).
 	+ Add that identifier in the help message under \ref Fauna::ParamReader::declare_parameters().
 	+ Document your option in the example instruction file `data/ins/herbivores.ins`.
-- Implement your foraging limit (preferably as a function object in the file \ref foraging.h, but you can do as you wish).
+- Implement your foraging limit (preferably as a function object in the file \ref foraging_limits.h, but you can do as you wish).
 Make sure that an exception is thrown if it is called with an unknown forage type.
 - Call your implementation in \ref Fauna::GetForageDemands::get_max_foraging().
 - Update the UML diagram in \ref sec_herbivorebase.
@@ -139,8 +139,8 @@ Forage Tutorials {#sec_tutor_forage}
 - Extend \ref Fauna::GetNetEnergyContentDefault.
 
 - Herbivores
-	+ Check all foraging and digestion limits (\ref foraging.h) whether they need to be expanded.
-	+ Check also all models for net energy content (\ref forageenergy.h).
+	+ Check all foraging and digestion limits (\ref foraging_limits.h) whether they need to be expanded.
+	+ Check also all models for net energy content (\ref net_energy_models.h).
 	+ Probably you will need to implement [a new diet composer](\ref sec_new_diet) or adjust existing ones.
 
 - Test Simulations
@@ -257,7 +257,7 @@ ge-using the code for other vegetation models {#sec_reusing_code}
 
 ------------------------------------------------------------
 
-\author Wolfgang Pappa, Senckenberg BiK-F
+\author Wolfgang Traylor, Senckenberg BiK-F
 \date May 2017
 \see \ref page_design
 \see \ref page_model

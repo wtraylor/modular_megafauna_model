@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::Parameters.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "parameters.h"
 using namespace Fauna;

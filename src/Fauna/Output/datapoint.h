@@ -1,9 +1,14 @@
-#ifndef DATA_POINT_H
-#define DATA_POINT_H
+/**
+ * \file
+ * \brief Spatially and temporally aggregated output data container.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_OUTPUT_DATA_POINT_H
+#define FAUNA_OUTPUT_DATA_POINT_H
 
 #include <string>
 #include "combined_data.h"
-#include "date.h"
 #include "date_interval.h"
 
 namespace Fauna {
@@ -39,4 +44,4 @@ struct Datapoint {
 }  // namespace Output
 }  // namespace Fauna
 
-#endif  // DATA_POINT_H
+#endif  // FAUNA_OUTPUT_DATA_POINT_H

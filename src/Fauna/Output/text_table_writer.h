@@ -1,5 +1,11 @@
-#ifndef TEXT_TABLE_WRITER_H
-#define TEXT_TABLE_WRITER_H
+/**
+ * \file
+ * \brief Output of tab-separated text tables.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_OUTPUT_TEXT_TABLE_WRITER_H
+#define FAUNA_OUTPUT_TEXT_TABLE_WRITER_H
 
 #include <fstream>
 #include <vector>
@@ -92,4 +98,4 @@ class TextTableWriter : public WriterInterface {
 }  // namespace Output
 }  // namespace Fauna
 
-#endif  // TEXT_TABLE_WRITER_H
+#endif  // FAUNA_OUTPUT_TEXT_TABLE_WRITER_H

@@ -1,20 +1,14 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Herbivore Functional Type.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date May 2017
-///
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * \file
+ * \brief Herbivore Functional Type (HFT) class and its dependents.
+ * \copyright ...
+ * \date 2019
+ */
 #include "hft.h"
-#include <sstream>  // for is_valid() messages
+#include <sstream>
 #include "parameters.h"
 
 using namespace Fauna;
-
-//============================================================
-// Hft
-//============================================================
 
 Hft::Hft()
     : name("hft"),
@@ -398,25 +392,3 @@ bool Hft::is_valid(const Parameters& params) const {
   return is_valid(params, dump);
 }
 
-//============================================================
-// HftList
-//============================================================
-
-bool HftList::is_valid(const Parameters& params, std::string& msg) const {
-  if (this->size() == 0) {
-    msg = "HFT list is empty.";
-    return false;
-  }
-
-  bool all_valid = true;
-
-  HftList::const_iterator itr = begin();
-  while (itr != end()) {
-    std::string tmp_msg;
-    all_valid &= itr->is_valid(params, tmp_msg);
-    msg += tmp_msg;
-    itr++;
-  }
-
-  return all_valid;
-}

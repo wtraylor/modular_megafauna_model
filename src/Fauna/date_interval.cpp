@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Two dates framing a time interval.
+ * \copyright ...
+ * \date 2019
+ */
 #include "date_interval.h"
 #include <algorithm>
 #include <stdexcept>

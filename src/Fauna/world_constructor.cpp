@@ -1,8 +1,16 @@
+/**
+ * \file
+ * \brief Create objects for the \ref World class.
+ * \copyright ...
+ * \date 2019
+ */
 #include "world_constructor.h"
-#include "feed.h"
+#include "cohort_population.h"
+#include "forage_distribution_algorithms.h"
 #include "hft.h"
+#include "hft_list.h"
+#include "individual_population.h"
 #include "parameters.h"
-#include "population.h"
 #include "population_list.h"
 
 using namespace Fauna;

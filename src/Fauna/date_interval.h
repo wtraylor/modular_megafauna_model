@@ -1,5 +1,11 @@
-#ifndef DATE_INTERVAL_H
-#define DATE_INTERVAL_H
+/**
+ * \file
+ * \brief Two dates framing a time interval.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_DATE_INTERVAL_H
+#define FAUNA_DATE_INTERVAL_H
 
 #include "date.h"
 
@@ -44,4 +50,4 @@ class DateInterval {
 };
 }  // namespace Fauna
 
-#endif  // DATE_INTERVAL_H
+#endif  // FAUNA_DATE_INTERVAL_H

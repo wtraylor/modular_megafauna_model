@@ -1,17 +1,17 @@
-//////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Herbivore Functional Type.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date May 2017
-/////////////////////////////////////////////////////////////////
-#ifndef HFT_H
-#define HFT_H
+/**
+ * \file
+ * \brief Herbivore Functional Type (HFT) class and its dependents.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_HFT_H
+#define FAUNA_HFT_H
 
-#include <cmath>  // for pow()
-#include <set>    // for mortality_factors
+#include <cmath>
+#include <set>
 #include <stdexcept>
 #include <string>
-#include <utility>  // for std::pair
+#include <utility>
 #include <vector>
 
 namespace Fauna {
@@ -378,97 +378,5 @@ struct Hft {
   /** @} */  // Comparison
 };
 
-/// A set of herbivore functional types, unique by name
-class HftList {
- public:
-  /// Get \ref Hft object by its name identifier.
-  const Hft& operator[](const std::string& name) const {
-    const int pos = find(name);
-    if (pos < 0)
-      throw std::logic_error(
-          "HftList::operator[](): "
-          "No Hft object with name \"" +
-          name + "\" in list.");
-    else
-      return operator[](pos);
-  }
-
-  /// Get \ref Hft object by its number.
-  /** \param pos Position in the vector
-   * \throw std::out_of_range If not 0≤pos≤size()
-   */
-  const Hft& operator[](const int pos) const {
-    if (pos >= size() || pos < 0)
-      throw std::out_of_range(
-          "Fauna::HftList::operator[]() "
-          "Parameter \"pos\" out of range.");
-    return vec.at(pos);
-  }
-
-  /// Check whether an \ref Hft of given name exists in the list
-  /** \return true if object in list, false if not */
-  bool contains(const std::string& name) const { return find(name) >= 0; }
-
-  /// Add or replace an \ref Hft object.
-  /** If an object of the same name already exists,
-   * it will be replaced with the new one.
-   * \throw std::invalid_argument `if (hft.name=="")`
-   */
-  void insert(const Hft hft) {
-    if (hft.name == "")
-      throw std::invalid_argument(
-          "HftList::add(): "
-          "Hft.name is empty");
-
-    const int pos = find(hft.name);
-    if (pos >= 0)
-      vec[pos] = hft;  // replace
-    else
-      vec.push_back(hft);  // append new
-  }
-
-  /// Check all HFTs if they are valid.
-  /**
-   * \param[in] params The global simulation parameters.
-   * \param[out] msg Warning or error messages for output.
-   * \return `true` if all HFTs are valid. `false` if one Hft is not valid
-   * or if the list is empty.
-   */
-  bool is_valid(const Fauna::Parameters& params, std::string& msg) const;
-
-  /// Remove all elements with `is_included==false`
-  void remove_excluded() {
-    std::vector<Hft>::iterator iter = vec.begin();
-    while (iter != vec.end())
-      if (!iter->is_included)
-        iter = vec.erase(iter);
-      else
-        iter++;
-  }
-
-  //------------------------------------------------------------
-  /** @{ \name Wrapper around std::vector */
-  typedef std::vector<Hft>::iterator iterator;
-  typedef std::vector<Hft>::const_iterator const_iterator;
-  iterator begin() { return vec.begin(); }
-  const_iterator begin() const { return vec.begin(); }
-  iterator end() { return vec.end(); }
-  const_iterator end() const { return vec.end(); }
-  const int size() const { return vec.size(); }
-  /** @} */  // Container Functionality
- private:
-  /// Vector holding the Hft instances.
-  std::vector<Hft> vec;
-
-  /// Find the position of the \ref Hft with given name.
-  /** \param name \ref Hft::name identifier
-   * \return list position if found, -1 if not in list */
-  int find(const std::string& name) const {
-    for (int i = 0; i < size(); i++)
-      if (vec.at(i).name == name) return i;
-    return -1;
-  }
-};
-
 }  // namespace Fauna
-#endif  // HFT_H
+#endif  // FAUNA_HFT_H

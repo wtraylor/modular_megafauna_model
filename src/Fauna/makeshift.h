@@ -1,13 +1,17 @@
-// Temporary file with some classes/routines that serve testing purpose until
-// the instruction file reader and output are done.
-#ifndef MAKESHIFT_H
-#define MAKESHIFT_H
-
-#include "hft.h"
+/**
+ * \file
+ * \brief Some functions for testing purposes while some functions are missing.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_MAKESHIFT_H
+#define FAUNA_MAKESHIFT_H
 
 namespace Fauna {
+class HftList;
+
 /// Create some sample HFTs.
 HftList construct_makeshift_hfts();
 }  // namespace Fauna
 
-#endif  // MAKESHIFT_H
+#endif  // FAUNA_MAKESHIFT_H

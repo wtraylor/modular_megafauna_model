@@ -1,11 +1,11 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Forage in a habitat.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-//////////////////////////////////////////////////////////////////////////
-#ifndef HABITAT_FORAGE_H
-#define HABITAT_FORAGE_H
+/**
+ * \file
+ * \brief Forage in a habitat.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_HABITAT_FORAGE_H
+#define FAUNA_HABITAT_FORAGE_H
 
 #include "Fauna/forage_types.h"
 #include "Fauna/forage_values.h"
@@ -96,4 +96,4 @@ class HabitatForage {
   ForageBase inedible;
 };
 }  // namespace Fauna
-#endif  // HABITAT_FORAGE_H
+#endif  // FAUNA_HABITAT_FORAGE_H

@@ -1,12 +1,17 @@
-#ifndef AGGREGATOR_H
-#define AGGREGATOR_H
+/**
+ * \file
+ * \brief Collect output of over space and time.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_OUTPUT_AGGREGATOR_H
+#define FAUNA_OUTPUT_AGGREGATOR_H
 
 #include "datapoint.h"
 
 namespace Fauna {
 // Forward Declarations
 class Date;
-class SimulationUnit;
 
 namespace Output {
 /// Aggregates output from different simulation units over time.
@@ -56,4 +61,4 @@ class Aggregator {
 }  // namespace Output
 }  // namespace Fauna
 
-#endif  // AGGREGATOR_H
+#endif  // FAUNA_OUTPUT_AGGREGATOR_H

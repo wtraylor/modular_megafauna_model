@@ -1,11 +1,11 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Base class for all forage types.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Base class for all forage types.
+ * \copyright ...
+ * \date 2019
+ */
 #include "forage_base.h"
-#include "utils.h"
+#include "average.h"
 
 using namespace Fauna;
 

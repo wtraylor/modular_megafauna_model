@@ -1,20 +1,19 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Classes for the spatial units where herbivores live.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date May 2017
-//////////////////////////////////////////////////////////////////////////
-#ifndef HABITAT_H
-#define HABITAT_H
+/**
+ * \file
+ * \brief The spatial unit where herbivores live in.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_HABITAT_H
+#define FAUNA_HABITAT_H
 
-#include <cassert>                      // for assert()
-#include <list>                         // for HabitatList
-#include <memory>                       // for std::auto_ptr
-#include "Fauna/Output/habitat_data.h"  // for HabitatData
-#include "Fauna/habitat_forage.h"       // for HabitatForage
+#include <cassert>
+#include <list>
+#include <memory>
+#include "Fauna/Output/habitat_data.h"
 
 namespace Fauna {
-// Forward declaration of classes in the same namespace
+// Forward Declarations
 class HabitatEnvironment;
 
 /// Abstract class of a homogenous spatial unit populated by herbivores
@@ -126,4 +125,4 @@ class Habitat {
 /// A list of \ref Habitat pointers.
 typedef std::list<const Habitat*> HabitatList;
 }  // namespace Fauna
-#endif  // HABITAT_H
+#endif  // FAUNA_HABITAT_H

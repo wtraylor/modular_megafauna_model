@@ -1,16 +1,16 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Basic classes encapsulating forage amounts & fractions.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-//////////////////////////////////////////////////////////////////////////
-#ifndef FORAGE_VALUES_H
-#define FORAGE_VALUES_H
+/**
+ * \file
+ * \brief Basic classes encapsulating forage amounts & fractions.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_FORAGE_VALUES_H
+#define FAUNA_FORAGE_VALUES_H
 
 #include <cmath>
 #include <map>
+#include "Fauna/average.h"
 #include "Fauna/forage_types.h"
-#include "Fauna/utils.h"
 
 namespace Fauna {
 class HerbivoreInterface;  // for ForageDistribution
@@ -447,4 +447,4 @@ ForageFraction convert_mj_to_kg_proportionally(
     const ForageEnergyContent& mj_per_kg, const ForageFraction& mj_proportions);
 
 }  // namespace Fauna
-#endif  // FORAGE_VALUES_H
+#endif  // FAUNA_FORAGE_VALUES_H

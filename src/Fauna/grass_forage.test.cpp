@@ -1,6 +1,12 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::GrassForage.
+ * \copyright ...
+ * \date 2019
+ */
+#include "average.h"
 #include "catch.hpp"
 #include "grass_forage.h"
-#include "utils.h"
 
 using namespace Fauna;
 

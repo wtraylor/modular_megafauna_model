@@ -1,16 +1,14 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Function objects to perform simulations in the herbivore model.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date 2018-06-16
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * \file
+ * \brief Function object to perform simulations in the herbivore model.
+ * \copyright ...
+ * \date 2019
+ */
 #include "simulate_day.h"
-#include "environment.h"
-#include "feed.h"
+#include "feed_herbivores.h"
 #include "habitat.h"
-#include "herbivore.h"
-#include "population.h"
+#include "herbivore_interface.h"
+#include "population_interface.h"
 #include "population_list.h"
 #include "simulation_unit.h"
 

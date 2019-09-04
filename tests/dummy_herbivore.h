@@ -1,7 +1,13 @@
-#ifndef DUMMY_HERBIVORE_H
-#define DUMMY_HERBIVORE_H
+/**
+ * \file
+ * \brief Herbivore implementation for unit tests.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef TESTS_DUMMY_HERBIVORE_H
+#define TESTS_DUMMY_HERBIVORE_H
 
-#include "herbivore.h"
+#include "herbivore_interface.h"
 #include "herbivore_data.h"
 
 namespace Fauna {
@@ -34,7 +40,7 @@ class DummyHerbivore : public HerbivoreInterface {
   virtual double get_kg_per_km2() const { return bodymass * ind_per_km2; }
 
   virtual const Output::HerbivoreData& get_todays_output() const {
-    static Output::HerbivoreData dummy_output;
+    static const Output::HerbivoreData dummy_output;
     return dummy_output;
   }
 
@@ -65,4 +71,4 @@ class DummyHerbivore : public HerbivoreInterface {
 };
 }  // namespace Fauna
 
-#endif  // DUMMY_HERBIVORE_H
+#endif  // TESTS_DUMMY_HERBIVORE_H

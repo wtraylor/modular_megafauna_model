@@ -1,7 +1,13 @@
-#ifndef READ_INSFILE_H
-#define READ_INSFILE_H
+/**
+ * \file
+ * \brief Read the instruction file with HFTs and global parameters.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_READ_INSFILE_H
+#define FAUNA_READ_INSFILE_H
 
-#include "hft.h"
+#include "hft_list.h"
 #include "parameters.h"
 
 namespace Fauna {
@@ -23,4 +29,4 @@ struct InsfileContent {
 InsfileContent read_instruction_file(const std::string filename);
 }  // namespace Fauna
 
-#endif  // READ_INSFILE_H
+#endif  // FAUNA_READ_INSFILE_H

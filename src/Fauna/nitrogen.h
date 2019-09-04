@@ -1,12 +1,11 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Nitrogen uptake and excretion by herbivores
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date April 2018
-//////////////////////////////////////////////////////////////////////////
-
-#ifndef NITROGEN_H
-#define NITROGEN_H
+/**
+ * \file
+ * \brief Nitrogen uptake and excretion by herbivores
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_NITROGEN_H
+#define FAUNA_NITROGEN_H
 
 namespace Fauna {
 /// Time of ingesta to pass digestion [hours].
@@ -129,4 +128,4 @@ class NitrogenInHerbivore {
 };
 }  // namespace Fauna
 
-#endif  //  NITROGEN_H
+#endif  //  FAUNA_NITROGEN_H

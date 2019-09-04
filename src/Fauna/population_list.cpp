@@ -1,7 +1,13 @@
+/**
+ * \file
+ * \brief A list of populations per HFT in a habitat.
+ * \copyright ...
+ * \date 2019
+ */
 #include "population_list.h"
-#include "herbivore.h"
+#include "herbivore_interface.h"
 #include "hft.h"
-#include "population.h"
+#include "population_interface.h"
 
 using namespace Fauna;
 
@@ -22,7 +28,7 @@ void PopulationList::add(PopulationInterface* new_pop) {
   list.emplace_back(new_pop);
 }
 
-void PopulationList::establish(const HftList& hftlist){
+void PopulationList::establish(const HftList& hftlist) {
   // TODO
 }
 
@@ -55,8 +61,7 @@ HerbivoreVector PopulationList::get_all_herbivores() {
   return result;
 }
 
-ConstHerbivoreVector PopulationList::get_all_herbivores()
-    const {
+ConstHerbivoreVector PopulationList::get_all_herbivores() const {
   std::vector<const HerbivoreInterface*> result;
   result.reserve(1024);  // Reserve plenty of space for herbivore pointers.
 
@@ -70,7 +75,7 @@ ConstHerbivoreVector PopulationList::get_all_herbivores()
   return result;
 }
 
-void PopulationList::kill_nonviable(){
+void PopulationList::kill_nonviable() {
   for (auto& pop : list) {
     // If the population’s density is below minimum, mark all
     // herbivores as dead.

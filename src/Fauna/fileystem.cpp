@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Interaction with the filesystem on Unix and Windows platforms.
+ * \copyright ...
+ * \date 2019
+ */
 #include "fileystem.h"
 #include <errno.h>
 #include <sys/stat.h>

@@ -1,8 +1,15 @@
-#ifndef DUMMY_HFT_H
-#define DUMMY_HFT_H
+/**
+ * \file
+ * \brief Hft implementation for unit tests.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef TESTS_DUMMY_HFT_H
+#define TESTS_DUMMY_HFT_H
 
 #include <sstream>
 #include "hft.h"
+#include "hft_list.h"
 
 namespace Fauna {
 /// Create a simple, valid HftList
@@ -27,4 +34,4 @@ inline HftList create_hfts(const int count, const Parameters& params) {
 }
 }  // namespace Fauna
 
-#endif  // DUMMY_HFT_H
+#endif  // TESTS_DUMMY_HFT_H

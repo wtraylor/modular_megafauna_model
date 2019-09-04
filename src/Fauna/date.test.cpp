@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::Date.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "date.h"
 
@@ -93,5 +99,26 @@ TEST_CASE("Fauna::Date", "") {
     CHECK(Date(364, 0).get_month(true) == 11);
     CHECK(Date(365, 0).get_month() == 11);
     CHECK(Date(365, 0).get_month(true) == 11);
+  }
+
+  SECTION("get_day_of_month()") {
+    // Just check some arbitrary dates
+
+    // Jan 1st
+    CHECK(Date(0, 0).get_day_of_month() == 0);
+    CHECK(Date(0, 0).get_day_of_month(true) == 0);
+
+    // Feb 2nd
+    CHECK(Date(32, 0).get_day_of_month() == 1);
+    CHECK(Date(32, 0).get_day_of_month(true) == 1);
+
+    // March 1st
+    CHECK(Date(31 + 28, 0).get_day_of_month() == 0);
+    CHECK(Date(31 + 28 + 1, 0).get_day_of_month(true) == 0);
+
+    // Dec 31st
+    CHECK(Date(364, 0).get_day_of_month() == 30);
+    CHECK(Date(365, 0).get_day_of_month() == 30);  // assume leap year
+    CHECK(Date(365, 0).get_day_of_month(true) == 30);
   }
 }

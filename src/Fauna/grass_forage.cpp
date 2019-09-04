@@ -1,11 +1,11 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Forage in a habitat.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief The forage class for grass.
+ * \copyright ...
+ * \date 2019
+ */
 #include "grass_forage.h"
-#include "utils.h"
+#include "average.h"
 
 using namespace Fauna;
 

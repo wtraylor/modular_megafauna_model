@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for DummyHerbivore.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "dummy_herbivore.h"
 using namespace Fauna;
