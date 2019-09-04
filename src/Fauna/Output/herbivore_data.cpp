@@ -122,34 +122,34 @@ HerbivoreData HerbivoreData::create_datapoint(
        itr != vec.end(); itr++) {
     const HerbivoreData& other = *itr;
 
-    // ------------------------------------------------------------------
-    // AVERAGE building for per-individual variables
-    // All numbers are weighed by the individual density.
-    result.age_years = average(result.age_years, other.age_years,
-                               result.inddens, other.inddens);
-    result.bodyfat =
-        average(result.bodyfat, other.bodyfat, result.inddens, other.inddens);
-    result.eaten_nitrogen_per_ind =
-        average(result.eaten_nitrogen_per_ind, other.eaten_nitrogen_per_ind,
-                result.inddens, other.inddens);
-    result.expenditure = average(result.expenditure, other.expenditure,
+    if (result.inddens > 0.0 || other.inddens > 0.0) {
+      // AVERAGE building for per-individual variables
+      // All numbers are weighed by the individual density.
+      result.age_years = average(result.age_years, other.age_years,
                                  result.inddens, other.inddens);
+      result.bodyfat =
+          average(result.bodyfat, other.bodyfat, result.inddens, other.inddens);
+      result.eaten_nitrogen_per_ind =
+          average(result.eaten_nitrogen_per_ind, other.eaten_nitrogen_per_ind,
+                  result.inddens, other.inddens);
+      result.expenditure = average(result.expenditure, other.expenditure,
+                                   result.inddens, other.inddens);
 
-    result.eaten_forage_per_ind.merge(other.eaten_forage_per_ind);
-    result.eaten_forage_per_mass.merge(other.eaten_forage_per_mass);
-    merge_energy_content(result.energy_content, other.energy_content);
-    result.energy_intake_per_ind.merge(other.energy_intake_per_ind);
-    result.energy_intake_per_mass.merge(other.energy_intake_per_mass);
+      result.eaten_forage_per_ind.merge(other.eaten_forage_per_ind);
+      result.eaten_forage_per_mass.merge(other.eaten_forage_per_mass);
+      merge_energy_content(result.energy_content, other.energy_content);
+      result.energy_intake_per_ind.merge(other.energy_intake_per_ind);
+      result.energy_intake_per_mass.merge(other.energy_intake_per_mass);
 
-    // Include *all* mortality factors.
-    for (MortMap::const_iterator itr = other.mortality.begin();
-         itr != other.mortality.end(); itr++) {
-      result.mortality[itr->first] =
-          average(result.mortality[itr->first], itr->second, result.inddens,
-                  other.inddens);
+      // Include *all* mortality factors.
+      for (MortMap::const_iterator itr = other.mortality.begin();
+           itr != other.mortality.end(); itr++) {
+        result.mortality[itr->first] =
+            average(result.mortality[itr->first], itr->second, result.inddens,
+                    other.inddens);
+      }
     }
 
-    // ------------------------------------------------------------------
     // SUM building for per-area and per-habitat variables
     result.bound_nitrogen += other.bound_nitrogen;
     result.inddens += other.inddens;
@@ -159,5 +159,4 @@ HerbivoreData HerbivoreData::create_datapoint(
 
   return result;
 }
-
 
