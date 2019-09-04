@@ -257,7 +257,7 @@ ge-using the code for other vegetation models {#sec_reusing_code}
 
 ------------------------------------------------------------
 
-\author Wolfgang Pappa, Senckenberg BiK-F
+\author Wolfgang Traylor, Senckenberg BiK-F
 \date May 2017
 \see \ref page_design
 \see \ref page_model

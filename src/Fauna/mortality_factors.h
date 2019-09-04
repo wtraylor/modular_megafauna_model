@@ -85,7 +85,7 @@ class GetSimpleLifespanMortality {
  * <H1> Shift Body Condition </H1>
  *
  * \note The following extension to the mortality model is by Wolfgang
- * Pappa and *not* from Illius & O’Connor (2000).
+ :w
  *
  * When the herbivores with a “negative body condition” die, the cohort
  * mean would increase. To account for that, the switch

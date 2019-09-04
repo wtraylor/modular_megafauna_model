@@ -70,7 +70,7 @@ These are the relevant parameters:
 
 ------------------------------------------------------------
 
-\author Wolfgang Pappa, Senckenberg BiK-F
+\author Wolfgang Traylor, Senckenberg BiK-F
 \date June 2017
 \see \ref page_design
 \see \ref page_model
