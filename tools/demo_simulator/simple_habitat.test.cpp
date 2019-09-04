@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::Demo::SimpleHabitat.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "population_list.h"
 #include "simple_habitat.h"

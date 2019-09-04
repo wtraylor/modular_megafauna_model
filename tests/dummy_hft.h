@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Hft implementation for unit tests.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef TESTS_DUMMY_HFT_H
 #define TESTS_DUMMY_HFT_H
 

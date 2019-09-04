@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Read the instruction file with HFTs and global parameters.
+ * \copyright ...
+ * \date 2019
+ */
 #include "read_insfile.h"
 #include "hft.h"
 #include "makeshift.h"

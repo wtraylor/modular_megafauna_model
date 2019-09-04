@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for nitrogen functionality.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "nitrogen.h"
 using namespace Fauna;

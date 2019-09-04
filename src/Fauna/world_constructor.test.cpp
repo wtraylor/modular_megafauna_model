@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::WorldConstructor.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "dummy_habitat.h"
 #include "dummy_hft.h"

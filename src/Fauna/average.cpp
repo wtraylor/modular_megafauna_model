@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Helper functions/classes to aggregate data.
+ * \copyright ...
+ * \date 2019
+ */
 #include "average.h"
 #include <cassert>
 #include <cmath>

@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Herbivore implementation for unit tests.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef TESTS_DUMMY_HERBIVORE_H
 #define TESTS_DUMMY_HERBIVORE_H
 

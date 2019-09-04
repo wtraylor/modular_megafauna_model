@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Forage in a habitat.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Forage in a habitat.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_HABITAT_FORAGE_H
 #define FAUNA_HABITAT_FORAGE_H
 

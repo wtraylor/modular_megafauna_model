@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief A list of populations per HFT in a habitat.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_POPULATION_LIST_H
 #define FAUNA_POPULATION_LIST_H
 

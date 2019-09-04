@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::GetForageDemands.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "dummy_hft.h"
 #include "get_forage_demands.h"

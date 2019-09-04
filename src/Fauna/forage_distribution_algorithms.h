@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Different models how to distribute available forage among herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_FORAGE_DISTRIBUTION_ALGORITHMS_H
 #define FAUNA_FORAGE_DISTRIBUTION_ALGORITHMS_H
 

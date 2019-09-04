@@ -1,10 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Nitrogen uptake and excretion by herbivores
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date April 2018
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * \file
+ * \brief Nitrogen uptake and excretion by herbivores
+ * \copyright ...
+ * \date 2019
+ */
 #include <algorithm>
 #include <cassert>
 #include <cmath>

@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Different models how to distribute available forage among herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #include "forage_distribution_algorithms.h"
 #include "habitat_forage.h"
 

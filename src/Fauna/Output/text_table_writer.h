@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Output of tab-separated text tables.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_OUTPUT_TEXT_TABLE_WRITER_H
 #define FAUNA_OUTPUT_TEXT_TABLE_WRITER_H
 

@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Abstract class for any population of herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #include "population_interface.h"
 #include "hft.h"
 #include "herbivore_interface.h"

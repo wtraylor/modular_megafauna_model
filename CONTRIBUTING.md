@@ -121,12 +121,23 @@ namespace {
 Begin each `.h` or `.cpp` file with a doxygen header containing a brief description.
 The description will appear in the file list of the generated doxygen documentation.
 Ususally the brief description will be the same for a `.h` and its `.cpp` file.
+If it is only one class in the header file, you can also copy the `\brief` description from that class.
+Here is an example:
+
 ```cpp
-/// \file
-/// \brief Management classes of herbivore populations.
+/**
+ * \file
+ * \brief Management classes of herbivore populations.
+ * \copyright <TODO: fill in license of the project>
+ * \date <current year>
+ */
 ```
 
-<!--TODO: Is this file header enough? Author? Date? License? -->
+We omit the `\author` field because it might be difficult to keep track of all authors who have contributed.
+(That’s what version control is for.)
+Instead, all contributors of the project shall be listed collectively in the “Authors” section of the `README.md`.
+
+The `\date` field is only relevant for the copyright. (Use Git to see when the file has been changed.)
 
 ### Unit Tests
 Make sure to write a unit test for every logical component.

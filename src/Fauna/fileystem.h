@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Interaction with the filesystem on Unix and Windows platforms.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_FILESYSTEM_H
 #define FAUNA_FILESYSTEM_H
 

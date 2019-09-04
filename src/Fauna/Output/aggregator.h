@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Collect output of over space and time.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_OUTPUT_AGGREGATOR_H
 #define FAUNA_OUTPUT_AGGREGATOR_H
 

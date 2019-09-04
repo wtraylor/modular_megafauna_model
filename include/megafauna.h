@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Public header for the Modular Megafauna Model
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date 2019-06-25
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Public header for the Modular Megafauna Model
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef MODULAR_MEGAFAUNA_LIBRARY_H
 #define MODULAR_MEGAFAUNA_LIBRARY_H
 

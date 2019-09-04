@@ -1,7 +1,9 @@
-/// \brief Classes to construct herbivores.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date July 2017
-///////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Classes to construct herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_CREATE_HERBIVORES_H
 #define FAUNA_CREATE_HERBIVORES_H
 

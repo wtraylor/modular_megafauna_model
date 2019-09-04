@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Central management of all herbivores and habitats.
+ * \copyright ...
+ * \date 2019
+ */
 #include "world.h"
 #include <algorithm>
 #include <stdexcept>

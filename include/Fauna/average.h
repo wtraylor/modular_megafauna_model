@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Helper functions/classes to aggregate data.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_AVERAGE_H
 #define FAUNA_AVERAGE_H
 

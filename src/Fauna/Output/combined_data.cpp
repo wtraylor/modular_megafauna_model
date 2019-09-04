@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Combined herbivore + habitat output data.
+ * \copyright ...
+ * \date 2019
+ */
 #include "combined_data.h"
 #include "grass_forage.h"
 #include "hft.h"

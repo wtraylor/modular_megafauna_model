@@ -1,9 +1,9 @@
-////////////////////////////////////////////////////////////
-/// \file
-/// \brief Instruction file parameters of the herbivory module.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date June 2017
-////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Global parameters for the megafauna library.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_PARAMETERS_H
 #define FAUNA_PARAMETERS_H
 

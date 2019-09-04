@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::Hft.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "hft.h"
 #include "parameters.h"

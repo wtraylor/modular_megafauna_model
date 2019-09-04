@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::Output::CombinedData.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "combined_data.h"
 #include "dummy_hft.h"

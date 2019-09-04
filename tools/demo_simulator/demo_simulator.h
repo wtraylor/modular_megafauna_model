@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief A minimal program to show how to use the megafauna library.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_DEMO_SIMULATOR_H
 #define FAUNA_DEMO_SIMULATOR_H
 

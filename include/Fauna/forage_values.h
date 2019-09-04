@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Basic classes encapsulating forage amounts & fractions.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Basic classes encapsulating forage amounts & fractions.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_FORAGE_VALUES_H
 #define FAUNA_FORAGE_VALUES_H
 

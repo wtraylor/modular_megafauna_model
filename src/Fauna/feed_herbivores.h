@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Function object to feed herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_FEED_HERBIVORES_H
 #define FAUNA_FEED_HERBIVORES_H
 

@@ -1,10 +1,9 @@
-//////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Herbivore mortality factor implementations.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date May 2017
-/////////////////////////////////////////////////////////////////
-
+/**
+ * \file
+ * \brief Different implementations for how herbivores die.
+ * \copyright ...
+ * \date 2019
+ */
 #include "mortality_factors.h"
 #include <algorithm>
 #include <cassert>

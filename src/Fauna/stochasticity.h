@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Helper functions to define (pseudo-)randomness in the model.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_STOCHASTICITY_H
 #define FAUNA_STOCHASTICITY_H
 

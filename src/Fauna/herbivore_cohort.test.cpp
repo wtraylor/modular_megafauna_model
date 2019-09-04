@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::HerbivoreCohort.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "herbivore_cohort.h"
 #include "parameters.h"

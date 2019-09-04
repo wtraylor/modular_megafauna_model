@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Minimal habitat implementation for demonstration purpose.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_DEMO_SIMPLE_HABITAT_H
 #define FAUNA_DEMO_SIMPLE_HABITAT_H
 

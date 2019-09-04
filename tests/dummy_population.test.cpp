@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for DummyPopulation.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "dummy_population.h"
 using namespace Fauna;

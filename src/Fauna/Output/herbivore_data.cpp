@@ -1,10 +1,9 @@
-///////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Herbivore output data.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-/// \see \ref sec_output
-////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Herbivore output data.
+ * \copyright ...
+ * \date 2019
+ */
 #include "herbivore_data.h"
 using namespace Fauna::Output;
 

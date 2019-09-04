@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Spatially and temporally aggregated output data container.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_OUTPUT_DATA_POINT_H
 #define FAUNA_OUTPUT_DATA_POINT_H
 

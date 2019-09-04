@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Implementation of \ref HerbivoreBase as individual animals.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_HERBIVORE_INDIVIDUAL_H
 #define FAUNA_HERBIVORE_INDIVIDUAL_H
 

@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Herbivore mortality factor implementations.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date May 2017
-/////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Different implementations for how herbivores die.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_MORTALITY_FACTORS_H
 #define FAUNA_MORTALITY_FACTORS_H
 

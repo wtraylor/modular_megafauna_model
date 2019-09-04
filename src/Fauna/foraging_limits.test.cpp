@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for models limiting daily forage intake.
+ * \copyright ...
+ * \date 2019
+ */
 #include "foraging_limits.h"
 #include "catch.hpp"
 

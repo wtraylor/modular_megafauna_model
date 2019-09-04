@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief The forage class for grass.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief The forage class for grass.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_GRASS_FORAGE_H
 #define FAUNA_GRASS_FORAGE_H
 

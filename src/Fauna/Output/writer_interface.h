@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Abstract definition for output writing classes.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_OUTPUT_WRITER_INTERFACE_H
 #define FAUNA_OUTPUT_WRITER_INTERFACE_H
 

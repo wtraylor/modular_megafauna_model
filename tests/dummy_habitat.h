@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Habitat implementation for unit tests.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef TESTS_DUMMY_HABITAT_H
 #define TESTS_DUMMY_HABITAT_H
 

@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Different models how to restrict daily forage intake of herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_FORAGING_LIMITS_H
 #define FAUNA_FORAGING_LIMITS_H
 

@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Minimal habitat implementation for demonstration purpose.
+ * \copyright ...
+ * \date 2019
+ */
 #include "simple_habitat.h"
 #include <string>
 

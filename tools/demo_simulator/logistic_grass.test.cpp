@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::Demo::LogisticGrass.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "logistic_grass.h"
 

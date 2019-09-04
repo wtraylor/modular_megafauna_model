@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::Output::TextTableWriter.
+ * \copyright ...
+ * \date 2019
+ */
 #include <unistd.h>
 #include <cstdio>
 #include <cstdlib>

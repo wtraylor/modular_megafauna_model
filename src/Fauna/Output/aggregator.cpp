@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Collect output of over space and time.
+ * \copyright ...
+ * \date 2019
+ */
 #include "aggregator.h"
 #include "date.h"
 #include "habitat.h"

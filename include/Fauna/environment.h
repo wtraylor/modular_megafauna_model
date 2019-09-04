@@ -1,9 +1,9 @@
-///////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Classes for abiotic conditions for herbivores.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date November 2017
-////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Classes for abiotic conditions for herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_ENVIRONMENT_H
 #define FAUNA_ENVIRONMENT_H
 

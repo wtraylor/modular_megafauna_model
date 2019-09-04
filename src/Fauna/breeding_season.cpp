@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Determine erbivore breeding season.
+ * \copyright ...
+ * \date 2019
+ */
 #include "breeding_season.h"
 #include <cassert>
 #include <stdexcept>

@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Base class for all forage types.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Base class for all forage types.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_FORAGE_BASE_H
 #define FAUNA_FORAGE_BASE_H
 

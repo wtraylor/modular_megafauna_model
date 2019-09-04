@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Simulation unit: a habitat + herbivore populations.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date 2018-06-16
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Simulation unit: a habitat + herbivore populations.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_SIMULATION_UNIT_H
 #define FAUNA_SIMULATION_UNIT_H
 

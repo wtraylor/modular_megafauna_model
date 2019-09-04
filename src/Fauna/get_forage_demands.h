@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Helper class to determine how much an herbivore wants to eat.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_GET_FORAGE_DEMANDS_H
 #define FAUNA_GET_FORAGE_DEMANDS_H
 

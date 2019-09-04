@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Simple class to hold the date of a simulation day.
+ * \copyright ...
+ * \date 2019
+ */
 #include "date.h"
 #include <cassert>
 #include <stdexcept>

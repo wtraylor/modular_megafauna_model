@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief A list of populations per HFT in a habitat.
+ * \copyright ...
+ * \date 2019
+ */
 #include "population_list.h"
 #include "herbivore_interface.h"
 #include "hft.h"

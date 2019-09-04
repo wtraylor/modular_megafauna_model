@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief A versatile base class to derive herbivores from.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_HERBIVORE_BASE_H
 #define FAUNA_HERBIVORE_BASE_H
 

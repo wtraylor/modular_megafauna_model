@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Herbivore energy model with fat reserves and anabolism/catabolism.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_FATMASS_ENERGY_BUDGET_H
 #define FAUNA_FATMASS_ENERGY_BUDGET_H
 

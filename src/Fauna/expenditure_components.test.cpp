@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for energy expenditure algorithms.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "expenditure_components.h"
 using namespace Fauna;

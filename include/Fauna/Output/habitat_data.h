@@ -1,10 +1,9 @@
-///////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Habitat output data.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-/// \see \ref sec_output
-////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Output data of a habitat.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_OUTPUT_HABITAT_DATA_H
 #define FAUNA_OUTPUT_HABITAT_DATA_H
 

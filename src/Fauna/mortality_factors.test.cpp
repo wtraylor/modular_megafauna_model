@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for herbivore mortality models.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "mortality_factors.h"
 using namespace Fauna;

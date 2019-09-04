@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::Date.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "date.h"
 

@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Definition of forage types (grass, browse, etc.)
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Definition of forage types (grass, browse, etc.)
+ * \copyright ...
+ * \date 2019
+ */
 #include "forage_types.h"
 #include <stdexcept>
 

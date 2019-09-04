@@ -1,10 +1,9 @@
-///////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Habitat output data.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-/// \see \ref sec_output
-////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Habitat output data.
+ * \copyright ...
+ * \date 2019
+ */
 #include "habitat_data.h"
 #include "average.h"
 

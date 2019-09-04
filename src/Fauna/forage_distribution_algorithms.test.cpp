@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for forage distribution models.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "dummy_herbivore.h"
 #include "dummy_hft.h"

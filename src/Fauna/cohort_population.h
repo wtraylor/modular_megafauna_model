@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Population class for herbivore cohorts.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_COHORT_POPULATION_H
 #define FAUNA_COHORT_POPULATION_H
 

@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Different models to calculate energy expenditures of herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #include "expenditure_components.h"
 using namespace Fauna;
 

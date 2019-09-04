@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Determine erbivore breeding season.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_BREEDING_SEASON_H
 #define FAUNA_BREEDING_SEASON_H
 

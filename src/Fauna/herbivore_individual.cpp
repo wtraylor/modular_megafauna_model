@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Implementation of \ref HerbivoreBase as individual animals.
+ * \copyright ...
+ * \date 2019
+ */
 #include "herbivore_individual.h"
 #include "stochasticity.h"
 

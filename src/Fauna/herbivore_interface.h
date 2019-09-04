@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Pure abstract class to derive any kind of herbivore from.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_HERBIVORE_INTERFACE_H
 #define FAUNA_HERBIVORE_INTERFACE_H
 

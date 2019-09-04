@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Implementation of herbivore base class for unit tests.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef TESTS_DUMMY_HERBIVORE_BASE_H
 #define TESTS_DUMMY_HERBIVORE_BASE_H
 #include "herbivore_base.h"

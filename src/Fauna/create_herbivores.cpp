@@ -1,10 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Classes to construct herbivores.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date July 2017
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * \file
+ * \brief Classes to construct herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #include "create_herbivores.h"
 #include <stdexcept>
 #include "herbivore_individual.h"

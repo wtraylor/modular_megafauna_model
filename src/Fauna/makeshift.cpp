@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Some functions for testing purposes while some functions are missing.
+ * \copyright ...
+ * \date 2019
+ */
 #include "makeshift.h"
 #include "hft.h"
 #include "hft_list.h"

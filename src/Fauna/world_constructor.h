@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Create objects for the \ref World class.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_WORLD_CONSTRUCTOR_H
 #define FAUNA_WORLD_CONSTRUCTOR_H
 

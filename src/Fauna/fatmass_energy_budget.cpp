@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Herbivore energy model with fat reserves and anabolism/catabolism.
+ * \copyright ...
+ * \date 2019
+ */
 #include "fatmass_energy_budget.h"
 #include <cassert>
 #include <stdexcept>

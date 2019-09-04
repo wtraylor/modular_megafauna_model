@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Simplistic grass model for demonstration purpose.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_DEMO_LOGISTIC_GRASS_H
 #define FAUNA_DEMO_LOGISTIC_GRASS_H
 #include <vector>

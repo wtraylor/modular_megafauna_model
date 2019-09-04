@@ -1,12 +1,11 @@
-///////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Habitat output data.
-/// \author Wolfgang Traylor, Senckenberg BiK-F
-/// \date June 2019
-/// \see \ref sec_output
-////////////////////////////////////////////////////////////////////
-#ifndef HERBIVORE_DATA
-#define HERBIVORE_DATA
+/**
+ * \file
+ * \brief Herbivore output data.
+ * \copyright ...
+ * \date 2019
+ */
+#ifndef FAUNA_OUTPUT_HERBIVORE_DATA_H
+#define FAUNA_OUTPUT_HERBIVORE_DATA_H
 
 #include <map>
 #include "forage_values.h"
@@ -156,4 +155,4 @@ struct HerbivoreData {
 }  // namespace Output
 }  // namespace Fauna
 
-#endif  // HERBIVORE_DATA
+#endif  // FAUNA_OUTPUT_HERBIVORE_DATA_H

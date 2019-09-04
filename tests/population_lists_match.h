@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Helper function for unit tests to check if population lists match.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef TESTS_POPULATION_LISTS_MATCH_H
 #define TESTS_POPULATION_LISTS_MATCH_H
 

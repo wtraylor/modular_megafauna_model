@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Two dates framing a time interval.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_DATE_INTERVAL_H
 #define FAUNA_DATE_INTERVAL_H
 

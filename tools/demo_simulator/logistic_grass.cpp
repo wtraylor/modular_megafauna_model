@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Simplistic grass model for demonstration purpose.
+ * \copyright ...
+ * \date 2019
+ */
 #include "logistic_grass.h"
 #include <sstream>
 

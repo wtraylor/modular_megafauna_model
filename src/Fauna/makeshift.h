@@ -1,5 +1,9 @@
-// Temporary file with some classes/routines that serve testing purpose until
-// the instruction file reader and output are done.
+/**
+ * \file
+ * \brief Some functions for testing purposes while some functions are missing.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_MAKESHIFT_H
 #define FAUNA_MAKESHIFT_H
 

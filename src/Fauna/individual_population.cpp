@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Population class for herbivore individuals.
+ * \copyright ...
+ * \date 2019
+ */
 #include "individual_population.h"
 #include "herbivore_individual.h"
 #include "hft.h"

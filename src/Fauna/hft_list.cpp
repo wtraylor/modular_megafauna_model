@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief A list of \ref Hft objects.
+ * \copyright ...
+ * \date 2019
+ */
 #include "hft_list.h"
 
 using namespace Fauna;

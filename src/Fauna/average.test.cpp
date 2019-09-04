@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for output aggregation helpers.
+ * \copyright ...
+ * \date 2019
+ */
 #include "average.h"
 #include "catch.hpp"
 

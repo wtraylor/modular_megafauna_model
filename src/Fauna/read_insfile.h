@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Read the instruction file with HFTs and global parameters.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_READ_INSFILE_H
 #define FAUNA_READ_INSFILE_H
 

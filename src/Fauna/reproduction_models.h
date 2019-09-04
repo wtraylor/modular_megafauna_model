@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Reproduction of herbivores.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date July 2017
-//////////////////////////////////////////////////////////////////////////
+/**
+ * \file
+ * \brief Different implementations to calculate reproduction of herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_REPRODUCTION_MODELS_H
 #define FAUNA_REPRODUCTION_MODELS_H
 

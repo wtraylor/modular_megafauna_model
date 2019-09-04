@@ -1,11 +1,9 @@
-//////////////////////////////////////////////////////////////////////////
-/// \file
-/// \brief Herbivore Functional Type.
-/// \author Wolfgang Pappa, Senckenberg BiK-F
-/// \date May 2017
-///
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * \file
+ * \brief Herbivore Functional Type (HFT) class and its dependents.
+ * \copyright ...
+ * \date 2019
+ */
 #include "hft.h"
 #include <sstream>
 #include "parameters.h"

@@ -1,5 +1,10 @@
+/**
+ * \file
+ * \brief A versatile base class to derive herbivores from.
+ * \copyright ...
+ * \date 2019
+ */
 #include "herbivore_base.h"
-#include "energetics.h"
 #include "environment.h"
 #include "expenditure_components.h"
 #include "fatmass_energy_budget.h"

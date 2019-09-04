@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for cross-platform filesystem functions.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "fileystem.h"
 #include <fstream>

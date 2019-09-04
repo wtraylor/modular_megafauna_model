@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::BreedingSeason.
+ * \copyright ...
+ * \date 2019
+ */
 #include "breeding_season.h"
 #include "catch.hpp"
 using namespace Fauna;

@@ -1,6 +1,11 @@
+/**
+ * \file
+ * \brief Abstract class for any population of herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_POPULATION_INTERFACE_H
 #define FAUNA_POPULATION_INTERFACE_H
-
 
 #include "herbivore_vector.h"
 

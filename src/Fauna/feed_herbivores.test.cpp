@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::FeedHerbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #include <list>
 #include "catch.hpp"
 #include "dummy_herbivore.h"

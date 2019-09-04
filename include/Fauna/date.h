@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Simple class to hold the date of a simulation day.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_DATE_H
 #define FAUNA_DATE_H
 

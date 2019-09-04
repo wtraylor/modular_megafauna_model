@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief A list of \ref Hft objects.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_HFT_LIST_H
 #define FAUNA_HFT_LIST_H
 

@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for Fauna::Output::HabitatData.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "habitat_data.h"
 using namespace Fauna;

@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Output of tab-separated text tables.
+ * \copyright ...
+ * \date 2019
+ */
 #include "text_table_writer.h"
 #include "datapoint.h"
 #include "fileystem.h"

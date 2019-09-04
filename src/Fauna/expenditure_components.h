@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Different models to calculate energy expenditures of herbivores.
+ * \copyright ...
+ * \date 2019
+ */
 #ifndef FAUNA_EXPENDITURE_COMPONENTS_H
 #define FAUNA_EXPENDITURE_COMPONENTS_H
 

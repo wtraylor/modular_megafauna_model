@@ -1,3 +1,9 @@
+/**
+ * \file
+ * \brief Unit test for herbivore reproduction models.
+ * \copyright ...
+ * \date 2019
+ */
 #include "catch.hpp"
 #include "reproduction_models.h"
 using namespace Fauna;
