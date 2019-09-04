@@ -30,8 +30,13 @@ TextTableWriter::TextTableWriter(
   }
   // -> Add new output files here.
 
-  // Set precision for all output streams.
-  for (auto& s : file_streams) s->precision(options.precision);
+  for (auto& s : file_streams) {
+    // Set precision for all output streams.
+    s->precision(options.precision);
+    // Turn off scientific notation (like 3.14e+03), which might not be
+    // understood by post-processing software.
+    s->flags(std::ios::fixed);
+  }
 }
 
 void TextTableWriter::check_file_exists(const std::string& path) {
