@@ -57,7 +57,7 @@ class WorldConstructor {
   PopulationList* create_populations(const Hft* phft) const;
 
   /// Create new \ref DistributeForage object according to parameters.
-  std::auto_ptr<DistributeForage> create_distribute_forage() const;
+  DistributeForage* create_distribute_forage() const;
 
   /// Get herbivore functional types.
   const HftList& get_hftlist() const { return hftlist; }

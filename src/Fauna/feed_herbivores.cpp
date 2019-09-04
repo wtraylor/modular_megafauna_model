@@ -11,14 +11,15 @@
 
 using namespace Fauna;
 
-FeedHerbivores::FeedHerbivores(
-    std::auto_ptr<DistributeForage> _distribute_forage)
+FeedHerbivores::FeedHerbivores(DistributeForage* _distribute_forage)
     : distribute_forage(_distribute_forage) {
   if (distribute_forage.get() == NULL)
     throw std::invalid_argument(
         "Fauna::FeedHerbivores::FeedHerbivores() "
         "Parameter `distribute_forage` is NULL.");
 }
+
+FeedHerbivores::~FeedHerbivores(){};
 
 void FeedHerbivores::operator()(HabitatForage& available,
                                 const HerbivoreVector& herbivores) const {

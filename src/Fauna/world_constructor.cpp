@@ -19,11 +19,11 @@ WorldConstructor::WorldConstructor(const Parameters& params,
                                    const HftList& hftlist)
     : params(params), hftlist(hftlist) {}
 
-std::auto_ptr<DistributeForage> WorldConstructor::create_distribute_forage()
+DistributeForage* WorldConstructor::create_distribute_forage()
     const {
   switch (get_params().forage_distribution) {
     case FD_EQUALLY:
-      return std::auto_ptr<DistributeForage>(new DistributeForageEqually);
+      return new DistributeForageEqually;
     default:
       throw std::logic_error(
           "WorldConstructor::create_distribute_forage(): "

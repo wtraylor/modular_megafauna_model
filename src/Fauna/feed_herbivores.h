@@ -20,10 +20,14 @@ class FeedHerbivores {
  public:
   /// Constructor.
   /**
-   * \param distribute_forage Strategy object for
-   * calculating the forage portions.
+   * \param distribute_forage Strategy object for calculating the forage
+   * portions. This must be a newly created object. It will be owned by the
+   * FeedHerbivores object.
    * \throw std::invalid_argument If `distribute_forage==NULL`. */
-  FeedHerbivores(std::auto_ptr<DistributeForage> distribute_forage);
+  FeedHerbivores(DistributeForage* distribute_forage);
+
+  /// Destructor.
+  ~FeedHerbivores();
 
   /// Feed the herbivores.
   /**
@@ -37,7 +41,7 @@ class FeedHerbivores {
                   const HerbivoreVector& herbivores) const;
 
  private:
-  std::auto_ptr<DistributeForage> distribute_forage;
+  std::unique_ptr<DistributeForage> distribute_forage;
 };
 
 }  // namespace Fauna
