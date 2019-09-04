@@ -26,6 +26,12 @@ class FeedHerbivores {
    * \throw std::invalid_argument If `distribute_forage==NULL`. */
   FeedHerbivores(DistributeForage* distribute_forage);
 
+  /// Delete copy constructor because of pointer ownership.
+  FeedHerbivores(FeedHerbivores const&) = delete;
+
+  /// Delete copy assignment because of pointer ownership.
+  void operator=(FeedHerbivores const&) = delete;
+
   /// Destructor.
   ~FeedHerbivores();
 
