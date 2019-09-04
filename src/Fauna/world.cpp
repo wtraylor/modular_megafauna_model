@@ -81,6 +81,10 @@ const Parameters& World::get_params() const {
 }
 
 void World::simulate_day(const Date& date, const bool do_herbivores) {
+  // Create one function object to feed all herbivores.
+  const FeedHerbivores feed_herbivores(
+      world_constructor->create_distribute_forage());
+
   // We use an iterator in order to be able to call std::list::erase().
   for (auto iter = sim_units.begin(); iter != sim_units.end();) {
     SimulationUnit& sim_unit = *iter;
@@ -122,9 +126,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     // Create function object to delegate all simulations for this day to.
     // TODO: Create function object only once per day and for all simulation
     //       units.
-    SimulateDay simulate_day(
-        date.get_julian_day(), sim_unit,
-        FeedHerbivores(world_constructor->create_distribute_forage()));
+    SimulateDay simulate_day(date.get_julian_day(), sim_unit, feed_herbivores);
 
     // Call the function object.
     simulate_day(do_herbivores);
