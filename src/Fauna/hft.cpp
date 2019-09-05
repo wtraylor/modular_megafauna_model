@@ -62,8 +62,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
   if (name.find(' ') != std::string::npos ||
       name.find(',') != std::string::npos ||
       name.find('_') != std::string::npos) {
-    stream << "name contains a forbidden character: ' ' ',' '_'"
-           << std::endl;
+    stream << "name contains a forbidden character: ' ' ',' '_'" << std::endl;
     is_valid = false;
   }
 

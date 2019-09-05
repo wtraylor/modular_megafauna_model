@@ -59,8 +59,7 @@ const std::array<int, 12> Date::FIRST_OF_MONTH = {
     // Dec
     MONTH_LENGTH[0] + MONTH_LENGTH[1] + MONTH_LENGTH[2] + MONTH_LENGTH[3] +
         MONTH_LENGTH[4] + MONTH_LENGTH[5] + MONTH_LENGTH[6] + MONTH_LENGTH[7] +
-        MONTH_LENGTH[8] + MONTH_LENGTH[9] + MONTH_LENGTH[10]
-};
+        MONTH_LENGTH[8] + MONTH_LENGTH[9] + MONTH_LENGTH[10]};
 
 const std::array<int, 12> Date::FIRST_OF_MONTH_LEAP = {
     FIRST_OF_MONTH[0],       // Jan
