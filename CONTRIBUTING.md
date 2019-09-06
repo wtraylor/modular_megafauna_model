@@ -1,6 +1,25 @@
 Contributing to the Megafauna Model
 ===================================
 
+Table of Contents
+-----------------
+
+- [Version Control](#version-control)
+    - [Branches](#branches)
+    - [Release Versioning](#release-versioning)
+    - [Commit Messages](#commit-messages)
+    - [Continuous Integration](#continuous-integration)
+- [Coding Guidelines](#coding-guidelines)
+    + [Repository Structure](#repository-structure)
+    + [Code Format](#code-format)
+        + [Naming Code Elments](#naming-code-elements)
+        + [Ordering](#ordering)
+        + [File Header](#file-header)
+    + [Unit Tests](#unit-tests)
+    + [Code Checkers](#code-checkers)
+    + [Doxygen Documentation](#doxygen-documentation)
+        + [BibTeX Bibliography](#bibtex-bibliography)
+
 Version Control
 ---------------
 
@@ -30,7 +49,7 @@ Follow Chris Beams’ guide for crafting your Git commit messages: [How to Write
 > 6. Wrap the body at 72 characters
 > 7. Use the body to explain what and why vs. how
 
-### Continuous Integration (CI)
+### Continuous Integration
 <!--TODO-->
 
 Coding Guidelines
@@ -57,7 +76,7 @@ The default Google layout is exported in the [.clang-format](.clang-format) file
 This repository has a [.editorconfig](.editorconfig) file to define indentation rule for different file types.
 Please install the plugin for your text editor if available: [editorconfig.org/](https://editorconfig.org/)
 
-#### Naming
+#### Naming Code Elements
 
 - **Files** are always lower-case with underscores to separate words.
     + Header files end with `.h`, source files with `.cpp`, and the corresponding unit test files with `.test.cpp`.
@@ -76,7 +95,7 @@ Please install the plugin for your text editor if available: [editorconfig.org/]
 
 - **Namespaces** are short and lower-case with first letter capitalized, e.g. `Fauna`.
 
-#### Alphabetical Order
+#### Ordering
 An example class definition in a header file:
 ```cpp
 class MyExampleClass{
@@ -126,7 +145,7 @@ namespace {
 }
 ```
 
-#### Header for Each File
+#### File Header
 Begin each `.h` or `.cpp` file with a doxygen header containing a brief description.
 The description will appear in the file list of the generated doxygen documentation.
 Ususally the brief description will be the same for a `.h` and its `.cpp` file.
@@ -154,14 +173,14 @@ If you create a `.cpp` file, there should most likely also be a corresponding `.
 
 Please read the Doxygen page about the testing framework.
 
-### Code Checking Tools
+### Code Checkers
 
 Run [cppclean](https://github.com/myint/cppclean) on the code to find unnecessary `#include`s, unnecessary functions, and a lot more.
 Execute the helper script `./tools/cppclean.sh` in the Bash.
 
-### Doxygen
+### Doxygen Documentation
 
-#### Bibliography
+#### BibTeX Bibliography
 [BibTeX](www.bibtex.org) is used for bibliographic references: [docs/bibliography.bib](docs/bibliography.bib).
 The Doxygen command `\cite` is used for that.
 This makes browsing the Doxygen documentation easier.
