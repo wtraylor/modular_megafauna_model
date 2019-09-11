@@ -230,9 +230,6 @@ struct Hft {
    * \return true if the object has valid values */
   bool is_valid(const Parameters& params) const;
 
-  /// Whether to include the HFT in the simulation.
-  bool is_included;
-
   /// Unique name of the herbivore type.
   std::string name;
 

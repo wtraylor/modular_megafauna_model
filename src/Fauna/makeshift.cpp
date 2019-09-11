@@ -15,7 +15,6 @@ HftList Fauna::construct_makeshift_hfts() {
 
   Hft bison;
   bison.name = "Bison";
-  bison.is_included = true;
   bison.bodymass_male = 400;
   bison.bodymass_female = 350;
 

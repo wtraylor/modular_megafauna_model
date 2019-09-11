@@ -12,7 +12,6 @@ using namespace Fauna;
 
 Hft::Hft()
     : name("hft"),
-      is_included(false),
       // SIMULATION PARAMETERS:
       // add more initializiations in alphabetical order
       bodyfat_birth(0.1),

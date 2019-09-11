@@ -17,7 +17,6 @@ inline HftList create_hfts(const int count, const Parameters& params) {
   HftList hftlist;
   for (int i = 0; i < count; i++) {
     Hft hft;
-    hft.is_included = true;
     // construct name for HFT
     std::ostringstream stream;
     stream << "hft" << i;

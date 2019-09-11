@@ -29,7 +29,6 @@ TEST_CASE("Fauna::HftList", "") {
   // add some real HFTs
   Hft hft1;
   hft1.name = "hft1";
-  hft1.is_included = true;
   REQUIRE_NOTHROW(hftlist.insert(hft1));
   REQUIRE(hftlist.size() == 1);
   REQUIRE(hftlist[0].name == "hft1");
@@ -37,7 +36,6 @@ TEST_CASE("Fauna::HftList", "") {
 
   Hft hft2;
   hft2.name = "hft2";
-  hft2.is_included = false;
   REQUIRE_NOTHROW(hftlist.insert(hft2));
   REQUIRE(hftlist.size() == 2);
   REQUIRE_NOTHROW(hftlist[1]);
@@ -53,12 +51,7 @@ TEST_CASE("Fauna::HftList", "") {
   hft2.lifespan += 2;  // change a property outside list
   REQUIRE(hftlist[hft2.name].lifespan != hft2.lifespan);
   hftlist.insert(hft2);  // replace existing
+  REQUIRE(hftlist.size() == 2);
   CHECK(hftlist[hft2.name].lifespan == hft2.lifespan);
-
-  // remove excluded
-  hftlist.remove_excluded();
-  CHECK(hftlist.size() == 1);
-  CHECK(hftlist.contains(hft1.name));        // hft1 included
-  CHECK_FALSE(hftlist.contains(hft2.name));  // hft2 NOT included
 }
 
