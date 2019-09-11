@@ -16,13 +16,12 @@
 using namespace Fauna;
 
 TEST_CASE("Fauna::FeedHerbivores") {
-  CHECK_THROWS(FeedHerbivores(std::auto_ptr<DistributeForage>(NULL)));
+  CHECK_THROWS(FeedHerbivores(NULL));
 
   // create objects
   const HftList HFTS = create_hfts(3, Parameters());
   const double DENS = 1.0;  // irrelevant in this test
-  FeedHerbivores feed(
-      std::auto_ptr<DistributeForage>(new DistributeForageEqually()));
+  FeedHerbivores feed(new DistributeForageEqually());
 
   // these variables are set in each test section.
   HabitatForage AVAILABLE;
