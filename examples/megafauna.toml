@@ -17,11 +17,24 @@ tables = [
   "mass_density_per_hft"
 ]
 
+##########################################################################
+
 [[group]]
+name = "all_hfts"
+
+[group.body_fat]
+birth = 0.2
+# ...
+
+# Add any HFT parameters here. They will apply to all HFTs assigned to this
+# group, but can be overwritten by the individual HFTs.
+
+##########################################################################
 
 [[hft]]
 
-name = "example"
+name   = "example"
+groups = [ "all_hfts" ]
 
 [hft.body_fat]
 birth              = 0.2   # kg/kg
@@ -79,3 +92,10 @@ model            = "ConstantMaximum"
 [hft.thermoregulation]
 conductance = "BradleyDeavers1980"
 core_temperature = 38 # °C
+
+##########################################################################
+# You can add more HFTs like so:
+# [[hft]]
+# name = "new_hft"
+# [hft.body_fat]
+# ...
