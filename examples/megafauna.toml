@@ -1,0 +1,81 @@
+[simulation]
+
+forage_distribution    = "equally"
+habitat_area_km2       = 1.0  # km² per habitat
+establishment_interval = 3650 # every 10 years
+herbivore_type         = "cohort"
+one_hft_per_patch      = true
+
+[output]
+format = "text_tables"
+interval = "annual"
+
+[output.text_tables]
+output_directory = "./"
+precision = 4
+tables = [
+  "mass_density_per_hft"
+]
+
+[[group]]
+
+[[hft]]
+
+name = "example"
+
+[hft.body_fat]
+birth              = 0.2   # kg/kg
+deviation          = 0.125 # body condition
+maximum            = 0.3   # kg/kg
+maximum_daily_gain = 0.05  # kg/kg/day
+
+[hft.body_mass]
+birth  = 5  # kg/ind
+female = 50 # kg/ind
+male   = 70 # kg/ind
+
+[hft.breeding_season]
+length = 30  # days
+start  = 121 # Julian day
+
+[hft.digestion]
+allometric     = { coefficient = 0.050, exponent = 0.76 }
+fixed_fraction = 0.05 # kgDM per kg body mass
+limit          = "FixedFraction"
+type           = "Ruminant"
+
+[hft.establishment]
+age_range = [ 1, 20 ] # years
+density   = 1.0       # ind/km²
+
+[hft.expenditure]
+allometric = { coefficient = 0.4, exponent = 0.75 }
+components = [ "Allometric" ]
+
+[hft.foraging]
+diet_composer           = "PureGrazer"
+half_max_intake_density = 20 # gDM/m²
+limits                  = []
+net_energy_model        = "Default"
+
+[hft.life_history]
+lifespan                 = 16 # years
+physical_maturity_female = 3  # years
+physical_maturity_male   = 3  # years
+sexual_maturity          = 3  # years
+
+[hft.mortality]
+adult_rate = 0.1 # 1/year
+factors = [ "Background", "Lifespan", "StarvationIlliusOConnor2000" ]
+juvenile_rate = 0.3 # 1/year
+minimum_density_threshold = 0.5 # fraction of establishment density
+shift_body_condition_for_starvation = true
+
+[hft.reproduction]
+annual_maximum   = 1.0 # offspring per female per year
+gestation_length = 9   # months
+model            = "ConstantMaximum"
+
+[hft.thermoregulation]
+conductance = "BradleyDeavers1980"
+core_temperature = 38 # °C

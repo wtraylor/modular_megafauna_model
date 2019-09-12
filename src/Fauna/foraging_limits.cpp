@@ -45,12 +45,12 @@ const ForageEnergy GetDigestiveLimitIlliusGordon1992::operator()(
           "Fauna::GetDigestiveLimitIlliusGordon1992::operator()() "
           "Not all forage types are implemented.");
 
-    if (digestion_type == DT_RUMINANT) {
+    if (digestion_type == DigestionType::Ruminant) {
       i.set(FT_GRASS, 0.034);
       j.set(FT_GRASS, 3.565);
       k.set(FT_GRASS, 0.077);
       // ADD NEW FORAGE TYPES HERE
-    } else if (digestion_type == DT_HINDGUT) {
+    } else if (digestion_type == DigestionType::Hindgut) {
       i.set(FT_GRASS, 0.108);
       j.set(FT_GRASS, 3.284);
       k.set(FT_GRASS, 0.080);

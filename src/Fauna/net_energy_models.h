@@ -73,7 +73,7 @@ class GetNetEnergyContentDefault : public GetNetEnergyContentInterface {
  public:
   /// Constructor
   GetNetEnergyContentDefault(const DigestionType digestion_type)
-      : digestion_efficiency(digestion_type == DT_RUMINANT
+      : digestion_efficiency(digestion_type == DigestionType::Ruminant
                                  ? 1.0
                                  : DIGESTION_EFFICIENCY_HINDGUTS) {}
 

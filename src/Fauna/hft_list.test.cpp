@@ -9,7 +9,6 @@
 #include "hft_list.h"
 using namespace Fauna;
 
-
 TEST_CASE("Fauna::HftList", "") {
   HftList hftlist;
 
@@ -48,10 +47,11 @@ TEST_CASE("Fauna::HftList", "") {
   CHECK_FALSE(hftlist.contains("abc"));
 
   // substitute element
-  hft2.lifespan += 2;  // change a property outside list
-  REQUIRE(hftlist[hft2.name].lifespan != hft2.lifespan);
+  hft2.life_history.lifespan += 2;  // change a property outside list
+  REQUIRE(hftlist[hft2.name].life_history.lifespan !=
+          hft2.life_history.lifespan);
   hftlist.insert(hft2);  // replace existing
   REQUIRE(hftlist.size() == 2);
-  CHECK(hftlist[hft2.name].lifespan == hft2.lifespan);
+  CHECK(hftlist[hft2.name].life_history.lifespan == hft2.life_history.lifespan);
 }
 

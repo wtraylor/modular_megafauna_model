@@ -50,17 +50,17 @@ void IndividualPopulation::establish() {
     throw std::logic_error(
         "Fauna::IndividualPopulation::establish() "
         "Trying to establish into a non-empty population.");
-  if (get_hft().establishment_density == 0.0) return;
+  if (get_hft().establishment.density == 0.0) return;
 
   // determine total number of individuals, assuming even sex ratio.
   int ind_count =
-      ceil(get_hft().establishment_density * create_individual.get_area_km2());
+      ceil(get_hft().establishment.density * create_individual.get_area_km2());
 
   // Now distribute the number of individuals as evenly as possible over
   // the age range that is defined in the HFT.
 
-  const int age_class_count = get_hft().establishment_age_range.second -
-                              get_hft().establishment_age_range.first + 1;
+  const int age_class_count = get_hft().establishment.age_range.second -
+                              get_hft().establishment.age_range.first + 1;
   assert(age_class_count > 0);
 
   const int ind_count_per_age = ind_count / age_class_count;
@@ -68,8 +68,8 @@ void IndividualPopulation::establish() {
   assert(ind_count_per_age * age_class_count + ind_count_remainder ==
          ind_count);
 
-  for (int age_years = get_hft().establishment_age_range.first;
-       age_years <= get_hft().establishment_age_range.second; age_years++) {
+  for (int age_years = get_hft().establishment.age_range.first;
+       age_years <= get_hft().establishment.age_range.second; age_years++) {
     int count = ind_count_per_age;
     if (ind_count_remainder > 0) {
       count++;
