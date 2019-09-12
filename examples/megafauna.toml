@@ -1,3 +1,11 @@
+###############################################################################
+#        Example instruction file for the Modular Megafauna Model
+#        ========================================================
+#
+# Please read the Doxygen documentation to learn how to use this instruction
+# file.
+###############################################################################
+
 [simulation]
 
 forage_distribution    = "equally"
@@ -17,7 +25,7 @@ tables = [
   "mass_density_per_hft"
 ]
 
-##########################################################################
+###############################################################################
 
 [[group]]
 name = "all_hfts"
@@ -29,7 +37,7 @@ birth = 0.2
 # Add any HFT parameters here. They will apply to all HFTs assigned to this
 # group, but can be overwritten by the individual HFTs.
 
-##########################################################################
+###############################################################################
 
 [[hft]]
 
@@ -93,7 +101,7 @@ model            = "ConstantMaximum"
 conductance = "BradleyDeavers1980"
 core_temperature = 38 # °C
 
-##########################################################################
+###############################################################################
 # You can add more HFTs like so:
 # [[hft]]
 # name = "new_hft"
