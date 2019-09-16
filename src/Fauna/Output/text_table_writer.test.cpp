@@ -51,12 +51,12 @@ std::vector<std::string> split(const std::string &s, char delim) {
 TEST_CASE("Fauna::Output::TextTableWriter", "") {
   Parameters::TextTableWriterOptions opt;
   opt.mass_density_per_hft = true;
-  opt.output_directory = generate_output_dir();
+  opt.directory = generate_output_dir();
 
 
-  REQUIRE(!directory_exists(opt.output_directory));
+  REQUIRE(!directory_exists(opt.directory));
 
-  INFO((std::string) "Random output directory: " + opt.output_directory);
+  INFO((std::string) "Random output directory: " + opt.directory);
 
   static const int YEAR = 4;
   static const std::string AGG_UNIT = "unit1";
@@ -74,13 +74,13 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
   SECTION("Annual") {
     const std::string mass_density_per_hft_path =
-        opt.output_directory + '/' + "mass_density_per_hft" +
+        opt.directory + '/' + "mass_density_per_hft" +
         TextTableWriter::FILE_EXTENSION;
 
     // Constructor
     TextTableWriter writer(OutputInterval::Annual, opt);
 
-    REQUIRE(directory_exists(opt.output_directory));
+    REQUIRE(directory_exists(opt.directory));
 
     std::ifstream mass_density_per_hft(mass_density_per_hft_path);
     REQUIRE(mass_density_per_hft.good());
@@ -110,7 +110,7 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
     REQUIRE(datapoint.data.datapoint_count > 0);
     writer.write_datapoint(datapoint);
 
-    INFO((std::string) "Random output directory: " + opt.output_directory);
+    INFO((std::string) "Random output directory: " + opt.directory);
     // Check column captions
     {
       std::string line;
@@ -178,6 +178,6 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
   // output schemes are very similarly implemented.
 
   // Delete directory recursively.
-  if (directory_exists(opt.output_directory))
-      remove_directory(opt.output_directory);
+  if (directory_exists(opt.directory))
+      remove_directory(opt.directory);
 }

@@ -90,7 +90,7 @@ void InsfileReader::read_table_output_text_tables() {
     const auto key = "output.text_tables.directory";
     auto value = ins->get_qualified_as<std::string>(key);
     if (value) {
-      params.text_table_output.output_directory = *value;
+      params.text_table_output.directory = *value;
     } else
       throw missing_parameter(key);
   }

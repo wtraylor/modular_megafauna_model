@@ -80,7 +80,7 @@ struct Parameters {
    * Which tables to write in text files is specified by boolean variables: If
    * the corresponding member variable is `true`, a file with the same name
    * plus extension (\ref TextTableWriter::FILE_EXTENSION) will be created in
-   * \ref output_directory.
+   * \ref directory.
    */
   struct TextTableWriterOptions {
     /// Relative or absolute path to directory where output files are placed.
@@ -88,7 +88,7 @@ struct Parameters {
      * The names of the output text files within the directory are hard-coded.
      * If the directory doesn’t exist, it will be created.
      */
-    std::string output_directory = "./";
+    std::string directory = "./";
 
     /// Number of figures after the decimal point.
     unsigned int precision = 3;

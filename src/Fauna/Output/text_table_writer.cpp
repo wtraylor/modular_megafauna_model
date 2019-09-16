@@ -17,7 +17,7 @@ TextTableWriter::TextTableWriter(
     const OutputInterval interval,
     const Parameters::TextTableWriterOptions& options)
     : interval(interval), options(options) {
-  const std::string& dir = options.output_directory;
+  const std::string& dir = options.directory;
 
   create_directories(dir);
 
