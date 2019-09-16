@@ -50,8 +50,191 @@ InsfileReader::InsfileReader(const std::string filename)
   if (params.output.format == OutputFormat::TextTables)
     read_table_output_text_tables();
   read_table_simulation();
+
+  auto hft_table_array = ins->get_table_array("hft");
+  if (hft_table_array)
+    for (const auto& hft_table : *hft_table_array)
+      hfts.insert(read_hft(hft_table));
+  else
+    throw std::runtime_error("No HFTs provided.");
 }
 
+Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
+  Hft hft;
+  {
+    const auto key = "name";
+    auto value = table->get_as<std::string>("name");
+    if (value)
+      hft.name = *value;
+    else
+      throw missing_parameter("hft.name");
+  }
+
+  // Section "body_fat"
+  {
+    const auto key = "body_fat.birth";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.body_fat.birth = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  {
+    const auto key = "body_fat.deviation";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.body_fat.deviation = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  {
+    const auto key = "body_fat.maximum";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.body_fat.maximum = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  {
+    const auto key = "body_fat.maximum_daily_gain";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.body_fat.maximum_daily_gain = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  // Section "body_mass"
+  {
+    const auto key = "body_mass.birth";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.body_mass.birth = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  {
+    const auto key = "body_mass.female";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.body_mass.female = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  {
+    const auto key = "body_mass.male";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.body_mass.male = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  // Section "breeding_season"
+  {
+    const auto key = "breeding_season.length";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.breeding_season.length = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  {
+    const auto key = "breeding_season.start";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.breeding_season.start = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  // Section "digestion"
+  {
+    const auto key = "digestion.limit";
+    const auto value = table->get_qualified_as<std::string>(key);
+    if (value)
+      if (lowercase(*value) == lowercase("None"))
+        hft.digestion.limit = DigestiveLimit::None;
+      else if (lowercase(*value) == lowercase("Allometric"))
+        hft.digestion.limit = DigestiveLimit::Allometric;
+      else if (lowercase(*value) == lowercase("FixedFraction"))
+        hft.digestion.limit = DigestiveLimit::FixedFraction;
+      else if (lowercase(*value) == lowercase("IlliusGordon1992"))
+        hft.digestion.limit = DigestiveLimit::IlliusGordon1992;
+      else
+        invalid_option(
+            hft, key, *value,
+            {"None", "Allometric", "FixedFraction", "IlliusGordon1992"});
+    else
+      throw missing_parameter(hft, key);
+  }
+  {
+    const auto key = "digestion.type";
+    const auto value = table->get_qualified_as<std::string>(key);
+    if (value)
+      if (lowercase(*value) == lowercase("Hindgut"))
+        hft.digestion.type = DigestionType::Hindgut;
+      else if (lowercase(*value) == lowercase("Ruminant"))
+        hft.digestion.type = DigestionType::Ruminant;
+      else
+        invalid_option(hft, key, *value, {"Hindgut", "Ruminant"});
+    else
+      throw missing_parameter(hft, key);
+  }
+  if (hft.digestion.limit == DigestiveLimit::FixedFraction) {
+    const auto key = "digestion.fixed_fraction";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.digestion.fixed_fraction = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  if (hft.digestion.limit == DigestiveLimit::Allometric) {
+    const auto key = "digestion.allometric.coefficient";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.digestion.allometric.coefficient = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  if (hft.digestion.limit == DigestiveLimit::Allometric) {
+    const auto key = "digestion.allometric.exponent";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.digestion.allometric.exponent = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  // Section "establishment"
+  {
+    const auto key = "establishment.age_range.first";
+    const auto value = table->get_qualified_as<int>(key);
+    if (value)
+      hft.establishment.age_range.first = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  {
+    const auto key = "establishment.age_range.last";
+    const auto value = table->get_qualified_as<int>(key);
+    if (value)
+      hft.establishment.age_range.second = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  {
+    const auto key = "establishment.density";
+    const auto value = table->get_qualified_as<double>(key);
+    if (value)
+      hft.establishment.density = *value;
+    else
+      throw missing_parameter(hft, key);
+  }
+  // Section "expenditure"
+  // Section "foraging"
+  // Section "life_history"
+  // Section "mortality"
+  // Section "reproduction"
+  // Section "thermoregulation"
+  return hft;
+}
 void InsfileReader::read_table_output() {
   {
     const auto key = "output.format";
