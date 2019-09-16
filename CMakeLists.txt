@@ -161,6 +161,7 @@ if (BUILD_TESTING)
     src/Fauna/hft.test.cpp
     src/Fauna/hft_list.test.cpp
     src/Fauna/individual_population.test.cpp
+    src/Fauna/insfile_reader.test.cpp
     src/Fauna/mortality_factors.test.cpp
     src/Fauna/net_energy_models.test.cpp
     src/Fauna/nitrogen.test.cpp
@@ -197,6 +198,12 @@ if (BUILD_TESTING)
   target_compile_options (megafauna_unit_tests
     PRIVATE
     -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
+    )
+  # We need to check that the example TOML file is read correctly.
+  configure_file (
+    "examples/megafauna.toml"
+    "${CMAKE_CURRENT_BINARY_DIR}/megafauna.toml"
+    COPYONLY
     )
 endif(BUILD_TESTING)
 
