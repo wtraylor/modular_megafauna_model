@@ -69,11 +69,14 @@ struct Parameters {
   /// Whether to allow only herbivores of one HFT in each patch (default false).
   bool one_hft_per_patch = false;
 
-  /// The module that writes megafauna output to disk.
-  OutputFormat output_format = OutputFormat::TextTables;
+  /// General output options.
+  struct {
+    /// The module that writes megafauna output to disk.
+    OutputFormat format = OutputFormat::TextTables;
 
-  /// Time interval for aggregating output.
-  OutputInterval output_interval = OutputInterval::Annual;
+    /// Time interval for aggregating output.
+    OutputInterval interval = OutputInterval::Annual;
+  } output;
 
   /// Preferences for the \ref TextTableWriter output class.
   /**

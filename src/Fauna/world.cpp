@@ -38,10 +38,10 @@ World::World(const std::string instruction_filename)
       output_aggregator(new Output::Aggregator()) {
   // Create Output::WriterInterface implementation according to selected
   // setting.
-  switch (get_params().output_format) {
+  switch (get_params().output.format) {
     case OutputFormat::TextTables:
       output_writer.reset(new Output::TextTableWriter(
-          get_params().output_interval, get_params().text_table_output));
+          get_params().output.interval, get_params().text_table_output));
       break;
     default:
       std::logic_error(
@@ -149,7 +149,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
   // Write output when it’s ready.
   assert(output_writer.get() != NULL);
   if (output_aggregator->get_interval().matches_output_interval(
-          get_params().output_interval))
+          get_params().output.interval))
     for (const auto& datapoint : output_aggregator->retrieve())
       output_writer->write_datapoint(datapoint);
 }

@@ -47,7 +47,7 @@ InsfileReader::InsfileReader(const std::string filename)
     : ins(cpptoml::parse_file(filename)) {
   // Read global parameters
   read_table_output();
-  if (params.output_format == OutputFormat::TextTables)
+  if (params.output.format == OutputFormat::TextTables)
     read_table_output_text_tables();
   read_table_simulation();
 }
@@ -58,7 +58,7 @@ void InsfileReader::read_table_output() {
     auto value = ins->get_qualified_as<std::string>(key);
     if (value) {
       if (lowercase(*value) == lowercase("TextTables"))
-        params.output_format = OutputFormat::TextTables;
+        params.output.format = OutputFormat::TextTables;
       // -> Add new output formats here.
       else
         throw invalid_option(key, *value, {"TextTables"});
@@ -70,13 +70,13 @@ void InsfileReader::read_table_output() {
     auto value = ins->get_qualified_as<std::string>(key);
     if (value) {
       if (lowercase(*value) == lowercase("Daily"))
-        params.output_interval = OutputInterval::Daily;
+        params.output.interval = OutputInterval::Daily;
       else if (lowercase(*value) == lowercase("Monthly"))
-        params.output_interval = OutputInterval::Monthly;
+        params.output.interval = OutputInterval::Monthly;
       else if (lowercase(*value) == lowercase("Annual"))
-        params.output_interval = OutputInterval::Annual;
+        params.output.interval = OutputInterval::Annual;
       else if (lowercase(*value) == lowercase("Decadal"))
-        params.output_interval = OutputInterval::Decadal;
+        params.output.interval = OutputInterval::Decadal;
       else
         throw invalid_option(key, *value,
                              {"Daily", "Monthly", "Decadal", "Annual"});
