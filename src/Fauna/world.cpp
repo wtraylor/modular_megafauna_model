@@ -12,10 +12,10 @@
 #include "feed_herbivores.h"
 #include "habitat.h"
 #include "hft.h"
+#include "insfile_reader.h"
 #include "parameters.h"
 #include "population_interface.h"
 #include "population_list.h"
-#include "read_insfile.h"
 #include "simulate_day.h"
 #include "simulation_unit.h"
 #include "text_table_writer.h"
@@ -24,12 +24,12 @@
 using namespace Fauna;
 
 namespace {
-  /// Helper function to initialize Fauna::InsfileContent object.
-  InsfileContent* read_instruction_file(const std::string& filename){
-    InsfileReader reader(filename);
-    return new InsfileContent({reader.get_hfts(), reader.get_params()});
-  }
+/// Helper function to initialize Fauna::InsfileContent object.
+InsfileContent* read_instruction_file(const std::string& filename) {
+  InsfileReader reader(filename);
+  return new InsfileContent({reader.get_hfts(), reader.get_params()});
 }
+}  // namespace
 
 World::World(const std::string instruction_filename)
     : insfile_content(read_instruction_file(instruction_filename)),

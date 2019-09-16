@@ -76,6 +76,8 @@ set (SOURCE_FILES
   src/Fauna/hft_list.h
   src/Fauna/individual_population.cpp
   src/Fauna/individual_population.h
+  src/Fauna/insfile_reader.cpp
+  src/Fauna/insfile_reader.h
   src/Fauna/mortality_factors.cpp
   src/Fauna/mortality_factors.h
   src/Fauna/net_energy_models.cpp
@@ -87,8 +89,6 @@ set (SOURCE_FILES
   src/Fauna/population_interface.h
   src/Fauna/population_list.cpp
   src/Fauna/population_list.h
-  src/Fauna/read_insfile.cpp
-  src/Fauna/read_insfile.h
   src/Fauna/reproduction_models.cpp
   src/Fauna/reproduction_models.h
   src/Fauna/simulate_day.cpp

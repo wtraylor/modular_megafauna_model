@@ -4,7 +4,7 @@
  * \copyright ...
  * \date 2019
  */
-#include "read_insfile.h"
+#include "insfile_reader.h"
 #include <algorithm>
 #include <string>
 #include "hft.h"

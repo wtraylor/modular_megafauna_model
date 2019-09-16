@@ -4,8 +4,8 @@
  * \copyright ...
  * \date 2019
  */
-#ifndef FAUNA_READ_INSFILE_H
-#define FAUNA_READ_INSFILE_H
+#ifndef FAUNA_INSFILE_READER_H
+#define FAUNA_INSFILE_READER_H
 
 #include "cpptoml.h"
 #include "hft_list.h"
@@ -83,4 +83,4 @@ class InsfileReader {
 };
 }  // namespace Fauna
 
-#endif  // FAUNA_READ_INSFILE_H
+#endif  // FAUNA_INSFILE_READER_H
