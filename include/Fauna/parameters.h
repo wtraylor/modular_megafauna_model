@@ -114,7 +114,6 @@ struct Parameters {
     std::string dump;
     return is_valid(dump);
   }
-  /// @}
 };
 
 }  // namespace Fauna
