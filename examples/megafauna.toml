@@ -8,15 +8,15 @@
 
 [simulation]
 
-forage_distribution    = "equally"
+forage_distribution    = "Equally"
 habitat_area_km2       = 1.0  # km² per habitat
 establishment_interval = 3650 # every 10 years
-herbivore_type         = "cohort"
+herbivore_type         = "Cohort"
 one_hft_per_patch      = true
 
 [output]
-format = "text_tables"
-interval = "annual"
+format = "TextTables"
+interval = "Annual"
 
 [output.text_tables]
 directory = "./"
