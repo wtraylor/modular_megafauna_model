@@ -131,7 +131,7 @@ target_compile_options (ModularMegafaunaModel
 
 include (CTest)  # Automatically sets BUILD_TESTING=ON by default.
 if (BUILD_TESTING)
-  add_executable(megafauna_unit_tests
+  add_executable (megafauna_unit_tests
     ${SOURCE_FILES}
     src/Fauna/Output/aggregator.test.cpp
     src/Fauna/Output/combined_data.test.cpp
@@ -185,6 +185,7 @@ if (BUILD_TESTING)
     tools/demo_simulator/simple_habitat.h
     tools/demo_simulator/simple_habitat.test.cpp
     )
+  target_compile_features (megafauna_unit_tests PRIVATE cxx_std_11)
   target_include_directories (megafauna_unit_tests
     PRIVATE
     external/cpptoml/include/
@@ -225,6 +226,7 @@ if(BUILD_DEMO_SIMULATOR)
     tools/demo_simulator/simple_habitat.cpp
     tools/demo_simulator/simple_habitat.h
     )
+  target_compile_features (megafauna_demo_simulator PRIVATE cxx_std_11)
   target_link_libraries (megafauna_demo_simulator
     ModularMegafaunaModel
     )
