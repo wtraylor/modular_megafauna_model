@@ -19,7 +19,7 @@ format = "text_tables"
 interval = "annual"
 
 [output.text_tables]
-output_directory = "./"
+directory = "./"
 precision = 4
 tables = [
   "mass_density_per_hft"

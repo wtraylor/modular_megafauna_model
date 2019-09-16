@@ -23,9 +23,16 @@
 
 using namespace Fauna;
 
+namespace {
+  /// Helper function to initialize Fauna::InsfileContent object.
+  InsfileContent* read_instruction_file(const std::string& filename){
+    InsfileReader reader(filename);
+    return new InsfileContent({reader.get_hfts(), reader.get_params()});
+  }
+}
+
 World::World(const std::string instruction_filename)
-    : insfile_content(
-          new InsfileContent(read_instruction_file(instruction_filename))),
+    : insfile_content(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
       world_constructor(new WorldConstructor(get_params(), get_hfts())),
       output_aggregator(new Output::Aggregator()) {

@@ -6,6 +6,7 @@ project ("Modular Megafauna Model"
   )
 
 set (SOURCE_FILES
+  external/cpptoml/include/cpptoml.h
   include/Fauna/Output/habitat_data.h
   include/Fauna/average.h
   include/Fauna/date.h
@@ -112,6 +113,7 @@ target_include_directories (ModularMegafaunaModel
   PUBLIC
   include/
   PRIVATE
+  external/cpptoml/include/
   include/Fauna/
   include/Fauna/Output/
   src/Fauna/
@@ -184,6 +186,7 @@ if (BUILD_TESTING)
     )
   target_include_directories (megafauna_unit_tests
     PRIVATE
+    external/cpptoml/include/
     include/
     include/Fauna/
     include/Fauna/Output/

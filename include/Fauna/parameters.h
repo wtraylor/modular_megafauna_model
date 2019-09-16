@@ -96,7 +96,7 @@ struct Parameters {
     /** @{ \name Output Files */
 
     /// Herbivore mass density per HFT in kg/km².
-    bool mass_density_per_hft = true;
+    bool mass_density_per_hft = false;
 
     /** @} */  // Output Files
   } text_table_output;
