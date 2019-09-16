@@ -24,7 +24,7 @@ struct InsfileContent {
 /// Exception that a string parameter does not match possible options.
 class invalid_option : public std::runtime_error {
  public:
-  /// Constructor.
+  /// Constructor for global parameter.
   /**
    * \param key The fully qualified TOML key.
    * \param value The given (invalid) value.
@@ -32,6 +32,19 @@ class invalid_option : public std::runtime_error {
    * \throw std::logic_error If `valid_options` is empty.
    */
   invalid_option(const std::string& key, const std::string& value,
+                 const std::set<std::string>& valid_options)
+      : runtime_error(construct_message(key, value, valid_options)){};
+
+  /// Constructor for HFT parameter.
+  /**
+   * \param hft Reference to the HFT.
+   * \param key The fully qualified TOML key.
+   * \param value The given (invalid) value.
+   * \param valid_options Possible valid values.
+   * \throw std::logic_error If `valid_options` is empty.
+   */
+  invalid_option(const Hft& hft, const std::string& key,
+                 const std::string& value,
                  const std::set<std::string>& valid_options)
       : runtime_error(construct_message(key, value, valid_options)){};
 
@@ -44,12 +57,21 @@ class invalid_option : public std::runtime_error {
 /// Exception that a parameter is missing in the instruction file.
 class missing_parameter : public std::runtime_error {
  public:
-  /// Constructor.
+  /// Constructor for missing global parameter.
   /**
    * \param key The fully qualified TOML key.
    */
   missing_parameter(const std::string& key)
       : runtime_error("Missing mandatory parameter: \"" + key + '"'){};
+
+  /// Constructor for missing HFT parameter.
+  /**
+   * \param hft Reference to the HFT.
+   * \param key The fully qualified TOML key.
+   */
+  missing_parameter(const Hft& hft, const std::string& key)
+      : runtime_error("Missing mandatory parameter \"" + key + "\" in HFT \"" +
+                      hft.name + "\"."){};
 };
 
 /// Class to read parameters and HFTs from given instruction file.
@@ -74,6 +96,8 @@ class InsfileReader {
   void read_table_output();
   void read_table_output_text_tables();
   void read_table_simulation();
+
+  Hft read_hft(const std::shared_ptr<cpptoml::table>& table);
 
   /// The root table of the instruction file from `cpptoml::parse_file()`.
   std::shared_ptr<cpptoml::table> ins;
