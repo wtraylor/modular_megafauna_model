@@ -19,10 +19,9 @@ WorldConstructor::WorldConstructor(const Parameters& params,
                                    const HftList& hftlist)
     : params(params), hftlist(hftlist) {}
 
-DistributeForage* WorldConstructor::create_distribute_forage()
-    const {
+DistributeForage* WorldConstructor::create_distribute_forage() const {
   switch (get_params().forage_distribution) {
-    case FD_EQUALLY:
+    case ForageDistributionAlgorithm::Equally:
       return new DistributeForageEqually;
     default:
       throw std::logic_error(
@@ -34,9 +33,9 @@ DistributeForage* WorldConstructor::create_distribute_forage()
 PopulationInterface* WorldConstructor::create_population(
     const Hft* phft) const {
   // Create population instance according to selected herbivore type.
-  if (get_params().herbivore_type == HT_COHORT) {
+  if (get_params().herbivore_type == HerbivoreType::Cohort) {
     return new CohortPopulation(CreateHerbivoreCohort(phft, &get_params()));
-  } else if (get_params().herbivore_type == HT_INDIVIDUAL) {
+  } else if (get_params().herbivore_type == HerbivoreType::Individual) {
     const double AREA = 1.0;  // TODO THis is only a test
     return new IndividualPopulation(
         CreateHerbivoreIndividual(phft, &get_params()));
@@ -70,4 +69,3 @@ PopulationList* WorldConstructor::create_populations(const Hft* phft) const {
   assert(plist != NULL);
   return plist;
 }
-

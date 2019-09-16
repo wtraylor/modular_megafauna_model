@@ -121,7 +121,7 @@ void InsfileReader::read_table_simulation() {
     auto value = ins->get_qualified_as<std::string>(key);
     if (value) {
       if (lowercase(*value) == lowercase("Equally"))
-        params.forage_distribution = FD_EQUALLY;
+        params.forage_distribution = ForageDistributionAlgorithm::Equally;
       // -> Add new forage distribution algorithm here.
       else
         throw invalid_option(key, *value, {"Equally"});
@@ -146,9 +146,9 @@ void InsfileReader::read_table_simulation() {
     auto value = ins->get_qualified_as<std::string>(key);
     if (value) {
       if (lowercase(*value) == lowercase("Cohort"))
-        params.herbivore_type = HT_COHORT;
+        params.herbivore_type = HerbivoreType::Cohort;
       else if (lowercase(*value) == lowercase("Individual"))
-        params.herbivore_type = HT_INDIVIDUAL;
+        params.herbivore_type = HerbivoreType::Individual;
       else
         throw invalid_option(key, *value, {"Cohort", "Individual"});
     } else

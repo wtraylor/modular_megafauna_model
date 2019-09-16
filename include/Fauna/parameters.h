@@ -13,18 +13,18 @@
 namespace Fauna {
 
 /// Parameter for selecting algorithm for forage distribution among herbivores
-enum ForageDistributionAlgorithm {
+enum class ForageDistributionAlgorithm {
   /// Equal forage distribution: \ref Fauna::DistributeForageEqually
-  FD_EQUALLY
+  Equally
 };
 
 /// Parameter for selecting the class implementing \ref
 /// Fauna::HerbivoreInterface.
-enum HerbivoreType {
+enum class HerbivoreType {
   /// Use class \ref HerbivoreCohort
-  HT_COHORT,
+  Cohort,
   /// Use class \ref HerbivoreIndividual
-  HT_INDIVIDUAL
+  Individual
 };
 
 /// Time interval for aggregating output.
@@ -52,22 +52,22 @@ struct Parameters {
   // alphabetical order
 
   /// Algorithm for how to distribute available forage among herbivores.
-  /** Default: \ref FD_EQUALLY */
-  ForageDistributionAlgorithm forage_distribution;
+  ForageDistributionAlgorithm forage_distribution =
+      ForageDistributionAlgorithm::Equally;
 
   /// Habitat area [km²].
-  /** Only relevant if \ref herbivore_type == \ref HT_INDIVIDUAL. */
-  double habitat_area_km2;
+  /** Only relevant if \ref herbivore_type == \ref HerbivoreType::Individual. */
+  double habitat_area_km2 = 1.0;
 
   /// Days between establishment check for herbivores.
-  /** A value of `0` means no re-establishment. This is the default. */
-  int herbivore_establish_interval;
+  /** A value of `0` means no re-establishment. */
+  int herbivore_establish_interval = 0;
 
-  /// Which kind of herbivore class to use
-  HerbivoreType herbivore_type;
+  /// Which kind of herbivore class to use.
+  HerbivoreType herbivore_type = HerbivoreType::Cohort;
 
   /// Whether to allow only herbivores of one HFT in each patch (default false).
-  bool one_hft_per_patch;
+  bool one_hft_per_patch = false;
 
   /// The module that writes megafauna output to disk.
   OutputFormat output_format = OutputFormat::TextTables;
@@ -100,19 +100,6 @@ struct Parameters {
 
     /** @} */  // Output Files
   } text_table_output;
-
-  /// Constructor with default (valid!) settings
-  Parameters()
-      :  // alphabetical order
-        forage_distribution(FD_EQUALLY),
-        habitat_area_km2(100.0),
-        herbivore_establish_interval(0),
-        herbivore_type(HT_COHORT),
-        one_hft_per_patch(false) {
-    // Make sure that the default values are implemented
-    // correctly
-    assert(is_valid());
-  }
 
   /// Check if the parameters are valid
   /**
