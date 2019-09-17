@@ -133,13 +133,13 @@ enum class ExpenditureComponent {
   /// \ref get_expenditure_taylor_1981()
   Taylor1981,
 
-  /// Formula for temperature-dependent field metabolic rate:
-  /// \ref get_expenditure_zhu_et_al_2018()
-  Zhu2018,
-
   /// Increased expenditure in lower temperature, see
   /// \ref sec_thermoregulation.
-  Thermoregulation
+  Thermoregulation,
+
+  /// Formula for temperature-dependent field metabolic rate:
+  /// \ref get_expenditure_zhu_et_al_2018()
+  Zhu2018
 };
 
 /// A factor limiting a herbivore’s daily forage harvesting.
