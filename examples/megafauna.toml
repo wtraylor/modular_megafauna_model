@@ -67,7 +67,7 @@ limit          = "FixedFraction"
 type           = "Ruminant"
 
 [hft.establishment]
-age_range = { first = 1, last = 20 } # years
+age_range = { first = 1, last = 15 } # years
 density   = 1.0       # ind/km²
 
 [hft.expenditure]
