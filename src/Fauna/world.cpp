@@ -26,8 +26,13 @@ using namespace Fauna;
 namespace {
 /// Helper function to initialize Fauna::InsfileContent object.
 InsfileContent* read_instruction_file(const std::string& filename) {
-  InsfileReader reader(filename);
-  return new InsfileContent({reader.get_hfts(), reader.get_params()});
+  try {
+    InsfileReader reader(filename);
+    return new InsfileContent({reader.get_hfts(), reader.get_params()});
+  } catch (std::runtime_error& err) {
+    throw std::runtime_error("Error reading instruction file \"" + filename +
+                             "\":\n" + err.what());
+  }
 }
 }  // namespace
 
