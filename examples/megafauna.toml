@@ -34,15 +34,16 @@ name = "all_hfts"
 birth = 0.2
 # ...
 
-# Add any HFT parameters here. They will apply to all HFTs assigned to this
-# group, but can be overwritten by the individual HFTs.
+# Add any HFT parameters here, but prefix the tables/sections with "group."
+# instead of "hft.". Any HFT parameter that is not found in the HFT table
+# itself will be taken from the groups the HFT belongs to.
 
 ###############################################################################
 
 [[hft]]
 
 name   = "example"
-groups = [ "all_hfts" ]
+groups = [ "all_hfts" ] # Descending priority: first overrides last group.
 
 [hft.body_fat]
 birth              = 0.2   # kg/kg
