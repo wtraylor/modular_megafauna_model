@@ -55,23 +55,36 @@ class invalid_option : public std::runtime_error {
 };
 
 /// Exception that a parameter is missing in the instruction file.
-class missing_parameter : public std::runtime_error {
- public:
+struct missing_parameter : public std::runtime_error {
   /// Constructor for missing global parameter.
   /**
    * \param key The fully qualified TOML key.
    */
   missing_parameter(const std::string& key)
       : runtime_error("Missing mandatory parameter: \"" + key + '"'){};
+};
 
+struct missing_hft_parameter : public std::runtime_error {
   /// Constructor for missing HFT parameter.
   /**
-   * \param hft Reference to the HFT.
+   * \param hft_name Identifier of the HFT.
    * \param key The fully qualified TOML key.
    */
-  missing_parameter(const Hft& hft, const std::string& key)
+  missing_hft_parameter(const std::string& hft_name, const std::string& key)
       : runtime_error("Missing mandatory parameter \"" + key + "\" in HFT \"" +
-                      hft.name + "\"."){};
+                      hft_name + "\"."){};
+};
+
+/// Exception if a group listed in `hft.groups` cannot be found.
+struct missing_group : public std::runtime_error {
+  /// Constructor.
+  /**
+   * \param hft_name Name of the HFT where the group was defined.
+   * \param group_name The name of the missing group.
+   */
+  missing_group(const std::string& hft_name, const std::string& group_name)
+      : std::runtime_error("Cannot find group with name \"" + group_name +
+                           "\". " + "Required by HFT \"" + hft_name + "\"."){};
 };
 
 /// Class to read parameters and HFTs from given instruction file.
@@ -93,6 +106,39 @@ class InsfileReader {
   const Parameters& get_params() const { return params; };
 
  private:
+  /// Find table with group.
+  /**
+   * \param group_name The name of the group.
+   * \return Pointer to the group. NULL if group was not found.
+   */
+  std::shared_ptr<cpptoml::table> get_group_table(
+      const std::string& group_name) const;
+
+  /// Retrieve HFT parameter from HFT table itself or one of its groups.
+  /**
+   * If the key is not defined in the HFT itself, the groups are checked in the
+   * order they are defined until the value is found.
+   * \ref hft_table The TOML table of the HFT itself.
+   * \ref key The string identifier of the parameter, e.g. "digestion.type".
+   * \ref mandatory Whether to throw \ref missing_parameter if the value
+   * couldn’t be found.
+   * \return A pointer to the value. If the value wasn’t found and is not
+   * mandatory, the result is `NULL`.
+   */
+  template <class T>
+  cpptoml::option<T> find_hft_parameter(
+      const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
+      const bool mandatory) const;
+
+  /// Like \ref find_hft_parameter(), but for an array of values.
+  /**
+   * \copydoc find_hft_parameter()
+   */
+  template <class T>
+  typename cpptoml::array_of_trait<T>::return_type find_hft_array_parameter(
+      const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
+      const bool mandatory) const;
+
   void read_table_output();
   void read_table_output_text_tables();
   void read_table_simulation();
