@@ -51,10 +51,22 @@ InsfileReader::InsfileReader(const std::string filename)
     read_table_output_text_tables();
   read_table_simulation();
 
+  {
+    std::string err_msg;
+    if (!params.is_valid(err_msg))
+      throw std::runtime_error("Parameters are not valid:\n" + err_msg);
+  }
+
   auto hft_table_array = ins->get_table_array("hft");
   if (hft_table_array)
-    for (const auto& hft_table : *hft_table_array)
-      hfts.insert(read_hft(hft_table));
+    for (const auto& hft_table : *hft_table_array) {
+      const Hft hft = read_hft(hft_table);
+      std::string err_msg;
+      if (!hft.is_valid(params, err_msg))
+        throw std::runtime_error("HFT \"" + hft.name + "\" is not valid:\n" +
+                                 err_msg);
+      hfts.insert(std::move(hft));
+    }
   else
     throw std::runtime_error("No HFTs provided.");
 }
@@ -317,8 +329,8 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     }
   }
   {
-    const auto value =
-        find_hft_parameter<double>(table, "mortality.minimum_density_threshold", true);
+    const auto value = find_hft_parameter<double>(
+        table, "mortality.minimum_density_threshold", true);
     assert(value);
     hft.mortality.minimum_density_threshold = *value;
   }
