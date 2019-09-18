@@ -26,8 +26,9 @@ build:
     - make --jobs=2 megafauna_docs megafauna_unit_tests
   artifacts:
     paths:
-      - build/megafauna_unit_tests
       - build/docs/html/
+      - build/megafauna.toml
+      - build/megafauna_unit_tests
     expire_in: 20 minutes
 
 unit_tests:
