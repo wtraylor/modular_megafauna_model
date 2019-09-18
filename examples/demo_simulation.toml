@@ -1,0 +1,57 @@
+######################################################################
+# Instruction file for the megafauna demo simulator.
+######################################################################
+
+[general]
+
+# Number of simulation years. [1,∞)
+nyears = 100
+
+# Number of habitat groups.
+nhabitat_groups = 1
+
+# Number of habitats per group.
+nhabitats_per_group = 1
+
+# Snow depth [cm].
+# See `grass.daily_decay_rate` for how to use the array.
+snow_depth = [ 40, 40, 10, 0, 0, 0, 0, 0, 0, 0, 10, 20 ]
+
+[grass]
+
+# Proportional daily grass decay rate (0,∞).
+# Each value in the array is for one month. They are cycled. So a one-element
+# array will give a constant decay rate. 12 values will give a repeating annual
+# cycle.
+daily_decay_rate = [ 0.005 ]
+
+# Fractional grass digestibility (0,1].
+# See `grass.daily_decay_rate` for how to use the array.
+digestibility = [ 0.4, 0.4, 0.4, 0.7, 0.7, 0.7, 0.7, 0.6, 0.5, 0.5, 0.4, 0.4 ]
+
+# Foliar Percentage Cover of the grass.
+fpc = 0.8
+
+# Proportional maximum daily grass growth rate.
+# Example: A value of 0.1 means an increase of 10% every day.
+# See `grass.daily_decay_rate` for how to use the array.
+# 0.03 per day = 0.2 per week (Owen-Smith 2002)
+daily_growth_rate = [ 0.0, 0.0, 0.0, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.0, 0.0, 0.0]
+
+# Initial grass biomass in kgDM/km².
+# Must be smaller than `grass.saturation_mass`.
+initial_mass = 100000 # = 100 g/m² (Owen-Smith 2002)
+
+# Ungrazable grass reserve [kgDM/km²].
+# Not available to grazers but necessary for regrowth
+ungrazeable_reserve = 2000 # = 20 g/m² (Owen-Smith 2002)
+
+# Saturation grass biomass [kgDM/km²].
+# Must be greater than `grass.initial_mass`.
+saturation_mass = 200000 # = 200 g/m² (Owen-Smith 2002)
+
+#####################################################################
+# References:
+#
+#	Owen-Smith, N. (2002). A metaphysiological modelling approach to stability in
+#	herbivore–vegetation systems. Ecological Modelling, 149(1), 153-178.
