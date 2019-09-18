@@ -34,6 +34,6 @@ build:
 unit_tests:
   stage: test
   script:
-    - ./build/megafauna_unit_tests
+    - cd build && ./megafauna_unit_tests
 
 # TODO: Add full test simulation for master & develop branch.
