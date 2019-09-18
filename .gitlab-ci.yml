@@ -28,12 +28,18 @@ build:
     paths:
       - build/docs/html/
       - build/megafauna.toml
+      - build/megafauna_demo_simulator
       - build/megafauna_unit_tests
     expire_in: 20 minutes
 
 unit_tests:
   stage: test
   script:
-    - cd build && ./megafauna_unit_tests
+    - cd build
+    - ./megafauna_unit_tests
 
-# TODO: Add full test simulation for master & develop branch.
+demo_simulation:
+  stage: test
+  script:
+    - cd build
+    - ./megafauna_demo_simulator "megafauna.toml" "" # TODO: set demo simulator TOML file
