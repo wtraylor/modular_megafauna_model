@@ -59,6 +59,7 @@ In the Subversion repository of [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/)
 Please contact the maintainers of LPJ-GUESS to ask for access.
 
 Any other dynamic vegetation model can include the megafauna model as an external library.
+Have a look at the demo simulator application in `tools/demo_simulator/` for an example of how to use the library.
 <!--TODO: Add advice on dynamic vs. static library to comply with library licens.-->
 
 Known Bugs and Issues
