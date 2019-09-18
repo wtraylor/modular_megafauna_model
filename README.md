@@ -25,6 +25,7 @@ This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pi
 
 - `docs/`: Doxygen documentation.
 - `examples/`: Exemplary instruction files.
+- `external/`: Embedded external projects, which remain unmodified.
 - `include/`: Public API header files.
 - `src/`: Source and (private) header files of the project. Subdirectories correspond to C++ namespaces.
 - `tests/`: Unit tests.
