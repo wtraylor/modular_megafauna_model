@@ -39,6 +39,6 @@ class CreateHerbivoreCommon {
   const Parameters* parameters;
 };
 
-}
+}  // namespace Fauna
 
 #endif  // FAUNA_CREATE_HERBIVORE_COMMON_H

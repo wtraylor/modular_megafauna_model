@@ -23,9 +23,9 @@ GetForageDemands::GetForageDemands(const Hft* hft, const Sex sex)
 
 double GetForageDemands::get_bodymass_adult() const {
   if (sex == Sex::Male)
-    return get_hft().bodymass_male;
+    return get_hft().body_mass.male;
   else
-    return get_hft().bodymass_female;
+    return get_hft().body_mass.female;
 }
 
 void GetForageDemands::add_eaten(ForageMass eaten_forage) {
@@ -50,14 +50,17 @@ ForageFraction GetForageDemands::get_diet_composition() const {
   // particular forage types.
   ForageFraction result(0.0);
 
-  if (get_hft().diet_composer == DC_PURE_GRAZER) {
-    result.set(FT_GRASS, 1.0);  // put all into grass
-    // ** Add new diet composer algorithms here in else-if statements. **
-  } else {
-    throw std::logic_error(
-        "Fauna::GetForageDemands::get_diet_composition() "
-        "The selected algorithm for diet composition "
-        "(Hft::diet_composer) is not implemented.");
+  switch (get_hft().foraging.diet_composer) {
+    case (DietComposer::PureGrazer): {
+      result.set(FT_GRASS, 1.0);  // put all into grass
+      break;
+    }
+    // ** Add new diet composer algorithms here in case statements. **
+    default:
+      throw std::logic_error(
+          "Fauna::GetForageDemands::get_diet_composition() "
+          "The selected algorithm for diet composition "
+          "(Hft::diet_composer) is not implemented.");
   }
 
   // Check the result, but leave some rounding error tolerance.
@@ -72,55 +75,54 @@ ForageFraction GetForageDemands::get_diet_composition() const {
 ForageMass GetForageDemands::get_max_digestion() const {
   assert(today > -1);  // check that init_today() has been called
 
-  if (get_hft().digestive_limit == DL_NONE) {
-    return ForageMass(100000);
-  }
+  switch (get_hft().digestion.limit) {
+    case (DigestiveLimit::None): {
+      return ForageMass(100000);
+    }
+    case (DigestiveLimit::Allometric): {
+      return get_max_intake_as_total_mass(
+          diet_composition, energy_content,
+          get_hft().digestion.allometric.calc(bodymass));
+    }
+    case (DigestiveLimit::FixedFraction): {
+      double fraction = get_hft().digestion.fixed_fraction;
+      // If it is a juvenile, we need to scale maximum intake with the
+      // mass-related expenditure. (See doxygen doc of `DL_FIXED_FRACTION` for
+      // details.)
+      const double bodymass_adult = sex == Sex::Male
+                                        ? get_hft().body_mass.male
+                                        : get_hft().body_mass.female;
+      if (bodymass < bodymass_adult)
+        fraction = fraction / pow(bodymass_adult, -0.75) * pow(bodymass, -0.75);
+      return get_max_intake_as_total_mass(diet_composition, energy_content,
+                                          fraction * bodymass);
+    }
+    case (DigestiveLimit::IlliusGordon1992): {
+      // Check that we are only handling grass here. This should be
+      // already checked in Hft::is_valid().
+      assert(get_hft().foraging.diet_composer == DietComposer::PureGrazer);
 
-  else if (get_hft().digestive_limit == DL_ALLOMETRIC) {
-    return get_max_intake_as_total_mass(
-        diet_composition, energy_content,
-        get_hft().digestive_limit_allometry.calc(bodymass));
-  }
+      // create function object
+      const GetDigestiveLimitIlliusGordon1992 get_digestive_limit(
+          get_bodymass_adult(), get_hft().digestion.type);
 
-  else if (get_hft().digestive_limit == DL_FIXED_FRACTION) {
-    double fraction = get_hft().digestive_limit_fixed;
-    // If it is a juvenile, we need to scale maximum intake with the
-    // mass-related expenditure. (See doxygen doc of `DL_FIXED_FRACTION` for
-    // details.)
-    const double bodymass_adult =
-        sex == Sex::Male ? get_hft().bodymass_male : get_hft().bodymass_female;
-    if (bodymass < bodymass_adult)
-      fraction = fraction / pow(bodymass_adult, -0.75) * pow(bodymass, -0.75);
-    return get_max_intake_as_total_mass(diet_composition, energy_content,
-                                        fraction * bodymass);
-  }
+      // calculate the digestive limit [MJ/ind/day]
+      const ForageEnergy limit_mj =
+          get_digestive_limit(bodymass, digestibility);
 
-  else if (get_hft().digestive_limit == DL_ILLIUS_GORDON_1992) {
-    // Check that we are only handling grass here. This should be
-    // already checked in Hft::is_valid().
-    assert(get_hft().diet_composer == DC_PURE_GRAZER);
+      // Convert energy to kg dry matter
+      // kg * MJ/kg = kg; where zero values remain zero values even
+      // on division by zero.
+      const ForageMass limit_kg = limit_mj.divide_safely(energy_content, 0.0);
 
-    // create function object
-    const GetDigestiveLimitIlliusGordon1992 get_digestive_limit(
-        get_bodymass_adult(), get_hft().digestion_type);
-
-    // calculate the digestive limit [MJ/ind/day]
-    const ForageEnergy limit_mj = get_digestive_limit(bodymass, digestibility);
-
-    // Convert energy to kg dry matter
-    // kg * MJ/kg = kg; where zero values remain zero values even
-    // on division by zero.
-    const ForageMass limit_kg = limit_mj.divide_safely(energy_content, 0.0);
-
-    // Set the maximum foraging limit [kgDM/ind/day]
-    return limit_kg;
-  }
-
-  // ** add new digestive constraints in new else-if statements here **
-  else {
-    throw std::logic_error(
-        "Fauna::GetForageDemands::get_max_digestion() "
-        "The value for `Hft::digestive_limit` is not implemented.");
+      // Set the maximum foraging limit [kgDM/ind/day]
+      return limit_kg;
+    }
+    // ** add new digestive constraints in new else-if statements here **
+    default:
+      throw std::logic_error(
+          "Fauna::GetForageDemands::get_max_digestion() "
+          "The value for `Hft::digestive_limit` is not implemented.");
   }
 }
 
@@ -135,45 +137,48 @@ ForageMass GetForageDemands::get_max_foraging() const {
 
   // Go through all forage intake limits
   std::set<ForagingLimit>::const_iterator itr;
-  for (itr = get_hft().foraging_limits.begin();
-       itr != get_hft().foraging_limits.end(); itr++) {
-    if (*itr == FL_ILLIUS_OCONNOR_2000) {
-      // Check that we are only handling grass here. This should be
-      // already checked in Hft::is_valid().
-      assert(get_hft().diet_composer == DC_PURE_GRAZER);
+  for (const auto& limit : get_hft().foraging.limits) switch (limit) {
+      case (ForagingLimit::IlliusOConnor2000): {
+        // Check that we are only handling grass here. This should be
+        // already checked in Hft::is_valid().
+        assert(get_hft().foraging.diet_composer == DietComposer::PureGrazer);
 
-      // create function object for maximum intake
-      const GetDigestiveLimitIlliusGordon1992 get_digestive_limit(
-          get_bodymass_adult(), get_hft().digestion_type);
+        // create function object for maximum intake
+        const GetDigestiveLimitIlliusGordon1992 get_digestive_limit(
+            get_bodymass_adult(), get_hft().digestion.type);
 
-      // Create functional response with digestive limit as maximum.
-      const HalfMaxIntake half_max(
-          get_hft().half_max_intake_density * 1000.0,  // gDM/m² to kgDM/km²
-          get_digestive_limit(bodymass, digestibility)[FT_GRASS]);
+        // Create functional response with digestive limit as maximum.
+        // Convert half_max_intake_density from gDM/m² to kgDM/km²
+        const HalfMaxIntake half_max(
+            get_hft().foraging.half_max_intake_density * 1000.0,
+            get_digestive_limit(bodymass, digestibility)[FT_GRASS]);
 
-      // Like Pachzelt et al. (2013), we use the whole-habitat grass density,
-      // not the ‘sward density’.
-      const double grass_limit_mj = half_max.get_intake_rate(
-          available_forage.grass.get_mass());  // [MJ/day]
+        // Like Pachzelt et al. (2013), we use the whole-habitat grass density,
+        // not the ‘sward density’.
+        const double grass_limit_mj = half_max.get_intake_rate(
+            available_forage.grass.get_mass());  // [MJ/day]
 
-      double grass_limit_kg;
-      if (energy_content[FT_GRASS] > 0.0)
-        grass_limit_kg = grass_limit_mj / energy_content[FT_GRASS];
-      else
-        grass_limit_kg = 0.0;  // no energy ⇒ no feeding
+        double grass_limit_kg;
+        if (energy_content[FT_GRASS] > 0.0)
+          grass_limit_kg = grass_limit_mj / energy_content[FT_GRASS];
+        else
+          grass_limit_kg = 0.0;  // no energy ⇒ no feeding
 
-      // The Illius & O’Connor (2000) model applies only to grass, and
-      // hence we only constrain the grass part of `result`.
-      result.set(FT_GRASS, std::min(result[FT_GRASS], grass_limit_kg));
-    } else if (*itr == FL_GENERAL_FUNCTIONAL_RESPONSE) {
-      // Silently ignore the limit “general_functional_response” here
-      // because it is applied later “on top” of all other limits.
-    } else
-      // ADD MORE LIMITS HERE IN NEW ELSE-IF STATEMENTS
-      throw std::logic_error(
-          "Fauna::GetForageDemands::get_max_foraging() "
-          "One of the selected foraging limits is not implemented.");
-  }
+        // The Illius & O’Connor (2000) model applies only to grass, and
+        // hence we only constrain the grass part of `result`.
+        result.set(FT_GRASS, std::min(result[FT_GRASS], grass_limit_kg));
+        break;
+      }
+      case (ForagingLimit::GeneralFunctionalResponse):
+        break;
+        // Silently ignore the limit “general_functional_response” here
+        // because it is applied later “on top” of all other limits.
+      default:
+        // ADD MORE LIMITS HERE IN NEW ELSE-IF STATEMENTS
+        throw std::logic_error(
+            "Fauna::GetForageDemands::get_max_foraging() "
+            "One of the selected foraging limits is not implemented.");
+    }
   return result;
 }
 
@@ -265,11 +270,13 @@ void GetForageDemands::init_today(const int day,
 
   // Apply the general functional response “on top”.
   // BUT ONLY FOR THE GRASS COMPONENT.
-  if (get_hft().foraging_limits.count(FL_GENERAL_FUNCTIONAL_RESPONSE) &&
+  if (get_hft().foraging.limits.count(
+          ForagingLimit::GeneralFunctionalResponse) &&
       max_intake[FT_GRASS] > 0.0) {
     // Create functional response with current limit as maximum.
+    // Convert half_max_intake_density from gDM/m² to kgDM/km²
     const HalfMaxIntake half_max(
-        get_hft().half_max_intake_density * 1000.0,  // gDM/m² to kgDM/km²
+        get_hft().foraging.half_max_intake_density * 1000.0,
         max_intake[FT_GRASS]);
 
     // Apply the result to the grass component.
@@ -376,4 +383,3 @@ ForageMass GetForageDemands::operator()(const double _energy_needs) {
   result.min(available_forage.get_mass());
   return result;
 }
-

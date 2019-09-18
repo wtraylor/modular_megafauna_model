@@ -12,4 +12,3 @@ TEST_CASE("Fauna::Parameters", "") {
   // defaults must be valid.
   REQUIRE(Parameters().is_valid());
 }
-

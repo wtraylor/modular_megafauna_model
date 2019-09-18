@@ -22,7 +22,7 @@ namespace Output {
  * files have the same name as the corresponding boolean variable in
  * \ref Parameters::TextTableWriterOptions.
  * All files are created in a directory specified by
- * \ref Parameters::TextTableWriterOptions::output_directory.
+ * \ref Parameters::TextTableWriterOptions::directory.
  *
  * Per-HFT tables have one column per HFT:
  * - `mass_density_per_hft`

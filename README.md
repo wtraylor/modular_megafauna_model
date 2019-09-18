@@ -25,6 +25,7 @@ This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pi
 
 - `docs/`: Doxygen documentation.
 - `examples/`: Exemplary instruction files.
+- `external/`: Embedded external projects, which remain unmodified.
 - `include/`: Public API header files.
 - `src/`: Source and (private) header files of the project. Subdirectories correspond to C++ namespaces.
 - `tests/`: Unit tests.
@@ -78,3 +79,5 @@ License
 - The [Catch2](https://github.com/catchorg/Catch2) test framework (`tests/catch.hpp`) is licensed under the [Boost Software License](http://www.boost.org/LICENSE_1_0.txt).
 
 - The version of the [PlantUML](http://plantuml.com) file (`docs/plantuml.jar`), which is used to render UML diagrams in the Doxygen documentation, is under the [MIT license](http://opensource.org/licenses/MIT).
+
+- The [cpptoml](https://github.com/skystrife/cpptoml) library (`external/cpptoml/`) is licensed under the [MIT license](http://opensource.org/licenses/MIT).

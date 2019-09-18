@@ -45,13 +45,3 @@ bool HftList::is_valid(const Parameters& params, std::string& msg) const {
 
   return all_valid;
 }
-
-void HftList::remove_excluded() {
-  std::vector<Hft>::iterator iter = vec.begin();
-  while (iter != vec.end())
-    if (!iter->is_included)
-      iter = vec.erase(iter);
-    else
-      iter++;
-}
-

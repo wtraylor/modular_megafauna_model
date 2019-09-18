@@ -12,10 +12,10 @@
 #include "feed_herbivores.h"
 #include "habitat.h"
 #include "hft.h"
+#include "insfile_reader.h"
 #include "parameters.h"
 #include "population_interface.h"
 #include "population_list.h"
-#include "read_insfile.h"
 #include "simulate_day.h"
 #include "simulation_unit.h"
 #include "text_table_writer.h"
@@ -23,18 +23,30 @@
 
 using namespace Fauna;
 
+namespace {
+/// Helper function to initialize Fauna::InsfileContent object.
+InsfileContent* read_instruction_file(const std::string& filename) {
+  try {
+    InsfileReader reader(filename);
+    return new InsfileContent({reader.get_hfts(), reader.get_params()});
+  } catch (std::runtime_error& err) {
+    throw std::runtime_error("Error reading instruction file \"" + filename +
+                             "\":\n" + err.what());
+  }
+}
+}  // namespace
+
 World::World(const std::string instruction_filename)
-    : insfile_content(
-          new InsfileContent(read_instruction_file(instruction_filename))),
+    : insfile_content(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
       world_constructor(new WorldConstructor(get_params(), get_hfts())),
       output_aggregator(new Output::Aggregator()) {
   // Create Output::WriterInterface implementation according to selected
   // setting.
-  switch (get_params().output_format) {
+  switch (get_params().output.format) {
     case OutputFormat::TextTables:
       output_writer.reset(new Output::TextTableWriter(
-          get_params().output_interval, get_params().text_table_output));
+          get_params().output.interval, get_params().text_table_output));
       break;
     default:
       std::logic_error(
@@ -142,7 +154,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
   // Write output when it’s ready.
   assert(output_writer.get() != NULL);
   if (output_aggregator->get_interval().matches_output_interval(
-          get_params().output_interval))
+          get_params().output.interval))
     for (const auto& datapoint : output_aggregator->retrieve())
       output_writer->write_datapoint(datapoint);
 }

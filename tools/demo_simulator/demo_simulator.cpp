@@ -79,7 +79,15 @@ Usage:
 bool Framework::run(const std::string insfile_fauna,
                     const std::string insfile_demo) {
   Fauna::Parameters global_params;
-  World fauna_world(insfile_fauna);
+  std::unique_ptr<Fauna::World> fauna_world;
+
+  try {
+    fauna_world.reset(new Fauna::World(insfile_fauna));
+  } catch (const std::runtime_error& e) {
+    std::cerr << "An exception ocurred while creating Fauna::World.\n"
+              << e.what() << std::endl;
+    return false;
+  }
 
   std::cerr << "Creating ecosystem with habitats and herbivores." << std::endl;
 
@@ -92,7 +100,7 @@ bool Framework::run(const std::string insfile_fauna,
       try {
         // We only pass the pointer to the new habitat to the megafauna
         // library, so special care is needed that it will stay valid.
-        fauna_world.create_simulation_unit(
+        fauna_world->create_simulation_unit(
             new SimpleHabitat(params.habitat, aggregation_unit));
       } catch (const std::exception& e) {
         std::cerr << "Exception during habitat creation:" << std::endl
@@ -117,7 +125,7 @@ bool Framework::run(const std::string insfile_fauna,
       try {
         // The Fauna::World class will take care to iterate over all habitat
         // groups.
-        fauna_world.simulate_day(date, do_herbivores);
+        fauna_world->simulate_day(date, do_herbivores);
       } catch (const std::exception& e) {
         std::cerr << "Exception during herbivore simulation:\n"
                   << e.what() << std::endl;

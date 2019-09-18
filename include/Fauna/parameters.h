@@ -13,18 +13,18 @@
 namespace Fauna {
 
 /// Parameter for selecting algorithm for forage distribution among herbivores
-enum ForageDistributionAlgorithm {
+enum class ForageDistributionAlgorithm {
   /// Equal forage distribution: \ref Fauna::DistributeForageEqually
-  FD_EQUALLY
+  Equally
 };
 
 /// Parameter for selecting the class implementing \ref
 /// Fauna::HerbivoreInterface.
-enum HerbivoreType {
+enum class HerbivoreType {
   /// Use class \ref HerbivoreCohort
-  HT_COHORT,
+  Cohort,
   /// Use class \ref HerbivoreIndividual
-  HT_INDIVIDUAL
+  Individual
 };
 
 /// Time interval for aggregating output.
@@ -52,35 +52,38 @@ struct Parameters {
   // alphabetical order
 
   /// Algorithm for how to distribute available forage among herbivores.
-  /** Default: \ref FD_EQUALLY */
-  ForageDistributionAlgorithm forage_distribution;
+  ForageDistributionAlgorithm forage_distribution =
+      ForageDistributionAlgorithm::Equally;
 
   /// Habitat area [km²].
-  /** Only relevant if \ref herbivore_type == \ref HT_INDIVIDUAL. */
-  double habitat_area_km2;
+  /** Only relevant if \ref herbivore_type == \ref HerbivoreType::Individual. */
+  double habitat_area_km2 = 1.0;
 
   /// Days between establishment check for herbivores.
-  /** A value of `0` means no re-establishment. This is the default. */
-  int herbivore_establish_interval;
+  /** A value of `0` means no re-establishment. */
+  int herbivore_establish_interval = 0;
 
-  /// Which kind of herbivore class to use
-  HerbivoreType herbivore_type;
+  /// Which kind of herbivore class to use.
+  HerbivoreType herbivore_type = HerbivoreType::Cohort;
 
   /// Whether to allow only herbivores of one HFT in each patch (default false).
-  bool one_hft_per_patch;
+  bool one_hft_per_patch = false;
 
-  /// The module that writes megafauna output to disk.
-  OutputFormat output_format = OutputFormat::TextTables;
+  /// General output options.
+  struct {
+    /// The module that writes megafauna output to disk.
+    OutputFormat format = OutputFormat::TextTables;
 
-  /// Time interval for aggregating output.
-  OutputInterval output_interval = OutputInterval::Annual;
+    /// Time interval for aggregating output.
+    OutputInterval interval = OutputInterval::Annual;
+  } output;
 
   /// Preferences for the \ref TextTableWriter output class.
   /**
    * Which tables to write in text files is specified by boolean variables: If
    * the corresponding member variable is `true`, a file with the same name
    * plus extension (\ref TextTableWriter::FILE_EXTENSION) will be created in
-   * \ref output_directory.
+   * \ref directory.
    */
   struct TextTableWriterOptions {
     /// Relative or absolute path to directory where output files are placed.
@@ -88,7 +91,7 @@ struct Parameters {
      * The names of the output text files within the directory are hard-coded.
      * If the directory doesn’t exist, it will be created.
      */
-    std::string output_directory = "./";
+    std::string directory = "./";
 
     /// Number of figures after the decimal point.
     unsigned int precision = 3;
@@ -96,23 +99,10 @@ struct Parameters {
     /** @{ \name Output Files */
 
     /// Herbivore mass density per HFT in kg/km².
-    bool mass_density_per_hft = true;
+    bool mass_density_per_hft = false;
 
     /** @} */  // Output Files
   } text_table_output;
-
-  /// Constructor with default (valid!) settings
-  Parameters()
-      :  // alphabetical order
-        forage_distribution(FD_EQUALLY),
-        habitat_area_km2(100.0),
-        herbivore_establish_interval(0),
-        herbivore_type(HT_COHORT),
-        one_hft_per_patch(false) {
-    // Make sure that the default values are implemented
-    // correctly
-    assert(is_valid());
-  }
 
   /// Check if the parameters are valid
   /**
@@ -127,7 +117,6 @@ struct Parameters {
     std::string dump;
     return is_valid(dump);
   }
-  /// @}
 };
 
 }  // namespace Fauna

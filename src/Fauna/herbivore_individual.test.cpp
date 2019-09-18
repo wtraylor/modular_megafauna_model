@@ -37,7 +37,7 @@ TEST_CASE("Fauna::HerbivoreIndividual", "") {
           Approx(AREA));
 
   SECTION("Mortality") {
-    hft.mortality_factors.insert(MF_STARVATION_THRESHOLD);
+    hft.mortality.factors.insert(MortalityFactor::StarvationThreshold);
 
     // create with zero fat reserves
     const double BC_DEAD = 0.0;  // body condition

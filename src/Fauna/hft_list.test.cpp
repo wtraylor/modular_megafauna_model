@@ -9,7 +9,6 @@
 #include "hft_list.h"
 using namespace Fauna;
 
-
 TEST_CASE("Fauna::HftList", "") {
   HftList hftlist;
 
@@ -29,7 +28,6 @@ TEST_CASE("Fauna::HftList", "") {
   // add some real HFTs
   Hft hft1;
   hft1.name = "hft1";
-  hft1.is_included = true;
   REQUIRE_NOTHROW(hftlist.insert(hft1));
   REQUIRE(hftlist.size() == 1);
   REQUIRE(hftlist[0].name == "hft1");
@@ -37,7 +35,6 @@ TEST_CASE("Fauna::HftList", "") {
 
   Hft hft2;
   hft2.name = "hft2";
-  hft2.is_included = false;
   REQUIRE_NOTHROW(hftlist.insert(hft2));
   REQUIRE(hftlist.size() == 2);
   REQUIRE_NOTHROW(hftlist[1]);
@@ -50,15 +47,11 @@ TEST_CASE("Fauna::HftList", "") {
   CHECK_FALSE(hftlist.contains("abc"));
 
   // substitute element
-  hft2.lifespan += 2;  // change a property outside list
-  REQUIRE(hftlist[hft2.name].lifespan != hft2.lifespan);
+  hft2.life_history.lifespan += 2;  // change a property outside list
+  REQUIRE(hftlist[hft2.name].life_history.lifespan !=
+          hft2.life_history.lifespan);
   hftlist.insert(hft2);  // replace existing
-  CHECK(hftlist[hft2.name].lifespan == hft2.lifespan);
-
-  // remove excluded
-  hftlist.remove_excluded();
-  CHECK(hftlist.size() == 1);
-  CHECK(hftlist.contains(hft1.name));        // hft1 included
-  CHECK_FALSE(hftlist.contains(hft2.name));  // hft2 NOT included
+  REQUIRE(hftlist.size() == 2);
+  CHECK(hftlist[hft2.name].life_history.lifespan == hft2.life_history.lifespan);
 }
 

@@ -9,8 +9,8 @@
 using namespace Fauna;
 
 TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {
-  GetNetEnergyContentDefault ne_ruminant(DT_RUMINANT);
-  GetNetEnergyContentDefault ne_hindgut(DT_HINDGUT);
+  GetNetEnergyContentDefault ne_ruminant(DigestionType::Ruminant);
+  GetNetEnergyContentDefault ne_hindgut(DigestionType::Hindgut);
 
   const Digestibility DIG1(0.5);
   const Digestibility DIG2(0.3);

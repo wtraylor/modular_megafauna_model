@@ -22,8 +22,8 @@ TEST_CASE("Fauna::CohortPopulation", "") {
 
   // prepare HFT
   Hft hft = create_hfts(1, params)[0];
-  hft.establishment_density = 10.0;  // [ind/km²]
-  hft.mortality_factors.clear();     // immortal herbivores
+  hft.establishment.density = 10.0;  // [ind/km²]
+  hft.mortality.factors.clear();     // immortal herbivores
   REQUIRE(hft.is_valid(params));
 
   // prepare creating object
@@ -41,7 +41,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
     REQUIRE(pop.get_list().empty());  // empty before
 
     SECTION("Establish one age class") {
-      hft.establishment_age_range.first = hft.establishment_age_range.second =
+      hft.establishment.age_range.first = hft.establishment.age_range.second =
           4;
       pop.establish();
       REQUIRE(!pop.get_list().empty());  // filled afterwards
@@ -51,12 +51,12 @@ TEST_CASE("Fauna::CohortPopulation", "") {
       REQUIRE(pop.get_list().size() == 2);
 
       // Does the total density match?
-      REQUIRE(pop.get_ind_per_km2() == Approx(hft.establishment_density));
+      REQUIRE(pop.get_ind_per_km2() == Approx(hft.establishment.density));
     }
 
     SECTION("Establish several age classes") {
-      hft.establishment_age_range.first = 3;
-      hft.establishment_age_range.second = 6;
+      hft.establishment.age_range.first = 3;
+      hft.establishment.age_range.second = 6;
       pop.establish();
       REQUIRE(!pop.get_list().empty());  // filled afterwards
       REQUIRE(population_lists_match(pop));
@@ -65,7 +65,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
       REQUIRE(pop.get_list().size() == 4 * 2);
 
       // Does the total density match?
-      REQUIRE(pop.get_ind_per_km2() == Approx(hft.establishment_density));
+      REQUIRE(pop.get_ind_per_km2() == Approx(hft.establishment.density));
     }
 
     SECTION("Removal of dead cohorts with mortality") {

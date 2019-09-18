@@ -33,7 +33,10 @@ struct AllometryParameters {
   AllometryParameters(const double coefficient, const double exponent)
       : coefficient(coefficient), exponent(exponent) {}
 
+  /// Factor `c` in `x=c*M^e`.
   double coefficient;
+
+  /// Exponent `e` in `x=c*M^e`.
   double exponent;
 
   /// Calculate the result of the formula.
@@ -42,38 +45,40 @@ struct AllometryParameters {
 
 /// Selector for a function of how to calculate whole-body conductance.
 /** \see \ref sec_thermoregulation */
-enum ConductanceModel {
-  /// Allometric formula from data by Bradley & Deavers (1980)\cite
-  /// bradley1980reexamination
+enum class ConductanceModel {
+  /// Allometric formula from data by Bradley & Deavers (1980)
+  /// \cite bradley1980reexamination.
   /** \see \ref get_conductance_bradley_deavers_1980() */
-  CM_BRADLEY_DEAVERS_1980,
+  BradleyDeavers1980,
+
   /// Allometric formula extrapolating from reindeer fur conductivity.
   /** \see \ref get_conductance_cuyler_oeritsland_2004 */
-  CM_CUYLER_OERITSLAND_2004
+  CuylerOeritsland2004
 };
 
 /// Model to define a herbivore’s diet in a multi-forage scenario.
-enum DietComposer {
+enum class DietComposer {
   /// Eat exclusively grass.
-  DC_PURE_GRAZER
+  PureGrazer
 };
 
 /// Digestion type of a herbivore.
-enum DigestionType {
+enum class DigestionType {
   /// Hindgut fermenter (colonic caecalid).
-  DT_HINDGUT,
+  Hindgut,
+
   /// Ruminant forgut fermenter.
-  DT_RUMINANT
+  Ruminant
 };
 
 /// Algorithm to calculate the daily digestive capacity of a herbivore.
-enum DigestiveLimit {
+enum class DigestiveLimit {
   /// No digestive limit.
-  DL_NONE,
+  None,
 
   /// Dry-matter ingestion is limited to a fraction of live herbivore body mass.
   /** \see Hft::digestive_limit_allometry */
-  DL_ALLOMETRIC,
+  Allometric,
 
   /// Dry-matter ingestion is limited to a fixed fraction of live body mass.
   /**
@@ -102,14 +107,14 @@ enum DigestiveLimit {
    * \image html scale_diglimit.svg "Scaling of digestive limit for
    * non-mature animals."
    */
-  DL_FIXED_FRACTION,
+  FixedFraction,
 
   /// Limit digestive limit with \ref GetDigestiveLimitIlliusGordon1992.
-  DL_ILLIUS_GORDON_1992
+  IlliusGordon1992
 };
 
 /// Algorithm to calculate a herbivore’s daily energy needs.
-enum ExpenditureComponent {
+enum class ExpenditureComponent {
   /// Simple exponential expenditure function based on current body mass.
   /**
    * \f[
@@ -122,21 +127,23 @@ enum ExpenditureComponent {
    * - $e$: Allometric exponent (\ref AllometryParameters::exponent in
    *   member \ref Hft::expenditure_allometry)
    */
-  EC_ALLOMETRIC,
-  /// Formula for field metabolic rate in cattle, see \ref
-  /// get_expenditure_taylor_1981.
-  EC_TAYLOR_1981,
-  /// Formula for temperature-dependent field metabolic rate.
-  /** See \ref get_expenditure_zhu_et_al_2018() */
-  EC_ZHU_2018,
-  /// Increased expenditure in lower temperature, see \ref
-  /// sec_thermoregulation.
-  EC_THERMOREGULATION
+  Allometric,
+
+  /// Formula for field metabolic rate in cattle:
+  /// \ref get_expenditure_taylor_1981()
+  Taylor1981,
+
+  /// Increased expenditure in lower temperature, see
+  /// \ref sec_thermoregulation.
+  Thermoregulation,
+
+  /// Formula for temperature-dependent field metabolic rate:
+  /// \ref get_expenditure_zhu_et_al_2018()
+  Zhu2018
 };
 
 /// A factor limiting a herbivore’s daily forage harvesting.
-enum ForagingLimit {
-
+enum class ForagingLimit {
   /// Type-II functional response applied “on top” of all other constraints.
   /**This has no empirical basis, but serves as a way to implement an
    * “artificial” smooth negative feedback from forage to fat mass.
@@ -152,7 +159,7 @@ enum ForagingLimit {
    *
    * \see \ref Hft::half_max_intake_density, \ref HalfMaxIntake
    */
-  FL_GENERAL_FUNCTIONAL_RESPONSE,
+  GeneralFunctionalResponse,
 
   /// Foraging is limited by a functional response towards digestion limit.
   /**
@@ -171,52 +178,59 @@ enum ForagingLimit {
    * \ref GrassForage::get_sward_density()).
    * \see \ref Hft::half_max_intake_density
    */
-  FL_ILLIUS_OCONNOR_2000
+  IlliusOConnor2000
 };
 
 /// How forage net energy content is calculated.
-enum NetEnergyModel {
+enum class NetEnergyModel {
   /// Use \ref GetNetEnergyContentDefault
-  NE_DEFAULT
+  Default
 };
 
 /// One way how a herbivore can die.
-enum MortalityFactor {
+enum class MortalityFactor {
   /// Independent background mortality for juveniles and adults.
   /** \see \ref GetBackgroundMortality */
-  MF_BACKGROUND,
+  Background,
+
   /// A herbivore dies if its age exceeds \ref Hft::lifespan.
   /** \see \ref Fauna::GetSimpleLifespanMortality */
-  MF_LIFESPAN,
+  Lifespan,
+
   /// Starvation death following Illius & O’Connor (2000).
   /** \see \ref Fauna::GetStarvationIlliusOConnor2000 */
-  MF_STARVATION_ILLIUS_OCONNOR_2000,
+  StarvationIlliusOConnor2000,
+
   /// Starvation death at a minimum bodyfat threshold.
-  MF_STARVATION_THRESHOLD
+  StarvationThreshold
 };
 
 /// Algorithm to calculate herbivore reproduction time and success.
-enum ReproductionModel {
-  /// Use class \ref ReproductionConstMax for reproduction.
-  RM_CONST_MAX,
-  /// Use class \ref ReprIlliusOconnor2000 to calculate reproduction.
-  RM_ILLIUS_OCONNOR_2000,
-  /// Use class \ref ReproductionLinear for reproduction.
-  RM_LINEAR,
+enum class ReproductionModel {
   /// Disable reproduction all together.
-  RM_NONE
+  None,
+  /// Use class \ref ReproductionConstMax for reproduction.
+  ConstantMaximum,
+  /// Use class \ref ReprIlliusOconnor2000 to calculate reproduction.
+  IlliusOConnor2000,
+  /// Use class \ref ReproductionLinear for reproduction.
+  Linear
 };
 
 /// One herbivore functional type (i.e. one species).
+/**
+ * Parametes are sorted alphabetically and grouped by semantic categories
+ * (`struct` members).
+ *
+ * The member variable names shall be spelled exactly the same as the keys in
+ * the TOML instruction file. The `struct` members of this class correspond to
+ * the tables in the TOML file and are spelled the same, too.
+ *
+ * The initialization values are the same as in the example file under
+ * \ref examples/megafauna.toml. They must be valid in the context of the
+ * global parameters of the instruction file.
+ */
 struct Hft {
-  /// Constructor initializing values
-  /** All values do not necessary need to be valid because
-   * their validity potentially depends on external variables.
-   * For the sake of easy unit-testing, arbitrary default
-   * values are given that lie within the valid ranges.
-   */
-  Hft();
-
   /// Check if all variables are okay
   /**
    * \param[in] params The global simulation parameters.
@@ -230,143 +244,172 @@ struct Hft {
    * \return true if the object has valid values */
   bool is_valid(const Parameters& params) const;
 
-  /// Whether to include the HFT in the simulation.
-  bool is_included;
-
   /// Unique name of the herbivore type.
-  std::string name;
+  std::string name = "example";
 
-  /** @{ \name Simulation Parameters */
+  /// Body fat parameters.
+  struct {
+    /// Proportional fat mass at birth [kg/kg].
+    double birth = 0.2;
 
-  /// Proportional fat mass at birth [kg/kg].
-  double bodyfat_birth;
+    /// Standard deviation in body condition for
+    /// \ref GetStarvationIlliusOConnor2000.
+    /**
+     * Body condition is the proportion of current body fat relative to
+     * physiological maximum.
+     * For herbivore individuals, the standard deviation refers to the
+     * whole population. In cohort mode, it refers only to one cohort.
+     *
+     * \note For juveniles (1st year of life), body fat variation is
+     * always zero in order to avoid artificially high death rates if
+     * body fat is low at birth.
+     */
+    double deviation = 0.125;
 
-  /// Standard deviation in body condition for \ref
-  /// GetStarvationIlliusOConnor2000.
-  /**
-   * Body condition is the proportion of current body fat relative to
-   * physiological maximum.
-   * For herbivore individuals, the standard deviation refers to the
-   * whole population. In cohort mode, it refers only to one cohort.
-   *
-   * \note For juvevniles (1st year of life), body fat variation is
-   * always zero in order to avoid artificially high death rates if
-   * body fat is low at birth.
-   */
-  double bodyfat_deviation;
+    /// Maximum proportional fat mass [kg/kg].
+    double maximum = 0.3;
 
-  /// Maximum proportional fat mass [kg/kg].
-  double bodyfat_max;
+    /// Maximum rate of fat mass gain in kg fat per kg body mass per day.
+    /** A value of zero indicates no limit. */
+    double maximum_daily_gain = 0.05;
+  } body_fat;
 
-  /// Maximum rate of fat mass gain in kg fat per kg body mass per day.
-  /** A value of zero indicates no limit. */
-  double bodyfat_max_daily_gain;
+  /// Body mass parameters.
+  struct {
+    /// Body mass [kg] at birth for both sexes.
+    int birth = 5;
 
-  /// Body mass [kg] at birth for both sexes.
-  int bodymass_birth;
+    /// Body mass [kg] of an adult female individual (with full fat reserves).
+    int female = 50;
 
-  /// Body mass [kg] of an adult female individual (with full fat reserves).
-  int bodymass_female;
+    /// Body mass [kg] of an adult male individual (with full fat reserves).
+    int male = 70;
+  } body_mass;
 
-  /// Body mass [kg] of an adult male individual (with full fat reserves).
-  int bodymass_male;
+  /// Time period of giving birth.
+  struct {
+    /// Length of breeding season in days.
+    int length = 30;
 
-  /// Length of parturition season in days.
-  int breeding_season_length;
+    /// Julian day of the beginning of the breeding season (0=Jan 1st).
+    int start = 121;
+  } breeding_season;
 
-  /// First day of parturition season (0=Jan 1st).
-  int breeding_season_start;
+  /// Digestion-related parameters.
+  struct {
+    /// Parameters for \ref DigestiveLimit::Allometric
+    AllometryParameters allometric = {0.05, 0.76};
 
-  /// Algorithm to calculate whole-body conductance for thermoregulation.
-  ConductanceModel conductance;
+    /// Daily dry matter intake per kg body mass for
+    /// \ref DigestiveLimit::FixedFraction.
+    double fixed_fraction = 0.05;
 
-  /// Body core temperature [°C].
-  /** Default is 38°C (Hudson & White, 1985\cite hudson1985bioenergetics) */
-  double core_temperature;
+    /// Constraint for maximum daily forage intake.
+    DigestiveLimit limit = DigestiveLimit::FixedFraction;
 
-  /// Model defining the herbivore’s diet composition.
-  DietComposer diet_composer;
+    /// Digestion physiology (ruminant or hindgut fermenter).
+    DigestionType type = DigestionType::Ruminant;
+  } digestion;
 
-  /// Type of digestion (ruminant or hindgut fermenter)
-  DigestionType digestion_type;
+  /// Parameters for spawning new herbivores in empty habitats.
+  struct {
+    /// Youngest and oldest age [years] for herbivore establishment.
+    std::pair<int, int> age_range = {1, 15};
 
-  /// Constraints for maximum daily forage intake.
-  DigestiveLimit digestive_limit;
+    /// Total population density for establishment in one habitat [ind/km²]
+    double density = 1.0;
+  } establishment;
 
-  /// Allometric coefficient and exponent for \ref DL_ALLOMETRIC.
-  AllometryParameters digestive_limit_allometry;
+  /// Energy expenditure parameters.
+  struct {
+    /// Parameters for \ref ExpenditureComponent::Allometric.
+    AllometryParameters allometric = {0.4, 0.75};
 
-  /// Constant fraction of body mass for \ref DL_FIXED_FRACTION.
-  double digestive_limit_fixed;
+    /// Energy expenditure components, summing up to actual expenditure.
+    std::set<ExpenditureComponent> components = {
+        ExpenditureComponent::Allometric};
+  } expenditure;
 
-  /// Youngest and oldest age [years] for herbivore establishment.
-  std::pair<int, int> establishment_age_range;
+  /// Parameters regulating food intake.
+  struct {
+    /// Model defining the herbivore’s diet composition.
+    DietComposer diet_composer = DietComposer::PureGrazer;
 
-  /// Total population density for establishment in one habitat [ind/km²]
-  double establishment_density;
+    /// Constraints for maximum daily forage procurement.
+    std::set<ForagingLimit> limits = {};
 
-  /// Parameters for allometric expenditure component: \ref EC_ALLOMETRIC.
-  AllometryParameters expenditure_allometry;
+    /// Grass density [gDM/m²] where intake is half of its maximum.
+    /**
+     * Grass (sward) density at which intake rate reaches half
+     * of its maximum (in a Holling Type II functional response).
+     * Required by specific foraging limits.
+     */
+    double half_max_intake_density = 20;
 
-  /// Energy expenditure components, summing up to actual expenditure.
-  std::set<ExpenditureComponent> expenditure_components;
+    /// Algorithm for forage energy content.
+    NetEnergyModel net_energy_model = NetEnergyModel::Default;
+  } foraging;
 
-  /// Constraints for maximum daily forage procurement.
-  std::set<ForagingLimit> foraging_limits;
+  /// Life stages for herbivore individuals.
+  struct {
+    /// Maximum age in years [1–∞).
+    int lifespan = 16;
 
-  /// Duration of pregnancy [number of months].
-  int gestation_months;
+    /// Age of physical maturity in years for females.
+    int physical_maturity_female = 3;
 
-  /// Grass density [gDM/m²] where intake is half of its maximum.
-  /**
-   * Grass (sward) density at which intake rate reaches half
-   * of its maximum (in a Holling Type II functional response).
-   * Required by specific foraging limits.
-   */
-  double half_max_intake_density;
+    /// Age of physical maturity in years for males.
+    int physical_maturity_male = 3;
 
-  /// Maximum age in years [1–∞).
-  int lifespan;
+    /// Age of female sexual maturity in years.
+    int sexual_maturity = 2;
+  } life_history;
 
-  /// Age of physical maturity in years for females.
-  int maturity_age_phys_female;
+  /// Parameters to define death of herbivores.
+  struct {
+    /// Annual background mortality rate [0.0–1.0) after first year of life.
+    double adult_rate = 0.1;
 
-  /// Age of physical maturity in years for males.
-  int maturity_age_phys_male;
+    /// Ways how herbivores can die.
+    std::set<MortalityFactor> factors = {
+        MortalityFactor::Background, MortalityFactor::Lifespan,
+        MortalityFactor::StarvationIlliusOConnor2000};
 
-  /// Age of female sexual maturity in years.
-  int maturity_age_sex;
+    /// Annual background mortality rate [0.0–1.0) in the first year of life.
+    double juvenile_rate = 0.3;
 
-  /// Minimum viable density of one HFT population (all cohorts) [frac.].
-  /** Given as fraction of \ref establishment_density. Default: 0.5
-   * \see \ref sec_minimum_density_threshold */
-  double minimum_density_threshold;
+    /// Minimum viable density of one HFT population (all cohorts) [frac.].
+    /** Given as fraction of \ref establishment_density.
+     * \see \ref sec_minimum_density_threshold */
+    double minimum_density_threshold = 0.5;
 
-  /// Annual mortality rate [0.0–1.0) after first year of life.
-  double mortality;
+    /// Whether to shift mean cohort body condition on starvation mortality.
+    /** See \ref GetStarvationIlliusOConnor2000.*/
+    bool shift_body_condition_for_starvation = true;
 
-  /// Ways how herbivores can die.
-  std::set<MortalityFactor> mortality_factors;
+  } mortality;
 
-  /// Annual mortality rate [0.0–1.0) in the first year of life.
-  double mortality_juvenile;
+  /// Parameters relating to annual reproduction of herbivores.
+  struct {
+    /// Maximum annual reproduction rate for females (0.0–∞)
+    double annual_maximum = 1.0;
 
-  /// Algorithm for forage energy content.
-  NetEnergyModel net_energy_model;
+    /// Duration of pregnancy [number of months].
+    int gestation_length = 9;
 
-  /// Maximum annual reproduction rate for females (0.0–∞)
-  double reproduction_max;
+    /// Algorithm to calculate herbivore reproduction.
+    ReproductionModel model = ReproductionModel::ConstantMaximum;
+  } reproduction;
 
-  /// Algorithm to calculate herbivore reproduction (default: none).
-  ReproductionModel reproduction_model;
+  /// Expenditure through heat loss.
+  struct {
+    /// Algorithm to calculate whole-body conductance for thermoregulation.
+    ConductanceModel conductance = ConductanceModel::BradleyDeavers1980;
 
-  /// Whether to shift mean cohort body condition on starvation mortality.
-  /** See \ref GetStarvationIlliusOConnor2000. Default: true */
-  bool shift_body_condition_for_starvation;
-
-  // add more parameters in alphabetical order
-
-  /**@}*/  // group simulation parameters
+    /// Body core temperature [°C].
+    /** Default is 38°C (Hudson & White, 1985\cite hudson1985bioenergetics) */
+    double core_temperature = 38;
+  } thermoregulation;
 
   /** @{ \name Comparison operators*/
   /** Comparison operators are solely based on string

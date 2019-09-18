@@ -63,9 +63,6 @@ class HftList {
    */
   bool is_valid(const Fauna::Parameters& params, std::string& msg) const;
 
-  /// Remove all elements with `is_included==false`
-  void remove_excluded();
-
   //------------------------------------------------------------
   /** @{ \name Wrapper around std::vector */
   typedef std::vector<Hft>::iterator iterator;

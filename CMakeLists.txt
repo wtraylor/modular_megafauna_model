@@ -6,6 +6,7 @@ project ("Modular Megafauna Model"
   )
 
 set (SOURCE_FILES
+  external/cpptoml/include/cpptoml.h
   include/Fauna/Output/habitat_data.h
   include/Fauna/average.h
   include/Fauna/date.h
@@ -75,6 +76,8 @@ set (SOURCE_FILES
   src/Fauna/hft_list.h
   src/Fauna/individual_population.cpp
   src/Fauna/individual_population.h
+  src/Fauna/insfile_reader.cpp
+  src/Fauna/insfile_reader.h
   src/Fauna/mortality_factors.cpp
   src/Fauna/mortality_factors.h
   src/Fauna/net_energy_models.cpp
@@ -86,8 +89,6 @@ set (SOURCE_FILES
   src/Fauna/population_interface.h
   src/Fauna/population_list.cpp
   src/Fauna/population_list.h
-  src/Fauna/read_insfile.cpp
-  src/Fauna/read_insfile.h
   src/Fauna/reproduction_models.cpp
   src/Fauna/reproduction_models.h
   src/Fauna/simulate_day.cpp
@@ -112,6 +113,7 @@ target_include_directories (ModularMegafaunaModel
   PUBLIC
   include/
   PRIVATE
+  external/cpptoml/include/
   include/Fauna/
   include/Fauna/Output/
   src/Fauna/
@@ -129,7 +131,7 @@ target_compile_options (ModularMegafaunaModel
 
 include (CTest)  # Automatically sets BUILD_TESTING=ON by default.
 if (BUILD_TESTING)
-  add_executable(megafauna_unit_tests
+  add_executable (megafauna_unit_tests
     ${SOURCE_FILES}
     src/Fauna/Output/aggregator.test.cpp
     src/Fauna/Output/combined_data.test.cpp
@@ -159,6 +161,7 @@ if (BUILD_TESTING)
     src/Fauna/hft.test.cpp
     src/Fauna/hft_list.test.cpp
     src/Fauna/individual_population.test.cpp
+    src/Fauna/insfile_reader.test.cpp
     src/Fauna/mortality_factors.test.cpp
     src/Fauna/net_energy_models.test.cpp
     src/Fauna/nitrogen.test.cpp
@@ -182,8 +185,10 @@ if (BUILD_TESTING)
     tools/demo_simulator/simple_habitat.h
     tools/demo_simulator/simple_habitat.test.cpp
     )
+  target_compile_features (megafauna_unit_tests PRIVATE cxx_std_11)
   target_include_directories (megafauna_unit_tests
     PRIVATE
+    external/cpptoml/include/
     include/
     include/Fauna/
     include/Fauna/Output/
@@ -194,6 +199,12 @@ if (BUILD_TESTING)
   target_compile_options (megafauna_unit_tests
     PRIVATE
     -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
+    )
+  # We need to check that the example TOML file is read correctly.
+  configure_file (
+    "examples/megafauna.toml"
+    "${CMAKE_CURRENT_BINARY_DIR}/megafauna.toml"
+    COPYONLY
     )
 endif(BUILD_TESTING)
 
@@ -215,6 +226,7 @@ if(BUILD_DEMO_SIMULATOR)
     tools/demo_simulator/simple_habitat.cpp
     tools/demo_simulator/simple_habitat.h
     )
+  target_compile_features (megafauna_demo_simulator PRIVATE cxx_std_11)
   target_link_libraries (megafauna_demo_simulator
     ModularMegafaunaModel
     )
