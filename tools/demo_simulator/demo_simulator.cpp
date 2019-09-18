@@ -9,6 +9,7 @@
 #include <cfloat>
 #include <climits>
 #include <iostream>
+#include "cpptoml.h"
 #include "megafauna.h"
 #include "simple_habitat.h"
 
@@ -75,6 +76,8 @@ Usage:
   megafauna_demo_simulator -help
 )EOF";
 }
+
+void Framework::read_instruction_file(const std::string filename) {}
 
 bool Framework::run(const std::string insfile_fauna,
                     const std::string insfile_demo) {

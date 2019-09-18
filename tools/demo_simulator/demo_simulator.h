@@ -46,6 +46,9 @@ class Framework {
   bool run(const std::string insfile_fauna, const std::string insfile_demo);
 
  private:
+  /// Set \ref params from given TOML instruction file for the demo simulator.
+  void read_instruction_file(const std::string filename);
+
   /// Parameter values from instruction file
   /** The initialization values are just arbitrary. */
   struct {
