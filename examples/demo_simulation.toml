@@ -13,6 +13,8 @@ habitat_groups = 1
 # Number of habitats per group.
 habitats_per_group = 1
 
+[environment]
+
 # Snow depth [cm].
 # See `grass.daily_decay_rate` for how to use the array.
 snow_depth = [ 40, 40, 10, 0, 0, 0, 0, 0, 0, 0, 10, 20 ]
