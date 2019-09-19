@@ -13,6 +13,16 @@
 namespace Fauna {
 namespace Demo {
 
+/// Exception that a parameter is missing in the instruction file.
+struct missing_parameter : public std::runtime_error {
+  /// Constructor for missing global parameter.
+  /**
+   * \param key The fully qualified TOML key.
+   */
+  missing_parameter(const std::string& key)
+      : runtime_error("Missing mandatory parameter: \"" + key + '"'){};
+};
+
 /// Performs demo simulations for the Modular Megafauna Model.
 /**
  * \see \ref sec_singleton for an explanation of the design pattern used.
