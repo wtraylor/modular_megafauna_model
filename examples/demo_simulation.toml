@@ -38,17 +38,17 @@ digestibility = [ 0.4, 0.4, 0.4, 0.7, 0.7, 0.7, 0.7, 0.6, 0.5, 0.5, 0.4, 0.4 ]
 # Foliar Percentage Cover of the grass.
 fpc = 0.8
 
-# Initial grass biomass in kgDM/km².
+# Initial grass biomass in g/m².
 # Must be smaller than `grass.saturation_mass`.
-initial_mass = 100000 # = 100 g/m² (Owen-Smith 2002)
+initial_mass = 100 # (Owen-Smith 2002)
 
-# Saturation grass biomass [kgDM/km²].
+# Saturation grass biomass in g/m².
 # Must be greater than `grass.initial_mass`.
-saturation_mass = 200000 # = 200 g/m² (Owen-Smith 2002)
+saturation_mass = 200 # (Owen-Smith 2002)
 
-# Ungrazable grass reserve [kgDM/km²].
+# Ungrazable grass reserve in g/m².
 # Not available to grazers but necessary for regrowth
-ungrazeable_reserve = 2000 # = 20 g/m² (Owen-Smith 2002)
+ungrazeable_reserve = 20 # (Owen-Smith 2002)
 
 #####################################################################
 # References:
