@@ -64,6 +64,7 @@ struct missing_parameter : public std::runtime_error {
       : runtime_error("Missing mandatory parameter: \"" + key + '"'){};
 };
 
+/// Exception that an HFT parameter is missing in the instruction file.
 struct missing_hft_parameter : public std::runtime_error {
   /// Constructor for missing HFT parameter.
   /**
