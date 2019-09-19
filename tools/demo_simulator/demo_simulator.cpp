@@ -9,11 +9,17 @@
 #include <cfloat>
 #include <climits>
 #include <iostream>
+#include "cpptoml.h"
 #include "megafauna.h"
 #include "simple_habitat.h"
 
 using namespace Fauna;
 using namespace Fauna::Demo;
+
+namespace {
+/// Convert g/m² to kg/km².
+double g_m2_to_kg_km2(const double g_m2) { return g_m2 * 1000; }
+}  // namespace
 
 /// Run the demo simulation with parameters read from instruction file
 /** \todo Print version, print help */
@@ -76,6 +82,129 @@ Usage:
 )EOF";
 }
 
+void Framework::read_instruction_file(const std::string filename) {
+  const auto ins = cpptoml::parse_file(filename);
+
+  {
+    const std::string key = "general.years";
+    const auto value = ins->get_qualified_as<int>(key);
+    if (value) {
+      params.nyears = *value;
+      if (params.nyears < 1)
+        throw std::runtime_error(key + " must be greater than 1.");
+    } else
+      throw missing_parameter(key);
+  }
+  {
+    const std::string key = "general.habitat_groups";
+    const auto value = ins->get_qualified_as<int>(key);
+    if (value) {
+      params.ngroups = *value;
+      if (params.ngroups < 1)
+        throw std::runtime_error(key + " must be greater than 1.");
+    } else
+      throw missing_parameter(key);
+  }
+  {
+    const std::string key = "general.habitats_per_group";
+    const auto value = ins->get_qualified_as<int>(key);
+    if (value) {
+      params.nhabitats_per_group = *value;
+      if (params.nhabitats_per_group < 1)
+        throw std::runtime_error(key + " must be greater than 1.");
+    } else
+      throw missing_parameter(key);
+  }
+  {
+    const std::string key = "environment.snow_depth";
+    const auto value = ins->get_qualified_array_of<double>(key);
+    if (value) {
+      params.habitat.snow_depth_monthly = *value;
+      for (const auto& i : params.habitat.snow_depth_monthly)
+        if (i < 0) throw std::runtime_error(key + " must be greater than 0.");
+    } else
+      throw missing_parameter(key);
+  }
+  {
+    const std::string key = "grass.daily_decay_rate";
+    const auto value = ins->get_qualified_array_of<double>(key);
+    if (value) {
+      params.habitat.grass.decay_monthly = *value;
+      for (const auto& i : params.habitat.grass.decay_monthly) {
+        if (i < 0) throw std::runtime_error(key + " must be greater than 0.");
+        if (i > 1) throw std::runtime_error(key + " must be smaller than 1.");
+      }
+    } else
+      throw missing_parameter(key);
+  }
+  {
+    const std::string key = "grass.daily_growth_rate";
+    const auto value = ins->get_qualified_array_of<double>(key);
+    if (value) {
+      params.habitat.grass.growth_monthly = *value;
+      for (const auto& i : params.habitat.grass.growth_monthly) {
+        if (i < 0) throw std::runtime_error(key + " must be greater than 0.");
+        if (i > 1) throw std::runtime_error(key + " must smaller than 1.");
+      }
+    } else
+      throw missing_parameter(key);
+  }
+  {
+    const std::string key = "grass.digestibility";
+    const auto value = ins->get_qualified_array_of<double>(key);
+    if (value) {
+      params.habitat.grass.digestibility = *value;
+      for (const auto& i : params.habitat.grass.digestibility) {
+        if (i < 0) throw std::runtime_error(key + " must be greater than 0.");
+        if (i > 1) throw std::runtime_error(key + " must smaller than 1.");
+      }
+    } else
+      throw missing_parameter(key);
+  }
+  {
+    const std::string key = "grass.fpc";
+    const auto value = ins->get_qualified_as<double>(key);
+    if (value) {
+      params.habitat.grass.fpc = *value;
+      if (params.habitat.grass.fpc <= 0.0 || params.habitat.grass.fpc > 1.0)
+        throw std::runtime_error(key + " must be between 0 and 1.");
+    } else
+      throw missing_parameter(key);
+  }
+  {
+    const std::string key = "grass.initial_mass";
+    const auto value = ins->get_qualified_as<int>(key);
+    if (value) {
+      params.habitat.grass.init_mass = g_m2_to_kg_km2(*value);
+      if (params.habitat.grass.init_mass <= 0)
+        throw std::runtime_error(key + " must be greater than 0.");
+    } else
+      throw missing_parameter(key);
+  }
+  {
+    const std::string key = "grass.saturation_mass";
+    const auto value = ins->get_qualified_as<int>(key);
+    if (value) {
+      params.habitat.grass.saturation = g_m2_to_kg_km2(*value);
+      if (params.habitat.grass.saturation < params.habitat.grass.init_mass)
+        throw std::runtime_error(key +
+                                 " must be greater than grass.initial_mass.");
+    } else
+      throw missing_parameter(key);
+  }
+  {
+    const std::string key = "grass.ungrazeable_reserve";
+    const auto value = ins->get_qualified_as<int>(key);
+    if (value) {
+      params.habitat.grass.reserve = g_m2_to_kg_km2(*value);
+      if (params.habitat.grass.reserve >= params.habitat.grass.saturation)
+        throw std::runtime_error(
+            key + " must be smaller than grass.saturation_mass.");
+    } else
+      throw missing_parameter(key);
+  }
+}
+
 bool Framework::run(const std::string insfile_fauna,
                     const std::string insfile_demo) {
   Fauna::Parameters global_params;
@@ -89,7 +218,13 @@ bool Framework::run(const std::string insfile_fauna,
     return false;
   }
 
-  std::cerr << "Creating ecosystem with habitats and herbivores." << std::endl;
+  try {
+    read_instruction_file(insfile_demo);
+  } catch (const std::runtime_error& e) {
+    std::cerr << "Bad instruction file: \"" << insfile_demo << "\"\n"
+              << e.what() << std::endl;
+    return false;
+  }
 
   // Container for all the groups, each being a vector of
   // simulation units.
