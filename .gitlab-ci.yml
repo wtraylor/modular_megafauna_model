@@ -27,6 +27,7 @@ build:
     - make --jobs=2 megafauna_docs megafauna_unit_tests megafauna_demo_simulator
   artifacts:
     paths:
+      - build/demo_simulation.toml
       - build/docs/html/
       - build/megafauna.toml
       - build/megafauna_demo_simulator
