@@ -5,13 +5,13 @@
 [general]
 
 # Number of simulation years. [1,∞)
-nyears = 100
+years = 100
 
 # Number of habitat groups.
-nhabitat_groups = 1
+habitat_groups = 1
 
 # Number of habitats per group.
-nhabitats_per_group = 1
+habitats_per_group = 1
 
 # Snow depth [cm].
 # See `grass.daily_decay_rate` for how to use the array.
