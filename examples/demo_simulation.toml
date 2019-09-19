@@ -8,10 +8,10 @@
 years = 100
 
 # Number of habitat groups.
-habitat_groups = 1
+habitat_groups = 2
 
 # Number of habitats per group.
-habitats_per_group = 1
+habitats_per_group = 2
 
 [environment]
 
