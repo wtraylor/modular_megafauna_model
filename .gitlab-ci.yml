@@ -24,7 +24,7 @@ build:
     - cp examples/demo_simulation.toml build/
     - cd build
     - cmake -DBUILD_DOC=ON ..
-    - make --jobs=2 megafauna_docs megafauna_unit_tests
+    - make --jobs=2 megafauna_docs megafauna_unit_tests megafauna_demo_simulator
   artifacts:
     paths:
       - build/docs/html/
