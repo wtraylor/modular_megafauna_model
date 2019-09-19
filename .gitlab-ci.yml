@@ -21,6 +21,7 @@ build:
       texlive-base
   script:
     - mkdir --parents build
+    - cp examples/demo_simulation.toml build/
     - cd build
     - cmake -DBUILD_DOC=ON ..
     - make --jobs=2 megafauna_docs megafauna_unit_tests
@@ -42,4 +43,4 @@ demo_simulation:
   stage: test
   script:
     - cd build
-    - ./megafauna_demo_simulator "megafauna.toml" "" # TODO: set demo simulator TOML file
+    - ./megafauna_demo_simulator "megafauna.toml" "demo_simulation.toml"
