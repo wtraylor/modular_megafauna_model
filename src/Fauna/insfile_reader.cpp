@@ -231,6 +231,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     const auto array = find_hft_array_parameter<std::string>(
         table, "expenditure.components", true);
     assert(array);
+    hft.expenditure.components = {};
     for (const auto& i : *array)
       if (lowercase(i) == lowercase("Allometric"))
         hft.expenditure.components.insert(ExpenditureComponent::Allometric);
@@ -269,6 +270,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   {
     const auto array = find_hft_array_parameter<std::string>(
         table, "hft.mortality.factors", false);
+    hft.mortality.factors = {};
     if (array) {
       for (const auto& i : *array)
         if (lowercase(i) == lowercase("Background"))
@@ -312,6 +314,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   {
     const auto array =
         find_hft_array_parameter<std::string>(table, "foraging.limits", false);
+    hft.foraging.limits = {};
     if (array) {
       for (const auto& i : *array)
         if (lowercase(i) == lowercase("GeneralFunctionalResponse"))
