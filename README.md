@@ -34,19 +34,25 @@ This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pi
 Usage
 -----
 
+The first step in working with the model is to create the documentation and read the introductory pages.
+
+If you don’t want or are unable to compile the documentation, you can also open the file [docs/quickstart.md](docs/quickstart.md) and the other markdown files in `docs/` directly.
+
 ### Compile the Doxygen Documentation
-CMake will automatically compile the doxygen documentation along with the library in a subfolder `docs/` inside the build directory. In there open the `index.html` file with a browser.
+
+Open a Unix shell (terminal) in the root directory of the megafauna library, and execute the following lines.
+On Windows, you can use the [Windows Subsystem for Linux]() <!--TODO-->(Windows 10 or higher) or try to compile it with the CMake GUI and/or an IDE.
 
 ```bash
 mkdir build
 cd build
-cmake "<path to the megafauna library>"
-make
-# Open `docs/index.html`.
+cmake -DBUILD_DOC=ON ..
+make megafauna_docs
 ```
 
-You can turn off the automatic compilation with the CMake variable `BUILD_DOC`: `cmake -DBUILD_DOC=OFF "<path>"`.
-In order to generate _only_ the documentation, provide the path to the `docs` subfolder to `cmake`: `cmake /path/to/megafauna/docs`.
+Don’t worry if warning messages appear. Usually, most of the documentation
+will be fine.
+Now open the created file `docs/index.html` in a web browser.
 
 #### Optional Build Requirements for the Documentation
 - Java Runtime Environment (JRE)
