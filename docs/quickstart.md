@@ -57,40 +57,74 @@ knit("demo_results.Rmd", "demo_results.md")
 markdownToHTML("demo_results.md", "demo_results.html")
 ```
 
-## Constant Population {#sec_constant_pop}
+## Customize the Instruction File {#sec_customize_the_instruction_file}
+
+The Modular Megafauna Model library requires a single instruction file to set general simulation parameters and herbivore (HFT = Herbivore Functional Type) parameters.
+The instruction file is in [TOML v0.5](https://github.com/toml-lang/toml/blob/master/versions/en/toml-v0.5.0.md) format; see there for a description of the syntax.
+String parameters are generally case insensitive.
+
+All possible options are listed in the example file under `examples/megafauna.toml`.
+You will find all parameters explained in detail in the Doxygen documentation of the two classes \ref Fauna::Parameters and \ref Fauna::Hft.
+The parameter names and cascaded categories are kept as consistent as possible between the C++ classes and the TOML file.
+
+Both HFTs and HFT groups are represented as arrays of tables in the TOML syntax.
+You can define any number of HFTs, but they need to have unique names, and there must be at least one HFT.
+Any HFT can be assigned to any number of groups to inherit parameters from that group.
+However, you cannot cascade groups, and an HFT cannot inherit from another HFT.
+
+In general, the user is forced to specify all parameters.
+This way one instruction file is always complete and self-explanatory.
+Default values in the C++ code might change between model versions.
+However, the model should still yield the same results with the same instruction file.
+
+## Recipes {#sec_quickstart_recipes}
+
+Here are some instruction file snippets that may help you for different scientific questions.
+
+### Constant Population {#sec_recipe_constant_population}
 
 Prescribing a constant herbivore density to the model may be used to simulate the effects of different stocking regimes.
 Reproduction should then be disabled.
 The herbivores may be immortal so that the stocking rate remains constant even if the animals are starving.
+
 This is a minimal example herbivore instruction file for cattle:
 
-```fortran
-ifherbivory 1
-digestibility_model "npp"
-free_herbivory_years 100
-herbivore_type "cohort"
-hft "cattle" (
-	include 1
-	bodyfat_max   0.3 ! fractional
-	bodyfat_max_daily_gain 0.0 ! fractional
-	bodymass_female 400 ! kg
-	bodymass_male   400 ! kg
-	diet_composer "pure_grazer"
-	digestion_type "ruminant"
-	digestive_limit "illius_gordon_1992"
-	establishment_age_range 1 1 ! arbitrary
-	establishment_density 1.0 ! ind/km²
-	expenditure_components "taylor_1981"
-	foraging_limits "illius_oconnor_2000"
-	half_max_intake_density  40 ! gDM/m²
-)
+```toml
+[[hft]]
+name = "Cattle"
+[hft.body_fat]
+deviation          = 0.125 # body condition
+maximum            = 0.3   # kg/kg
+maximum_daily_gain = 0.0   # kg/kg/day
+[hft.body_mass]
+female = 400 # kg
+male   = 400 # kg
+[hft.digestion]
+type = "Ruminant"
+limit = "IlliusGordon1992"
+[hft.establishment]
+age_range = { first = 1, last = 1 } # years
+density   = 1.0 # ind/km²
+[hft.expenditure]
+components = [ "Taylor1981" ]
+[hft.foraging]
+diet_composer           = "PureGrazer"
+limits                  = [ "IlliusOConnor2000" ]
+half_max_intake_density = 40 # gDM/m²
+[hft.reproduction]
+model = "None"
 ```
+
 The parameter values are mostly taken from Illius & O’Connor (2000)\cite illius2000resource.
-As this only defines the parameters for the herbivory model, you will need to `import` the LPJ-GUESS instruction files, specify the driving data, and select the herbivory output files you are interested in.
 
 With this instruction file, one immortal cohort of adult body mass will be established.
 The mass density may fluctuate because of fat mass, but individual density will remain constant.
 
-The `establishment_density` is probably the most crucial parameter in this setup.
+The `establishment.density` is probably the most crucial parameter in this setup.
 Currently, the density can only prescribed globally and is constant.
 
+------------------------------------------------------------
+
+\author Wolfgang Traylor, Senckenberg BiK-F
+\date 2019
+\copyright ...
