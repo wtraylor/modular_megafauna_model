@@ -40,15 +40,15 @@ This approach follows the [Inversion of Control Principle](\ref sec_inversion_of
 Similarly, the Habitat does not interact with the herbivores either.
 It does not even *know* about the herbivore populations, as it is capsuled in \ref Fauna::SimulationUnit.
 
-## Forage Classes {#sec_forageclasses}
+## Forage Classes {#sec_design_forage_classes}
 
 The model is designed to make implementation of multiple types of forage (like grass, browse, moss, etc.) easy.
 Each forage type is listed in \ref Fauna::ForageType.
-The global constant \ref Fauna::FORAGE_TYPES holds all entries of this enum.
+The global constant \ref Fauna::FORAGE_TYPES holds all entries of this enum so that it’s easy to iterate over them.
 
 The template class \ref Fauna::ForageValues serves as a multi-purpose container for any forage-specific values.
 Many arithmetic operators are defined to perform calculations over all forage types at once.
-For any specific use of the class, a typedef is defined, e.g. \ref Fauna::ForageMass or \ref Fauna::Digestibility.
+For any specific use of the class, a semantic `typedef` is defined, e.g. \ref Fauna::ForageMass or \ref Fauna::Digestibility.
 This helps to directly see in the code what a variable contains.
 
 Forage types need to have specific model properties.
@@ -56,12 +56,12 @@ Grass, for instance, has the property *sward density,* which would not make sens
 Therefore, a second set of forage classes is defined with one class for each forage type.
 All these classes inherit from \ref Fauna::ForageBase.
 
-Any type-specific properties are defined by \ref Fauna::Habitat::get_available_forage().
-They can be used for example in algorithms of
-[forage distribution](\ref Fauna::DistributeForage),
-[diet composition](\ref Fauna::GetForageDemands::get_diet_composition),
-[digestion limits](\ref Fauna::GetForageDemands::get_max_digestion), or
-[foraging limits](\ref Fauna::GetForageDemands::get_max_foraging).
+Any forage properties are defined by the habitat implementation in \ref Fauna::Habitat::get_available_forage().
+They can be used for example in algorithms of:
+- forage distribution (\ref Fauna::DistributeForage),
+- diet composition (\ref Fauna::GetForageDemands::get_diet_composition),
+- digestion limits (\ref Fauna::GetForageDemands::get_max_digestion), or
+- foraging limits (\ref Fauna::GetForageDemands::get_max_foraging).
 
 @startuml "Forage classes in the herbivory module."
 	!include diagrams.iuml!forage_classes
