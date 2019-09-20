@@ -172,24 +172,23 @@
 @enduml
 
 @startuml (id=important_classes)
-	hide members
-	hide methods
-
-	namespace Fauna{
-		class Simulator
-		abstract Habitat
-		interface HerbivoreInterface
-		class Hft
-		interface PopulationInterface
-		Simulator            ..> SimulationUnit : <<use>>
-		class SimulationUnit
-		SimulationUnit      *--> "1" Habitat
-		SimulationUnit      *--> "*" PopulationInterface : contains >
-		class HftPopulationsMap
-		(SimulationUnit, PopulationInterface) .. HftPopulationsMap
-		PopulationInterface *--> "*" HerbivoreInterface
-		HerbivoreInterface   --> "1" Hft
-	}
+  hide members
+  hide methods
+  namespace Fauna{
+    class World
+    abstract Habitat
+    interface HerbivoreInterface
+    class Hft
+    interface PopulationInterface
+    World            --> SimulationUnit : owns >
+    class SimulationUnit
+    SimulationUnit      *--> "1" Habitat
+    SimulationUnit      *--> "1..*" PopulationList : contains >
+    class PopulationList
+    PopulationList      *--> "*" PopulationInterface
+    PopulationInterface *--> "*" HerbivoreInterface
+    HerbivoreInterface   --> "1" Hft
+  }
 @enduml
 
 @startuml (id=intake_limit_levels)
