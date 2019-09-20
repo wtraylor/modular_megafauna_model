@@ -35,10 +35,13 @@ Usage
 -----
 
 The first step in working with the model is to create the documentation and read the introductory pages.
+On the Quickstart page you will find instructions for compiling the source code.
 
 If you don’t want or are unable to compile the documentation, you can also open the file [docs/quickstart.md](docs/quickstart.md) and the other markdown files in `docs/` directly.
 
 ### Compile the Doxygen Documentation
+
+As a bare minimum, you will need to have [CMake](https://cmake.org) (version 3.10 or higher) and [Doxygen](https://www.doxygen.nl) installed.
 
 Open a Unix shell (terminal) in the root directory of the megafauna library, and execute the following lines.
 On Windows, you can use the [Windows Subsystem for Linux]() <!--TODO-->(Windows 10 or higher) or try to compile it with the CMake GUI and/or an IDE.
@@ -55,9 +58,8 @@ will be fine.
 Now open the created file `docs/index.html` in a web browser.
 
 #### Optional Build Requirements for the Documentation
-- Java Runtime Environment (JRE)
-- [Graphviz](www.graphviz.org), see [here](http://plantuml.com/graphviz-dot) for details.
-- [LaTeX](www.latex-project.org), including [BibTeX](www.bibtex.org).
+- Java Runtime Environment (JRE) and [Graphviz](www.graphviz.org) to compile [PlantUML](http://plantuml.com) diagrams. See [here](http://plantuml.com/graphviz-dot) for details.
+- [LaTeX](www.latex-project.org) to render mathematical formulas offline, and [BibTeX](www.bibtex.org) for the bibliography.
 
 ### Integrate the Library into a Vegetation Model
 
@@ -66,7 +68,7 @@ Please contact the maintainers of LPJ-GUESS to ask for access.
 
 Any other dynamic vegetation model can include the megafauna model as an external library.
 Have a look at the demo simulator application in `tools/demo_simulator/` for an example of how to use the library.
-<!--TODO: Add advice on dynamic vs. static library to comply with library licens.-->
+<!--TODO: Add advice on dynamic vs. static library to comply with library license.-->
 
 Known Bugs and Issues
 ---------------------
