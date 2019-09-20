@@ -9,19 +9,20 @@
  '/
 
 @startuml (id=basic_components)
-	[Herbivory Module] as herbivory
-	() "Fauna::ParamReader" as paramreader
-	() "Fauna::PatchHabitat" as patchhabitat
-	() "GuessOutput::HerbivoryOutput" as herbivoutput
-	node "Herbivory Output Files" as outputfiles
-	[LPJ-GUESS Vegetation Model] as guess
-	node "Instruction Files" as insfiles
-	guess        <..  patchhabitat
-	patchhabitat  --  herbivory
-	herbivory     --  herbivoutput
-	herbivoutput  ..> outputfiles : write
-	herbivory     --  paramreader
-	paramreader   ..> insfiles  : read
+  [Megafauna Library] as library
+	() "Fauna::Habitat" as habitat
+  () "Fauna::World" as world
+  () "Implementation\nof Fauna::Habitat" as myhabitat
+  node "Megafauna Output Files" as outputfiles
+  [Vegetation Model] as vegetation
+  node "TOML Instruction File" as insfile
+  vegetation   <..>  myhabitat
+  myhabitat     --|> habitat
+  habitat       --   library
+  library       ..>  outputfiles : write
+  library       ..>  insfile  : read
+  vegetation    ..>  world : simulate_day()
+  world         --   library
 @enduml
 
 @startuml (id=default_pft_forage_type_mapping)
