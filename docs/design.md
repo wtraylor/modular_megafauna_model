@@ -1,15 +1,12 @@
-Software Design of the Megafauna Model {#page_design}
-=====================================================
+# Software Design of the Megafauna Model {#page_design}
 <!-- For doxygen, this is the *page* header -->
 \brief Notes on the software design of the herbivore model from a programmer’s perspective.
 
-Software Design of the Herbivory Module {#sec_design}
-============================================================
+# Software Design of the Herbivory Module {#sec_design}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
-Overview {#sec_designoverview}
-------------------------------
+## Overview {#sec_designoverview}
 
 The herbivory model aims to apply principles of [object oriented programming](\ref page_object_orientation) as much as possible.
 Its architecture is modular and extensible.
@@ -44,8 +41,7 @@ Similarly, the Habitat does not interact with the herbivores either.
 It does not even *know* about the herbivore populations, as it is capsuled in \ref Fauna::SimulationUnit.
 
 
-Forage Classes {#sec_forageclasses}
------------------------------------
+## Forage Classes {#sec_forageclasses}
 
 The model is designed to make implementation of multiple types of forage (like grass, browse, moss, etc.) easy.
 Each forage type is listed in \ref Fauna::ForageType.
@@ -74,8 +70,7 @@ They can be used for example in algorithms of
 
 \see \ref sec_new_forage_type
 
-The Herbivore {#sec_herbivoredesign}
-------------------------------------
+## The Herbivore {#sec_herbivoredesign}
 
 The simulation framework of the herbivory module can operate with any class that implements \ref Fauna::HerbivoreInterface (\ref sec_liskov_substitution).
 Which class to choose is defined by \ref Fauna::Parameters::herbivore_type.
@@ -119,8 +114,7 @@ The class \ref Fauna::SimulationUnit a habitat and its herbivores (managed by HF
 	!include diagrams.iuml!population_classes
 @enduml
 
-Error Handling {#sec_errorhandling}
------------------------------------
+## Error Handling {#sec_errorhandling}
 
 ### Exceptions ### {#sec_exceptions}
 The herbivory module uses the C++ standard library exceptions defined in `<stdexcept>`.
@@ -167,8 +161,7 @@ Assertions are used…:
 - …to verify the result of an algorithm within a function.
 - …in code regions that might be expanded later: An assert call serves as a reminder for the developer to implement all necessary dependencies.
 
-Herbivory Parameters {#sec_parameters}
---------------------------------------
+## Herbivory Parameters {#sec_parameters}
 
 Following the [Inversion of Control](\ref sec_inversion_of_control) principle, as few classes as possible have direct access to the classes that hold the parameters (\ref Fauna::Hft, \ref Fauna::Parameters).
 These classes play the role of the “framework” by calling any client classes only with the very necessary parameters.
@@ -178,8 +171,7 @@ The following diagram gives an overview:
 	!include diagrams.iuml!parameters_access
 @enduml
 
-Herbivory Output {#sec_output}
-------------------------------
+## Herbivory Output {#sec_output}
 
 ### Output Classes {#sec_outputclasses}
 
