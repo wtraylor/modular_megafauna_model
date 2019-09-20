@@ -1,10 +1,8 @@
-Tutor for the Large Herbivore Module {#page_tutor}
-==================================================
+# Tutor for the Modular Megafauna Model {#page_tutor}
 <!-- For doxygen, this is the *page* header -->
 \brief Instructions how to use the herbivore module and expand the code base for one’s needs.
 
-Tutor for the Large Herbivore Module {#sec_tutor}
-======================================================
+# Tutor for the Modular Megafauna Model {#sec_tutor}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
@@ -19,8 +17,7 @@ Write a test for each one of your new classes!
 Check all of its public methods and see what example test scenarios it has to fulfill.
 Also check if exceptions are thrown correctly.
 
-Herbivores Tutorials {#sec_tutor_herbivores}
----------------------------------------------------
+## Herbivores Tutorials {#sec_tutor_herbivores}
 
 ### How to add a new herbivore class {#sec_new_herbivore_class}
 
@@ -110,8 +107,7 @@ You can implement your own model as a new class or a simple function; just call 
 ### How to add a new mortality factor {#sec_new_mortality}
 <!-- TODO -->
 
-Forage Tutorials {#sec_tutor_forage}
--------------------------------------------
+## Forage Tutorials {#sec_tutor_forage}
 
 ### How to add a new forage type {#sec_new_forage_type}
 
@@ -175,8 +171,7 @@ Forage net energy content is implemented with the [strategy design pattern](\ref
 
 - Don’t forget to add your identifier as possible values in the message output in \ref Fauna::ParamReader::declare_parameters() and \ref Fauna::ParamReader::callback(), as well as in the example instruction file `data/ins/herbivores.ins`.
 
-Parameters Tutorials {#sec_tutor_parameters}
----------------------------------------------------
+## Parameters Tutorials {#sec_tutor_parameters}
 
 ### How to add a new global parameter {#sec_new_global_parameter}
 
@@ -209,8 +204,7 @@ Global parameters of the herbivory module are declared and parsed by \ref Fauna:
 
 
 \see \ref sec_parameters
-Output Tutorials {#sec_output_tutor}
--------------------------------------------
+## Output Tutorials {#sec_output_tutor}
 
 \todo Rewrite output tutorials.
 
@@ -243,17 +237,10 @@ For comparison, see the local function `outlimit()` in \ref commonoutput.cpp.
 -->
 
 
-How to add a new test vegetation model {#sec_new_testhabitat}
---------------------------------------
+## How to add a new test vegetation model {#sec_new_testhabitat}
 
 By default, the class \ref FaunaSim::SimpleHabitat is used for all test simulations.
 If you want to run your own vegetation model, create it in \ref FaunaSim::Framework::create_habitat().
-
-ge-using the code for other vegetation models {#sec_reusing_code}
----------------------------------------------
-
-<!--TODO-->
-
 
 ------------------------------------------------------------
 

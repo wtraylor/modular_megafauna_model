@@ -1,10 +1,8 @@
-Object-oriented Design Concepts {#page_object_orientation}
-==========================================================
+# Object-oriented Design Concepts {#page_object_orientation}
 <!-- For doxygen, this is the *page* header -->
-\brief Programming principles and paradigms in object-oriented software engineering, in particular for the herbivory module.
+\brief Some programming principles and paradigms in object-oriented software engineering.
 
-Object-oriented Design {#sec_object_orientation}
-================================================
+# Object-oriented Design {#sec_object_orientation}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 

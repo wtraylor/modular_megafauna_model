@@ -1,16 +1,13 @@
-Quickstart Guide for the Large Herbivore Module {#page_quickstart}
-=========================================================================
+# Quickstart Guide for Using the Modular Megafauna Model {#page_quickstart}
 <!-- For doxygen, this is the *page* header -->
 \brief How to get the first simulations running.
 
-Quickstart Guide for the Large Herbivore Module {#sec_quickstart}
-========================================================================
+# Quickstart Guide for Using the Modular Megafauna Model {#sec_quickstart}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
 
-Constant Population {#sec_constant_pop}
-----------------------------------------------
+## Constant Population {#sec_constant_pop}
 
 Prescribing a constant herbivore density to the model may be used to simulate the effects of different stocking regimes.
 Reproduction should then be disabled.

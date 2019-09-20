@@ -1,10 +1,8 @@
-Large Herbivore Model {#page_model}
-==========================================
+# Modular Megafauna Model {#page_model}
 <!-- For doxygen, this is the *page* header -->
-\brief Structure and scientific explanation of the Large Herbivore Model.
+\brief Structure and scientific explanation of the Modular Megafauna Model.
 
-Large Herbivore Model {#sec_model}
-==========================================
+# Modular Megafauna Model {#sec_model}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
@@ -15,8 +13,7 @@ Large Herbivore Model {#sec_model}
 - Limitations of the model design:
 	+ year length of 365 assumed
 	+ habitats equal size
-	+ After offspring is created no connection to parents
-    -> no lactation, bonding, herding, etc.
+	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
 - Explain some design choices:
 	+ Why differentiate sexes? ⇒ e.g. Shannon et al. (2013), Guthrie (1990)
 	+ Why daily time steps?
@@ -30,8 +27,7 @@ Large Herbivore Model {#sec_model}
 - Explain the problem of coexistence: How coexistence could arise theoretically, but why it is practically so difficult.
 - Provide a list of other mechanistic herbivore models.
 
-Basic Model Concepts {#sec_basicconcepts}
-------------------------------------------------
+## Basic Model Concepts {#sec_basicconcepts}
 
 ![](habitatarea.png "Illustration of the habitat concept in the herbivory module as an abstraction of the vegetation patch.")
 
@@ -41,8 +37,7 @@ A herbivore is defined by these state variables:
 - Current energy need
 - Fat mass
 
-Plant–Herbivore Interaction {#sec_plantherbivore_interactions}
----------------------------------------------------------------------
+## Plant–Herbivore Interaction {#sec_plantherbivore_interactions}
 
 Each PFT can be mapped to a [forage type](\ref Fauna::ForageType), i.e. the biomass of the plant individuals becomes available as forage for herbivores, and they can choose in which proportions they include the different forage types in their diet.
 
@@ -85,8 +80,7 @@ $$
 
 ### Trampling {#sec_trampling}
 
-Energetics {#sec_energetics}
------------------------------------
+## Energetics {#sec_energetics}
 
 ### Thermoregulation by Conductance {#sec_thermoregulation}
 
@@ -126,13 +120,11 @@ Conductivity is the inverse of insulation: it is the heat flow per temperature d
 Body surface in m² scales roughly as \f$0.09*M^{0.66}\f$ ([Hudson & White 1985](\cite hudson1985bioenergetics)).
 
 
-Energy Content of Forage {#sec_energycontent}
-----------------------------------------------------
+## Energy Content of Forage {#sec_energycontent}
 
 \todo explain gross, digestible, metabolizable and net energy
 
-Foraging {#sec_foraging}
--------------------------------
+## Foraging {#sec_foraging}
 
 \note **Units**<br>All forage values (e.g. available grass biomass,
 consumed forage) are *dry matter mass* in kilograms (`DMkg`).
@@ -166,11 +158,9 @@ Assumptions of the NPP-driven digestibility model (\ref Fauna::DigestibilityFrom
 - Turnover is constant over the year.
 - Fraction of biomass older than 1 year is negligible.
 
-Reproduction {#sec_reproduction}
----------------------------------------
+## Reproduction {#sec_reproduction}
 
-Life History {#sec_life_history}
----------------------------------------
+## Life History {#sec_life_history}
 
 growth linear: \ref Fauna::HerbivoreBase::get_bodymass()
 
@@ -185,11 +175,9 @@ After establishment, the background mortality continually diminishes the adult c
 
 On the other hand, the `minimum_density_threshold` should not be set *too* low as this would result in extremely thin “ghost” populations that are effectively preventing re-establishment.
 
-Mortality {#sec_mortality}
----------------------------------
+## Mortality {#sec_mortality}
 
-Species Coexistence {#sec_coexistence}
----------------------------------------------
+## Species Coexistence {#sec_coexistence}
 
 The classical competitive exclusion principle predicts that no two species can coexist in the long term if they each solely depend on one shared resource (\cite hardin1960competitive).
 One species will inevitably outcompete the other one.

@@ -1,16 +1,13 @@
-Unit Tests of the Herbivore Module {#page_tests}
-==================================
+# Unit Tests of the Herbivore Module {#page_tests}
 <!-- For doxygen, this is the *page* header -->
 \brief Details on unit tests and test simulations.
 
-Unit Tests of the Herbivore Module {#sec_tests}
-==================================
+# Unit Tests of the Herbivore Module {#sec_tests}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
 
-Unit Tests {#sec_unittests}
-----------------------------------
+## Unit Tests {#sec_unittests}
 
 Unit tests use the [Catch2](https://github.com/catchorg/Catch2) framework in the [single header](https://raw.githubusercontent.com/catchorg/Catch2/master/single_include/catch2/catch.hpp) distribution.
 (The `tests/catch.hpp` file can be updated from time to time.)
@@ -27,8 +24,7 @@ day of the year.
 instead of reading instruction file parameters directly
 (see section \ref sec_parameters).
 
-Herbivory Test Simulations {#sec_testsimulations}
---------------------------------------------------------
+## Herbivory Test Simulations {#sec_testsimulations}
 
 ### Overview
 
