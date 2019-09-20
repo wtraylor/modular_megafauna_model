@@ -160,12 +160,6 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   // ======= MANDATORY PARAMETERS =======
   {
     const auto value =
-        find_hft_parameter<double>(table, "body_fat.birth", true);
-    assert(value);
-    hft.body_fat.birth = *value;
-  }
-  {
-    const auto value =
         find_hft_parameter<double>(table, "body_fat.maximum", true);
     assert(value);
     hft.body_fat.maximum = *value;
@@ -177,11 +171,6 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     hft.body_fat.maximum_daily_gain = *value;
   }
   {
-    const auto value = find_hft_parameter<int>(table, "body_mass.birth", true);
-    assert(value);
-    hft.body_mass.birth = *value;
-  }
-  {
     const auto value = find_hft_parameter<int>(table, "body_mass.female", true);
     assert(value);
     hft.body_mass.female = *value;
@@ -190,18 +179,6 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     const auto value = find_hft_parameter<int>(table, "body_mass.male", true);
     assert(value);
     hft.body_mass.male = *value;
-  }
-  {
-    const auto value =
-        find_hft_parameter<int>(table, "breeding_season.length", true);
-    assert(value);
-    hft.breeding_season.length = *value;
-  }
-  {
-    const auto value =
-        find_hft_parameter<int>(table, "breeding_season.start", true);
-    assert(value);
-    hft.breeding_season.start = *value;
   }
   {
     const auto value =
@@ -290,24 +267,6 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
                            {"Default"});
   }
   {
-    const auto value = find_hft_parameter<int>(
-        table, "life_history.physical_maturity_female", true);
-    assert(value);
-    hft.life_history.physical_maturity_female = *value;
-  }
-  {
-    const auto value = find_hft_parameter<int>(
-        table, "life_history.physical_maturity_male", true);
-    assert(value);
-    hft.life_history.physical_maturity_male = *value;
-  }
-  {
-    const auto value =
-        find_hft_parameter<int>(table, "life_history.sexual_maturity", true);
-    assert(value);
-    hft.life_history.sexual_maturity = *value;
-  }
-  {
     const auto array = find_hft_array_parameter<std::string>(
         table, "hft.mortality.factors", false);
     if (array) {
@@ -329,17 +288,14 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     }
   }
   {
-    const auto value = find_hft_parameter<double>(
-        table, "mortality.minimum_density_threshold", true);
-    assert(value);
-    hft.mortality.minimum_density_threshold = *value;
-  }
-  {
     const auto value =
         find_hft_parameter<std::string>(table, "reproduction.model", true);
     assert(value);
-    if (lowercase(*value) == lowercase("None"))
+    if (lowercase(*value) == lowercase("None")){
       hft.reproduction.model = ReproductionModel::None;
+      hft.life_history.physical_maturity_female = 1;
+      hft.life_history.physical_maturity_male = 1;
+    }
     else if (lowercase(*value) == lowercase("ConstantMaximum"))
       hft.reproduction.model = ReproductionModel::ConstantMaximum;
     else if (lowercase(*value) == lowercase("IlliusOConnor2000"))
@@ -351,6 +307,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
           hft, "reproduction.model", *value,
           {"None", "ConstantMaximum", "IlliusOConnor2000", "Linear"});
   }
+
   // ======== NON-MANDATORY PARAMETERS =======
   {
     const auto array =
@@ -370,12 +327,39 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
 
   // ======== DEPENDENT PARAMETERS =======
 
+  if (hft.reproduction.model != ReproductionModel::None) {
+    const auto value =
+        find_hft_parameter<double>(table, "body_fat.birth", true);
+    assert(value);
+    hft.body_fat.birth = *value;
+  }
+
   if (hft.mortality.factors.count(
           MortalityFactor::StarvationIlliusOConnor2000)) {
     const auto value =
         find_hft_parameter<double>(table, "body_fat.deviation", true);
     assert(value);
     hft.body_fat.deviation = *value;
+  }
+
+  if (hft.reproduction.model != ReproductionModel::None) {
+    const auto value = find_hft_parameter<int>(table, "body_mass.birth", true);
+    assert(value);
+    hft.body_mass.birth = *value;
+  }
+
+  if (hft.reproduction.model != ReproductionModel::None) {
+    const auto value =
+        find_hft_parameter<int>(table, "breeding_season.length", true);
+    assert(value);
+    hft.breeding_season.length = *value;
+  }
+
+  if (hft.reproduction.model != ReproductionModel::None) {
+    const auto value =
+        find_hft_parameter<int>(table, "breeding_season.start", true);
+    assert(value);
+    hft.breeding_season.start = *value;
   }
 
   if (hft.digestion.limit == DigestiveLimit::FixedFraction) {
@@ -428,6 +412,27 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     hft.life_history.lifespan = *value;
   }
 
+  if (hft.reproduction.model != ReproductionModel::None) {
+    const auto value = find_hft_parameter<int>(
+        table, "life_history.physical_maturity_female", true);
+    assert(value);
+    hft.life_history.physical_maturity_female = *value;
+  }
+
+  if (hft.reproduction.model != ReproductionModel::None) {
+    const auto value = find_hft_parameter<int>(
+        table, "life_history.physical_maturity_male", true);
+    assert(value);
+    hft.life_history.physical_maturity_male = *value;
+  }
+
+  if (hft.reproduction.model != ReproductionModel::None) {
+    const auto value =
+        find_hft_parameter<int>(table, "life_history.sexual_maturity", true);
+    assert(value);
+    hft.life_history.sexual_maturity = *value;
+  }
+
   if (hft.mortality.factors.count(MortalityFactor::Background)) {
     const auto value =
         find_hft_parameter<double>(table, "mortality.adult_rate", true);
@@ -440,6 +445,13 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         find_hft_parameter<double>(table, "mortality.juvenile_rate", true);
     assert(value);
     hft.mortality.juvenile_rate = *value;
+  }
+
+  if (hft.reproduction.model != ReproductionModel::None) {
+    const auto value = find_hft_parameter<double>(
+        table, "mortality.minimum_density_threshold", true);
+    assert(value);
+    hft.mortality.minimum_density_threshold = *value;
   }
 
   if (hft.mortality.factors.count(MortalityFactor::StarvationThreshold) ||
