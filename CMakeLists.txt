@@ -234,6 +234,11 @@ if(BUILD_DEMO_SIMULATOR)
   target_link_libraries (megafauna_demo_simulator
     ModularMegafaunaModel
     )
+  configure_file (
+    "tools/demo_simulator/demo_results.Rmd"
+    "${CMAKE_CURRENT_BINARY_DIR}/demo_results.Rmd"
+    COPYONLY
+    )
 endif()
 
 ###########################################################################

@@ -1,0 +1,23 @@
+# Results from the Megafauna Demo Simulator
+
+Each aggregation unit (habitat group) comprises several habitats.
+Since all habitats have the same properties and there is no stochasticity, the curves from all aggregation units look the same.
+
+```{r}
+library(ggplot2)
+library(tidyr)
+filename <- "mass_density_per_hft.tsv"
+if (!is.file(filename))
+  stop("File does not exist: ", filename)
+mass.tbl <- gather(read.csv(filename, sep = "\t"),
+  key = HFT, value = mass, -Year, -agg_unit)
+mass.tbl$mass <- mass.tbl$mass / 100  # kg/km²->kg/ha
+ggplot(mass.tbl, aes(x = Year, y = mass, color = HFT)) +
+  geom_line() +
+  facet_wrap(~agg_unit) +
+  labs(
+    x = "Simulation Year",
+    y = "Mean Mass Density [kg/ha]",
+    title = "Mass Density per Habitat Group"
+  )
+```
