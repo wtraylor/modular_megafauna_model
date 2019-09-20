@@ -6,6 +6,56 @@
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
+## Compile and Run Unit Tests {#sec_compile_and_run_unit_tests}
+
+To check if the modular megafauna model works by itself correctly, you should compile it and run the unit tests.
+You will need [Cmake](https://cmake.org) and a C++ compiler.
+It should work well with GCC, the [GNU C++ compiler](https://gcc.gnu.org).
+
+Open a Unix shell in the root of this repository and run:
+
+```sh
+mkdir -p build
+cd build
+cmake -DBUILD_TESTING=ON ..
+make megafauna_unit_tests
+./megafauna_unit_tests
+```
+
+If the unit tests all pass successfully, you are good to go!
+
+## Run the Demo Simulator {#sec_run_the_demo_simulator}
+
+With the CMake option `BUILD_DEMO_SIMULATOR=ON` you can compile the demo simulator.
+This independent program is a very simple grass simulator that hosts the megafauna library.
+It should work out of the box with the instructions files in the `examples/` folder.
+
+Again, open a terminal in the repository root folder and run:
+
+```sh
+mkdir -p build
+cd build
+cmake -DBUILD_DEMO_SIMULATOR=ON ..
+make megafauna_demo_simulator
+./megafauna_demo_simulator "../examples/megafauna.toml" "../examples/demo_simulation.toml"
+```
+
+Congratulations, you have run your first simulation!
+
+The simulator does not want to have you lose your results and will refuse to overwrite existing output files.
+So if you want to run it again, you will first need to remove the previously created output tables: `rm *.tsv`
+
+A very simple [RMarkdown]()<!--TODO--> file to visualize the demo output is provided in the `build` folder.
+It is called `demo_results.Rmd`.
+You can open and render it in RStudio.
+Alternatively, to produce an HTML file (`demo_results.html`) to open it in a web browser, execute these commands in an R console inside the `build/` directory:
+
+```r
+library(knitr)
+library(markdown)
+knit("demo_results.Rmd", "demo_results.md")
+markdownToHTML("demo_results.md", "demo_results.html")
+```
 
 ## Constant Population {#sec_constant_pop}
 
