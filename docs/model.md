@@ -190,7 +190,5 @@ In order to avoid biases in the output, the patch number (`npatch`) must be a mu
 ------------------------------------------------------------
 
 \author Wolfgang Traylor, Senckenberg BiK-F
-\date May 2017
-\see \ref page_design
-\see \ref page_tutor
-\see \ref page_tests
+\date 2019
+\copyright ...
