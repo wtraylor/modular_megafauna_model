@@ -6,40 +6,39 @@
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
-## Overview {#sec_designoverview}
+## Overview {#sec_design_overview}
 
-The herbivory model aims to apply principles of [object oriented programming](\ref page_object_orientation) as much as possible.
+The megafauna model aims to apply principles of object-oriented programming as much as possible (see the page [Object-oriented Programming](\ref page_object_orientation)).
 Its architecture is modular and extensible.
-Each part can be tested in [unit tests](\ref page_tests).
+Each part can be tested in unit tests (see the page [Unit Tests](\ref page_tests)).
 
-The following UML diagram shows through which interfaces the herbivory module interacts with other components:
+The following UML diagram shows through which interfaces the megafauna model interacts with other components:
 
-\todo Update UML diagram to show library and generic vegetation model.
-
-@startuml "Component diagram of the basic interactions of the herbivory module."
+@startuml "Component diagram of the basic interactions of the megafauna model."
 	!include diagrams.iuml!basic_components
 @enduml
 
 The basic simulation design is simple:
 - Each **herbivore** is of one **Herbivore Functional Type** ([HFT](\ref Fauna::Hft)).
-In LPJ-GUESS this would correspond to each `Individual` being of one `Pft` (Plant Functional Type).
-- Each herbivore lives in a **habitat** (\ref Fauna::Habitat), grouped in by HFT in **populations** (\ref Fauna::PopulationInterface).
-In LPJ-GUESS this would correspond to a plant `Individual` growing in a `Patch`.
-- The **[Simulator](\ref Fauna::Simulator)** is the framework class running the simulation.
+  In LPJ-GUESS this would correspond to each `Individual` being of one `Pft` (Plant Functional Type).
+- Each herbivore lives in a **habitat** (\ref Fauna::Habitat), grouped by HFT in **populations** (\ref Fauna::PopulationInterface).
+  In LPJ-GUESS this would correspond to a plant `Individual` growing in a `Patch`.
+- **Fauna::World** is the framework class running the simulation.
 
-@startuml "Most important classes in the herbivory module."
+@startuml "Most important classes in the megafauna model."
 	!include diagrams.iuml!important_classes
 @enduml
 
 All interactions between herbivores and their environment happen through \ref Fauna::Habitat.
 The herbivores don’t feed themselves and don’t have any direct connection to the habitat.
-With each simulated day ([simulate_day()](\ref Fauna::HerbivoreInterface::simulate_day())), it is calculated, how much forage they would like to consume. ([get_forage_demands()](\ref Fauna::HerbivoreInterface::get_forage_demands()));
-but they need to wait for the Simulator to be able to [eat](\ref Fauna::HerbivoreInterface::eat()).
+Instead, they are assigned their forage.
+With each simulated day (\ref Fauna::HerbivoreInterface::simulate_day()), it is calculated, how much forage they would like to consume (\ref Fauna::HerbivoreInterface::get_forage_demands()).
+Based on all forage demands, the forage is distributed with a user-specified forage distribution algorithm (\ref Fauna::DistributeForage).
+Then they can eat their portion (\ref Fauna::HerbivoreInterface::eat()).
 This approach follows the [Inversion of Control Principle](\ref sec_inversion_of_control).
 
 Similarly, the Habitat does not interact with the herbivores either.
 It does not even *know* about the herbivore populations, as it is capsuled in \ref Fauna::SimulationUnit.
-
 
 ## Forage Classes {#sec_forageclasses}
 
