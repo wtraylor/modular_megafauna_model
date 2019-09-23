@@ -172,13 +172,21 @@ Assertions are used…:
 - …to verify the result of an algorithm within a function.
 - …in code regions that might be expanded later: An assert call serves as a reminder for the developer to implement all necessary dependencies.
 
-## Herbivory Parameters {#sec_parameters}
+## Parameters {#sec_design_parameters}
 
-Following the [Inversion of Control](\ref sec_inversion_of_control) principle, as few classes as possible have direct access to the classes that hold the parameters (\ref Fauna::Hft, \ref Fauna::Parameters).
-These classes play the role of the “framework” by calling any client classes only with the very necessary parameters.
+All user-defined simulation parameters are contained in the two classes \ref Fauna::Hft and \ref Fauna::Parameters.
+All parameters must be constant within one simulation run.
+Since some classes work with pointers to the classes \ref Fauna::Hft, \ref Fauna::HftList, and \ref Fauna::Parameters, all objects of these classes must not be moved in memory.
+
+The host program only passes the path to the TOML instruction file to the class \ref Fauna::World.
+The parameters are parsed by the megafauna library independently, using [cpptoml](https://github.com/skystrife/cpptoml).
+This is done by the class \ref Fauna::InsfileReader.
+
+Following the [Inversion of Control](\ref sec_inversion_of_control) principle, as few classes as possible have direct access to the classes that hold the parameters.
+These classes play the role of the “framework”: They call any client classes _only_ with the very necessary parameters instead of the complete \ref Fauna::Hft or \ref Fauna::Parameters objects.
 The following diagram gives an overview:
 
-@startuml "Classes of the herbivory simulation which have direct access to parameter-holding classes."
+@startuml "Classes that have direct access to the parameter-holding classes Fauna::Hft and Fauna::Parameters."
 	!include diagrams.iuml!parameters_access
 @enduml
 

@@ -77,6 +77,8 @@ This way one instruction file is always complete and self-explanatory.
 Default values in the C++ code might change between model versions.
 However, the model should still yield the same results with the same instruction file.
 
+\see \ref sec_design_parameters
+
 ## Recipes {#sec_quickstart_recipes}
 
 Here are some instruction file snippets that may help you for different scientific questions.

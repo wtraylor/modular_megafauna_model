@@ -22,7 +22,7 @@ day of the year.
 
 - All simulation parameters are passed into the model with designated objects
 instead of reading instruction file parameters directly
-(see section \ref sec_parameters).
+(see section \ref sec_design_parameters).
 
 ## Herbivory Test Simulations {#sec_testsimulations}
 

@@ -452,18 +452,17 @@ competition      -down-> feeding
 		CreateHerbivoreIndividual ..> Hft
 		CreateHerbivoreCohort     ..> Parameters
 		CreateHerbivoreCohort     ..> Hft
-		Simulator                 ..> Parameters
-		Simulator                 ..> Hft
-		PatchHabitat              ..> PftParams
 		CohortPopulation          .up.> Hft
 		IndividualPopulation      .up.> Hft
 		abstract HerbivoreBase
 		HerbivoreBase             .up.> Hft
+    World                     *-down-> Parameters
+    World                     *-down-> Hft
 	}
-	namespace FaunaSim{
-		Framework                 ..> Fauna.Parameters
-		Framework                 ..> Fauna.Hft
-	}
+  package "Host Program"{
+  }
+  "Host Program" .right.> Fauna.Parameters
+  "Host Program" .right.> Fauna.World
 @enduml
 
 @startuml (id=parameters_classes)

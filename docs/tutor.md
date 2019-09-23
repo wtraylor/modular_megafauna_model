@@ -202,8 +202,8 @@ Global parameters of the herbivory module are declared and parsed by \ref Fauna:
 - If you wish, add it to `mandatory_hft_params` in \ref Fauna::ParamReader::callback() so that it must not be omitted.
 - Extend the example instruction file `data/ins/herbivores.ins`.
 
+\see \ref sec_design_parameters
 
-\see \ref sec_parameters
 ## Output Tutorials {#sec_output_tutor}
 
 \todo Rewrite output tutorials.
