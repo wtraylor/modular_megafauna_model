@@ -38,6 +38,24 @@
   }
 @enduml
 
+@startuml (id=demo_simulator_classes)
+	hide members
+	hide methods
+  namespace Fauna {
+    namespace Demo {
+      class Framework <<singleton>>
+      Framework *-> "1..*" SimpleHabitat
+      SimpleHabitat *-> "1" LogisticGrass
+      SimpleHabitat --|> Fauna.Habitat
+      Framework *-> "1" Fauna.World
+    }
+		abstract Habitat
+    World          ..> Habitat : <<call>>
+	}
+	annotation "main()" as main
+  main .down.> Fauna.Demo.Framework : <<call>>
+@enduml
+
 @startuml (id=exception_classes)
   hide members
   hide methods
@@ -522,75 +540,3 @@ competition      -down-> feeding
 	}
 @enduml
 
-@startuml (id=testsim_classes)
-	hide members
-	hide methods
-	annotation "parameters.h" as parameters
-	namespace FaunaSim {
-		class "Framework" <<singleton>>
-		class HabitatGroup
-		class HabitatGroupList
-		HabitatGroupList *-> "*" HabitatGroup
-		class SimpleHabitat
-		class LogisticGrass
-		SimpleHabitat *-> LogisticGrass
-	}
-	namespace Fauna {
-		class "ParamReader"   <<singleton>>
-		abstract Habitat
-		Simulator     ..> Habitat                        : <<call>>
-		SimulationUnit *-> Habitat
-	}
-	FaunaSim.HabitatGroup *--> "*" Fauna.SimulationUnit
-	FaunaSim.SimpleHabitat --|> Fauna.Habitat
-	FaunaSim.Framework ..> Fauna.ParamReader              : <<use>>
-	FaunaSim.Framework .up.> .parameters                    : <<use>>
-	FaunaSim.Framework ..> Fauna.Simulator                : <<create>>
-	FaunaSim.Framework *-left-> "1" .GuessOutput.HerbivoryOutput
-	FaunaSim.Framework .left.> .GuessOutput.FileOutputChannel : <<create>>
-	FaunaSim.Framework ..> "*" FaunaSim.HabitatGroup      : <<create>>
-	annotation "main()" as main
-	main .down.> FaunaSim.Framework : <<call>>
-@enduml
-
-@startuml (id=testsim_sequence)
-	participant "main()" as main
-	participant "plib.h" as plib
-	participant "FaunaSim::Framework" as Framework <<singleton>>
-	participant "Fauna::ParamReader" as ParamReader <<singleton>>
-	participant "Fauna::Simulator" as Simulator
-	participant "GuessOutput::HerbivoryOutput" as HerbivoryOutput <<singleton>>
-	== initialization ==
-	main -> Framework : <<create>>
-	activate Framework
-	activate HerbivoryOutput
-	Framework -> plib : declare parameters
-	main -> plib : read instruction file
-	plib -> ParamReader : call indirectly
-	activate ParamReader
-	plib -> Framework : plib_callback()
-	main <-- ParamReader : Fauna::Parameters
-	main <-- ParamReader : Fauna::HftList
-	main -> Framework : run()
-	Framework -> HerbivoryOutput : set_hftlist()
-	Framework -> HerbivoryOutput : init()
-	Framework -> Simulator : <<create>>
-	activate Simulator
-	note over Framework : create habitats
-	== simulation ==
-	loop YEARS: nyears
-		loop DAYS: 365
-			loop HABITAT GROUPS: nhabitat_groups
-				loop HABITATS: nhabitats_per_group
-					Framework -> Simulator : simulate_day()
-					Framework -> HerbivoryOutput : outdaily()
-				end
-			end
-		end
-	end
-	== end of simulation ==
-	deactivate Simulator
-	Framework --> main
-	deactivate HerbivoryOutput
-	deactivate Framework
-@enduml

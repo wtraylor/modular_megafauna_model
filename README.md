@@ -61,10 +61,11 @@ Now open the created file `docs/index.html` in a web browser.
 - Java Runtime Environment (JRE) and [Graphviz](www.graphviz.org) to compile [PlantUML](http://plantuml.com) diagrams. See [here](http://plantuml.com/graphviz-dot) for details.
 - [LaTeX](www.latex-project.org) to render mathematical formulas offline, and [BibTeX](www.bibtex.org) for the bibliography.
 
-### Integrate the Library into a Vegetation Model
+### Existing Integrations
 
-In the Subversion repository of [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/), for which this megafauna model was developed, there exists a branch `megafauna`.
-Please contact the maintainers of LPJ-GUESS to ask for access.
+Originally this megafauna model was developed for the dynamic global vegetation model [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/).
+On the Lund subversion server there exists a branch `megafauna` that integrates this library into LPJ-GUESS.
+Please contact the maintainers of LPJ-GUESS to kindly ask for access.
 
 Other dynamic vegetation models can include the megafauna model as an external library, too.
 Have a look at the demo simulator application in `tools/demo_simulator/` for an example of how to use the library.

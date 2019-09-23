@@ -177,7 +177,10 @@ The `\date` field is only relevant for the copyright. (Use Git to see when the f
 Make sure to write a unit test for every logical component.
 If you create a `.cpp` file, there should most likely also be a corresponding `.test.cpp` file that checks the public functions of the class or classes.
 
-Please read the Doxygen page about the testing framework.
+Unit tests use the [Catch2](https://github.com/catchorg/Catch2) framework in the [single header](https://raw.githubusercontent.com/catchorg/Catch2/master/single_include/catch2/catch.hpp) distribution.
+(The `tests/catch.hpp` file can be updated from time to time.)
+To run the unit tests after building the megafauna library, run `./megafauna_unit_tests` in the build directory.
+To disable building the unit tests, you can call `cmake -DBUILD_TESTING=OFF /path/to/repo`.
 
 ### Code Checkers
 

@@ -15,7 +15,7 @@ if (DOXYGEN_FOUND)
   set (DOXYGEN_LATEX_BIB_STYLE "ieeetr")
   set (DOXYGEN_PLANTUML_INCLUDE_PATH "./")
   set (DOXYGEN_PLANTUML_JAR_PATH "plantuml/plantuml.jar")
-  set (DOXYGEN_USE_MDFILE_AS_MAINPAGE "../README.md")
+  set (DOXYGEN_USE_MDFILE_AS_MAINPAGE "mainpage.md")
 
   if (NOT Java_Runtime_FOUND)
     message (
@@ -42,12 +42,13 @@ if (DOXYGEN_FOUND)
 
   doxygen_add_docs (megafauna_docs
     ../CONTRIBUTING.md
-    ../README.md
     ../include/
     ../src/
+    demo_simulator.md
     design.md
     diagrams.iuml
     group.h
+    mainpage.md
     model.md
     objectorientation.md
     quickstart.md
