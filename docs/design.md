@@ -80,7 +80,7 @@ Their common model mechanics are defined in their abstract parent class, \ref Fa
 
 The herbivore model performs calculations generally *per area* and not per individual.
 That’s why individual herbivores can only be simulated if an absolute habitat area size is defined.
-That is done by the parameter \ref Fauna::habitat_area_km2.
+That is done by the parameter \ref Fauna::Parameters::habitat_area_km2.
 
 @startuml "Class diagram of the two default herbivore classes (for individual and cohort mode), which share the same model mechanics defined in Fauna::HerbivoreBase."
 	!include diagrams.iuml!herbivore_classes
@@ -92,15 +92,15 @@ That is done by the parameter \ref Fauna::habitat_area_km2.
 The herbivore class itself can be seen as a mere framework (compare \ref sec_inversion_of_control) that integrates various components:
 
 - The herbivore’s own **energy budget**: \ref Fauna::FatmassEnergyBudget.
-- Its **energy needs**, defined by \ref Fauna::Hft::expenditure_components.
+- Its **energy needs**, defined by \ref Fauna::Hft::components.
 The herbivore object is self-responsible to call the implementation of the given expenditure models.
 (A strategy pattern would not work here as different expenditure models need to know different variables.)
-- How much the herbivore **is able to digest** is limited by a single algorithm defined in \ref Fauna::Hft::digestive_limit.
-- How much the herbivore **is able to forage** can be constrained by various factors which are defined as a set of \ref Fauna::Hft::foraging_limits.
+- How much the herbivore **is able to digest** is limited by a single algorithm defined in \ref Fauna::Hft::limit.
+- How much the herbivore **is able to forage** can be constrained by various factors which are defined as a set of \ref Fauna::Hft::limits.
 - The **diet composition** (i.e. feeding preferences in a scenario with multiple forage types) is controlled by a the model selected in \ref Fauna::Hft::diet_composer, whose implementation should be called in \ref Fauna::GetForageDemands::get_diet_composition().
 - How much **net energy** the herbivore is able to gain from feeding on forage is calculated by an implementation of \ref Fauna::GetNetEnergyContentInterface
 (given by [constructor injection](\ref sec_inversion_of_control)).
-- **Death** of herbivores is controlled by a set of \ref Fauna::Hft::mortality_factors.
+- **Death** of herbivores is controlled by a set of \ref Fauna::Hft::factors.
 For a cohort that means that the density is proportionally reduced.
 For an individual, death is a stochastic event.
 The corresponding population objects will release dead herbivore objects automatically.
@@ -115,7 +115,7 @@ Each habitat (\ref Fauna::Habitat) is populated by herbivores.
 The class \ref Fauna::SimulationUnit contains a habitat and the herbivore populations (\ref Fauna::PopulationList).
 
 A herbivore population instantiates new herbivore objects in the function \ref Fauna::PopulationInterface::establish().
-For cohort and individual herbivores, there are simple helper classes to construct new objects: \ref CreateHerbivoreCohort and \ref CreateHerbivoreIndividual.
+For cohort and individual herbivores, there are simple helper classes to construct new objects: \ref Fauna::CreateHerbivoreCohort and \ref Fauna::CreateHerbivoreIndividual.
 The `establish()` function is called by the simulation framework (\ref Fauna::World).
 In this design, the framework is only responsible for triggering the spawning of herbivores.
 How the reproduce and die is managed by the herbivore class itself, and the corresponding population and creator class.
@@ -199,7 +199,7 @@ Output classes within the herbivory module are collected in the namespace \ref F
 - The struct \ref Fauna::Output::CombinedData represents one datapoint (‘tupel’/‘observation’) of all output variables in space and time.
 
 @startuml "Output classes of the herbivory module."
-	!include diagrams.iuml!outputclasses
+	!include diagrams.iuml!output_classes
 @enduml
 
 There are three levels of data aggregation:

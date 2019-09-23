@@ -208,8 +208,8 @@ Global parameters of the herbivory module are declared and parsed by \ref Fauna:
 
 \todo Rewrite output tutorials.
 
-<!--
 ### How to add a new output variable {#sec_new_output}
+<!--
 - Create a new `TableFile` member variable in \ref GuessOutput::HerbivoryOutput.
 	+ Initialize it in the constructor.
 	(The parameter and variable names must not contain a dot, space, or underscore.)
