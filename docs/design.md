@@ -124,20 +124,23 @@ How the reproduce and die is managed by the herbivore class itself, and the corr
 	!include diagrams.iuml!population_classes
 @enduml
 
-## Error Handling {#sec_errorhandling}
+## Error Handling {#sec_design_error_handling}
 
-### Exceptions ### {#sec_exceptions}
-The herbivory module uses the C++ standard library exceptions defined in `<stdexcept>`.
+### Exceptions {#sec_design_exceptions}
+The library uses the C++ standard library exceptions defined in `<stdexcept>`.
 All exceptions are derived from `std::exception`:
-@startuml "Standard library exceptions used in the herbivory module."
+
+@startuml "Standard library exceptions used in the megafauna library."
 	!include diagrams.iuml!exception_classes
 @enduml
 
 Any function that potentially *creates* an exception declares that in its doxygen description.
-Beware that any function—unless documented otherwise—will not catch exceptions from calls to other functions.
-Therefore, even if a function does not announce a potential exception throw in its documentation, it will pass on any exceptions from other functions which it calls.
+
+\warning Beware that any function—unless documented otherwise—will not catch exceptions from calls to other functions.
+Therefore, even if a function does not announce a potential exception throw in its documentation, exceptions created in other functions can arise.
 
 Exceptions are used…:
+- …to check if the TOML instruction file is correct.
 - …to check if parameters in public methods are valid.
 - …to check the validity of variables coming from outside of the herbivory module where there are no contracts defined and ensured.
 
@@ -150,19 +153,17 @@ You throw an exception (in this case class `std::invalid_argument`) like this:
 
 Each class makes no assumptions about the simulation framework (e.g. that parameters have been checked), but solely relies on the class contracts in the code documentation.
 
-Exceptions are caught with `try{…}catch(…){…}` blocks in:
-- framework.cpp: function \ref framework()
-- testsimulation.h: %main() function and \ref FaunaSim::Framework::run()
+The megafauna library will never exit the program or print messages to STDERR or STDOUT.
+No exceptions arising in the library will be handled.
+The host program is responsible to handle exceptions from the library and to inform the user and halt the program.
 
-\note No part of the herbivory module writes directly to the shell output (stdout/stderr via `std::cout` or `std::cerr`, respectively), except for:
-- FaunaSim::Framework
-- Fauna::ParamReader
+Exception messages in the megafauna library should start with the fully qualified function name (including namespace) of the function that is creating the exception.
 
 \remark
 If you debug with [`gdb`](https://www.gnu.org/software/gdb) and want to backtrace an exception, use the command `catch throw`.
 That forces gdb to stop at an exception, and then you can use the command `backtrace` to see the function stack.
 
-### Assertions ### {#sec_assertions}
+### Assertions {#sec_design_assertions}
 At appropriate places, `assert()` is called (defined in the standard library header `<cassert>`/`assert.h`).
 `assert()` calls are only expanded by the compiler if compilation happens for DEBUG mode; in RELEASE, they are completely ignored.
 

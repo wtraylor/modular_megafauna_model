@@ -39,14 +39,24 @@
 @enduml
 
 @startuml (id=exception_classes)
+  hide members
+  hide methods
 	namespace std{
-		hide members
-		hide methods
-		exception <|-- logic_error
-		exception <|-- runtime_error
+		exception   <|-- logic_error
+    exception   <|-up- runtime_error
 		logic_error <|-- invalid_argument
 		logic_error <|-- out_of_range
 	}
+  namespace Fauna{
+    invalid_option        --|> std.runtime_error
+    missing_parameter     --|> std.runtime_error
+    missing_hft_parameter --|> std.runtime_error
+    missing_group         --|> std.runtime_error
+  }
+  namespace cpptoml{
+    array_exception --|> std.runtime_error
+    parse_exception --|> std.runtime_error
+  }
 @enduml
 
 @startuml (id=forage_classes)
