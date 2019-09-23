@@ -232,7 +232,7 @@ Add your new variable as a column to the table in \ref GuessOutput::HerbivoryOut
 Adjust the return value of \ref GuessOutput::HerbivoryOutput::is_today_included() to your needs.
 For comparison, see the local function `outlimit()` in \ref commonoutput.cpp.
 
-\see \ref sec_output
+\see \ref sec_design_output
 
 -->
 

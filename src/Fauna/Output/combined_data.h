@@ -21,7 +21,7 @@ namespace Output {
  * This can be data for one \ref Fauna::SimulationUnit (possibly aggregated
  * over a period of time) or for a set of spatial units (aggregated over
  * time and space).
- * \see \ref sec_outputclasses
+ * \see \ref sec_design_output_classes
  */
 struct CombinedData {
   /// How many data points are merged in this object.

@@ -190,9 +190,9 @@ The following diagram gives an overview:
 	!include diagrams.iuml!parameters_access
 @enduml
 
-## Herbivory Output {#sec_output}
+## Output {#sec_design_output}
 
-### Output Classes {#sec_outputclasses}
+### Output Classes {#sec_design_output_classes}
 
 Output classes within the herbivory module are collected in the namespace \ref Fauna::Output.
 - The two structs \ref Fauna::Output::HabitatData and \ref Fauna::Output::HerbivoreData are simple data containers.
@@ -204,23 +204,25 @@ Output classes within the herbivory module are collected in the namespace \ref F
 
 There are three levels of data aggregation:
 
-1) Each day in \ref Fauna::Simulator::simulate_day(), a new datapoint (\ref Fauna::Output::CombinedData) is created for each simulation unit.
+1) Each day in \ref Fauna::World::simulate_day(), a new set of output data (\ref Fauna::Output::CombinedData) is created for each simulation unit.
 For this, the habitat data is taken as is, but the herbivore data is aggregated per HFT (see \ref Fauna::Output::HerbivoreData::create_datapoint()).
 This level of aggregation is **spatial within one habitat**.
-Here, any variables *per habitat* or *per area* are summed, for instance herbivore densities.
+Sums and averages are calculated.
+Any variables *per habitat* or *per area* are summed, for instance herbivore densities.
 Variables *per individual* are averaged, using individual density as weight.
 
-2) The second level of aggregation happens also in \ref Fauna::Simulator::simulate_day().
+2) The second level of aggregation happens also in \ref Fauna::World::simulate_day().
 The datapoint for that day is added to the temporal average in the \ref Fauna::SimulationUnit object.
 This level of aggregation is therefore **temporal across days**.
 
-3) The third level of aggregation takes place in \ref GuessOutput::OutputModule.
-Here, the accumulated temporal averages from the simulation units are combined in spatial units.
+3) The third level of aggregation takes place in \ref Fauna::Output::Aggregator.
+Here, the accumulated temporal averages from the simulation units are combined in spatial aggregation units (\ref Fauna::Datapoint::aggregation_unit).
 This level of aggregation is therefore **spatial across habitats**.
 
-The latter two aggregation levels are performed by \ref Fauna::Output::CombinedData::merge().
+For the latter two aggregation levels the function \ref Fauna::Output::CombinedData::merge() is used.
 
-Note that all time-dependent variables are always **per day.**
+\note
+All time-dependent variables are always **per day.**
 For example, there is no such thing like *forage eaten in one year.*
 This way, all variables can be aggregated using the same algorithm, whether they are time-independent (like *individual density*) or represent a time-dependent rate (like *mortality* or *eaten forage*).
 
@@ -228,11 +230,13 @@ This way, all variables can be aggregated using the same algorithm, whether they
 #### Pros and Cons of the Output Design {#sec_output_prosandcons}
 
 The pros of this design:
-- Simplicity: Only few, easy-to-understand classes.
+
+- Simplicity: There are only few classes.
 - Separation of concerns: Each class (herbivores and habitats) is self-responsible for managing its own output, and the output data containers are self-responsible for aggregating their data.
 - Diversity of data structures: There is no restriction in regards to data type for new member variables in the output containers (as long as they can be merged).
 
 The cons of this design:
+
 - Strong coupling: The output module is highly dependent on the data structure of the output containers.
 - Rigidity of data containers: Ideally, the containers should be oblivious to the details of the data they hold.
 - Lack of modularity: A submodule of, e.g. \ref Fauna::HerbivoreBase cannot easily deliver its own output variable.
@@ -241,6 +245,11 @@ That is a violation of the [Open/Closed Principle](\ref sec_open_closed).
 - Any variable that is specific to a submodule or interface implementation (e.g. `bodyfat` is specific to \ref Fauna::HerbivoreBase) will produce undefined values if that submodule is not active.
 The user is then responsible to interpret them as invalid or disable their output.
 So far, there is no check of congruency between [parameters](\ref Fauna::Parameters)/[HFT settings](\ref Fauna::Hft) and the selection of output variables in the output module.
+
+\todo
+The output data classes are currently always in a consistent state. With every new datum, the total average is recalculated.
+This is a great waste of computing power.
+It would be a lot more efficient to _first_ gather a long series of data, and _finally_ calculate the mean or sum.
 
 ------------------------------------------------------------
 

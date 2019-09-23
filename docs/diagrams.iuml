@@ -299,16 +299,18 @@ competition      -down-> feeding
 	}
 @enduml
 
-@startuml (id=outputclasses)
+@startuml (id=output_classes)
 	hide methods
 	hide members
-	namespace FaunaOut{
-		class HerbivoreData
-		class HabitatData
-		class CombinedData
-		CombinedData o-> "*" HerbivoreData
-		note on link : by HFT
-		CombinedData o-> "1" HabitatData
+  namespace Fauna{
+    namespace Output{
+      Aggregator o-down-> "*" Datapoint
+      Datapoint o-down-> "1" CombinedData
+      Datapoint o-left-> "1" DateInterval
+      CombinedData o-down-> "*" HerbivoreData
+      note on link : by HFT
+      CombinedData o-down-> "1" HabitatData
+    }
 	}
 @enduml
 

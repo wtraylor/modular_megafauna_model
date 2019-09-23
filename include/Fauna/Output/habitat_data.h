@@ -14,7 +14,7 @@ namespace Fauna {
 namespace Output {
 /// Habitat output data for one time unit.
 /**
- * \see \ref sec_outputclasses
+ * \see \ref sec_design_output_classes
  */
 struct HabitatData {
   /// Constructor, initializing with zero values.
