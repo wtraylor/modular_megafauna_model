@@ -13,7 +13,7 @@ namespace Fauna {
 
 /// One herbivore individual
 /**
- * \see \ref sec_herbivoredesign
+ * \see \ref sec_design_the_herbivore
  */
 class HerbivoreIndividual : public HerbivoreBase {
  public:

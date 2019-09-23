@@ -27,7 +27,7 @@ class HabitatEnvironment;
  * herbivores.
  * \see \ref sec_new_herbivore_class
  * \see \ref PopulationInterface
- * \see \ref sec_herbivoredesign
+ * \see \ref sec_design_the_herbivore
  */
 struct HerbivoreInterface {
   /// Virtual Destructor

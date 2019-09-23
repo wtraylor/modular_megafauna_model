@@ -27,7 +27,7 @@ enum class Sex { Female, Male };
  *
  * \note Several member variables are declared as std::auto_ptr. This
  * is done in order to reduce header includes here.
- * \see \ref sec_herbivoredesign
+ * \see \ref sec_design_the_herbivore
  */
 class HerbivoreBase : public HerbivoreInterface {
  public:

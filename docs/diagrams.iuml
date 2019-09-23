@@ -103,69 +103,73 @@
 @enduml
 
 @startuml (id=herbivorebase_compartments)
-	hide members
 	hide methods
 	namespace Fauna{
 	abstract HerbivoreBase{
 		-Hft hft
 		-int age_days
 	}
-	show HerbivoreBase members
 	class FatmassEnergyBudget{
-		|catabolize_fat()
-		|metabolize_energy()
+		+catabolize_fat()
+		+metabolize_energy()
 		-double energy_needs
 		-double fatmass
 		-double max_fatmass
 	}
-	show FatmassEnergyBudget members
 	show FatmassEnergyBudget methods
 	HerbivoreBase *-up-> "1" FatmassEnergyBudget
 	package "Forage Energy" <<rectangle>> {
-		interface GetNetEnergyContentInterface <<strategy>>
-		GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
+    enum NetEnergyModel{
+      Default
+    }
 	}
-	HerbivoreBase *-up-> "1" "Forage Energy"
+	HerbivoreBase .up.> "1" "Forage Energy"
 	package "Reproduction" <<rectangle>> {
-    class ReprIlliusOconnor2000
-    class ReproductionConstMax
-    class ReproductionLinear
+    enum ReproductionModel{
+      None
+      ConstantMaximum
+      IlliusOConnor2000
+      Linear
+    }
 	}
 	HerbivoreBase .up.> "1" "Reproduction"
 	package "Diet" <<rectangle>> {
 		enum DietComposer{
-		  DC_PURE_GRAZER
+      PureGrazer
 		}
 	}
 	HerbivoreBase  .up.> "1" "Diet"
 	package "Energy Expenditure" <<rectangle>>  {
     enum ExpenditureComponent{
-      EC_ALLOMETRIC,
-      EC_TAYLOR_1981,
-      EC_THERMOREGULATION
+      Allometric
+      Taylor1981
+      Thermoregulation
     }
 	}
 	HerbivoreBase  ..> "*" "Energy Expenditure"
     package "Digestive Limit" <<rectangle>>  {
     enum DigestiveLimit{
-      DL_NONE,
-      DL_ALLOMETRIC,
-      DL_FIXED_FRACTION,
-      DL_ILLIUS_GORDON_1992
+      None
+      Allometric
+      FixedFraction
+      IlliusGordon1992
     }
+  }
   HerbivoreBase  ..> "1" "Digestive Limit"
 	package "Foraging Limits" <<rectangle>>  {
     enum ForagingLimit{
-      FL_ILLIUS_OCONNOR_2000
-      FL_GENERAL_FUNCTIONAL_RESPONSE
+      IlliusOConnor2000
+      GeneralFunctionalRespone
     }
 	}
 	HerbivoreBase  ..> "*" "Foraging Limits"
 	package "Mortality" <<rectangle>> {
-		class GetBackgroundMortality           <<functor>>
-		class GetStarvationIlliusOConnor2000 <<functor>>
-		class GetStarvationMortalityThreshold  <<functor>>
-		class GetSimpleLifespanMortality       <<functor>>
+    enum MortalityFactor{
+      Background
+      Lifespan
+      StarvationIlliusOConnor2000
+      StarvationThreshold
+    }
 	}
 	HerbivoreBase ..> "*" "Mortality"
 	}

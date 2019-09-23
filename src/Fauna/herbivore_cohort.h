@@ -16,7 +16,7 @@ namespace Fauna {
  * Any state variables describe mean values across all
  * individuals.
  * All individuals have the same age.
- * \see \ref sec_herbivoredesign
+ * \see \ref sec_design_the_herbivore
  */
 class HerbivoreCohort : public HerbivoreBase {
  public:
