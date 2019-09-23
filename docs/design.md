@@ -1,8 +1,8 @@
-# Software Design of the Megafauna Model {#page_design}
+# Software Design {#page_design}
 <!-- For doxygen, this is the *page* header -->
 \brief Notes on the software design of the herbivore model from a programmer’s perspective.
 
-# Software Design of the Herbivory Module {#sec_design}
+# Software Design {#sec_design}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 

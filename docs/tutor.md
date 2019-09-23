@@ -1,8 +1,8 @@
-# Tutor for the Modular Megafauna Model {#page_tutor}
+# Tutor {#page_tutor}
 <!-- For doxygen, this is the *page* header -->
 \brief Instructions how to use the herbivore module and expand the code base for one’s needs.
 
-# Tutor for the Modular Megafauna Model {#sec_tutor}
+# Tutor {#sec_tutor}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 

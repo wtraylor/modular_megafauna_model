@@ -1,8 +1,8 @@
-# Quickstart Guide for Using the Modular Megafauna Model {#page_quickstart}
+# Quickstart Guide {#page_quickstart}
 <!-- For doxygen, this is the *page* header -->
 \brief How to get the first simulations running.
 
-# Quickstart Guide for Using the Modular Megafauna Model {#sec_quickstart}
+# Quickstart Guide {#sec_quickstart}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
