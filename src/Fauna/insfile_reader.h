@@ -140,10 +140,16 @@ class InsfileReader {
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
       const bool mandatory) const;
 
+  /// Read the TOML table `output`.
   void read_table_output();
+
+  /// Read the TOML table `output.text_tables`.
   void read_table_output_text_tables();
+
+  /// Read the TOML table `simulation`.
   void read_table_simulation();
 
+  /// Construct HFT object from an entry in the array of tables.
   Hft read_hft(const std::shared_ptr<cpptoml::table>& table);
 
   /// The root table of the instruction file from `cpptoml::parse_file()`.
