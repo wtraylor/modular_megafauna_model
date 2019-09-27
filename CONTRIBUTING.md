@@ -1,11 +1,9 @@
 Contributing to the Megafauna Model
 ===================================
 
-Flexibility and extensibility were high design goals for developing the megafauna model.
-Hopefully you will find it possible to implement the necessary changes for your particular research questions.
-
-This document shall be a guide for you as a developer: to help you get started with coding and ensure that the code stays consistent in style.
-You will need basic skills with Git and C++ (C++11 standard).
+This document is a guide for developers who want to contribute to the megafauna library.
+It explains the organization of the software project and sets guidelines for code style, structure, and format.
+This document is only about _syntax_ only.
 
 Table of Contents
 -----------------

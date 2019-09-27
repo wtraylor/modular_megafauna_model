@@ -71,6 +71,20 @@ Other dynamic vegetation models can include the megafauna model as an external l
 Have a look at the demo simulator application in `tools/demo_simulator/` for an example of how to use the library.
 <!--TODO: Add advice on dynamic vs. static library to comply with library license.-->
 
+### Changing the Codebase
+
+Flexibility and extensibility were high design goals for developing the megafauna model.
+Hopefully you will find it possible to implement the necessary code changes/extensions for your particular research questions.
+You will need basic skills with Git and C++ (C++11 standard) in order to contribute.
+
+You should read the following pages in order to familiarize yourself with the codebase:
+
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- In the Doxygen documentation:
+    - **“Software Design”**
+    - **“Object-oriented Design Concepts”**
+    - **“Tutor”**
+
 Known Bugs and Issues
 ---------------------
 
