@@ -1,18 +1,21 @@
 # Tutor {#page_tutor}
 <!-- For doxygen, this is the *page* header -->
-\brief Instructions how to use the herbivore module and expand the code base for one’s needs.
+\brief Instructions how expand the code base for your own needs.
 
 # Tutor {#sec_tutor}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
-Before starting with your programming work, please familiarize yourself with the parts of the [module design](\ref page_design) that are relevant to your project.
+Before starting with your programming work, please familiarize yourself with the page \ref page_design.
+In `CONTRIBUTING.md` you will find a style guide.
 Make sure you have understood the concepts of [object-oriented software design](\ref sec_object_orientation).
 In particular, observe the [Open-closed Principle](\ref sec_open_closed) wherever possible: Only change a class *if necessary.* Try to extend it instead or—even better—write a new class with your functionality.
 
-Please keep the documentation of the [design](\ref page_design) and the [model explanations](\ref page_model) updated.
+Please keep the documentation pages \ref page_design and \ref page_model updated.
+The UML diagrams are rendered by PlantUML and collected all in one file: `docs/diagrams.iuml`.
+You will find references for the PlantUML syntax on <http://www.plantuml.com>.
 
-Come into the practice of **test-driven development** (see \ref page_tests).
+Come into the practice of **test-driven development**.
 Write a test for each one of your new classes!
 Check all of its public methods and see what example test scenarios it has to fulfill.
 Also check if exceptions are thrown correctly.
@@ -21,28 +24,20 @@ Also check if exceptions are thrown correctly.
 
 ### How to add a new herbivore class {#sec_new_herbivore_class}
 
-The model design allows a complete substitution of the herbivore
-class.
-If you want to implement a completely new model behaviour, you
-can derive your new class from \ref Fauna::HerbivoreInterface
-and write it from scratch.
-If you want to build upon the base functionality, derive it
-from \ref Fauna::HerbivoreBase.
+The model design allows a complete substitution of the herbivore class.
+If you want to implement a completely new model behaviour, you can derive your new class from \ref Fauna::HerbivoreInterface and write it from scratch.
+If you want to build upon the base functionality, derive it from \ref Fauna::HerbivoreBase.
 
 Then, derive a new class from \ref Fauna::PopulationInterface to manage and construct your object instances.
-In \ref Fauna::Simulator::create_populations(), create that
-population class.
+In \ref Fauna::WorldConstructor::create_population(), create that population class.
 
 @startuml "Relationships for a new herbivore type."
 	!include diagrams.iuml!new_herbivore_type
 @enduml
 
 ### How to add a new energy expenditure component {#sec_new_expenditure_component}
-- Add a new entry in \ref Fauna::ExpenditureComponent.
-- Parameters:
-	+ Add new possible string value for the HFT parameter `expenditure_components` in \ref Fauna::ParamReader::declare_parameters().
-	+ Adjust \ref Fauna::ParamReader::callback() under `callback == CB_EXPENDITURE_COMPONENTS`.
-	+ Expand the comment in the instruction file `data/ins/herbivores.ins`.
+- Add a new enum entry in \ref Fauna::ExpenditureComponent.
+- Add new possible string value for the HFT parameter `expenditure.components` in \ref Fauna::read_hft(); include it in the error message.
 - Implement your algorithm as a free function or a class. See \ref expenditure_components.h for examples.
 - Call your model in \ref Fauna::HerbivoreBase::get_todays_expenditure().
 - Update the UML diagram in \ref sec_herbivorebase.
