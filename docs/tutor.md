@@ -6,20 +6,6 @@
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
-Before starting with your programming work, please familiarize yourself with the page \ref page_design.
-In `CONTRIBUTING.md` you will find a style guide.
-Make sure you have understood the concepts of [object-oriented software design](\ref sec_object_orientation).
-In particular, observe the [Open-closed Principle](\ref sec_open_closed) wherever possible: Only change a class *if necessary.* Try to extend it instead or—even better—write a new class with your functionality.
-
-Please keep the documentation pages \ref page_design and \ref page_model updated.
-The UML diagrams are rendered by PlantUML and collected all in one file: `docs/diagrams.iuml`.
-You will find references for the PlantUML syntax on <http://www.plantuml.com>.
-
-Come into the practice of **test-driven development**.
-Write a test for each one of your new classes!
-Check all of its public methods and see what example test scenarios it has to fulfill.
-Also check if exceptions are thrown correctly.
-
 ## Herbivores Tutorials {#sec_tutor_herbivores}
 
 ### How to add a new herbivore class {#sec_new_herbivore_class}

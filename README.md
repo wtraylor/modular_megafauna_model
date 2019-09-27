@@ -68,8 +68,7 @@ On the Lund subversion server there exists a branch `megafauna` that integrates 
 Please contact the maintainers of LPJ-GUESS to kindly ask for access.
 
 Other dynamic vegetation models can include the megafauna model as an external library, too.
-Have a look at the demo simulator application in `tools/demo_simulator/` for an example of how to use the library.
-<!--TODO: Add advice on dynamic vs. static library to comply with library license.-->
+Learn more in the Doxygen documentation.
 
 ### Changing the Codebase
 
@@ -77,13 +76,7 @@ Flexibility and extensibility were high design goals for developing the megafaun
 Hopefully you will find it possible to implement the necessary code changes/extensions for your particular research questions.
 You will need basic skills with Git and C++ (C++11 standard) in order to contribute.
 
-You should read the following pages in order to familiarize yourself with the codebase:
-
-- [CONTRIBUTING.md](CONTRIBUTING.md)
-- In the Doxygen documentation:
-    - **“Software Design”**
-    - **“Object-oriented Design Concepts”**
-    - **“Tutor”**
+On the index/main page of the Doxygen documentation you will be directed to the resources you need to contribute.
 
 Known Bugs and Issues
 ---------------------
