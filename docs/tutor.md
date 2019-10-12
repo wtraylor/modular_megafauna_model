@@ -72,12 +72,19 @@ This decision is modelled by an implementation of a so called “diet composer m
 You can implement your own model as a new class or a simple function; just call it in \ref Fauna::GetForageDemands::get_diet_composition().
 
 - Create a new enum entry in \ref Fauna::DietComposer.
-- Read the new value for `foragging.diet_composer` in \ref Fauna::InsfileReader::read_hft().
+- Read the new value for `foraging.diet_composer` in \ref Fauna::InsfileReader::read_hft().
 - Call your model in \ref Fauna::GetForageDemands::get_diet_composition().
 - Update the UML diagram in \ref sec_herbivorebase.
 
-### How to add a new mortality factor {#sec_new_mortality}
-<!-- TODO -->
+### How to add a new mortality factor {#sec_new_mortality_factor}
+Any death event of an herbivore is modelled by a mortality factor.
+Whether you want to have herbivores die by for instance disease, drought, or predators, you should create a new mortality factor.
+
+- Create a new enum entry in \ref Fauna::MortalityFactor.
+- Parse the new possible value for the set `mortality.factors` in \ref Fauna::InsfileReader::read_hft().
+- Implement your mortality model as a function or class in \ref mortality_factors.h or in a separate file (if it’s more complex).
+- Call the mortality factor in \ref Fauna::HerbivoreBase::apply_mortality_factors_today().
+- Update the UML diagram in \ref sec_herbivorebase.
 
 ## Forage Tutorials {#sec_tutor_forage}
 
