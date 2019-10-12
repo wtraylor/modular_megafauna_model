@@ -60,12 +60,9 @@ Make sure that an exception is thrown if it is called with an unknown forage typ
 ### How to add a new reproduction model {#sec_new_reproduction_model}
 A reproduction model defines the offspring per female individual for each simulation day.
 
-- Parameters:
-	+ Create a new enum entry in \ref Fauna::ReproductionModel.
-	+ Parse the parameter in \ref Fauna::ParamReader::callback() under `CB_REPRODUCTION_MODEL` and expand the error message with your string identifier.
-	+ Add your string identifier to the help output in \ref Fauna::ParamReader::declare_parameters().
-	+ Document your model in the comments of the example instruction file: `data/ins/herbivores.ins`.
-- Create your class or function somewhere.
+- Create a new enum entry in \ref Fauna::ReproductionModel.
+- Read the new value for `reproduction.model` from the instruction file in \ref Fauna::InsfileReader::read_hft().
+- Create your class or function in \ref reproduction_models.h or in a separate file.
 - Call your model in \ref Fauna::HerbivoreBase::get_todays_offspring_proportion().
 - Update the UML diagram in \ref sec_herbivorebase.
 
