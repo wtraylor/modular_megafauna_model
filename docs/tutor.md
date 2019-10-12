@@ -22,23 +22,20 @@ In \ref Fauna::WorldConstructor::create_population(), create that population cla
 @enduml
 
 ### How to add a new energy expenditure component {#sec_new_expenditure_component}
-- Add a new enum entry in \ref Fauna::ExpenditureComponent.
-- Add new possible string value for the HFT parameter `expenditure.components` in \ref Fauna::read_hft(); include it in the error message.
+- Add a new enum entry in \ref Fauna::ExpenditureComponent. <!--TODO: ref-->
+- TOML instruction file: Add new possible string value for the HFT parameter `expenditure.components` in \ref Fauna::InsfileReader::read_hft(); include it in the error message.
 - Implement your algorithm as a free function or a class. See \ref expenditure_components.h for examples.
 - Call your model in \ref Fauna::HerbivoreBase::get_todays_expenditure().
-- Update the UML diagram in \ref sec_herbivorebase.
+- Update the UML diagram in Section \ref sec_herbivorebase.
 
 ### How to add a new foraging limit {#sec_new_foraging_limit}
 A foraging limit constrains the daily uptake of forage mass by a herbivore individual.
 Foraging limits are implemented as functors (without using the [strategy design pattern](\ref sec_strategy), though).
-Which ones are activated is defined by \ref Fauna::Hft::foraging_limits.
+Which ones are activated is defined by `foraging.limits` in \ref Fauna::Hft.
 They are called in \ref Fauna::GetForageDemands::get_max_foraging().
 
-- Add a new enum entry in \ref Fauna::ForagingLimit.
-- Parameters:
-	+ In \ref Fauna::ParamReader::callback() add a string identifier for your implementation under `CB_FORAGING_LIMITS` (also in the error message).
-	+ Add that identifier in the help message under \ref Fauna::ParamReader::declare_parameters().
-	+ Document your option in the example instruction file `data/ins/herbivores.ins`.
+- Add a new enum entry in \ref Fauna::ForagingLimit<!--TODO: ref-->.
+- TOML instruction file: Add a new possible string value for the HFT parameter `foraging.limits` in \ref Fauna::InsfileReader::read_hft()
 - Implement your foraging limit (preferably as a function object in the file \ref foraging_limits.h, but you can do as you wish).
 Make sure that an exception is thrown if it is called with an unknown forage type.
 - Call your implementation in \ref Fauna::GetForageDemands::get_max_foraging().
