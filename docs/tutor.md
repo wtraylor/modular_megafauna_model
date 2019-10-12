@@ -66,16 +66,13 @@ A reproduction model defines the offspring per female individual for each simula
 - Call your model in \ref Fauna::HerbivoreBase::get_todays_offspring_proportion().
 - Update the UML diagram in \ref sec_herbivorebase.
 
-### How to add a new diet composer {#sec_new_diet}
+### How to add a new diet composer {#sec_new_diet_composer}
 In a scenario with multiple forage types, the herbivore decides what to include in its diet.
 This decision is modelled by an implementation of a so called “diet composer model”: \ref Fauna::DietComposer.
 You can implement your own model as a new class or a simple function; just call it in \ref Fauna::GetForageDemands::get_diet_composition().
 
-- Parameters:
-	+ Create a new enum entry in \ref Fauna::DietComposer.
-	+ Parse the parameter in \ref Fauna::ParamReader::callback() under `CB_DIET_COMPOSER` and expand the error message with your string identifier.
-	+ Add your string identifier to the help output in \ref Fauna::ParamReader::declare_parameters().
-	+ Document your model in the comments of the example instruction file: `data/ins/herbivores.ins`.
+- Create a new enum entry in \ref Fauna::DietComposer.
+- Read the new value for `foragging.diet_composer` in \ref Fauna::InsfileReader::read_hft().
 - Call your model in \ref Fauna::GetForageDemands::get_diet_composition().
 - Update the UML diagram in \ref sec_herbivorebase.
 
@@ -112,7 +109,7 @@ You can implement your own model as a new class or a simple function; just call 
 - Herbivores
 	+ Check all foraging and digestion limits (\ref foraging_limits.h) whether they need to be expanded.
 	+ Check also all models for net energy content (\ref net_energy_models.h).
-	+ Probably you will need to implement [a new diet composer](\ref sec_new_diet) or adjust existing ones.
+	+ Probably you will need to implement [a new diet composer](\ref sec_new_diet_composer) or adjust existing ones.
 
 - Test Simulations
 	+ If you want to use your forage type in the herbivory test simulations, expand \ref FaunaSim::SimpleHabitat by a new growth model (analoguous to \ref FaunaSim::LogisticGrass).
