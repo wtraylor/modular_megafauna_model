@@ -250,19 +250,17 @@ competition      -down-> feeding
 
 @startuml (id=new_forage_type)
 	namespace Fauna{
-		class ParamReader
 		enum ForageType {
 			FT_GRASS,
 			FT_NEWFORAGE
 		}
-		ParamReader   ..> ForageType : <<use>>
 		class ForageValues< ForageValueType >
 		ForageValues ..> ForageType : <<use>>
 		abstract ForageBase
 		class NewForage{
 			your_custom_members
 		}
-		NewForage <|-- ForageBase
+		NewForage --|> ForageBase
 		class HabitatForage{
 			get_total()
 			merge()
@@ -270,20 +268,18 @@ competition      -down-> feeding
 		HabitatForage *--> NewForage
 		abstract HerbivoreBase
 		HerbivoreBase ..> HabitatForage : <<use>>
-		interface GetDigestibility
-		class PatchHabitat{
+    class YourHabitatImplementation{
 			get_available_forage()
 			reduce_forage_mass()
 		}
-		PatchHabitat ..> HabitatForage : <<use>>
+    YourHabitatImplementation ..> HabitatForage : <<use>>
+    abstract Habitat
+    YourHabitatImplementation -up-|> Habitat
+    namespace Demo{
+      SimpleHabitat  ..> Fauna.HabitatForage : <<use>>
+      SimpleHabitat -up-|> Fauna.Habitat
+    }
 	}
-	FaunaSim.SimpleHabitat  ..> Fauna.HabitatForage : <<use>>
-	class Individual{
-		get_forage_mass()
-	}
-	Fauna.PatchHabitat          ..> Individual       : <<use>>
-	Fauna.GetDigestibility      ..> Individual       : <<use>>
-	GuessOutput.HerbivoryOutput ..> Fauna.NewForage  : <<use>>
 @enduml
 
 @startuml (id=new_herbivore_type)

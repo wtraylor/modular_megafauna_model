@@ -94,10 +94,6 @@ Whether you want to have herbivores die by for instance disease, drought, or pre
 
 - Add a short name without blanks in \ref Fauna::get_forage_type_name().
 
-- Instruction file parameters (\ref paramreader.cpp):
-	+ \ref Fauna::ParamReader::declare_parameters() : Add the new forage type to parameter description of parameter `forage_type`.
-	+ \ref Fauna::ParamReader::callback() : Add forage type under \ref Fauna::CB_FORAGE_TYPE.
-
 - Derive new class from \ref Fauna::ForageBase.
 	+ Implement a `merge()` method, like \ref Fauna::GrassForage::merge().
 
@@ -105,22 +101,17 @@ Whether you want to have herbivores die by for instance disease, drought, or pre
 	+ Add it in \ref Fauna::HabitatForage::operator[]().
 	+ Call your `merge()` function in \ref Fauna::HabitatForage::merge().
 
-- Adjust \ref Individual::get_forage_mass() and \ref Individual::reduce_forage_mass().
-
 - Adjust the implementation of \ref Fauna::Habitat::get_available_forage() and \ref Fauna::Habitat::remove_eaten_forage() in your vegetation model.
 
-- Perhaps adjust the digestibility in your chosen \ref Fauna::GetDigestibility implementation.
-
-- Extend \ref Fauna::GetNetEnergyContentDefault.
+- Extend \ref Fauna::GetNetEnergyContentDefault, and possibly other energy content models (\ref net_energy_models.h).
 
 - Herbivores
 	+ Check all foraging and digestion limits (\ref foraging_limits.h) whether they need to be expanded.
-	+ Check also all models for net energy content (\ref net_energy_models.h).
 	+ Probably you will need to implement [a new diet composer](\ref sec_new_diet_composer) or adjust existing ones.
 
 - Test Simulations
-	+ If you want to use your forage type in the herbivory test simulations, expand \ref FaunaSim::SimpleHabitat by a new growth model (analoguous to \ref FaunaSim::LogisticGrass).
-	Also update the UML diagram in the class documentation of SimpleHabitat.
+	+ If you want to use your forage type in the demo simulations, expand \ref Fauna::Demo::SimpleHabitat by a new growth model (analoguous to \ref Fauna::Demo::LogisticGrass).
+	Also update the UML diagram in the class documentation of `SimpleHabitat`.
 
 @startuml "Relationships for a new forage type."
 	!include diagrams.iuml!new_forage_type
