@@ -140,32 +140,15 @@ Forage net energy content is implemented with the [strategy design pattern](\ref
 
 ### How to add a new global parameter {#sec_new_global_parameter}
 
-Global parameters of the herbivory module are declared and parsed by \ref Fauna::ParamReader, but initialized and checked in \ref Fauna::Parameters.
-
-- Declare your parameter as a member variable in \ref Fauna::Parameters.
-- Initialize it with a valid default value in \ref Fauna::Parameters::Parameters().
+- Declare your parameter as a member variable in \ref Fauna::Parameters and initialize it with a valid default value. The `enum class` type for Enum parameters should be declared in \ref parameters.h.
 - Write a validity check in \ref Fauna::Parameters::is_valid().
-- If the parameter needs to be parsed from a string, add your
-	own callback:
-	+ add a new enum item CB_* in \ref parameters.h.
-	+ add a new if statement in \ref Fauna::ParamReader::callback().
-- Call the plib function \ref declareitem() in \ref Fauna::ParamReader::declare_parameters() (possibly with your own CB_* code).
-- If you wish, add it to `mandatory_global_params` in \ref Fauna::ParamReader::callback() so that it must not be omitted.
-- Extend the example instruction file `data/ins/herbivores.ins`.
+- Parse the parameter from the TOML instruction file in \ref Fauna::InsfileReader. General parameters are parsed in Fauna::InsfileReader::read_table_simulation().
+    + If you are creating a whole new set of parameters, it might make sense to group them in a TOML table. Existing tables are `output` and `simulation`. You should then write a new private member function similar to \ref Fauna::InsfileReader::read_table_simulation().
 
 ### How to add a new HFT parameter {#sec_new_hft_parameter}
 
-- Declare your member variable in \ref Fauna::Hft
-  (observe alphabetical order, please)
-- Initialize it with a (valid!) default value in \ref Fauna::Hft::Hft().
+- Declare a new member variable in \ref Fauna::Hft and initialize it with a valid default value. The `enum class` type for Enum parameters should be declared in \ref hft.h.
 - Write a validity check in \ref Fauna::Hft::is_valid().
-- If the parameter needs to be parsed from a string, add your
-	own callback:
-	+ add a new enum item CB_* in \ref parameters.h.
-	+ add a new if statement in \ref Fauna::ParamReader::callback().
-- Call the plib function \ref declareitem() in \ref Fauna::ParamReader::declare_parameters() (possibly with your own CB_* code).
-- If you wish, add it to `mandatory_hft_params` in \ref Fauna::ParamReader::callback() so that it must not be omitted.
-- Extend the example instruction file `data/ins/herbivores.ins`.
 
 \see \ref sec_design_parameters
 
