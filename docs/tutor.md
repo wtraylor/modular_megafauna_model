@@ -130,13 +130,11 @@ Forage net energy content is implemented with the [strategy design pattern](\ref
 - Update the UML diagram in \ref sec_herbivorebase and the diagram above.
 
 ### How to add a new forage distribution algorithm {#sec_new_forage_distribution}
-- Derive a new class from \ref Fauna::DistributeForage and implement your algorithm.
 
-- Return a reference to an object of your class in \ref Fauna::Simulator::create_distribute_forage().
-
-- Add an identifier in \ref Fauna::ForageDistributionAlgorithm and add your string identifier in \ref Fauna::ParamReader::callback() under `CB_FORAGE_DISTRIBUTION`.
-
-- Don’t forget to add your identifier as possible values in the message output in \ref Fauna::ParamReader::declare_parameters() and \ref Fauna::ParamReader::callback(), as well as in the example instruction file `data/ins/herbivores.ins`.
+- Derive a new class from \ref Fauna::DistributeForage and implement your algorithm. If the algorithm is not too big, put it in \ref forage_distribution_algorithms.h, otherwise create a new set of files.
+- Return a reference to an object of your class in \ref Fauna::WorldConstructor::create_distribute_forage() if it is selected in the parameters.
+- Add a new enum entry in \ref Fauna::ForageDistributionAlgorithm.
+- Parse your new value from the parameter `simulation.forage_distribution` in \ref Fauna::InsfileReader::read_hft().
 
 ## Parameters Tutorials {#sec_tutor_parameters}
 
