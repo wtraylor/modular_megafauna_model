@@ -10,7 +10,7 @@
 
 @startuml (id=basic_components)
   [Megafauna Library] as library
-	() "Fauna::Habitat" as habitat
+  () "Fauna::Habitat" as habitat
   () "Fauna::World" as world
   () "Implementation\nof Fauna::Habitat" as myhabitat
   node "Megafauna Output Files" as outputfiles
@@ -39,8 +39,8 @@
 @enduml
 
 @startuml (id=demo_simulator_classes)
-	hide members
-	hide methods
+  hide members
+  hide methods
   namespace Fauna {
     namespace Demo {
       class Framework <<singleton>>
@@ -49,22 +49,22 @@
       SimpleHabitat --|> Fauna.Habitat
       Framework *-> "1" Fauna.World
     }
-		abstract Habitat
+    abstract Habitat
     World          ..> Habitat : <<call>>
-	}
-	annotation "main()" as main
+  }
+  annotation "main()" as main
   main .down.> Fauna.Demo.Framework : <<call>>
 @enduml
 
 @startuml (id=exception_classes)
   hide members
   hide methods
-	namespace std{
-		exception   <|-- logic_error
+  namespace std{
+    exception   <|-- logic_error
     exception   <|-up- runtime_error
-		logic_error <|-- invalid_argument
-		logic_error <|-- out_of_range
-	}
+    logic_error <|-- invalid_argument
+    logic_error <|-- out_of_range
+  }
   namespace Fauna{
     invalid_option        --|> std.runtime_error
     missing_parameter     --|> std.runtime_error
@@ -78,103 +78,103 @@
 @enduml
 
 @startuml (id=forage_classes)
-	hide members
-	hide methods
-	namespace Fauna{
-		class ForageBase{
-			digestibility
-			mass
-		}
-		show ForageBase members
-		class GrassForage{
-			fpc
-			sward_density
-		}
-		show GrassForage members
-		ForageBase <|-- GrassForage
-		class HabitatForage
-		HabitatForage *->GrassForage
-		enum ForageValueType{
-			POSITIVE_AND_ZERO
-			ZERO_TO_ONE
-		}
-		show ForageValueType members
-		class ForageValues< ForageValueType >
-		ForageValueType -- ForageValues
-		enum ForageType{
-			FT_GRASS,
-			FT_INEDIBLE
-		}
-		show ForageType members
-	}
+  hide members
+  hide methods
+  namespace Fauna{
+    class ForageBase{
+      digestibility
+      mass
+    }
+    show ForageBase members
+    class GrassForage{
+      fpc
+      sward_density
+    }
+    show GrassForage members
+    ForageBase <|-- GrassForage
+    class HabitatForage
+    HabitatForage *->GrassForage
+    enum ForageValueType{
+      POSITIVE_AND_ZERO
+      ZERO_TO_ONE
+    }
+    show ForageValueType members
+    class ForageValues< ForageValueType >
+    ForageValueType -- ForageValues
+    enum ForageType{
+      FT_GRASS,
+      FT_INEDIBLE
+    }
+    show ForageType members
+  }
 @enduml
 
 @startuml (id=herbivore_classes)
-	hide members
-	hide methods
-	namespace Fauna {
-		interface HerbivoreInterface
-		interface PopulationInterface
-		abstract HerbivoreBase
-		HerbivoreInterface  <|-- HerbivoreBase
-		HerbivoreBase       <|-- HerbivoreIndividual
-		HerbivoreBase       <|-- HerbivoreCohort
-		PopulationInterface <|-up- IndividualPopulation
-		PopulationInterface <|-up- CohortPopulation
-		HerbivoreIndividual "*" <--* "1" IndividualPopulation
-		HerbivoreCohort     "*" <--* "1" CohortPopulation
-		HerbivoreIndividual  <..  IndividualPopulation : <<create>>
-		(HerbivoreIndividual, IndividualPopulation) .. CreateHerbivoreIndividual
-		HerbivoreCohort      <..  CohortPopulation     : <<create>>
-		(HerbivoreCohort, CohortPopulation) .. CreateHerbivoreCohort
-	}
+  hide members
+  hide methods
+  namespace Fauna {
+    interface HerbivoreInterface
+    interface PopulationInterface
+    abstract HerbivoreBase
+    HerbivoreInterface  <|-- HerbivoreBase
+    HerbivoreBase       <|-- HerbivoreIndividual
+    HerbivoreBase       <|-- HerbivoreCohort
+    PopulationInterface <|-up- IndividualPopulation
+    PopulationInterface <|-up- CohortPopulation
+    HerbivoreIndividual "*" <--* "1" IndividualPopulation
+    HerbivoreCohort     "*" <--* "1" CohortPopulation
+    HerbivoreIndividual  <..  IndividualPopulation : <<create>>
+    (HerbivoreIndividual, IndividualPopulation) .. CreateHerbivoreIndividual
+    HerbivoreCohort      <..  CohortPopulation     : <<create>>
+    (HerbivoreCohort, CohortPopulation) .. CreateHerbivoreCohort
+  }
 @enduml
 
 @startuml (id=herbivorebase_compartments)
-	hide methods
-	namespace Fauna{
-	abstract HerbivoreBase{
-		-Hft hft
-		-int age_days
-	}
-	class FatmassEnergyBudget{
-		+catabolize_fat()
-		+metabolize_energy()
-		-double energy_needs
-		-double fatmass
-		-double max_fatmass
-	}
-	show FatmassEnergyBudget methods
-	HerbivoreBase *-up-> "1" FatmassEnergyBudget
-	package "Forage Energy" <<rectangle>> {
+  hide methods
+  namespace Fauna{
+  abstract HerbivoreBase{
+    -Hft hft
+    -int age_days
+  }
+  class FatmassEnergyBudget{
+    +catabolize_fat()
+    +metabolize_energy()
+    -double energy_needs
+    -double fatmass
+    -double max_fatmass
+  }
+  show FatmassEnergyBudget methods
+  HerbivoreBase *-up-> "1" FatmassEnergyBudget
+  package "Forage Energy" <<rectangle>> {
     enum NetEnergyModel{
       Default
     }
-	}
-	HerbivoreBase .up.> "1" "Forage Energy"
-	package "Reproduction" <<rectangle>> {
+  }
+  HerbivoreBase .up.> "1" "Forage Energy"
+  package "Reproduction" <<rectangle>> {
     enum ReproductionModel{
       None
       ConstantMaximum
       IlliusOConnor2000
       Linear
     }
-	}
-	HerbivoreBase .up.> "1" "Reproduction"
-	package "Diet" <<rectangle>> {
-		enum DietComposer{
+  }
+  HerbivoreBase .up.> "1" "Reproduction"
+  package "Diet" <<rectangle>> {
+    enum DietComposer{
       PureGrazer
-		}
-	}
-	HerbivoreBase  .up.> "1" "Diet"
-	package "Energy Expenditure" <<rectangle>>  {
+    }
+  }
+  HerbivoreBase  .up.> "1" "Diet"
+  package "Energy Expenditure" <<rectangle>>  {
     enum ExpenditureComponent{
       Allometric
       Taylor1981
       Thermoregulation
     }
-	}
-	HerbivoreBase  ..> "*" "Energy Expenditure"
+  }
+  HerbivoreBase  ..> "*" "Energy Expenditure"
     package "Digestive Limit" <<rectangle>>  {
     enum DigestiveLimit{
       None
@@ -184,23 +184,23 @@
     }
   }
   HerbivoreBase  ..> "1" "Digestive Limit"
-	package "Foraging Limits" <<rectangle>>  {
+  package "Foraging Limits" <<rectangle>>  {
     enum ForagingLimit{
       IlliusOConnor2000
       GeneralFunctionalRespone
     }
-	}
-	HerbivoreBase  ..> "*" "Foraging Limits"
-	package "Mortality" <<rectangle>> {
+  }
+  HerbivoreBase  ..> "*" "Foraging Limits"
+  package "Mortality" <<rectangle>> {
     enum MortalityFactor{
       Background
       Lifespan
       StarvationIlliusOConnor2000
       StarvationThreshold
     }
-	}
-	HerbivoreBase ..> "*" "Mortality"
-	}
+  }
+  HerbivoreBase ..> "*" "Mortality"
+  }
 @enduml
 
 @startuml (id=important_classes)
@@ -249,29 +249,29 @@ competition      -down-> feeding
 @enduml
 
 @startuml (id=new_forage_type)
-	namespace Fauna{
-		enum ForageType {
-			FT_GRASS,
-			FT_NEWFORAGE
-		}
-		class ForageValues< ForageValueType >
-		ForageValues ..> ForageType : <<use>>
-		abstract ForageBase
-		class NewForage{
-			your_custom_members
-		}
-		NewForage --|> ForageBase
-		class HabitatForage{
-			get_total()
-			merge()
-		}
-		HabitatForage *--> NewForage
-		abstract HerbivoreBase
-		HerbivoreBase ..> HabitatForage : <<use>>
+  namespace Fauna{
+    enum ForageType {
+      FT_GRASS,
+      FT_NEWFORAGE
+    }
+    class ForageValues< ForageValueType >
+    ForageValues ..> ForageType : <<use>>
+    abstract ForageBase
+    class NewForage{
+      your_custom_members
+    }
+    NewForage --|> ForageBase
+    class HabitatForage{
+      get_total()
+      merge()
+    }
+    HabitatForage *--> NewForage
+    abstract HerbivoreBase
+    HerbivoreBase ..> HabitatForage : <<use>>
     class YourHabitatImplementation{
-			get_available_forage()
-			reduce_forage_mass()
-		}
+      get_available_forage()
+      reduce_forage_mass()
+    }
     YourHabitatImplementation ..> HabitatForage : <<use>>
     abstract Habitat
     YourHabitatImplementation -up-|> Habitat
@@ -279,44 +279,44 @@ competition      -down-> feeding
       SimpleHabitat  ..> Fauna.HabitatForage : <<use>>
       SimpleHabitat -up-|> Fauna.Habitat
     }
-	}
+  }
 @enduml
 
 @startuml (id=new_herbivore_type)
-	namespace Fauna{
-		hide members
-		hide methods
-		interface HerbivoreInterface
-		abstract HerbivoreBase
-		HerbivoreInterface  <|-- HerbivoreBase
-		HerbivoreBase       <|-- HerbivoreIndividual
-		HerbivoreBase       <|-- HerbivoreCohort
-		HerbivoreInterface  <|-- NewHerbivore
-		interface PopulationInterface
-		PopulationInterface <|-- NewPopulation
-		NewPopulation        ..> NewHerbivore : create & manage
-	}
+  namespace Fauna{
+    hide members
+    hide methods
+    interface HerbivoreInterface
+    abstract HerbivoreBase
+    HerbivoreInterface  <|-- HerbivoreBase
+    HerbivoreBase       <|-- HerbivoreIndividual
+    HerbivoreBase       <|-- HerbivoreCohort
+    HerbivoreInterface  <|-- NewHerbivore
+    interface PopulationInterface
+    PopulationInterface <|-- NewPopulation
+    NewPopulation        ..> NewHerbivore : create & manage
+  }
 @enduml
 
 @startuml (id=net_energy_content)
-	hide members
-	hide methods
-	namespace Fauna{
-		enum NetEnergyModel{
+  hide members
+  hide methods
+  namespace Fauna{
+    enum NetEnergyModel{
       Default
-		}
+    }
     show NetEnergyModel members
-		Hft *--> NetEnergyModel
-		interface GetNetEnergyContentInterface <<strategy>>
-		GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
-		abstract HerbivoreBase
-		HerbivoreBase ..> GetNetEnergyContentInterface : <<create>>
-	}
+    Hft *--> NetEnergyModel
+    interface GetNetEnergyContentInterface <<strategy>>
+    GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
+    abstract HerbivoreBase
+    HerbivoreBase ..> GetNetEnergyContentInterface : <<create>>
+  }
 @enduml
 
 @startuml (id=output_classes)
-	hide methods
-	hide members
+  hide methods
+  hide members
   namespace Fauna{
     namespace Output{
       Aggregator o-down-> "*" Datapoint
@@ -326,156 +326,156 @@ competition      -down-> feeding
       note on link : by HFT
       CombinedData o-down-> "1" HabitatData
     }
-	}
+  }
 @enduml
 
 @startuml (id=outputmodule_class)
-	hide members
-	annotation "Output Directory" as outputdirectory
-	namespace GuessOutput{
-		class HerbivoryOutput <<singleton>>
-		abstract OutputChannel
-		HerbivoryOutput     --> OutputChannel : <<use>> >
-		abstract OutputModule
-		OutputModule      <|--  HerbivoryOutput
-		OutputChannel     <|--  FileOutputChannel
-		FileOutputChannel   --> .outputdirectory : write >
-		enum interval {
-			DAILY
-			MONTHLY
-			ANNUAL
-			DECADAL
-		}
-		show interval members
-		HerbivoryOutput *-- interval
-		note on link : nested
-	}
-	namespace Fauna{
-		interface HerbivoreInterface
-		abstract Habitat
-	}
-	namespace FaunaOut{
-		class CombinedData
-	}
-	GuessOutput.HerbivoryOutput ..> Fauna.Habitat : retrieve_output() >
-	GuessOutput.HerbivoryOutput ..> Fauna.HerbivoreInterface : retrieve_output() >
-	GuessOutput.HerbivoryOutput ..> FaunaOut.CombinedData : <<use>> >
+  hide members
+  annotation "Output Directory" as outputdirectory
+  namespace GuessOutput{
+    class HerbivoryOutput <<singleton>>
+    abstract OutputChannel
+    HerbivoryOutput     --> OutputChannel : <<use>> >
+    abstract OutputModule
+    OutputModule      <|--  HerbivoryOutput
+    OutputChannel     <|--  FileOutputChannel
+    FileOutputChannel   --> .outputdirectory : write >
+    enum interval {
+      DAILY
+      MONTHLY
+      ANNUAL
+      DECADAL
+    }
+    show interval members
+    HerbivoryOutput *-- interval
+    note on link : nested
+  }
+  namespace Fauna{
+    interface HerbivoreInterface
+    abstract Habitat
+  }
+  namespace FaunaOut{
+    class CombinedData
+  }
+  GuessOutput.HerbivoryOutput ..> Fauna.Habitat : retrieve_output() >
+  GuessOutput.HerbivoryOutput ..> Fauna.HerbivoreInterface : retrieve_output() >
+  GuessOutput.HerbivoryOutput ..> FaunaOut.CombinedData : <<use>> >
 @enduml
 
 @startuml (id=outputmodule_initialization)
-	skinparam sequenceParticipant underline
-	participant "framework()" as framework
-	participant ":OutputModuleModuleRegistry" as OutputModuleModuleRegistry
-	participant ":OutputModuleContainer" as OutputModuleContainer
-	participant ":HerbivoryOutput" as HerbivoryOutput <<Singleton>>
-	participant ":FileOutputChannel" as FileOutputChannel
-	activate OutputModuleModuleRegistry
-	[-> OutputModuleModuleRegistry : register_output_module("herbivory")
-	[-> framework : start guess
-	== initialization ==
-	framework -> OutputModuleContainer : create
-	activate OutputModuleContainer
-	framework -> OutputModuleModuleRegistry : create_all_modules()
-	OutputModuleModuleRegistry -> HerbivoryOutput : create
-	activate HerbivoryOutput
-	note over HerbivoryOutput : declare parameters
-	note over framework : read parameters
-	framework -> OutputModuleContainer : init()
-	OutputModuleContainer      -> FileOutputChannel : create
-	activate FileOutputChannel
-	OutputModuleContainer -> HerbivoryOutput : init()
-	framework -> HerbivoryOutput : set_hftlist()
-	framework -> HerbivoryOutput : set_include_date()
-	== simulation ==
-	loop "simulation days"
-		framework -> OutputModuleContainer : outdaily(gridcell)
-		OutputModuleContainer -> HerbivoryOutput : outdaily(gridcell)
-		loop "table column"
-			HerbivoryOutput -> FileOutputChannel : add_value()
-		end loop
-	end loop
+  skinparam sequenceParticipant underline
+  participant "framework()" as framework
+  participant ":OutputModuleModuleRegistry" as OutputModuleModuleRegistry
+  participant ":OutputModuleContainer" as OutputModuleContainer
+  participant ":HerbivoryOutput" as HerbivoryOutput <<Singleton>>
+  participant ":FileOutputChannel" as FileOutputChannel
+  activate OutputModuleModuleRegistry
+  [-> OutputModuleModuleRegistry : register_output_module("herbivory")
+  [-> framework : start guess
+  == initialization ==
+  framework -> OutputModuleContainer : create
+  activate OutputModuleContainer
+  framework -> OutputModuleModuleRegistry : create_all_modules()
+  OutputModuleModuleRegistry -> HerbivoryOutput : create
+  activate HerbivoryOutput
+  note over HerbivoryOutput : declare parameters
+  note over framework : read parameters
+  framework -> OutputModuleContainer : init()
+  OutputModuleContainer      -> FileOutputChannel : create
+  activate FileOutputChannel
+  OutputModuleContainer -> HerbivoryOutput : init()
+  framework -> HerbivoryOutput : set_hftlist()
+  framework -> HerbivoryOutput : set_include_date()
+  == simulation ==
+  loop "simulation days"
+    framework -> OutputModuleContainer : outdaily(gridcell)
+    OutputModuleContainer -> HerbivoryOutput : outdaily(gridcell)
+    loop "table column"
+      HerbivoryOutput -> FileOutputChannel : add_value()
+    end loop
+  end loop
 @enduml
 
 @startuml (id=patchhabitat_construction)
-	skinparam sequenceParticipant underline
-	participant "framework()" as framework
-	participant ":Fauna::Simulator" as simulator
-	participant ":Fauna::PatchHabitat" as patchhabitat
-	participant ":Fauna::HftPopulationsMap" as populations
-	participant ":Gridcell" as gridcell
-	participant ":Patch" as patch
-	framework    -> simulator : <<create>>
-	activate simulator
+  skinparam sequenceParticipant underline
+  participant "framework()" as framework
+  participant ":Fauna::Simulator" as simulator
+  participant ":Fauna::PatchHabitat" as patchhabitat
+  participant ":Fauna::HftPopulationsMap" as populations
+  participant ":Gridcell" as gridcell
+  participant ":Patch" as patch
+  framework    -> simulator : <<create>>
+  activate simulator
 
-	framework    -> gridcell : <<create>>
-	activate gridcell
+  framework    -> gridcell : <<create>>
+  activate gridcell
 
-	gridcell     -> patch : <<create>>
-	activate patch
+  gridcell     -> patch : <<create>>
+  activate patch
 
-	framework    -> simulator : create_digestibility_model()
-	framework  <--  simulator : digestibility_model
+  framework    -> simulator : create_digestibility_model()
+  framework  <--  simulator : digestibility_model
 
-	framework    -> patchhabitat : <<create>> (digestibility_model)
-	note right : constructor injection
-	activate patchhabitat
+  framework    -> patchhabitat : <<create>> (digestibility_model)
+  note right : constructor injection
+  activate patchhabitat
 
-	framework    -> simulator : create_populations()
-	simulator    -> populations : <<create>>
-	activate populations
+  framework    -> simulator : create_populations()
+  simulator    -> populations : <<create>>
+  activate populations
 
-	framework  <--  simulator : populations
+  framework  <--  simulator : populations
 
-	note over framework : combine habitat and populations in a SimulationUnit
+  note over framework : combine habitat and populations in a SimulationUnit
 
-	framework    -> patch : set_herbivory_unit(SimulationUnit)
-	note right : setter injection
+  framework    -> patch : set_herbivory_unit(SimulationUnit)
+  note right : setter injection
 @enduml
 
 @startuml (id=patchhabitat_interactions)
-	hide members
-	hide methods
-	class Pft
-	class Individual
-	class Patch
-	class Stand
-	class Gridcell
-	Gridcell "1" *--> "*" Stand
-	Stand    "1" *--> "*" Patch
-	Patch    "1" *--> "*" Individual
-	Individual    --> Pft
+  hide members
+  hide methods
+  class Pft
+  class Individual
+  class Patch
+  class Stand
+  class Gridcell
+  Gridcell "1" *--> "*" Stand
+  Stand    "1" *--> "*" Patch
+  Patch    "1" *--> "*" Individual
+  Individual    --> Pft
 
-	namespace Fauna{
-		abstract Habitat
-		class SimulationUnit
-		SimulationUnit *-down-> Habitat
-		class PatchHabitat
-		Habitat <|-down- PatchHabitat
-		interface GetDigestibility
-		PatchHabitat *-> "1" GetDigestibility
-		class PftParams
-	}
+  namespace Fauna{
+    abstract Habitat
+    class SimulationUnit
+    SimulationUnit *-down-> Habitat
+    class PatchHabitat
+    Habitat <|-down- PatchHabitat
+    interface GetDigestibility
+    PatchHabitat *-> "1" GetDigestibility
+    class PftParams
+  }
 
-	Patch *-> Fauna.SimulationUnit : owns >
-	Fauna.PatchHabitat -> Patch : <<use>>
-	Pft *-left-> Fauna.PftParams
+  Patch *-> Fauna.SimulationUnit : owns >
+  Fauna.PatchHabitat -> Patch : <<use>>
+  Pft *-left-> Fauna.PftParams
 @enduml
 
 @startuml (id=parameters_access)
-	hide members
-	hide methods
-	namespace Fauna{
-		CreateHerbivoreIndividual ..> Parameters
-		CreateHerbivoreIndividual ..> Hft
-		CreateHerbivoreCohort     ..> Parameters
-		CreateHerbivoreCohort     ..> Hft
-		CohortPopulation          .up.> Hft
-		IndividualPopulation      .up.> Hft
-		abstract HerbivoreBase
-		HerbivoreBase             .up.> Hft
+  hide members
+  hide methods
+  namespace Fauna{
+    CreateHerbivoreIndividual ..> Parameters
+    CreateHerbivoreIndividual ..> Hft
+    CreateHerbivoreCohort     ..> Parameters
+    CreateHerbivoreCohort     ..> Hft
+    CohortPopulation          .up.> Hft
+    IndividualPopulation      .up.> Hft
+    abstract HerbivoreBase
+    HerbivoreBase             .up.> Hft
     World                     *-down-> Parameters
     World                     *-down-> Hft
-	}
+  }
   package "Host Program"{
   }
   "Host Program" .right.> Fauna.Parameters
@@ -483,57 +483,57 @@ competition      -down-> feeding
 @enduml
 
 @startuml (id=parameters_classes)
-	hide members
-	hide methods
-	annotation "framework()"       as framework
-	annotation "Instruction Files" as insfiles
-	annotation "plib.h"            as plib
-	annotation "parameters.h"      as parameters
-	class "FaunaSim.Framework" <<singleton>>
-	class "Fauna.ParamReader"   <<singleton>>
-	Pft                "1" *-- "1" Fauna.PftParams
-	framework           ..> Fauna.ParamReader : <<use>>
-	parameters          ..> Pft               : <<use>>
-	GuessOutput.HerbivoryOutput     ..> parameters        : <<use>>
-	parameters          ..> plib              : <<use>>
-	plib                ..> insfiles          : <<read>>
-	framework           ..> parameters        : <<use>>
-	namespace Fauna {
-		ParamReader  <..> .parameters : <<call>>
-		ParamReader   ..> .plib       : <<call>>
-		ParamReader   ..> Hft         : <<create>>
-		ParamReader   ..> PftParams   : <<call>>
-		ParamReader   ..> Parameters  : <<create>>
-		class Hft {
-			|is_valid()
-		}
-		show Hft methods
-		class Parameters {
-			|is_valid()
-		}
-		show Parameters methods
-		class PftParams {
-			|is_valid()
-		}
-		show PftParams methods
-	}
-	FaunaSim.Framework ..> Fauna.ParamReader : <<use>>
+  hide members
+  hide methods
+  annotation "framework()"       as framework
+  annotation "Instruction Files" as insfiles
+  annotation "plib.h"            as plib
+  annotation "parameters.h"      as parameters
+  class "FaunaSim.Framework" <<singleton>>
+  class "Fauna.ParamReader"   <<singleton>>
+  Pft                "1" *-- "1" Fauna.PftParams
+  framework           ..> Fauna.ParamReader : <<use>>
+  parameters          ..> Pft               : <<use>>
+  GuessOutput.HerbivoryOutput     ..> parameters        : <<use>>
+  parameters          ..> plib              : <<use>>
+  plib                ..> insfiles          : <<read>>
+  framework           ..> parameters        : <<use>>
+  namespace Fauna {
+    ParamReader  <..> .parameters : <<call>>
+    ParamReader   ..> .plib       : <<call>>
+    ParamReader   ..> Hft         : <<create>>
+    ParamReader   ..> PftParams   : <<call>>
+    ParamReader   ..> Parameters  : <<create>>
+    class Hft {
+      |is_valid()
+    }
+    show Hft methods
+    class Parameters {
+      |is_valid()
+    }
+    show Parameters methods
+    class PftParams {
+      |is_valid()
+    }
+    show PftParams methods
+  }
+  FaunaSim.Framework ..> Fauna.ParamReader : <<use>>
 @enduml
 
 @startuml (id=population_classes)
-	hide members
-	hide methods
-	namespace Fauna{
-		interface PopulationInterface
-		PopulationInterface <|-- IndividualPopulation
-		PopulationInterface <|-- CohortPopulation
-		IndividualPopulation *-- "*" HerbivoreIndividual
-		CohortPopulation     *-- "*" HerbivoreCohort
-		class SimulationUnit
-		SimulationUnit *-- "*" PopulationInterface
-		(SimulationUnit, PopulationInterface) .. HftPopulationsMap
-		abstract Habitat
-		SimulationUnit *-- "1" Habitat
-	}
+  hide members
+  hide methods
+  namespace Fauna{
+    interface PopulationInterface
+    PopulationInterface <|-- IndividualPopulation
+    PopulationInterface <|-- CohortPopulation
+    IndividualPopulation *-- "*" HerbivoreIndividual
+    CohortPopulation     *-- "*" HerbivoreCohort
+    class SimulationUnit
+    SimulationUnit *-- "*" PopulationInterface
+    (SimulationUnit, PopulationInterface) .. HftPopulationsMap
+    abstract Habitat
+    SimulationUnit *-- "1" Habitat
+  }
 @enduml
 
