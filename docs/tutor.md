@@ -123,12 +123,9 @@ Forage net energy content is implemented with the [strategy design pattern](\ref
 @startuml "Net energy content design."
 	!include diagrams.iuml!net_energy_content
 @enduml
-- Derive a new class from \ref Fauna::GetNetEnergyContentInterface and implement the `operator()`.
-- Parameters:
-	+ Add a new enum item in \ref Fauna::NetEnergyModel.
-	+ Select it in \ref Fauna::ParamReader::callback() under `CB_NET_ENERGY_MODEL`.
-	- Update help message in \ref Fauna::ParamReader::declare_parameters().
-	- Update instruction file comments in `data/ins/herbivores.ins`.
+- Derive a new class from \ref Fauna::GetNetEnergyContentInterface and implement the `operator()` member function.
+- Add a new enum item in \ref Fauna::NetEnergyModel.
+- Parse that value for the HfT parameter `foraging.net_energy_model` in \ref Fauna::InsfileReader::read_hft().
 - Let your new class be created in \ref Fauna::HerbivoreBase::get_net_energy_content() if it is selected in the parameters.
 - Update the UML diagram in \ref sec_herbivorebase and the diagram above.
 

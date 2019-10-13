@@ -303,8 +303,9 @@ competition      -down-> feeding
 	hide methods
 	namespace Fauna{
 		enum NetEnergyModel{
-			NM_DEFAULT
+      Default
 		}
+    show NetEnergyModel members
 		Hft *--> NetEnergyModel
 		interface GetNetEnergyContentInterface <<strategy>>
 		GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
