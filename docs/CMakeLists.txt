@@ -9,6 +9,7 @@ if (DOXYGEN_FOUND)
   set (DOXYGEN_CITE_BIB_FILES "bibliography.bib")
   set (DOXYGEN_DISTRIBUTE_GROUP_DOC YES)
   set (DOXYGEN_EXAMPLE_PATH "../examples")
+  set (DOXYGEN_EXCLUDE_PATTERNS "*.test.cpp")
   set (DOXYGEN_EXTRACT_PRIVATE YES)
   set (DOXYGEN_FORMULA_FONTSIZE 13)
   set (DOXYGEN_IMAGE_PATH "images")
@@ -44,15 +45,15 @@ if (DOXYGEN_FOUND)
     ../CONTRIBUTING.md
     ../include/
     ../src/
+    ../tools/demo_simulator/
     demo_simulator.md
     design.md
     diagrams.iuml
-    group.h
     mainpage.md
     model.md
     objectorientation.md
     quickstart.md
-    tests.md
+    separate_docs.h
     tutor.md
     ALL
     COMMENT "Generating doxygen documentation..."

@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Create objects for the \ref World class.
+ * \brief Create objects for the \ref Fauna::World class.
  * \copyright ...
  * \date 2019
  */

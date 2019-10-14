@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Implementation of \ref HerbivoreBase as individual animals.
+ * \brief Implementation of \ref Fauna::HerbivoreBase as individual animals.
  * \copyright ...
  * \date 2019
  */

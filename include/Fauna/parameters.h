@@ -43,7 +43,7 @@ enum class OutputInterval {
 
 /// Parameter for selecting the output writer implementation.
 enum class OutputFormat {
-  /// Use class \ref TextTableWriter.
+  /// Use class \ref Output::TextTableWriter.
   TextTables
 };
 
@@ -78,12 +78,12 @@ struct Parameters {
     OutputInterval interval = OutputInterval::Annual;
   } output;
 
-  /// Preferences for the \ref TextTableWriter output class.
+  /// Preferences for the \ref Output::TextTableWriter output class.
   /**
    * Which tables to write in text files is specified by boolean variables: If
    * the corresponding member variable is `true`, a file with the same name
-   * plus extension (\ref TextTableWriter::FILE_EXTENSION) will be created in
-   * \ref directory.
+   * plus extension (\ref Output::TextTableWriter::FILE_EXTENSION) will be
+   * created in \ref directory.
    */
   struct TextTableWriterOptions {
     /// Relative or absolute path to directory where output files are placed.

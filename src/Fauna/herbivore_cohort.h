@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Implementation of \ref HerbivoreBase as annual cohorts.
+ * \brief Implementation of \ref Fauna::HerbivoreBase as annual cohorts.
  * \copyright ...
  * \date 2019
  */

@@ -159,9 +159,12 @@ class HerbivoreBase : public HerbivoreInterface {
   NitrogenInHerbivore& get_nitrogen() { return nitrogen; }
 
  private:  // private member functions
-  /// Calculate mortality according to \ref Hft::mortality_factors.
-  /** Calls \ref apply_mortality(), which is implemented by
-   * child classes.*/
+  /// Calculate mortality according to user-selected mortality factors
+  /**
+   * Calls \ref apply_mortality(), which is implemented by
+   * child classes.
+   * \see \ref Hft::factors
+   */
   void apply_mortality_factors_today();
 
   /// Check whether the HFT pointer is NULL and throws an exception.

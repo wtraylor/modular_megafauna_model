@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief A list of \ref Hft objects.
+ * \brief A list of \ref Fauna::Hft objects.
  * \copyright ...
  * \date 2019
  */
