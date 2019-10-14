@@ -240,7 +240,7 @@ The cons of this design:
 - Strong coupling: The output module is highly dependent on the data structure of the output containers.
 - Rigidity of data containers: Ideally, the containers should be oblivious to the details of the data they hold.
 - Lack of modularity: A submodule of, e.g. \ref Fauna::HerbivoreBase cannot easily deliver its own output variable.
-- Cumbersome extensibility: New output variables need to be introduced in various places (see \ref sec_new_output).
+- Cumbersome extensibility: New output variables need to be introduced in various places (see \ref sec_new_output_variable).
 That is a violation of the [Open/Closed Principle](\ref sec_open_closed).
 - Any variable that is specific to a submodule or interface implementation (e.g. `bodyfat` is specific to \ref Fauna::HerbivoreBase) will produce undefined values if that submodule is not active.
 The user is then responsible to interpret them as invalid or disable their output.
