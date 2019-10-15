@@ -182,3 +182,9 @@ However, you can also replace that output format with another one, for instance 
 - Create a new instance of your writer class in the constructor \ref Fauna::World::World() if your enum entry is selected.
 
 \see \ref sec_design_output design
+
+------------------------------------------------------------
+
+\author Wolfgang Traylor, Senckenberg BiK-F
+\date 2019
+\copyright ...
