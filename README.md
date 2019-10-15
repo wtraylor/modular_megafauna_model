@@ -90,6 +90,11 @@ Authors
 
 - Wolfgang Traylor (wolfgang.traylor@senckenberg.de) <!--TODO: Add ORCID-->
 
+Similar Projects
+----------------
+
+<!--TODO: Provide a list of references to other mechanistic herbivore models.-->
+
 License
 -------
 

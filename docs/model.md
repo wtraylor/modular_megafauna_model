@@ -13,11 +13,8 @@ Some aspects of the model can only be evaluated in the context of the connected 
 For LPJ-GUESS you will find those aspects in the megafauna doxygen page of the LPJ-GUESS repository.
 
 \todo
-- Give a general introduction for what use case this model was originally developed.
-- What technical skills are required to work with this model?
-- Provide a simple quickstart guide to get the model running with the example herbivore.
+- Give a general introduction for what use case this model was originally developed. -> scientific motivation
 - Limitations of the model design:
-	+ year length of 365 assumed
 	+ habitats equal size
 	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
 - Explain some design choices:
@@ -30,8 +27,6 @@ For LPJ-GUESS you will find those aspects in the megafauna doxygen page of the L
 	+ What’s the problem with annual allocation?
 	+ What mechanisms have we explored to prevent population crashes?
 - What is the problem with β (half-max intake density) in Illius & O’Connor (2000) and Pachzelt et al.?
-- Explain the problem of coexistence: How coexistence could arise theoretically, but why it is practically so difficult.
-- Provide a list of other mechanistic herbivore models.
 
 ## Basic Model Concepts {#sec_basicconcepts}
 
@@ -102,54 +97,29 @@ Conductivity is the inverse of insulation: it is the heat flow per temperature d
 
 Body surface in m² scales roughly as \f$0.09*M^{0.66}\f$ ([Hudson & White 1985](\cite hudson1985bioenergetics)).
 
-
 ## Energy Content of Forage {#sec_energycontent}
 
 \todo explain gross, digestible, metabolizable and net energy
 
 ## Foraging {#sec_foraging}
 
-\note **Units**<br>All forage values (e.g. available grass biomass,
-consumed forage) are *dry matter mass* in kilograms (`DMkg`).
-Any forage per area (e.g. forage in a habitat) is `kgDM/km²`.
-Herbivore-related mass values (e.g. body mass, fat mass) are also
-`kg`, but live mass.
-Population densities of herbivores are either in `kg/km²` or `ind/km²` (ind=individuals).
+\note **Units**
+- All forage values (e.g. available grass biomass, consumed forage) are *dry matter mass* in kilograms (`DMkg`).
+- Any forage per area (e.g. forage in a habitat) is `kgDM/km²`.
+- Herbivore-related mass values (e.g. body mass, fat mass) are also `kg`, but live mass.
+- Population densities of herbivores are either in `kg/km²` or `ind/km²` (ind=individuals).
+- Digestibility values are interpreted as in-vitro digestibility.
 
-### Feeding on Plants in a Patch ### {#sec_foraging_patch}
-
-Each \ref Individual offers an amount of forage (kgDM/km²) that is available to herbivores (\ref Individual.get_forage_mass()).
-
-<!-- TODO: explain some more -->
-
-
-\todo Growth happens only once per year (\ref growth()) for natural vegetation.
-However, seasonal shifts of forage availability are crucial for herbivore
-dynamics.
-A solution for that is yet to be found.
-
-
-### Digestibility ### {#sec_digestibility}
-<!--
-Everything: In vitro digestibility
-Compare phenology digestibility with NPP-driven digestibility.
-
--->
-Assumptions of the NPP-driven digestibility model (\ref Fauna::DigestibilityFromNPP):
-- Constant proportion of NPP allocated to leaves.
-- Linear decrease in forage quality.
-- Turnover is constant over the year.
-- Fraction of biomass older than 1 year is negligible.
+\todo Find a reference for this definition of in-vitro digestibility.
 
 ## Reproduction {#sec_reproduction}
 
 ## Life History {#sec_life_history}
 
-growth linear: \ref Fauna::HerbivoreBase::get_bodymass()
+\todo Explain how growth is linear in \ref Fauna::HerbivoreBase::get_bodymass()
 
 ## Minimum Density Threshold {#sec_minimum_density_threshold}
-<!--TODO-->
-The parameter \ref Fauna::Hft::minimum_density_threshold (ind/km²) defines at which point a dwindling population (sum of all cohorts/individuals) may be considered dead.
+The parameter \ref Fauna::Hft::minimum_density_threshold defines at which point a dwindling population (sum of all cohorts/individuals) may be considered dead.
 It is an arbitrary, but critical value for model performance.
 Possible re-establishment only happens if all cohorts are dead within one habitat.
 
@@ -167,8 +137,8 @@ One species will inevitably outcompete the other one.
 Though there are indeed ecological mechanisms that can facilitate coexistence with a shared resource (\cite chesson2000mechanisms), the parameter space for this to happen in a model is usually very narrow (e.g. \cite vanlangevelde2008intantaneous).
 
 In order to simply avoid competition among different HFTs, the option `one_hft_per_patch` can be enabled: Each HFT exists on its own, without any interaction with other species.
-Of course, the grid cell averages for mass density etc. include all HFTs.
-In order to avoid biases in the output, the patch number (`npatch`) must be a multiple of the HFT count.
+With that option enabled, all HFTs should each be assigned to the same number of habitats.
+It is the responsibility of the host application (the vegetation model) to ensure that the number of habitats is an integer multiple of the HFT count.
 
 ------------------------------------------------------------
 
