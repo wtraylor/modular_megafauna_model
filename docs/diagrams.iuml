@@ -25,19 +25,6 @@
   world         --   library
 @enduml
 
-@startuml (id=default_pft_forage_type_mapping)
-  hide members
-  hide methods
-  hide circle
-  package "Forage Types"{
-  class "Grass"
-  }
-  package Pfts{
-    "C₃ Grass" --> Grass
-    "C₄ Grass" --> Grass
-  }
-@enduml
-
 @startuml (id=demo_simulator_classes)
   hide members
   hide methods

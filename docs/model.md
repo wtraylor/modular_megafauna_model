@@ -35,56 +35,33 @@ For LPJ-GUESS you will find those aspects in the megafauna doxygen page of the L
 
 ## Basic Model Concepts {#sec_basicconcepts}
 
-![](habitatarea.png "Illustration of the habitat concept in the herbivory module as an abstraction of the vegetation patch.")
-
 A herbivore is defined by these state variables:
 - Age
 - Sex
 - Current energy need
 - Fat mass
 
-## Plant–Herbivore Interaction {#sec_plantherbivore_interactions}
+## Nitrogen Cycling
 
-Each PFT can be mapped to a [forage type](\ref Fauna::ForageType), i.e. the biomass of the plant individuals becomes available as forage for herbivores, and they can choose in which proportions they include the different forage types in their diet.
-
-@startuml "How plant functional types are mapped to forage types."
-	!include diagrams.iuml!default_pft_forage_type_mapping
-@enduml
-
-Through feeding, herbivores reduce aboveground plant biomass, i.e. carbon and nitrogen:
-An [inaccessible reserve](\ref Fauna::PftParams::inaccessible_forage) can be defined so that a patch cannot be completely defoliated.
-
-- The removed carbon from plant leaves is considered as a flux directly to the atmosphere (respiration).
-  There is no intermediate decomposition of faeces or dead bodies in the soil.
-
-- Nitrogen, on the other hand, moves in a closed cycle, it does not enter the atmosphere, but gets returned through excrements (and carcasses after death) directly to the plant-available soil pool.
-
-<!-- Digestibility and C:N ratio are not coupled currently -->
-
-![](herbivory_fluxes.png "Carbon and nitrogen fluxes in the vegetation model caused by herbivory.")
-
-### Feeding {#sec_feeding}
-
-### Nitrogen Excretion {#sec_nitrogen_excretion}
-
-Nitrogen uptake is calculated based on the C:N ratio of leaves.
+The vegetation model defines the nitrogen content in forage.
 The maximum amount of nitrogen (\f$N_{bound}\f$, kgN/km²) bound in herbivores is comprised of the body tissue and the contents of the digestive tract.
-Any ingested nitrogen is added to the pool of herbivore-bound nitrogen, and the surplus is returned to the soil.
-![](nitrogen_cycle.svg "Nitrogen cycle in the herbivore model.")
+Any ingested nitrogen is added to the pool of herbivore-bound nitrogen, and the surplus is returned to the vegetation model, which should make it available to plants again.
+
 The amount of nitrogen bound in body tissue is approximated with 3% of live body weight (Robbins 1983\cite robbins1983wildlife); this ignores variation in fat and structural mass.
-Upon death, this amount of nitrogen is also returned to the plant-available soil pool.
+Upon death, this amount of nitrogen is also returned to the vegetation model.
 
 The nitrogen of ingesta in stomach and intestines depends on the mean retention time (\f$MRT\f$, hours) and the day’s intake of nitrogen (\f$I_N\f$, kgN/ind/day).
-$$
-N_{bound} = N_{guts} + N_{body} = I_N * MRT * P + 0.03 * M * P
-$$
+
+\f[
+  N_{bound} = N_{guts} + N_{body} = I_N * MRT * P + 0.03 * M * P
+\f]
+
 \f$P\f$ is the population density (ind/km²) and \f$M\f$ is the body mass (kg/ind).
 Mean retention time in hours is calculated according to Clauss et al. (2007)\cite clauss2007case, Fig. 2:
-$$
-MRT = 32.8 * M^{0.07}
-$$
 
-### Trampling {#sec_trampling}
+\f[
+  MRT = 32.8 * M^{0.07}
+\f]
 
 ## Energetics {#sec_energetics}
 
