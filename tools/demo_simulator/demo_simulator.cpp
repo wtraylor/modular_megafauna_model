@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     std::cerr << "This is the demo simulator for the Modular Megafauna Model."
               << std::endl;
 
-    // The singleton instance of FaunaSim::Manager
+    // The singleton instance for managing the whole simulation.
     Framework& framework = Framework::get_instance();
 
     // Read ins file from command line parameters.
