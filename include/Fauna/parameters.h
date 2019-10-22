@@ -9,7 +9,7 @@
 
 #include <cassert>
 #include <stdexcept>
-#include "text_table_writer_options.h"
+#include "Fauna/Output/text_table_writer_options.h"
 
 namespace Fauna {
 
