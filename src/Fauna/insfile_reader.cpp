@@ -67,8 +67,6 @@ InsfileReader::InsfileReader(const std::string filename)
                                  err_msg);
       hfts.insert(std::move(hft));
     }
-  else
-    throw std::runtime_error("No HFTs provided.");
 }
 
 std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
