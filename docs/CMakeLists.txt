@@ -6,6 +6,14 @@ find_package (Doxygen OPTIONAL_COMPONENTS dot)
 
 if (DOXYGEN_FOUND)
 
+  # For CI (Continuous Integration) this option should be turned on so
+  # that the doxygen command fails if there is a warning.
+  if (STOP_DOXYGEN_ON_WARNING)
+    set (DOXYGEN_WARN_AS_ERROR ON)
+  else()
+    set (DOXYGEN_WARN_AS_ERROR OFF)
+  endif()
+
   set (DOXYGEN_CITE_BIB_FILES "bibliography.bib")
   set (DOXYGEN_DISTRIBUTE_GROUP_DOC YES)
   set (DOXYGEN_EXAMPLE_PATH "../examples")

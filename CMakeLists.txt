@@ -247,6 +247,7 @@ endif()
 ###########################################################################
 
 option (BUILD_DOC "Build doxygen documentaton" OFF)
+option (STOP_DOXYGEN_ON_WARNING "Let building of documentation fail on warning (for CI)" OFF)
 if (BUILD_DOC)
   add_subdirectory (docs/)
 endif()
