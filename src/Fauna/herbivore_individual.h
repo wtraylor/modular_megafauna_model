@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Implementation of \ref HerbivoreBase as individual animals.
+ * \brief Implementation of \ref Fauna::HerbivoreBase as individual animals.
  * \copyright ...
  * \date 2019
  */
@@ -13,7 +13,7 @@ namespace Fauna {
 
 /// One herbivore individual
 /**
- * \see \ref sec_herbivoredesign
+ * \see \ref sec_design_the_herbivore
  */
 class HerbivoreIndividual : public HerbivoreBase {
  public:

@@ -8,6 +8,7 @@ project ("Modular Megafauna Model"
 set (SOURCE_FILES
   external/cpptoml/include/cpptoml.h
   include/Fauna/Output/habitat_data.h
+  include/Fauna/Output/text_table_writer_options.h
   include/Fauna/average.h
   include/Fauna/date.h
   include/Fauna/environment.h
@@ -234,6 +235,11 @@ if(BUILD_DEMO_SIMULATOR)
   target_link_libraries (megafauna_demo_simulator
     ModularMegafaunaModel
     )
+  configure_file (
+    "tools/demo_simulator/demo_results.Rmd"
+    "${CMAKE_CURRENT_BINARY_DIR}/demo_results.Rmd"
+    COPYONLY
+    )
 endif()
 
 ###########################################################################
@@ -241,6 +247,7 @@ endif()
 ###########################################################################
 
 option (BUILD_DOC "Build doxygen documentaton" OFF)
+option (STOP_DOXYGEN_ON_WARNING "Let building of documentation fail on warning (for CI)" OFF)
 if (BUILD_DOC)
   add_subdirectory (docs/)
 endif()

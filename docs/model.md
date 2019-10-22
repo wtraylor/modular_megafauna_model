@@ -1,22 +1,22 @@
-Large Herbivore Model {#page_model}
-==========================================
+# Modular Megafauna Model {#page_model}
 <!-- For doxygen, this is the *page* header -->
-\brief Structure and scientific explanation of the Large Herbivore Model.
+\brief Scientific background of the Modular Megafauna Model.
 
-Large Herbivore Model {#sec_model}
-==========================================
+# Modular Megafauna Model {#sec_model}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
+This document explains the design choices for the megafauna model from a scientific rather than technical angle.
+It also discusses the different modules in the model framework: what their assumptions are, how to use them, and how to combine them.
+
+Some aspects of the model can only be evaluated in the context of the connected vegetation model.
+For LPJ-GUESS you will find those aspects in the megafauna doxygen page of the LPJ-GUESS repository.
+
 \todo
-- Give a general introduction for what use case this model was originally developed.
-- What technical skills are required to work with this model?
-- Provide a simple quickstart guide to get the model running with the example herbivore.
+- Give a general introduction for what use case this model was originally developed. -> scientific motivation
 - Limitations of the model design:
-	+ year length of 365 assumed
 	+ habitats equal size
-	+ After offspring is created no connection to parents
-    -> no lactation, bonding, herding, etc.
+	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
 - Explain some design choices:
 	+ Why differentiate sexes? ⇒ e.g. Shannon et al. (2013), Guthrie (1990)
 	+ Why daily time steps?
@@ -27,13 +27,8 @@ Large Herbivore Model {#sec_model}
 	+ What’s the problem with annual allocation?
 	+ What mechanisms have we explored to prevent population crashes?
 - What is the problem with β (half-max intake density) in Illius & O’Connor (2000) and Pachzelt et al.?
-- Explain the problem of coexistence: How coexistence could arise theoretically, but why it is practically so difficult.
-- Provide a list of other mechanistic herbivore models.
 
-Basic Model Concepts {#sec_basicconcepts}
-------------------------------------------------
-
-![](habitatarea.png "Illustration of the habitat concept in the herbivory module as an abstraction of the vegetation patch.")
+## Basic Model Concepts {#sec_basicconcepts}
 
 A herbivore is defined by these state variables:
 - Age
@@ -41,52 +36,29 @@ A herbivore is defined by these state variables:
 - Current energy need
 - Fat mass
 
-Plant–Herbivore Interaction {#sec_plantherbivore_interactions}
----------------------------------------------------------------------
+## Nitrogen Cycling {#sec_nitrogen_cycling}
 
-Each PFT can be mapped to a [forage type](\ref Fauna::ForageType), i.e. the biomass of the plant individuals becomes available as forage for herbivores, and they can choose in which proportions they include the different forage types in their diet.
-
-@startuml "How plant functional types are mapped to forage types."
-	!include diagrams.iuml!default_pft_forage_type_mapping
-@enduml
-
-Through feeding, herbivores reduce aboveground plant biomass, i.e. carbon and nitrogen:
-An [inaccessible reserve](\ref Fauna::PftParams::inaccessible_forage) can be defined so that a patch cannot be completely defoliated.
-
-- The removed carbon from plant leaves is considered as a flux directly to the atmosphere (respiration).
-  There is no intermediate decomposition of faeces or dead bodies in the soil.
-
-- Nitrogen, on the other hand, moves in a closed cycle, it does not enter the atmosphere, but gets returned through excrements (and carcasses after death) directly to the plant-available soil pool.
-
-<!-- Digestibility and C:N ratio are not coupled currently -->
-
-![](herbivory_fluxes.png "Carbon and nitrogen fluxes in the vegetation model caused by herbivory.")
-
-### Feeding {#sec_feeding}
-
-### Nitrogen Excretion {#sec_nitrogen_excretion}
-
-Nitrogen uptake is calculated based on the C:N ratio of leaves.
+The vegetation model defines the nitrogen content in forage.
 The maximum amount of nitrogen (\f$N_{bound}\f$, kgN/km²) bound in herbivores is comprised of the body tissue and the contents of the digestive tract.
-Any ingested nitrogen is added to the pool of herbivore-bound nitrogen, and the surplus is returned to the soil.
-![](nitrogen_cycle.svg "Nitrogen cycle in the herbivore model.")
+Any ingested nitrogen is added to the pool of herbivore-bound nitrogen, and the surplus is returned to the vegetation model, which should make it available to plants again.
+
 The amount of nitrogen bound in body tissue is approximated with 3% of live body weight (Robbins 1983\cite robbins1983wildlife); this ignores variation in fat and structural mass.
-Upon death, this amount of nitrogen is also returned to the plant-available soil pool.
+Upon death, this amount of nitrogen is also returned to the vegetation model.
 
 The nitrogen of ingesta in stomach and intestines depends on the mean retention time (\f$MRT\f$, hours) and the day’s intake of nitrogen (\f$I_N\f$, kgN/ind/day).
-$$
-N_{bound} = N_{guts} + N_{body} = I_N * MRT * P + 0.03 * M * P
-$$
+
+\f[
+  N_{bound} = N_{guts} + N_{body} = I_N * MRT * P + 0.03 * M * P
+\f]
+
 \f$P\f$ is the population density (ind/km²) and \f$M\f$ is the body mass (kg/ind).
 Mean retention time in hours is calculated according to Clauss et al. (2007)\cite clauss2007case, Fig. 2:
-$$
-MRT = 32.8 * M^{0.07}
-$$
 
-### Trampling {#sec_trampling}
+\f[
+  MRT = 32.8 * M^{0.07}
+\f]
 
-Energetics {#sec_energetics}
------------------------------------
+## Energetics {#sec_energetics}
 
 ### Thermoregulation by Conductance {#sec_thermoregulation}
 
@@ -125,58 +97,33 @@ Conductivity is the inverse of insulation: it is the heat flow per temperature d
 
 Body surface in m² scales roughly as \f$0.09*M^{0.66}\f$ ([Hudson & White 1985](\cite hudson1985bioenergetics)).
 
-
-Energy Content of Forage {#sec_energycontent}
-----------------------------------------------------
+## Energy Content of Forage {#sec_energycontent}
 
 \todo explain gross, digestible, metabolizable and net energy
 
-Foraging {#sec_foraging}
--------------------------------
+## Foraging {#sec_foraging}
 
-\note **Units**<br>All forage values (e.g. available grass biomass,
-consumed forage) are *dry matter mass* in kilograms (`DMkg`).
-Any forage per area (e.g. forage in a habitat) is `kgDM/km²`.
-Herbivore-related mass values (e.g. body mass, fat mass) are also
-`kg`, but live mass.
-Population densities of herbivores are either in `kg/km²` or `ind/km²` (ind=individuals).
+\note **Units**
+- All forage values (e.g. available grass biomass, consumed forage) are *dry matter mass* in kilograms (`DMkg`).
+- Any forage per area (e.g. forage in a habitat) is `kgDM/km²`.
+- Herbivore-related mass values (e.g. body mass, fat mass) are also `kg`, but live mass.
+- Population densities of herbivores are either in `kg/km²` or `ind/km²` (ind=individuals).
+- Digestibility values are interpreted as in-vitro digestibility.
 
-### Feeding on Plants in a Patch ### {#sec_foraging_patch}
+\todo Find a reference for this definition of in-vitro digestibility.
 
-Each \ref Individual offers an amount of forage (kgDM/km²) that is available to herbivores (\ref Individual.get_forage_mass()).
+@startuml "Levels of herbivore intake constraints. What and how much of the available forage an herbivore ingests is limited by a cascade of internal and external factors."
+	!include diagrams.iuml!intake_limit_levels
+@enduml
 
-<!-- TODO: explain some more -->
+## Reproduction {#sec_reproduction}
 
+## Life History {#sec_life_history}
 
-\todo Growth happens only once per year (\ref growth()) for natural vegetation.
-However, seasonal shifts of forage availability are crucial for herbivore
-dynamics.
-A solution for that is yet to be found.
-
-
-### Digestibility ### {#sec_digestibility}
-<!--
-Everything: In vitro digestibility
-Compare phenology digestibility with NPP-driven digestibility.
-
--->
-Assumptions of the NPP-driven digestibility model (\ref Fauna::DigestibilityFromNPP):
-- Constant proportion of NPP allocated to leaves.
-- Linear decrease in forage quality.
-- Turnover is constant over the year.
-- Fraction of biomass older than 1 year is negligible.
-
-Reproduction {#sec_reproduction}
----------------------------------------
-
-Life History {#sec_life_history}
----------------------------------------
-
-growth linear: \ref Fauna::HerbivoreBase::get_bodymass()
+\todo Explain how growth is linear in \ref Fauna::HerbivoreBase::get_bodymass()
 
 ## Minimum Density Threshold {#sec_minimum_density_threshold}
-<!--TODO-->
-The parameter \ref Fauna::Hft::minimum_density_threshold (ind/km²) defines at which point a dwindling population (sum of all cohorts/individuals) may be considered dead.
+The parameter \ref Fauna::Hft::mortality_minimum_density_threshold defines at which point a dwindling population (sum of all cohorts/individuals) may be considered dead.
 It is an arbitrary, but critical value for model performance.
 Possible re-establishment only happens if all cohorts are dead within one habitat.
 
@@ -185,24 +132,20 @@ After establishment, the background mortality continually diminishes the adult c
 
 On the other hand, the `minimum_density_threshold` should not be set *too* low as this would result in extremely thin “ghost” populations that are effectively preventing re-establishment.
 
-Mortality {#sec_mortality}
----------------------------------
+## Mortality {#sec_mortality}
 
-Species Coexistence {#sec_coexistence}
----------------------------------------------
+## Species Coexistence {#sec_coexistence}
 
 The classical competitive exclusion principle predicts that no two species can coexist in the long term if they each solely depend on one shared resource (\cite hardin1960competitive).
 One species will inevitably outcompete the other one.
 Though there are indeed ecological mechanisms that can facilitate coexistence with a shared resource (\cite chesson2000mechanisms), the parameter space for this to happen in a model is usually very narrow (e.g. \cite vanlangevelde2008intantaneous).
 
 In order to simply avoid competition among different HFTs, the option `one_hft_per_patch` can be enabled: Each HFT exists on its own, without any interaction with other species.
-Of course, the grid cell averages for mass density etc. include all HFTs.
-In order to avoid biases in the output, the patch number (`npatch`) must be a multiple of the HFT count.
+With that option enabled, all HFTs should each be assigned to the same number of habitats.
+It is the responsibility of the host application (the vegetation model) to ensure that the number of habitats is an integer multiple of the HFT count.
 
 ------------------------------------------------------------
 
 \author Wolfgang Traylor, Senckenberg BiK-F
-\date May 2017
-\see \ref page_design
-\see \ref page_tutor
-\see \ref page_tests
+\date 2019
+\copyright ...

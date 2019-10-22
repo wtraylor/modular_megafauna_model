@@ -29,7 +29,7 @@ class DummyPopulation : public PopulationInterface {
 
   /// creates one new herbivore object
   virtual void establish() {
-    vec.push_back(DummyHerbivore(hft, hft->establishment.density));
+    vec.push_back(DummyHerbivore(hft, hft->establishment_density));
   }
 
   virtual const Hft& get_hft() const { return *hft; }

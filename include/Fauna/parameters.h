@@ -9,6 +9,7 @@
 
 #include <cassert>
 #include <stdexcept>
+#include "Fauna/Output/text_table_writer_options.h"
 
 namespace Fauna {
 
@@ -43,14 +44,23 @@ enum class OutputInterval {
 
 /// Parameter for selecting the output writer implementation.
 enum class OutputFormat {
-  /// Use class \ref TextTableWriter.
+  /// Use class \ref Output::TextTableWriter.
   TextTables
 };
 
 /// Parameters for the herbivory module.
+/**
+ * Like in the \ref Hft class, each member variable corresponds to a key in the
+ * TOML instruction file. Both are spelled the same, and the member variable is
+ * prefixed with the category (i.e. the TOML table). Note that general
+ * simulation parameters are in the TOML table “simulation”, but their
+ * corresponding member variables don’t have a prefix.
+ *
+ * The initialization values are the same as in the example file under
+ * `examples/megafauna.toml`.
+ */
 struct Parameters {
-  // alphabetical order
-
+  /** @{ \name "simulation": General simulation parameters. */
   /// Algorithm for how to distribute available forage among herbivores.
   ForageDistributionAlgorithm forage_distribution =
       ForageDistributionAlgorithm::Equally;
@@ -68,41 +78,21 @@ struct Parameters {
 
   /// Whether to allow only herbivores of one HFT in each patch (default false).
   bool one_hft_per_patch = false;
+  /** @} */
 
-  /// General output options.
-  struct {
-    /// The module that writes megafauna output to disk.
-    OutputFormat format = OutputFormat::TextTables;
+  /** @{ \name "output": General output options. */
+  /// The module that writes megafauna output to disk.
+  OutputFormat output_format = OutputFormat::TextTables;
 
-    /// Time interval for aggregating output.
-    OutputInterval interval = OutputInterval::Annual;
-  } output;
+  /// Time interval for aggregating output.
+  OutputInterval output_interval = OutputInterval::Annual;
+  /** @} */
 
-  /// Preferences for the \ref TextTableWriter output class.
-  /**
-   * Which tables to write in text files is specified by boolean variables: If
-   * the corresponding member variable is `true`, a file with the same name
-   * plus extension (\ref TextTableWriter::FILE_EXTENSION) will be created in
-   * \ref directory.
-   */
-  struct TextTableWriterOptions {
-    /// Relative or absolute path to directory where output files are placed.
-    /**
-     * The names of the output text files within the directory are hard-coded.
-     * If the directory doesn’t exist, it will be created.
-     */
-    std::string directory = "./";
-
-    /// Number of figures after the decimal point.
-    unsigned int precision = 3;
-
-    /** @{ \name Output Files */
-
-    /// Herbivore mass density per HFT in kg/km².
-    bool mass_density_per_hft = false;
-
-    /** @} */  // Output Files
-  } text_table_output;
+  /** @{ \name "text_table_output": Preferences for Output::TextTableWriter. */
+  /// Options for \ref Output::TextTableWriter, in TOML table
+  /// "text_table_output".
+  Output::TextTableWriterOptions text_table_output;
+  /** @} */
 
   /// Check if the parameters are valid
   /**

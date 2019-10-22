@@ -53,8 +53,7 @@ double get_retention_time(const double bodymass);
  * will be counted as excreta. This way, no nitrogen is lost in the
  * system.
  * \see \ref HerbivoreInterface::take_nitrogen_excreta()
- * \see \ref sec_nitrogen_excretion
- * \see \ref sec_forageremoval
+ * \see \ref sec_nitrogen_cycling
  * \see \ref get_retention_time()
  */
 class NitrogenInHerbivore {

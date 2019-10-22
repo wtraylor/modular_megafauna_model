@@ -38,7 +38,7 @@ class World {
    * \param instruction_filename Path to the instruction file for the megafauna
    * model. It contains global settings and herbivore parameters.
    *
-   * \throw std::logic_error If selected \ref Parameters::OutputFormat is not
+   * \throw std::logic_error If selected \ref Parameters::output_format is not
    * implemented.
    */
   World(const std::string instruction_filename);
@@ -104,7 +104,7 @@ class World {
   /// Collects output data per time interval and aggregation unit.
   std::unique_ptr<Output::Aggregator> output_aggregator;
 
-  /// Output writer as selected by \ref Parameters::OutputFormat.
+  /// Output writer as selected by \ref Parameters::output_format.
   std::unique_ptr<Output::WriterInterface> output_writer;
 
   /// List of all the simulation units in the world.

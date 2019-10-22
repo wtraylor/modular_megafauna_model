@@ -40,7 +40,7 @@ namespace Fauna {
  * | k   | 0.080   | 0.077    |
  *
  * \note This currently only works for pure grass diet.
- * \see \ref DL_ILLIUS_GORDON_1992
+ * \see \ref DigestiveLimit::IlliusGordon1992
  */
 class GetDigestiveLimitIlliusGordon1992 {
  public:
@@ -97,8 +97,8 @@ class GetDigestiveLimitIlliusGordon1992 {
  * \note Illius & O’Connor (2000) and Pachzelt et al. (2013) also call
  * \f$V_{1/2}\f$ “beta” (β).
  *
- * \see \ref FL_ILLIUS_OCONNOR_2000
- * \see \ref FL_GENERAL_FUNCTIONAL_RESPONSE
+ * \see \ref ForagingLimit::IlliusOConnor2000
+ * \see \ref ForagingLimit::GeneralFunctionalResponse
  */
 class HalfMaxIntake {
  public:

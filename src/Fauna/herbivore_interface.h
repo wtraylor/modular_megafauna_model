@@ -27,7 +27,7 @@ class HabitatEnvironment;
  * herbivores.
  * \see \ref sec_new_herbivore_class
  * \see \ref PopulationInterface
- * \see \ref sec_herbivoredesign
+ * \see \ref sec_design_the_herbivore
  */
 struct HerbivoreInterface {
   /// Virtual Destructor
@@ -112,7 +112,7 @@ struct HerbivoreInterface {
    * Sidenote: The function name doesn’t start with `get_` because the
    * function changes the internal state of the object.
    * \return Excreted nitrogen [kgN/km²] (+ tissue nitrogen if dead).
-   * \see \ref sec_nitrogen_excretion
+   * \see \ref sec_nitrogen_cycling
    */
   virtual double take_nitrogen_excreta() = 0;
 };

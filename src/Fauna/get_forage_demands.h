@@ -47,11 +47,11 @@ class GetForageDemands {
    * retaining the given relative energy proportions.
    * \throw std::invalid_argument If `kg_total < 0.0`.
    * \throw std::invalid_argument If `mj_proportions.sum() != 1.0`.
-   * \see \ref DL_ALLOMETRIC
+   * \see \ref DigestiveLimit::Allometric
    */
-  static ForageMass get_max_intake_as_total_mass(const ForageFraction& mj_proportions,
-      const ForageEnergyContent& mj_per_kg,
-      const double kg_total);
+  static ForageMass get_max_intake_as_total_mass(
+      const ForageFraction& mj_proportions,
+      const ForageEnergyContent& mj_per_kg, const double kg_total);
 
   /// Initialize foraging for another day.
   /**
@@ -100,7 +100,7 @@ class GetForageDemands {
    * To what fractions the different forage types are eaten (in
    * sum the fractions must be 1.0).
    *
-   * \ref Hft::diet_composer defines the algorithm used to put
+   * \ref Hft::foraging_diet_composer defines the algorithm used to put
    * together the fractions of different forage types in the preferred
    * diet for each day.
    * Note that this function may be called several times a day in
@@ -121,8 +121,8 @@ class GetForageDemands {
    * (⇒ see Fauna::DistributeForage).
    * \return Energy fractions of forage types composing current diet;
    * the sum is 1.0.
-   * \throw std::logic_error If the \ref Hft::diet_composer is not
-   * implemented.
+   * \throw std::logic_error If the \ref Hft::foraging_diet_composer is
+   * not implemented.
    * \throw std::logic_error If the selected algorithm does not
    * produce a sum of fractions that equals 1.0 (100%).
    */
@@ -130,7 +130,7 @@ class GetForageDemands {
 
   /// Maximum forage [kgDM/ind/day] that could be potentially digested.
   /**
-   * The algorithm selected by \ref Hft::digestive_limit is employed.
+   * The algorithm selected by \ref Hft::digestion_limit is employed.
    * Note that this is only the digestion-limited maximum intake.
    * It does not consider metabolic needs (“hunger”, compare
    * \ref FatmassEnergyBudget::get_energy_needs()) nor foraging
@@ -139,7 +139,7 @@ class GetForageDemands {
    *
    * \return Maximum digestible dry matter today with given forage
    * composition [kgDM/ind/day].
-   * \throw std::logic_error If the \ref Hft::digestive_limit is not
+   * \throw std::logic_error If the \ref Hft::digestion_limit is not
    * implemented.
    */
   ForageMass get_max_digestion() const;
@@ -174,14 +174,14 @@ class GetForageDemands {
 
   /// @{ \name State Variables
   HabitatForage available_forage;
-  double bodymass;                     // [kg/ind]
-  ForageFraction diet_composition;     // [frac.] sum = 1.0
-  Digestibility digestibility;         // [frac.]
-  ForageEnergyContent energy_content;  // [MJ/kgDM]
-  double energy_needs;                 // [MJ/ind]
-  ForageMass max_intake;               // [kgDM/ind/day]
-  int today;                           // 0 = January 1st
-  /** @} */                            // State Variables
+  double bodymass;                     /// [kg/ind]
+  ForageFraction diet_composition;     /// [frac.] sum = 1.0
+  Digestibility digestibility;         /// [frac.]
+  ForageEnergyContent energy_content;  /// [MJ/kgDM]
+  double energy_needs;                 /// [MJ/ind]
+  ForageMass max_intake;               /// [kgDM/ind/day]
+  int today;                           /// 0 = January 1st
+  /** @} */
 };
 
 }  // namespace Fauna

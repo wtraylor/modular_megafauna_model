@@ -21,7 +21,7 @@ class GrassForage : public ForageBase {
   GrassForage() : ForageBase(), fpc(0.0) {}
 
   /// Dry matter forage in the area covered by grass [kgDM/km²].
-  /** Note that this is always greater or equal than \ref dry_matter_mass */
+  /** Note that this is always greater or equal than \ref get_mass() */
   double get_sward_density() const {
     if (get_fpc() == 0) return 0.0;
     const double sd = get_mass() / get_fpc();

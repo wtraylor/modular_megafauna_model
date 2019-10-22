@@ -34,8 +34,9 @@ class SimpleHabitat : public Habitat {
 
   /// Constructor with simulation settings.
   /**
-   * \param settings Simulation settings for the vegetation
-   * model.
+   * \param settings Simulation settings for the vegetation model.
+   * \param aggregation_unit An arbitrary name for grouping the habitat
+   * for output.
    */
   SimpleHabitat(const SimpleHabitat::Parameters settings,
                 const std::string aggregation_unit)

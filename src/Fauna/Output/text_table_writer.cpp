@@ -15,7 +15,7 @@ const char* TextTableWriter::FILE_EXTENSION = ".tsv";
 
 TextTableWriter::TextTableWriter(
     const OutputInterval interval,
-    const Parameters::TextTableWriterOptions& options)
+    const TextTableWriterOptions& options)
     : interval(interval), options(options) {
   const std::string& dir = options.directory;
 

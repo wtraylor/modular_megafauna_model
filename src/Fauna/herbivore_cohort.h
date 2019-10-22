@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Implementation of \ref HerbivoreBase as annual cohorts.
+ * \brief Implementation of \ref Fauna::HerbivoreBase as annual cohorts.
  * \copyright ...
  * \date 2019
  */
@@ -16,7 +16,7 @@ namespace Fauna {
  * Any state variables describe mean values across all
  * individuals.
  * All individuals have the same age.
- * \see \ref sec_herbivoredesign
+ * \see \ref sec_design_the_herbivore
  */
 class HerbivoreCohort : public HerbivoreBase {
  public:

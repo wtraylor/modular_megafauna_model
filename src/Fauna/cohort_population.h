@@ -22,6 +22,7 @@ class CohortPopulation : public PopulationInterface {
   /** \copydoc PopulationInterface::create_offspring() */
   virtual void create_offspring(const double ind_per_km2);
   /** \copydoc PopulationInterface::establish()
+   *
    * Establish with even sex ratio and *at least* as many
    * individuals as given by \ref Hft::establishment_density.
    */

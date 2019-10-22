@@ -1,16 +1,12 @@
-Object-oriented Design Concepts {#page_object_orientation}
-==========================================================
+# Object-oriented Design Concepts {#page_object_orientation}
 <!-- For doxygen, this is the *page* header -->
-\brief Programming principles and paradigms in object-oriented software engineering, in particular for the herbivory module.
+\brief Some programming principles and paradigms in object-oriented software engineering.
 
-Object-oriented Design {#sec_object_orientation}
-================================================
+# Object-oriented Design {#sec_object_orientation}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
-In the Herbivore Module a couple of object-oriented design patterns
-were employed that are explained here along with general
-concepts of object-oriented programming.
+In the megafauna model a couple of object-oriented design patterns were employed that are explained here along with general concepts of object-oriented programming.
 
 \todo Add explanation of the PIMPL idiom (compilation firewall). Compare [How to implement the pimpl idiom by using unique_ptr - Fluent C++](https://www.fluentcpp.com/2017/09/22/make-pimpl-using-unique_ptr/).
 
@@ -31,7 +27,7 @@ If a class explicitely defines at least one of the following methods, it should 
 - Copy Constructor
 - Copy Assignment Operator
 
-\note If moving to C++11, the **Rule of Five** becomes relevant
+\todo In C++11 the **Rule of Five** becomes relevant!
 
 ## S-O-L-I-D Design principles ## {#sec_design_solid}
 
@@ -40,27 +36,20 @@ A class should have only a single responsibility:
 A class should have only one reason to change.
 
 ### Open/Closed Principle {#sec_open_closed}
-A class/module/function should be open for extension, but
-closed for modification.
+A class/module/function should be open for extension, but closed for modification.
 
 ### Liskov’s Substitution Principle {#sec_liskov_substitution}
-Objects in a program should be replaceable with instances of
-their subtypes without altering the correctness of that program.
+Objects in a program should be replaceable with instances of their subtypes without altering the correctness of that program.
 
 ### Interface Segregation Principle {#sec_interface_segregation}
-Many client-specific interfaces are better than one
-general-purpose interface.
+Many client-specific interfaces are better than one general-purpose interface.
 
 ### Dependency Inversion Principle {#sec_dependency_inversion}
-1. High-level modules should not depend on low-level modules.
-Both should depend on abstractions.
-2. Abstractions should not depend on details.
-Details should depend on abstractions.
-
+1. High-level modules should not depend on low-level modules. Both should depend on abstractions.
+2. Abstractions should not depend on details. Details should depend on abstractions.
 
 ## Inversion of Control {#sec_inversion_of_control}
-The design principle of inversion of control is also called
-*Hollywood Principle:* “Don’t call us, we’ll call you.”
+The design principle of inversion of control is also called *Hollywood Principle:* “Don’t call us, we’ll call you.”
 An architecture following that principle is built around a generic framework which directs the flow of control by delegating tasks to various, interchangeable submodules.
 This approach makes the system more modular and extensible.
 
@@ -71,34 +60,29 @@ This approach makes the system more modular and extensible.
 	Framework ..> Client2 : <<create & call>>
 @enduml
 
-Inversion of control is related to the
-[Dependency Inversion Principle](\ref sec_dependency_inversion), which different in that it is concerned about the relationship between high-level and low-level modules rather than the framework design.
+Inversion of control is related to the [Dependency Inversion Principle](\ref sec_dependency_inversion), which differs in that it is concerned about the relationship between high-level and low-level modules rather than the framework design.
 
 ### Dependency Injection
-Dependency Injection is a major technique to implement
-inversion of control:
+Dependency Injection is a major technique to implement inversion of control:
 One object (the framework) supplies the dependencies for another object (the client), which then become a part of the client’s state.
 This is a direct alternative to global objects/variables.
 
 Two kinds of dependency injection are used
-1. **Setter Injection:** A client receives its dependency *after* being constructed, via a setter method. This is dangerous, because until initialization through the setter method, the client might be in an invalid state. (Example: \ref Patch::set_herbivory_unit())
+1. **Setter Injection:** A client receives its dependency *after* being constructed, via a setter method. This is dangerous, because until initialization through the setter method, the client might be in an invalid state.
 2. **Constructor Injection:** Any object of the client class receives its dependency in the constructor.
 
-For example: The \ref Fauna::HftList object is not a global variable, but is instead being passed down from the \ref framework() function to \ref Fauna::Simulator.
+For example: The \ref Fauna::HftList object is not a global variable, but is instead being passed down from \ref Fauna::World to other classes that need it.
 
-In the case of \ref Fauna::Habitat, the \ref Fauna::Simulator is oblivious to the concrete realization of the interface, which makes it possible to substitute parts of the model without changing the framework.
+In the case of \ref Fauna::Habitat, the \ref Fauna::World is oblivious to the concrete realization of the interface, which makes it possible to substitute parts of the model without changing the framework.
 
+\attention Never use global variables. They make unit tests impossible and violate the principles of modularity and compartmentalization.
 
 ## Design Patterns
 
 ### Singleton {#sec_singleton}
-\todo Is the Singleton design pattern still used anywhere?
-
-A class is called *singleton* if it permits only one global
-instantiation in the program.
-This object-oriented approach has advantages over global variables
-because it is more generally flexible and the time of instantiation
-is flexible.
+A class is called *singleton* if it permits only one global instantiation in the program.
+This object-oriented approach has advantages over global variables because it is more generally flexible and the time of instantiation is flexible.
+However, it is only justified for a class that is at the very top of the management hierarchy in the software architecture.
 
 The basic implementation is as follows:
 
@@ -118,9 +102,11 @@ To get access to the instance or trigger the initial instantiation, use `MySingl
 
 Wrapping global variables and free functions into a singleton class is good, but it is better to *avoid singletons all together* and instead follow the principle of [Inversion of Control](\ref sec_inversion_of_control).
 
+\note The only instance where the Singleton pattern is used is in the demo simulator: \ref Fauna::Demo::Framework.
+
 ### Strategy {#sec_strategy}
 The strategy design pattern defines a set of interchangable algorithms, each of which are encapsulated in a class that is derived from one abstract interface parent class.
-Thanks to C|| polymorphism, the used algorithm can change during runtime.
+Thanks to C++ polymorphism, the used algorithm can change during runtime.
 Here is a basic implementation:
 
     struct Strategy {
@@ -160,10 +146,9 @@ Obviously, the class name (and the names of their instances and pointers) should
 The class name should of course be capitalized.
 
 Strictly speaking, the strategy pattern aims to offer the possibility to substitute an algorithm during the lifetime of a client object.
-In the herbivory model that is usually not the case, but rather it is used as a means of [dependency injection](sec_dependency_inversion).
+In the megafauna model that is usually not the case, but rather it is used as a means of [dependency injection](sec_dependency_inversion).
 
 ### Facade {#sec_facade}
-
 A facade class presents a simple interface to interact with another module or subsystem of the software.
 The complexity of the subsystem is hidden behind the public functions of the facade class.
 The subsystem doesn’t know about the facade.
@@ -177,6 +162,8 @@ The subsystem doesn’t know about the facade.
 	facade ..> subsystem.class3 : <<call>>
 @enduml
 
+------------------------------------------------------------
+
 \author Wolfgang Traylor, Senckenberg BiK-F
-\date May 2017
-\see \ref page_design
+\date 2019
+\copyright ...

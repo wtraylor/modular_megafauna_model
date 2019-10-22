@@ -26,16 +26,16 @@ TEST_CASE("Fauna::PopulationList", "") {
   const int DEAD_HFT_ID = 1;
 
   for (int i = 0; i < NPOP; i++) {
-    hfts[i].establishment.density = (double)i + 1.0;
+    hfts[i].establishment_density = (double)i + 1.0;
     // have only one age class established:
-    hfts[i].establishment.age_range.first =
-        hfts[i].establishment.age_range.second;
+    hfts[i].establishment_age_range.first =
+        hfts[i].establishment_age_range.second;
     // First, have every populatien be above the minimum threshold.
-    hfts[i].mortality.minimum_density_threshold = 2 * i;
+    hfts[i].mortality_minimum_density_threshold = 2 * i;
   }
   // Now let *one* population have a very low threshold.
   // It will be deleted later.
-  hfts[DEAD_HFT_ID].mortality.minimum_density_threshold = 0.01;
+  hfts[DEAD_HFT_ID].mortality_minimum_density_threshold = 0.01;
 
   // create some populations with establishment.density
   DummyPopulation* pops[NPOP];
@@ -56,7 +56,7 @@ TEST_CASE("Fauna::PopulationList", "") {
     for (HerbivoreVector::const_iterator itr = herbi_list.begin();
          itr != herbi_list.end(); itr++)
       pop_dens += (**itr).get_ind_per_km2();
-    REQUIRE(pop_dens == Approx(NHERBIS * hfts[i].establishment.density));
+    REQUIRE(pop_dens == Approx(NHERBIS * hfts[i].establishment_density));
 
     // add them to the list -> transfer ownership
     list.add(new_pop);

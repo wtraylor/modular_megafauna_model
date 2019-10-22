@@ -1,66 +1,41 @@
-Tutor for the Large Herbivore Module {#page_tutor}
-==================================================
+# Tutor {#page_tutor}
 <!-- For doxygen, this is the *page* header -->
-\brief Instructions how to use the herbivore module and expand the code base for one’s needs.
+\brief Instructions how expand the code base for your own needs.
 
-Tutor for the Large Herbivore Module {#sec_tutor}
-======================================================
+# Tutor {#sec_tutor}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
-Before starting with your programming work, please familiarize yourself with the parts of the [module design](\ref page_design) that are relevant to your project.
-Make sure you have understood the concepts of [object-oriented software design](\ref sec_object_orientation).
-In particular, observe the [Open-closed Principle](\ref sec_open_closed) wherever possible: Only change a class *if necessary.* Try to extend it instead or—even better—write a new class with your functionality.
-
-Please keep the documentation of the [design](\ref page_design) and the [model explanations](\ref page_model) updated.
-
-Come into the practice of **test-driven development** (see \ref page_tests).
-Write a test for each one of your new classes!
-Check all of its public methods and see what example test scenarios it has to fulfill.
-Also check if exceptions are thrown correctly.
-
-Herbivores Tutorials {#sec_tutor_herbivores}
----------------------------------------------------
+## Herbivores Tutorials {#sec_tutor_herbivores}
 
 ### How to add a new herbivore class {#sec_new_herbivore_class}
 
-The model design allows a complete substitution of the herbivore
-class.
-If you want to implement a completely new model behaviour, you
-can derive your new class from \ref Fauna::HerbivoreInterface
-and write it from scratch.
-If you want to build upon the base functionality, derive it
-from \ref Fauna::HerbivoreBase.
+The model design allows a complete substitution of the herbivore class.
+If you want to implement a completely new model behaviour, you can derive your new class from \ref Fauna::HerbivoreInterface and write it from scratch.
+If you want to build upon the base functionality, derive it from \ref Fauna::HerbivoreBase.
 
 Then, derive a new class from \ref Fauna::PopulationInterface to manage and construct your object instances.
-In \ref Fauna::Simulator::create_populations(), create that
-population class.
+In \ref Fauna::WorldConstructor::create_population(), create that population class.
 
 @startuml "Relationships for a new herbivore type."
 	!include diagrams.iuml!new_herbivore_type
 @enduml
 
 ### How to add a new energy expenditure component {#sec_new_expenditure_component}
-- Add a new entry in \ref Fauna::ExpenditureComponent.
-- Parameters:
-	+ Add new possible string value for the HFT parameter `expenditure_components` in \ref Fauna::ParamReader::declare_parameters().
-	+ Adjust \ref Fauna::ParamReader::callback() under `callback == CB_EXPENDITURE_COMPONENTS`.
-	+ Expand the comment in the instruction file `data/ins/herbivores.ins`.
+- Add a new enum entry in \ref Fauna::ExpenditureComponent. <!--TODO: ref-->
+- TOML instruction file: Add new possible string value for the HFT parameter `expenditure.components` in \ref Fauna::InsfileReader::read_hft(); include it in the error message.
 - Implement your algorithm as a free function or a class. See \ref expenditure_components.h for examples.
 - Call your model in \ref Fauna::HerbivoreBase::get_todays_expenditure().
-- Update the UML diagram in \ref sec_herbivorebase.
+- Update the UML diagram in Section \ref sec_herbivorebase.
 
 ### How to add a new foraging limit {#sec_new_foraging_limit}
 A foraging limit constrains the daily uptake of forage mass by a herbivore individual.
 Foraging limits are implemented as functors (without using the [strategy design pattern](\ref sec_strategy), though).
-Which ones are activated is defined by \ref Fauna::Hft::foraging_limits.
+Which ones are activated is defined by `foraging.limits` in \ref Fauna::Hft.
 They are called in \ref Fauna::GetForageDemands::get_max_foraging().
 
-- Add a new enum entry in \ref Fauna::ForagingLimit.
-- Parameters:
-	+ In \ref Fauna::ParamReader::callback() add a string identifier for your implementation under `CB_FORAGING_LIMITS` (also in the error message).
-	+ Add that identifier in the help message under \ref Fauna::ParamReader::declare_parameters().
-	+ Document your option in the example instruction file `data/ins/herbivores.ins`.
+- Add a new enum entry in \ref Fauna::ForagingLimit<!--TODO: ref-->.
+- TOML instruction file: Add a new possible string value for the HFT parameter `foraging.limits` in \ref Fauna::InsfileReader::read_hft()
 - Implement your foraging limit (preferably as a function object in the file \ref foraging_limits.h, but you can do as you wish).
 Make sure that an exception is thrown if it is called with an unknown forage type.
 - Call your implementation in \ref Fauna::GetForageDemands::get_max_foraging().
@@ -69,59 +44,50 @@ Make sure that an exception is thrown if it is called with an unknown forage typ
 ### How to add a new digestive limit {#sec_new_digestive_limit}
 On top of foraging limitations, the daily forage uptake can be constrained by maximum digestive throughput.
 The implementation is almost parallel to a [foraging limit](\ref sec_new_foraging_limit).
-You can choose
 
 - Add a new enum entry in \ref Fauna::DigestiveLimit.
-- Parameters:
-	+ In \ref Fauna::ParamReader::callback() add a string identifier for your implementation under `CB_DIGESTIVE_LIMIT` (also in the error message).
-	+ Add that identifier in the help message under \ref Fauna::ParamReader::declare_parameters().
-	+ Document your option in the example instruction file `data/ins/herbivores.ins`.
-- Implement your digestive limit algorithm as a free function or an object.
+- Read the new value for `digestion.limit` from the TOML instruction file in \ref Fauna::InsfileReader::read_hft().
+- Implement your digestive limit algorithm as a free function or an object. If it is not much code, put it in \ref foraging_limits.h, otherwise create a new file for it.
 Make sure that an exception is thrown if it is called with an unknown forage type.
 - Call your implementation in \ref Fauna::GetForageDemands::get_max_digestion().
 - Update the UML diagram in \ref sec_herbivorebase.
 
-
 ### How to add a new reproduction model {#sec_new_reproduction_model}
 A reproduction model defines the offspring per female individual for each simulation day.
 
-- Parameters:
-	+ Create a new enum entry in \ref Fauna::ReproductionModel.
-	+ Parse the parameter in \ref Fauna::ParamReader::callback() under `CB_REPRODUCTION_MODEL` and expand the error message with your string identifier.
-	+ Add your string identifier to the help output in \ref Fauna::ParamReader::declare_parameters().
-	+ Document your model in the comments of the example instruction file: `data/ins/herbivores.ins`.
-- Create your class or function somewhere.
+- Create a new enum entry in \ref Fauna::ReproductionModel.
+- Read the new value for `reproduction.model` from the instruction file in \ref Fauna::InsfileReader::read_hft().
+- Create your class or function in \ref reproduction_models.h or in a separate file.
 - Call your model in \ref Fauna::HerbivoreBase::get_todays_offspring_proportion().
 - Update the UML diagram in \ref sec_herbivorebase.
 
-### How to add a new diet composer {#sec_new_diet}
+### How to add a new diet composer {#sec_new_diet_composer}
 In a scenario with multiple forage types, the herbivore decides what to include in its diet.
 This decision is modelled by an implementation of a so called “diet composer model”: \ref Fauna::DietComposer.
 You can implement your own model as a new class or a simple function; just call it in \ref Fauna::GetForageDemands::get_diet_composition().
 
-- Parameters:
-	+ Create a new enum entry in \ref Fauna::DietComposer.
-	+ Parse the parameter in \ref Fauna::ParamReader::callback() under `CB_DIET_COMPOSER` and expand the error message with your string identifier.
-	+ Add your string identifier to the help output in \ref Fauna::ParamReader::declare_parameters().
-	+ Document your model in the comments of the example instruction file: `data/ins/herbivores.ins`.
+- Create a new enum entry in \ref Fauna::DietComposer.
+- Read the new value for `foraging.diet_composer` in \ref Fauna::InsfileReader::read_hft().
 - Call your model in \ref Fauna::GetForageDemands::get_diet_composition().
 - Update the UML diagram in \ref sec_herbivorebase.
 
-### How to add a new mortality factor {#sec_new_mortality}
-<!-- TODO -->
+### How to add a new mortality factor {#sec_new_mortality_factor}
+Any death event of an herbivore is modelled by a mortality factor.
+Whether you want to have herbivores die by for instance disease, drought, or predators, you should create a new mortality factor.
 
-Forage Tutorials {#sec_tutor_forage}
--------------------------------------------
+- Create a new enum entry in \ref Fauna::MortalityFactor.
+- Parse the new possible value for the set `mortality.factors` in \ref Fauna::InsfileReader::read_hft().
+- Implement your mortality model as a function or class in \ref mortality_factors.h or in a separate file (if it’s more complex).
+- Call the mortality factor in \ref Fauna::HerbivoreBase::apply_mortality_factors_today().
+- Update the UML diagram in \ref sec_herbivorebase.
+
+## Forage Tutorials {#sec_tutor_forage}
 
 ### How to add a new forage type {#sec_new_forage_type}
 
 - Create new enum entry in \ref Fauna::ForageType and add it to \ref Fauna::FORAGE_TYPES by expanding the initializing function `get_all_forage_types()`, which is declared in local namespace in \ref forage_types.cpp.
 
 - Add a short name without blanks in \ref Fauna::get_forage_type_name().
-
-- Instruction file parameters (\ref paramreader.cpp):
-	+ \ref Fauna::ParamReader::declare_parameters() : Add the new forage type to parameter description of parameter `forage_type`.
-	+ \ref Fauna::ParamReader::callback() : Add forage type under \ref Fauna::CB_FORAGE_TYPE.
 
 - Derive new class from \ref Fauna::ForageBase.
 	+ Implement a `merge()` method, like \ref Fauna::GrassForage::merge().
@@ -130,22 +96,17 @@ Forage Tutorials {#sec_tutor_forage}
 	+ Add it in \ref Fauna::HabitatForage::operator[]().
 	+ Call your `merge()` function in \ref Fauna::HabitatForage::merge().
 
-- Adjust \ref Individual::get_forage_mass() and \ref Individual::reduce_forage_mass().
-
 - Adjust the implementation of \ref Fauna::Habitat::get_available_forage() and \ref Fauna::Habitat::remove_eaten_forage() in your vegetation model.
 
-- Perhaps adjust the digestibility in your chosen \ref Fauna::GetDigestibility implementation.
-
-- Extend \ref Fauna::GetNetEnergyContentDefault.
+- Extend \ref Fauna::GetNetEnergyContentDefault, and possibly other energy content models (\ref net_energy_models.h).
 
 - Herbivores
 	+ Check all foraging and digestion limits (\ref foraging_limits.h) whether they need to be expanded.
-	+ Check also all models for net energy content (\ref net_energy_models.h).
-	+ Probably you will need to implement [a new diet composer](\ref sec_new_diet) or adjust existing ones.
+	+ Probably you will need to implement [a new diet composer](\ref sec_new_diet_composer) or adjust existing ones.
 
 - Test Simulations
-	+ If you want to use your forage type in the herbivory test simulations, expand \ref FaunaSim::SimpleHabitat by a new growth model (analoguous to \ref FaunaSim::LogisticGrass).
-	Also update the UML diagram in the class documentation of SimpleHabitat.
+	+ If you want to use your forage type in the demo simulations, expand \ref Fauna::Demo::SimpleHabitat by a new growth model (analoguous to \ref Fauna::Demo::LogisticGrass).
+	Also update the UML diagram in the class documentation of `SimpleHabitat`.
 
 @startuml "Relationships for a new forage type."
 	!include diagrams.iuml!new_forage_type
@@ -157,108 +118,68 @@ Forage net energy content is implemented with the [strategy design pattern](\ref
 @startuml "Net energy content design."
 	!include diagrams.iuml!net_energy_content
 @enduml
-- Derive a new class from \ref Fauna::GetNetEnergyContentInterface and implement the `operator()`.
-- Parameters:
-	+ Add a new enum item in \ref Fauna::NetEnergyModel.
-	+ Select it in \ref Fauna::ParamReader::callback() under `CB_NET_ENERGY_MODEL`.
-	- Update help message in \ref Fauna::ParamReader::declare_parameters().
-	- Update instruction file comments in `data/ins/herbivores.ins`.
+- Derive a new class from \ref Fauna::GetNetEnergyContentInterface and implement the `operator()` member function.
+- Add a new enum item in \ref Fauna::NetEnergyModel.
+- Parse that value for the HfT parameter `foraging.net_energy_model` in \ref Fauna::InsfileReader::read_hft().
 - Let your new class be created in \ref Fauna::HerbivoreBase::get_net_energy_content() if it is selected in the parameters.
 - Update the UML diagram in \ref sec_herbivorebase and the diagram above.
 
 ### How to add a new forage distribution algorithm {#sec_new_forage_distribution}
-- Derive a new class from \ref Fauna::DistributeForage and implement your algorithm.
 
-- Return a reference to an object of your class in \ref Fauna::Simulator::create_distribute_forage().
+- Derive a new class from \ref Fauna::DistributeForage and implement your algorithm. If the algorithm is not too big, put it in \ref forage_distribution_algorithms.h, otherwise create a new set of files.
+- Return a reference to an object of your class in \ref Fauna::WorldConstructor::create_distribute_forage() if it is selected in the parameters.
+- Add a new enum entry in \ref Fauna::ForageDistributionAlgorithm.
+- Parse your new value from the parameter `simulation.forage_distribution` in \ref Fauna::InsfileReader::read_hft().
 
-- Add an identifier in \ref Fauna::ForageDistributionAlgorithm and add your string identifier in \ref Fauna::ParamReader::callback() under `CB_FORAGE_DISTRIBUTION`.
-
-- Don’t forget to add your identifier as possible values in the message output in \ref Fauna::ParamReader::declare_parameters() and \ref Fauna::ParamReader::callback(), as well as in the example instruction file `data/ins/herbivores.ins`.
-
-Parameters Tutorials {#sec_tutor_parameters}
----------------------------------------------------
+## Parameters Tutorials {#sec_tutor_parameters}
 
 ### How to add a new global parameter {#sec_new_global_parameter}
 
-Global parameters of the herbivory module are declared and parsed by \ref Fauna::ParamReader, but initialized and checked in \ref Fauna::Parameters.
-
-- Declare your parameter as a member variable in \ref Fauna::Parameters.
-- Initialize it with a valid default value in \ref Fauna::Parameters::Parameters().
+- Declare your parameter as a member variable in \ref Fauna::Parameters and initialize it with a valid default value. The `enum class` type for Enum parameters should be declared in \ref parameters.h.
 - Write a validity check in \ref Fauna::Parameters::is_valid().
-- If the parameter needs to be parsed from a string, add your
-	own callback:
-	+ add a new enum item CB_* in \ref parameters.h.
-	+ add a new if statement in \ref Fauna::ParamReader::callback().
-- Call the plib function \ref declareitem() in \ref Fauna::ParamReader::declare_parameters() (possibly with your own CB_* code).
-- If you wish, add it to `mandatory_global_params` in \ref Fauna::ParamReader::callback() so that it must not be omitted.
-- Extend the example instruction file `data/ins/herbivores.ins`.
+- Parse the parameter from the TOML instruction file in \ref Fauna::InsfileReader. General parameters are parsed in Fauna::InsfileReader::read_table_simulation().
+    + If you are creating a whole new set of parameters, it might make sense to group them in a TOML table. Existing tables are `output` and `simulation`. You should then write a new private member function similar to \ref Fauna::InsfileReader::read_table_simulation().
 
 ### How to add a new HFT parameter {#sec_new_hft_parameter}
 
-- Declare your member variable in \ref Fauna::Hft
-  (observe alphabetical order, please)
-- Initialize it with a (valid!) default value in \ref Fauna::Hft::Hft().
+- Declare a new member variable in \ref Fauna::Hft and initialize it with a valid default value. The `enum class` type for Enum parameters should be declared in \ref hft.h.
 - Write a validity check in \ref Fauna::Hft::is_valid().
-- If the parameter needs to be parsed from a string, add your
-	own callback:
-	+ add a new enum item CB_* in \ref parameters.h.
-	+ add a new if statement in \ref Fauna::ParamReader::callback().
-- Call the plib function \ref declareitem() in \ref Fauna::ParamReader::declare_parameters() (possibly with your own CB_* code).
-- If you wish, add it to `mandatory_hft_params` in \ref Fauna::ParamReader::callback() so that it must not be omitted.
-- Extend the example instruction file `data/ins/herbivores.ins`.
 
+\see \ref sec_design_parameters
 
-\see \ref sec_parameters
-Output Tutorials {#sec_output_tutor}
--------------------------------------------
+## Output Tutorials {#sec_output_tutor}
 
-\todo Rewrite output tutorials.
+### How to add a new output variable {#sec_new_output_variable}
+After separating the megafauna model from LPJ-GUESS into its own library only a minimal set of variables are made available for output.
+If your variable of interest is already present in \ref Fauna::Output::HabitatData or \ref Fauna::Output::HerbivoreData, then you can skip the first step in the following tutorial.
 
-<!--
-### How to add a new output variable {#sec_new_output}
-- Create a new `TableFile` member variable in \ref GuessOutput::HerbivoryOutput.
-	+ Initialize it in the constructor.
-	(The parameter and variable names must not contain a dot, space, or underscore.)
-	+ Add it in the private function `HerbivoryOutput::init_tablefiles()`.
-	- The instruction file parameter name for the output file name will be autogenerated in \ref GuessOutput::HerbivoryOutput::HerbivoryOutput().
-	Add this parameter to your instruction file and to the default example file: `examples/output.ins`.
-- Extend the appropriate container: \ref FaunaOut::HabitatData or \ref FaunaOut::HerbivoreData by a new member variable and initialize it in the constructor with zero values.
+- Extend the appropriate container: \ref Fauna::Output::HabitatData or \ref Fauna::Output::HerbivoreData by a new member variable and initialize it in the constructor with zero values.
 	+ Implement average building in the appropriate `merge()` function.
-	+ For herbivore data, you need to add it to \ref FaunaOut::HerbivoreData::create_datapoint(). If your value is *per individual*, you don’ TODO
+	+ For herbivore data, you need to add it to \ref Fauna::Output::HerbivoreData::create_datapoint(). If your value is *per individual*, you don’ TODO
 	+ Assign a value to the variable somewhere in daily simulation.
-- Map this container variable to the `TableFile` by actually writing output in \ref GuessOutput::HerbivoryOutput::write_datapoint().
-
-\note In the case of variables for the whole habitat (not specific to forage type, HFTs etc.), use the existing `TableFile` object `TBL_HABITAT`.
-Add your new variable as a column to the table in \ref GuessOutput::HerbivoryOutput::get_columns() and add the value in \ref GuessOutput::HerbivoryOutput::write_datapoint(), *in the same order as the columns*.
+- Write the variable in \ref Fauna::Output::TextTableWriter.
+    + Add a selector for your new output file as a boolean variable in the category "text_tables" in \ref Fauna::Parameters.
+    + Add an output file stream (`std::ofstream`) for your variable as a private member variable in \ref Fauna::Output::TextTableWriter.
+    + In the constructor \ref Fauna::Output::TextTableWriter::TextTableWriter(), add your new output file to the list of file streams if it is selected in the options.
+    + Initialize the column captions of your new file in \ref Fauna::Output::TextTableWriter::write_captions().
+    + Write the data to the file in \ref Fauna::Output::TextTableWriter::write_datapoint().
 
 \note If you want to add a variable that is not *per herbivore mass*, you would have to use mass density as weight.
 
-### How to limit output to a specific time period {#sec_limit_output}
+### How to write output to another format {#sec_new_output_writer}
+The default output format are very simple tab-separated plaintext tables.
+The class \ref Fauna::Output::TextTableWriter is responsible for this format.
+However, you can also replace that output format with another one, for instance writing to a NetCDF file or forwarding it to another program or library.
 
-Adjust the return value of \ref GuessOutput::HerbivoryOutput::is_today_included() to your needs.
-For comparison, see the local function `outlimit()` in \ref commonoutput.cpp.
+- Derive a new class from \ref Fauna::Output::WriterInterface.
+- Add a new enum entry to \ref Fauna::OutputFormat.
+- Parse the new option in \ref Fauna::InsfileReader::read_table_output().
+- Create a new instance of your writer class in the constructor \ref Fauna::World::World() if your enum entry is selected.
 
-\see \ref sec_output
-
--->
-
-
-How to add a new test vegetation model {#sec_new_testhabitat}
---------------------------------------
-
-By default, the class \ref FaunaSim::SimpleHabitat is used for all test simulations.
-If you want to run your own vegetation model, create it in \ref FaunaSim::Framework::create_habitat().
-
-ge-using the code for other vegetation models {#sec_reusing_code}
----------------------------------------------
-
-<!--TODO-->
-
+\see \ref sec_design_output design
 
 ------------------------------------------------------------
 
 \author Wolfgang Traylor, Senckenberg BiK-F
-\date May 2017
-\see \ref page_design
-\see \ref page_model
-\see \ref page_tests
+\date 2019
+\copyright ...

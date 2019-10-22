@@ -67,8 +67,8 @@ class PopulationList {
   /// Kill populations whose density is below minimum threshold.
   /**
    * If a population has a total density of less than
-   * \ref Hft::minimum_density_threshold, all of the herbivores are
-   * killed (\ref HerbivoreInterface::kill()).
+   * \ref Hft::mortality_minimum_density_threshold, all of the
+   * herbivores are killed (\ref HerbivoreInterface::kill()).
    */
   void kill_nonviable();
 

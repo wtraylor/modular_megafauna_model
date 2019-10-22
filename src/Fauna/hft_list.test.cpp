@@ -47,11 +47,10 @@ TEST_CASE("Fauna::HftList", "") {
   CHECK_FALSE(hftlist.contains("abc"));
 
   // substitute element
-  hft2.life_history.lifespan += 2;  // change a property outside list
-  REQUIRE(hftlist[hft2.name].life_history.lifespan !=
-          hft2.life_history.lifespan);
+  hft2.life_history_lifespan += 2;  // change a property outside list
+  REQUIRE(hftlist[hft2.name].life_history_lifespan !=
+          hft2.life_history_lifespan);
   hftlist.insert(hft2);  // replace existing
   REQUIRE(hftlist.size() == 2);
-  CHECK(hftlist[hft2.name].life_history.lifespan == hft2.life_history.lifespan);
+  CHECK(hftlist[hft2.name].life_history_lifespan == hft2.life_history_lifespan);
 }
-

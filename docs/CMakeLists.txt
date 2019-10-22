@@ -6,16 +6,26 @@ find_package (Doxygen OPTIONAL_COMPONENTS dot)
 
 if (DOXYGEN_FOUND)
 
+  # For CI (Continuous Integration) this option should be turned on so
+  # that the doxygen command fails if there is a warning.
+  if (STOP_DOXYGEN_ON_WARNING)
+    set (DOXYGEN_WARN_AS_ERROR YES)
+  else()
+    set (DOXYGEN_WARN_AS_ERROR NO)
+  endif()
+
   set (DOXYGEN_CITE_BIB_FILES "bibliography.bib")
   set (DOXYGEN_DISTRIBUTE_GROUP_DOC YES)
   set (DOXYGEN_EXAMPLE_PATH "../examples")
+  set (DOXYGEN_EXCLUDE_PATTERNS "*.test.cpp")
+  set (DOXYGEN_EXTRACT_ALL YES)
   set (DOXYGEN_EXTRACT_PRIVATE YES)
   set (DOXYGEN_FORMULA_FONTSIZE 13)
   set (DOXYGEN_IMAGE_PATH "images")
   set (DOXYGEN_LATEX_BIB_STYLE "ieeetr")
   set (DOXYGEN_PLANTUML_INCLUDE_PATH "./")
   set (DOXYGEN_PLANTUML_JAR_PATH "plantuml/plantuml.jar")
-  set (DOXYGEN_USE_MDFILE_AS_MAINPAGE "../README.md")
+  set (DOXYGEN_USE_MDFILE_AS_MAINPAGE "mainpage.md")
 
   if (NOT Java_Runtime_FOUND)
     message (
@@ -42,16 +52,17 @@ if (DOXYGEN_FOUND)
 
   doxygen_add_docs (megafauna_docs
     ../CONTRIBUTING.md
-    ../README.md
     ../include/
     ../src/
+    ../tools/demo_simulator/
+    demo_simulator.md
     design.md
     diagrams.iuml
-    group.h
+    mainpage.md
     model.md
     objectorientation.md
     quickstart.md
-    tests.md
+    separate_docs.h
     tutor.md
     ALL
     COMMENT "Generating doxygen documentation..."

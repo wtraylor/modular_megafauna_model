@@ -4,7 +4,6 @@ stages:
   - build
   - test
 
-
 # Build documentation and unit tests at once so that we don’t need to install
 # all the Debian packages in another job again.
 build:
@@ -23,10 +22,15 @@ build:
     - mkdir --parents build
     - cp examples/demo_simulation.toml build/
     - cd build
-    - cmake -DBUILD_DOC=ON ..
+    - cmake
+      -DSTOP_DOXYGEN_ON_WARNING=ON
+      -DBUILD_TESTING=ON
+      -DBUILD_DEMO_SIMULATOR=ON
+      -DBUILD_DOC=ON ..
     - make --jobs=2 megafauna_docs megafauna_unit_tests megafauna_demo_simulator
   artifacts:
     paths:
+      - build/demo_results.Rmd
       - build/demo_simulation.toml
       - build/docs/html/
       - build/megafauna.toml
@@ -45,3 +49,8 @@ demo_simulation:
   script:
     - cd build
     - ./megafauna_demo_simulator "megafauna.toml" "demo_simulation.toml"
+    - Rscript -e "library(knitr);\
+                  library(markdown);\
+                  knit('demo_results.Rmd', 'demo_results.md');\
+                  markdownToHTML('demo_results.md', 'demo_results.html')"
+    - test -f "demo_results.html" || echo >&2 "No HTML produced!"

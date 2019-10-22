@@ -96,11 +96,11 @@ class FatmassEnergyBudget {
   double max_fatmass;       // kg/ind
   double max_fatmass_gain;  // kg/ind/day
 
-  /// Metabolic coefficient for anabolism [MJ/kg] (Blaxter 1989)\cite
-  /// blaxter1989energy
+  /// Metabolic coefficient for anabolism [MJ/kg] (Blaxter 1989)
+  /// \cite blaxter1989energy
   static const double FACTOR_ANABOLISM;
-  /// Metabolism coefficient for catabolism [MJ/kg] (Blaxter 1989)\cite
-  /// blaxter1989energy
+  /// Metabolism coefficient for catabolism [MJ/kg] (Blaxter 1989)
+  /// \cite blaxter1989energy
   static const double FACTOR_CATABOLISM;
 };
 }

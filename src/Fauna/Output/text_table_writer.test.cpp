@@ -49,7 +49,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }  // namespace
 
 TEST_CASE("Fauna::Output::TextTableWriter", "") {
-  Parameters::TextTableWriterOptions opt;
+  TextTableWriterOptions opt;
   opt.mass_density_per_hft = true;
   opt.directory = generate_output_dir();
 

@@ -34,33 +34,49 @@ This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pi
 Usage
 -----
 
+The first step in working with the model is to create the documentation and read the introductory pages.
+On the Quickstart page you will find instructions for compiling the source code.
+
+If you don’t want or are unable to compile the documentation, you can also open the file [docs/quickstart.md](docs/quickstart.md) and the other markdown files in `docs/` directly.
+
 ### Compile the Doxygen Documentation
-CMake will automatically compile the doxygen documentation along with the library in a subfolder `docs/` inside the build directory. In there open the `index.html` file with a browser.
+
+As a bare minimum, you will need to have [CMake](https://cmake.org) (version 3.10 or higher) and [Doxygen](https://www.doxygen.nl) installed.
+
+Open a Unix shell (terminal) in the root directory of the megafauna library, and execute the following lines.
+On Windows, you can use the [Windows Subsystem for Linux]() <!--TODO-->(Windows 10 or higher) or try to compile it with the CMake GUI and/or an IDE.
 
 ```bash
 mkdir build
 cd build
-cmake "<path to the megafauna library>"
-make
-# Open `docs/index.html`.
+cmake -DBUILD_DOC=ON ..
+make megafauna_docs
 ```
 
-You can turn off the automatic compilation with the CMake variable `BUILD_DOC`: `cmake -DBUILD_DOC=OFF "<path>"`.
-In order to generate _only_ the documentation, provide the path to the `docs` subfolder to `cmake`: `cmake /path/to/megafauna/docs`.
+Don’t worry if warning messages appear. Usually, most of the documentation
+will be fine.
+Now open the created file `docs/index.html` in a web browser.
 
 #### Optional Build Requirements for the Documentation
-- Java Runtime Environment (JRE)
-- [Graphviz](www.graphviz.org), see [here](http://plantuml.com/graphviz-dot) for details.
-- [LaTeX](www.latex-project.org), including [BibTeX](www.bibtex.org).
+- Java Runtime Environment (JRE) and [Graphviz](www.graphviz.org) to compile [PlantUML](http://plantuml.com) diagrams. See [here](http://plantuml.com/graphviz-dot) for details.
+- [LaTeX](www.latex-project.org) to render mathematical formulas offline, and [BibTeX](www.bibtex.org) for the bibliography.
 
-### Integrate the Library into a Vegetation Model
+### Existing Integrations
 
-In the Subversion repository of [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/), for which this megafauna model was developed, there exists a branch `megafauna`.
-Please contact the maintainers of LPJ-GUESS to ask for access.
+Originally this megafauna model was developed for the dynamic global vegetation model [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/).
+On the Lund subversion server there exists a branch `megafauna` that integrates this library into LPJ-GUESS.
+Please contact the maintainers of LPJ-GUESS to kindly ask for access.
 
-Any other dynamic vegetation model can include the megafauna model as an external library.
-Have a look at the demo simulator application in `tools/demo_simulator/` for an example of how to use the library.
-<!--TODO: Add advice on dynamic vs. static library to comply with library licens.-->
+Other dynamic vegetation models can include the megafauna model as an external library, too.
+Learn more in the Doxygen documentation.
+
+### Changing the Codebase
+
+Flexibility and extensibility were high design goals for developing the megafauna model.
+Hopefully you will find it possible to implement the necessary code changes/extensions for your particular research questions.
+You will need basic skills with Git and C++ (C++11 standard) in order to contribute.
+
+On the index/main page of the Doxygen documentation you will be directed to the resources you need to contribute.
 
 Known Bugs and Issues
 ---------------------
@@ -73,6 +89,11 @@ Authors
 -------
 
 - Wolfgang Traylor (wolfgang.traylor@senckenberg.de) <!--TODO: Add ORCID-->
+
+Similar Projects
+----------------
+
+<!--TODO: Provide a list of references to other mechanistic herbivore models.-->
 
 License
 -------

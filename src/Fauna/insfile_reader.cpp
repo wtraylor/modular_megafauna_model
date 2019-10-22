@@ -47,7 +47,7 @@ InsfileReader::InsfileReader(const std::string filename)
     : ins(cpptoml::parse_file(filename)) {
   // Read global parameters
   read_table_output();
-  if (params.output.format == OutputFormat::TextTables)
+  if (params.output_format == OutputFormat::TextTables)
     read_table_output_text_tables();
   read_table_simulation();
 
@@ -160,61 +160,38 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   // ======= MANDATORY PARAMETERS =======
   {
     const auto value =
-        find_hft_parameter<double>(table, "body_fat.birth", true);
-    assert(value);
-    hft.body_fat.birth = *value;
-  }
-  {
-    const auto value =
         find_hft_parameter<double>(table, "body_fat.maximum", true);
     assert(value);
-    hft.body_fat.maximum = *value;
+    hft.body_fat_maximum = *value;
   }
   {
     const auto value =
         find_hft_parameter<double>(table, "body_fat.maximum_daily_gain", true);
     assert(value);
-    hft.body_fat.maximum_daily_gain = *value;
-  }
-  {
-    const auto value = find_hft_parameter<int>(table, "body_mass.birth", true);
-    assert(value);
-    hft.body_mass.birth = *value;
+    hft.body_fat_maximum_daily_gain = *value;
   }
   {
     const auto value = find_hft_parameter<int>(table, "body_mass.female", true);
     assert(value);
-    hft.body_mass.female = *value;
+    hft.body_mass_female = *value;
   }
   {
     const auto value = find_hft_parameter<int>(table, "body_mass.male", true);
     assert(value);
-    hft.body_mass.male = *value;
-  }
-  {
-    const auto value =
-        find_hft_parameter<int>(table, "breeding_season.length", true);
-    assert(value);
-    hft.breeding_season.length = *value;
-  }
-  {
-    const auto value =
-        find_hft_parameter<int>(table, "breeding_season.start", true);
-    assert(value);
-    hft.breeding_season.start = *value;
+    hft.body_mass_male = *value;
   }
   {
     const auto value =
         find_hft_parameter<std::string>(table, "digestion.limit", true);
     assert(value);
     if (lowercase(*value) == lowercase("None"))
-      hft.digestion.limit = DigestiveLimit::None;
+      hft.digestion_limit = DigestiveLimit::None;
     else if (lowercase(*value) == lowercase("Allometric"))
-      hft.digestion.limit = DigestiveLimit::Allometric;
+      hft.digestion_limit = DigestiveLimit::Allometric;
     else if (lowercase(*value) == lowercase("FixedFraction"))
-      hft.digestion.limit = DigestiveLimit::FixedFraction;
+      hft.digestion_limit = DigestiveLimit::FixedFraction;
     else if (lowercase(*value) == lowercase("IlliusGordon1992"))
-      hft.digestion.limit = DigestiveLimit::IlliusGordon1992;
+      hft.digestion_limit = DigestiveLimit::IlliusGordon1992;
     else
       throw invalid_option(
           hft, "digestion.limit", *value,
@@ -225,9 +202,9 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         find_hft_parameter<std::string>(table, "digestion.type", true);
     assert(value);
     if (lowercase(*value) == lowercase("Hindgut"))
-      hft.digestion.type = DigestionType::Hindgut;
+      hft.digestion_type = DigestionType::Hindgut;
     else if (lowercase(*value) == lowercase("Ruminant"))
-      hft.digestion.type = DigestionType::Ruminant;
+      hft.digestion_type = DigestionType::Ruminant;
     else
       throw invalid_option(hft, "digestion.type", *value,
                            {"Hindgut", "Ruminant"});
@@ -236,34 +213,35 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     const auto value =
         find_hft_parameter<int>(table, "establishment.age_range.first", true);
     assert(value);
-    hft.establishment.age_range.first = *value;
+    hft.establishment_age_range.first = *value;
   }
   {
     const auto value =
         find_hft_parameter<int>(table, "establishment.age_range.last", true);
     assert(value);
-    hft.establishment.age_range.second = *value;
+    hft.establishment_age_range.second = *value;
   }
   {
     const auto value =
         find_hft_parameter<double>(table, "establishment.density", true);
     assert(value);
-    hft.establishment.density = *value;
+    hft.establishment_density = *value;
   }
   {
     const auto array = find_hft_array_parameter<std::string>(
         table, "expenditure.components", true);
     assert(array);
+    hft.expenditure_components = {};
     for (const auto& i : *array)
       if (lowercase(i) == lowercase("Allometric"))
-        hft.expenditure.components.insert(ExpenditureComponent::Allometric);
+        hft.expenditure_components.insert(ExpenditureComponent::Allometric);
       else if (lowercase(i) == lowercase("Taylor1981"))
-        hft.expenditure.components.insert(ExpenditureComponent::Taylor1981);
+        hft.expenditure_components.insert(ExpenditureComponent::Taylor1981);
       else if (lowercase(i) == lowercase("Thermoregulation"))
-        hft.expenditure.components.insert(
+        hft.expenditure_components.insert(
             ExpenditureComponent::Thermoregulation);
       else if (lowercase(i) == lowercase("Zhu2018"))
-        hft.expenditure.components.insert(ExpenditureComponent::Zhu2018);
+        hft.expenditure_components.insert(ExpenditureComponent::Zhu2018);
       else
         throw invalid_option(
             hft, "expenditure.components", i,
@@ -274,7 +252,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         find_hft_parameter<std::string>(table, "foraging.diet_composer", true);
     assert(value);
     if (lowercase(*value) == lowercase("PureGrazer"))
-      hft.foraging.diet_composer = DietComposer::PureGrazer;
+      hft.foraging_diet_composer = DietComposer::PureGrazer;
     else
       throw invalid_option(hft, "foraging.diet_composer", *value,
                            {"PureGrazer"});
@@ -284,43 +262,26 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         table, "foraging.net_energy_model", true);
     assert(value);
     if (lowercase(*value) == lowercase("Default"))
-      hft.foraging.net_energy_model = NetEnergyModel::Default;
+      hft.foraging_net_energy_model = NetEnergyModel::Default;
     else
       throw invalid_option(hft, "foraging.net_energy_model", *value,
                            {"Default"});
   }
   {
-    const auto value = find_hft_parameter<int>(
-        table, "life_history.physical_maturity_female", true);
-    assert(value);
-    hft.life_history.physical_maturity_female = *value;
-  }
-  {
-    const auto value = find_hft_parameter<int>(
-        table, "life_history.physical_maturity_male", true);
-    assert(value);
-    hft.life_history.physical_maturity_male = *value;
-  }
-  {
-    const auto value =
-        find_hft_parameter<int>(table, "life_history.sexual_maturity", true);
-    assert(value);
-    hft.life_history.sexual_maturity = *value;
-  }
-  {
     const auto array = find_hft_array_parameter<std::string>(
         table, "hft.mortality.factors", false);
+    hft.mortality_factors = {};
     if (array) {
       for (const auto& i : *array)
         if (lowercase(i) == lowercase("Background"))
-          hft.mortality.factors.insert(MortalityFactor::Background);
+          hft.mortality_factors.insert(MortalityFactor::Background);
         else if (lowercase(i) == lowercase("Lifespan"))
-          hft.mortality.factors.insert(MortalityFactor::Lifespan);
+          hft.mortality_factors.insert(MortalityFactor::Lifespan);
         else if (lowercase(i) == lowercase("StarvationIlliusOConnor2000"))
-          hft.mortality.factors.insert(
+          hft.mortality_factors.insert(
               MortalityFactor::StarvationIlliusOConnor2000);
         else if (lowercase(i) == lowercase("StarvationThreshold"))
-          hft.mortality.factors.insert(MortalityFactor::StarvationThreshold);
+          hft.mortality_factors.insert(MortalityFactor::StarvationThreshold);
         else
           throw invalid_option(
               hft, "hft.mortality.factors", i,
@@ -329,38 +290,37 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     }
   }
   {
-    const auto value = find_hft_parameter<double>(
-        table, "mortality.minimum_density_threshold", true);
-    assert(value);
-    hft.mortality.minimum_density_threshold = *value;
-  }
-  {
     const auto value =
         find_hft_parameter<std::string>(table, "reproduction.model", true);
     assert(value);
-    if (lowercase(*value) == lowercase("None"))
-      hft.reproduction.model = ReproductionModel::None;
+    if (lowercase(*value) == lowercase("None")){
+      hft.reproduction_model = ReproductionModel::None;
+      hft.life_history_physical_maturity_female = 1;
+      hft.life_history_physical_maturity_male = 1;
+    }
     else if (lowercase(*value) == lowercase("ConstantMaximum"))
-      hft.reproduction.model = ReproductionModel::ConstantMaximum;
+      hft.reproduction_model = ReproductionModel::ConstantMaximum;
     else if (lowercase(*value) == lowercase("IlliusOConnor2000"))
-      hft.reproduction.model = ReproductionModel::IlliusOConnor2000;
+      hft.reproduction_model = ReproductionModel::IlliusOConnor2000;
     else if (lowercase(*value) == lowercase("Linear"))
-      hft.reproduction.model = ReproductionModel::Linear;
+      hft.reproduction_model = ReproductionModel::Linear;
     else
       throw invalid_option(
           hft, "reproduction.model", *value,
           {"None", "ConstantMaximum", "IlliusOConnor2000", "Linear"});
   }
+
   // ======== NON-MANDATORY PARAMETERS =======
   {
     const auto array =
         find_hft_array_parameter<std::string>(table, "foraging.limits", false);
+    hft.foraging_limits = {};
     if (array) {
       for (const auto& i : *array)
         if (lowercase(i) == lowercase("GeneralFunctionalResponse"))
-          hft.foraging.limits.insert(ForagingLimit::GeneralFunctionalResponse);
+          hft.foraging_limits.insert(ForagingLimit::GeneralFunctionalResponse);
         else if (lowercase(i) == lowercase("IlliusOConnor2000"))
-          hft.foraging.limits.insert(ForagingLimit::IlliusOConnor2000);
+          hft.foraging_limits.insert(ForagingLimit::IlliusOConnor2000);
         else
           throw invalid_option(
               hft, "foraging.limits", i,
@@ -370,123 +330,178 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
 
   // ======== DEPENDENT PARAMETERS =======
 
-  if (hft.mortality.factors.count(
+  if (hft.reproduction_model != ReproductionModel::None) {
+    const auto value =
+        find_hft_parameter<double>(table, "body_fat.birth", true);
+    assert(value);
+    hft.body_fat_birth = *value;
+  }
+
+  if (hft.mortality_factors.count(
           MortalityFactor::StarvationIlliusOConnor2000)) {
     const auto value =
         find_hft_parameter<double>(table, "body_fat.deviation", true);
     assert(value);
-    hft.body_fat.deviation = *value;
+    hft.body_fat_deviation = *value;
   }
 
-  if (hft.digestion.limit == DigestiveLimit::FixedFraction) {
+  if (hft.reproduction_model != ReproductionModel::None) {
+    const auto value = find_hft_parameter<int>(table, "body_mass.birth", true);
+    assert(value);
+    hft.body_mass_birth = *value;
+  }
+
+  if (hft.reproduction_model != ReproductionModel::None) {
+    const auto value =
+        find_hft_parameter<int>(table, "breeding_season.length", true);
+    assert(value);
+    hft.breeding_season_length = *value;
+  }
+
+  if (hft.reproduction_model != ReproductionModel::None) {
+    const auto value =
+        find_hft_parameter<int>(table, "breeding_season.start", true);
+    assert(value);
+    hft.breeding_season_start = *value;
+  }
+
+  if (hft.digestion_limit == DigestiveLimit::FixedFraction) {
     const auto value =
         find_hft_parameter<double>(table, "digestion.fixed_fraction", true);
     assert(value);
-    hft.digestion.fixed_fraction = *value;
+    hft.digestion_fixed_fraction = *value;
   }
 
-  if (hft.digestion.limit == DigestiveLimit::Allometric) {
+  if (hft.digestion_limit == DigestiveLimit::Allometric) {
     const auto value = find_hft_parameter<double>(
         table, "digestion.allometric.coefficient", true);
     assert(value);
-    hft.digestion.allometric.coefficient = *value;
+    hft.digestion_allometric.coefficient = *value;
   }
 
-  if (hft.digestion.limit == DigestiveLimit::Allometric) {
+  if (hft.digestion_limit == DigestiveLimit::Allometric) {
     const auto value = find_hft_parameter<double>(
         table, "digestion.allometric.exponent", true);
     assert(value);
-    hft.digestion.allometric.exponent = *value;
+    hft.digestion_allometric.exponent = *value;
   }
 
-  if (hft.expenditure.components.count(ExpenditureComponent::Allometric)) {
+  if (hft.expenditure_components.count(ExpenditureComponent::Allometric)) {
     const auto value = find_hft_parameter<double>(
         table, "expenditure.allometric.coefficient", true);
     assert(value);
-    hft.expenditure.allometric.coefficient = *value;
+    hft.expenditure_allometric.coefficient = *value;
   }
 
-  if (hft.expenditure.components.count(ExpenditureComponent::Allometric)) {
+  if (hft.expenditure_components.count(ExpenditureComponent::Allometric)) {
     const auto value = find_hft_parameter<double>(
         table, "expenditure.allometric.exponent", true);
     assert(value);
-    hft.expenditure.allometric.exponent = *value;
+    hft.expenditure_allometric.exponent = *value;
   }
 
-  if (hft.foraging.limits.count(ForagingLimit::GeneralFunctionalResponse) ||
-      hft.foraging.limits.count(ForagingLimit::IlliusOConnor2000)) {
+  if (hft.foraging_limits.count(ForagingLimit::GeneralFunctionalResponse) ||
+      hft.foraging_limits.count(ForagingLimit::IlliusOConnor2000)) {
     const auto value = find_hft_parameter<double>(
         table, "foraging.half_max_intake_density", true);
     assert(value);
-    hft.foraging.half_max_intake_density = *value;
+    hft.foraging_half_max_intake_density = *value;
   }
 
-  if (hft.mortality.factors.count(MortalityFactor::Lifespan)) {
+  if (hft.mortality_factors.count(MortalityFactor::Lifespan)) {
     const auto value =
         find_hft_parameter<int>(table, "life_history.lifespan", true);
     assert(value);
-    hft.life_history.lifespan = *value;
+    hft.life_history_lifespan = *value;
   }
 
-  if (hft.mortality.factors.count(MortalityFactor::Background)) {
+  if (hft.reproduction_model != ReproductionModel::None) {
+    const auto value = find_hft_parameter<int>(
+        table, "life_history.physical_maturity_female", true);
+    assert(value);
+    hft.life_history_physical_maturity_female = *value;
+  }
+
+  if (hft.reproduction_model != ReproductionModel::None) {
+    const auto value = find_hft_parameter<int>(
+        table, "life_history.physical_maturity_male", true);
+    assert(value);
+    hft.life_history_physical_maturity_male = *value;
+  }
+
+  if (hft.reproduction_model != ReproductionModel::None) {
+    const auto value =
+        find_hft_parameter<int>(table, "life_history.sexual_maturity", true);
+    assert(value);
+    hft.life_history_sexual_maturity = *value;
+  }
+
+  if (hft.mortality_factors.count(MortalityFactor::Background)) {
     const auto value =
         find_hft_parameter<double>(table, "mortality.adult_rate", true);
     assert(value);
-    hft.mortality.adult_rate = *value;
+    hft.mortality_adult_rate = *value;
   }
 
-  if (hft.mortality.factors.count(MortalityFactor::Background)) {
+  if (hft.mortality_factors.count(MortalityFactor::Background)) {
     const auto value =
         find_hft_parameter<double>(table, "mortality.juvenile_rate", true);
     assert(value);
-    hft.mortality.juvenile_rate = *value;
+    hft.mortality_juvenile_rate = *value;
   }
 
-  if (hft.mortality.factors.count(MortalityFactor::StarvationThreshold) ||
-      hft.mortality.factors.count(
+  if (hft.reproduction_model != ReproductionModel::None) {
+    const auto value = find_hft_parameter<double>(
+        table, "mortality.minimum_density_threshold", true);
+    assert(value);
+    hft.mortality_minimum_density_threshold = *value;
+  }
+
+  if (hft.mortality_factors.count(MortalityFactor::StarvationThreshold) ||
+      hft.mortality_factors.count(
           MortalityFactor::StarvationIlliusOConnor2000)) {
     const auto value = find_hft_parameter<bool>(
         table, "mortality.shift_body_condition_for_starvation", true);
     assert(value);
-    hft.mortality.shift_body_condition_for_starvation = *value;
+    hft.mortality_shift_body_condition_for_starvation = *value;
   }
 
-  if (hft.reproduction.model == ReproductionModel::ConstantMaximum ||
-      hft.reproduction.model == ReproductionModel::IlliusOConnor2000 ||
-      hft.reproduction.model == ReproductionModel::Linear) {
+  if (hft.reproduction_model == ReproductionModel::ConstantMaximum ||
+      hft.reproduction_model == ReproductionModel::IlliusOConnor2000 ||
+      hft.reproduction_model == ReproductionModel::Linear) {
     const auto value =
         find_hft_parameter<double>(table, "reproduction.annual_maximum", true);
     assert(value);
-    hft.reproduction.annual_maximum = *value;
+    hft.reproduction_annual_maximum = *value;
   }
 
-  if (hft.reproduction.model != ReproductionModel::None) {
+  if (hft.reproduction_model != ReproductionModel::None) {
     const auto value =
         find_hft_parameter<int>(table, "reproduction.gestation_length", true);
     assert(value);
-    hft.reproduction.gestation_length = *value;
+    hft.reproduction_gestation_length = *value;
   }
 
-  if (hft.expenditure.components.count(
+  if (hft.expenditure_components.count(
           ExpenditureComponent::Thermoregulation)) {
     const auto value = find_hft_parameter<std::string>(
         table, "thermoregulation.conductance", true);
     assert(value);
     if (lowercase(*value) == lowercase("BradleyDeavers1980"))
-      hft.thermoregulation.conductance = ConductanceModel::BradleyDeavers1980;
+      hft.thermoregulation_conductance = ConductanceModel::BradleyDeavers1980;
     else if (lowercase(*value) == lowercase("CuylerOeritsland2004"))
-      hft.thermoregulation.conductance = ConductanceModel::CuylerOeritsland2004;
+      hft.thermoregulation_conductance = ConductanceModel::CuylerOeritsland2004;
     else
       throw invalid_option(hft, "thermoregulation.conductance", *value,
                            {"BradleyDeavers1980", "CuylerOeritsland2004"});
   }
 
-  if (hft.expenditure.components.count(
+  if (hft.expenditure_components.count(
           ExpenditureComponent::Thermoregulation)) {
     const auto value = find_hft_parameter<double>(
         table, "thermoregulation.core_temperature", true);
     assert(value);
-    hft.thermoregulation.core_temperature = *value;
+    hft.thermoregulation_core_temperature = *value;
   }
 
   return hft;
@@ -498,7 +513,7 @@ void InsfileReader::read_table_output() {
     auto value = ins->get_qualified_as<std::string>(key);
     if (value) {
       if (lowercase(*value) == lowercase("TextTables"))
-        params.output.format = OutputFormat::TextTables;
+        params.output_format = OutputFormat::TextTables;
       // -> Add new output formats here.
       else
         throw invalid_option(key, *value, {"TextTables"});
@@ -510,13 +525,13 @@ void InsfileReader::read_table_output() {
     auto value = ins->get_qualified_as<std::string>(key);
     if (value) {
       if (lowercase(*value) == lowercase("Daily"))
-        params.output.interval = OutputInterval::Daily;
+        params.output_interval = OutputInterval::Daily;
       else if (lowercase(*value) == lowercase("Monthly"))
-        params.output.interval = OutputInterval::Monthly;
+        params.output_interval = OutputInterval::Monthly;
       else if (lowercase(*value) == lowercase("Annual"))
-        params.output.interval = OutputInterval::Annual;
+        params.output_interval = OutputInterval::Annual;
       else if (lowercase(*value) == lowercase("Decadal"))
-        params.output.interval = OutputInterval::Decadal;
+        params.output_interval = OutputInterval::Decadal;
       else
         throw invalid_option(key, *value,
                              {"Daily", "Monthly", "Decadal", "Annual"});
@@ -527,7 +542,7 @@ void InsfileReader::read_table_output() {
 
 void InsfileReader::read_table_output_text_tables() {
   {
-    const auto key = "output.text_tables.directory";
+    const auto key = "output.text_table_output.directory";
     auto value = ins->get_qualified_as<std::string>(key);
     if (value) {
       params.text_table_output.directory = *value;
@@ -535,14 +550,14 @@ void InsfileReader::read_table_output_text_tables() {
       throw missing_parameter(key);
   }
   {
-    const auto key = "output.text_tables.precision";
+    const auto key = "output.text_table_output.precision";
     auto value = ins->get_qualified_as<int>(key);
     if (value) {
       params.text_table_output.precision = *value;
     }
   }
   {
-    const auto key = "output.text_tables.tables";
+    const auto key = "output.text_table_output.tables";
     auto value = ins->get_qualified_array_of<std::string>(key);
     if (value) {
       for (const auto& s : *value)

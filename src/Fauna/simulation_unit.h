@@ -19,7 +19,7 @@ class CombinedData;
 }
 
 /// A habitat with the herbivores that live in it.
-/** \see \ref sec_designoverview */
+/** \see \ref sec_design_overview */
 class SimulationUnit {
  public:
   /// Constructor

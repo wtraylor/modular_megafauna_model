@@ -1,11 +1,9 @@
 Contributing to the Megafauna Model
 ===================================
 
-Flexibility and extensibility were high design goals for developing the megafauna model.
-Hopefully you will find it possible to implement the necessary changes for your particular research questions.
-
-This document shall be a guide for you as a developer: to help you get started with coding and ensure that the code stays consistent in style.
-You will need basic skills with Git and C++ (C++11 standard).
+This document is a guide for developers who want to contribute to the megafauna library.
+It explains the organization of the software project and sets guidelines for code style, structure, and format.
+This document is only about _syntax_ only.
 
 Table of Contents
 -----------------
@@ -177,7 +175,10 @@ The `\date` field is only relevant for the copyright. (Use Git to see when the f
 Make sure to write a unit test for every logical component.
 If you create a `.cpp` file, there should most likely also be a corresponding `.test.cpp` file that checks the public functions of the class or classes.
 
-Please read the Doxygen page about the testing framework.
+Unit tests use the [Catch2](https://github.com/catchorg/Catch2) framework in the [single header](https://raw.githubusercontent.com/catchorg/Catch2/master/single_include/catch2/catch.hpp) distribution.
+(The `tests/catch.hpp` file can be updated from time to time.)
+To run the unit tests after building the megafauna library, run `./megafauna_unit_tests` in the build directory.
+To disable building the unit tests, you can call `cmake -DBUILD_TESTING=OFF /path/to/repo`.
 
 ### Code Checkers
 
