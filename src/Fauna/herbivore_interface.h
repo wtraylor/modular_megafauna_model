@@ -112,7 +112,7 @@ struct HerbivoreInterface {
    * Sidenote: The function name doesn’t start with `get_` because the
    * function changes the internal state of the object.
    * \return Excreted nitrogen [kgN/km²] (+ tissue nitrogen if dead).
-   * \see \ref sec_nitrogen_excretion
+   * \see \ref sec_nitrogen_cycling
    */
   virtual double take_nitrogen_excreta() = 0;
 };

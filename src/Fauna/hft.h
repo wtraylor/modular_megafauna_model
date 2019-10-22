@@ -150,7 +150,7 @@ enum class ForagingLimit {
    * “artificial” smooth negative feedback from forage to fat mass.
    *
    * Note that this model is functionally similar to
-   * \ref FL_ILLIUS_OCONNOR_2000, but Illius & O’Connor (2000)
+   * \ref ForagingLimit::IlliusOConnor2000, but Illius & O’Connor (2000)
    * \cite illius2000resource use a value for
    * \ref Hft::foraging_half_max_intake_density that is empirical-based.
    *
@@ -175,7 +175,7 @@ enum class ForagingLimit {
    * whole patch (habitat) is used (not the sward density
    *
    * \note This model for maximum foraging works only for pure grazers
-   * (⇒ \ref DC_PURE_GRAZER).
+   * (⇒ \ref DietComposer::PureGrazer).
    * \ref GrassForage::get_sward_density()).
    * \see \ref Hft::foraging_half_max_intake_density
    */
@@ -229,7 +229,7 @@ enum class ReproductionModel {
  * table.
  *
  * The initialization values are the same as in the example file under
- * \ref examples/megafauna.toml. They must be valid in the context of the
+ * `examples/megafauna.toml`. They must be valid in the context of the
  * global parameters of the instruction file.
  */
 struct Hft {

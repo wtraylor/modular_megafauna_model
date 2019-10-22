@@ -10,7 +10,7 @@
 
 The megafauna model aims to apply principles of object-oriented programming as much as possible (see the page [Object-oriented Programming](\ref page_object_orientation)).
 Its architecture is modular and extensible.
-Each part can be tested in unit tests (see the page [Unit Tests](\ref page_tests)).
+Each part can be tested in unit tests.
 
 The following UML diagram shows through which interfaces the megafauna model interacts with other components:
 
@@ -216,7 +216,7 @@ The datapoint for that day is added to the temporal average in the \ref Fauna::S
 This level of aggregation is therefore **temporal across days**.
 
 3) The third level of aggregation takes place in \ref Fauna::Output::Aggregator.
-Here, the accumulated temporal averages from the simulation units are combined in spatial aggregation units (\ref Fauna::Datapoint::aggregation_unit).
+Here, the accumulated temporal averages from the simulation units are combined in spatial aggregation units (\ref Fauna::Output::Datapoint::aggregation_unit).
 This level of aggregation is therefore **spatial across habitats**.
 
 For the latter two aggregation levels the function \ref Fauna::Output::CombinedData::merge() is used.

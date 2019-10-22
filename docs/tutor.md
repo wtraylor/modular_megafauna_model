@@ -44,18 +44,13 @@ Make sure that an exception is thrown if it is called with an unknown forage typ
 ### How to add a new digestive limit {#sec_new_digestive_limit}
 On top of foraging limitations, the daily forage uptake can be constrained by maximum digestive throughput.
 The implementation is almost parallel to a [foraging limit](\ref sec_new_foraging_limit).
-You can choose
 
 - Add a new enum entry in \ref Fauna::DigestiveLimit.
-- Parameters:
-	+ In \ref Fauna::ParamReader::callback() add a string identifier for your implementation under `CB_DIGESTIVE_LIMIT` (also in the error message).
-	+ Add that identifier in the help message under \ref Fauna::ParamReader::declare_parameters().
-	+ Document your option in the example instruction file `data/ins/herbivores.ins`.
-- Implement your digestive limit algorithm as a free function or an object.
+- Read the new value for `digestion.limit` from the TOML instruction file in \ref Fauna::InsfileReader::read_hft().
+- Implement your digestive limit algorithm as a free function or an object. If it is not much code, put it in \ref foraging_limits.h, otherwise create a new file for it.
 Make sure that an exception is thrown if it is called with an unknown forage type.
 - Call your implementation in \ref Fauna::GetForageDemands::get_max_digestion().
 - Update the UML diagram in \ref sec_herbivorebase.
-
 
 ### How to add a new reproduction model {#sec_new_reproduction_model}
 A reproduction model defines the offspring per female individual for each simulation day.
@@ -177,7 +172,7 @@ The class \ref Fauna::Output::TextTableWriter is responsible for this format.
 However, you can also replace that output format with another one, for instance writing to a NetCDF file or forwarding it to another program or library.
 
 - Derive a new class from \ref Fauna::Output::WriterInterface.
-- Add a new enum entry to \ref Fauna::Output::OutputFormat.
+- Add a new enum entry to \ref Fauna::OutputFormat.
 - Parse the new option in \ref Fauna::InsfileReader::read_table_output().
 - Create a new instance of your writer class in the constructor \ref Fauna::World::World() if your enum entry is selected.
 

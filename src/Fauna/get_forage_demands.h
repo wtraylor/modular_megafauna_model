@@ -47,11 +47,11 @@ class GetForageDemands {
    * retaining the given relative energy proportions.
    * \throw std::invalid_argument If `kg_total < 0.0`.
    * \throw std::invalid_argument If `mj_proportions.sum() != 1.0`.
-   * \see \ref DL_ALLOMETRIC
+   * \see \ref DigestiveLimit::Allometric
    */
-  static ForageMass get_max_intake_as_total_mass(const ForageFraction& mj_proportions,
-      const ForageEnergyContent& mj_per_kg,
-      const double kg_total);
+  static ForageMass get_max_intake_as_total_mass(
+      const ForageFraction& mj_proportions,
+      const ForageEnergyContent& mj_per_kg, const double kg_total);
 
   /// Initialize foraging for another day.
   /**
@@ -174,14 +174,14 @@ class GetForageDemands {
 
   /// @{ \name State Variables
   HabitatForage available_forage;
-  double bodymass;                     // [kg/ind]
-  ForageFraction diet_composition;     // [frac.] sum = 1.0
-  Digestibility digestibility;         // [frac.]
-  ForageEnergyContent energy_content;  // [MJ/kgDM]
-  double energy_needs;                 // [MJ/ind]
-  ForageMass max_intake;               // [kgDM/ind/day]
-  int today;                           // 0 = January 1st
-  /** @} */                            // State Variables
+  double bodymass;                     /// [kg/ind]
+  ForageFraction diet_composition;     /// [frac.] sum = 1.0
+  Digestibility digestibility;         /// [frac.]
+  ForageEnergyContent energy_content;  /// [MJ/kgDM]
+  double energy_needs;                 /// [MJ/ind]
+  ForageMass max_intake;               /// [kgDM/ind/day]
+  int today;                           /// 0 = January 1st
+  /** @} */
 };
 
 }  // namespace Fauna

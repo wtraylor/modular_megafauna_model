@@ -14,7 +14,7 @@ A good first read for users and developers are the \ref page_quickstart and the 
 If you are considering to contribute to the source code, make yourself familiar with the \ref page_design as well as the \ref page_object_orientation.
 Please observe the [Open-closed Principle](\ref sec_open_closed) wherever possible: Only change a class *if necessary.* Try to extend it instead or—even better—write a new class with your functionality.
 In \ref page_tutor you might find already a step-by-step instruction for your use case.
-In \ref CONTRIBUTING.md you will find all the details about what your code should look like and how you can commit your changes to the repository.
+In `CONTRIBUTING.md` you will find all the details about what your code should look like and how you can commit your changes to the repository.
 
 Please keep the documentation pages \ref page_design and \ref page_model updated.
 The UML diagrams are rendered by PlantUML and collected all in one file: `docs/diagrams.iuml`.

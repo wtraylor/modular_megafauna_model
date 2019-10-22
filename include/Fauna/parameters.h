@@ -55,6 +55,9 @@ enum class OutputFormat {
  * prefixed with the category (i.e. the TOML table). Note that general
  * simulation parameters are in the TOML table “simulation”, but their
  * corresponding member variables don’t have a prefix.
+ *
+ * The initialization values are the same as in the example file under
+ * `examples/megafauna.toml`.
  */
 struct Parameters {
   /** @{ \name "simulation": General simulation parameters. */

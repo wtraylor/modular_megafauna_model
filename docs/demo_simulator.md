@@ -19,7 +19,7 @@ The class \ref Fauna::Demo::SimpleHabitat implements a very basic vegetation mod
 The `SimpleHabitat` corresponds to the LPJ-GUESS `Patch`.
 Only this one kind of vegetation model is implemented.
 
-Each “habitat group” can be considered a list of \ref Fauna::SimpleHabitat objects.
+Each “habitat group” can be considered a list of \ref Fauna::Demo::SimpleHabitat objects.
 The “habitat group” corresponds conceptually to the LPJ-GUESS `Gridcell`.
 
 @startuml "Class diagram of the megafauna demo simulator."

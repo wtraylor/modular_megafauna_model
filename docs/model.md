@@ -36,7 +36,7 @@ A herbivore is defined by these state variables:
 - Current energy need
 - Fat mass
 
-## Nitrogen Cycling
+## Nitrogen Cycling {#sec_nitrogen_cycling}
 
 The vegetation model defines the nitrogen content in forage.
 The maximum amount of nitrogen (\f$N_{bound}\f$, kgN/km²) bound in herbivores is comprised of the body tissue and the contents of the digestive tract.
