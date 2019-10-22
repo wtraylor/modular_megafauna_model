@@ -80,8 +80,8 @@ void PopulationList::kill_nonviable() {
     // If the population’s density is below minimum, mark all
     // herbivores as dead.
     const double min_ind_per_km2 =
-        pop->get_hft().mortality.minimum_density_threshold *
-        pop->get_hft().establishment.density;
+        pop->get_hft().mortality_minimum_density_threshold *
+        pop->get_hft().establishment_density;
     if (pop->get_ind_per_km2() < min_ind_per_km2) pop->kill_all();
   }
 }

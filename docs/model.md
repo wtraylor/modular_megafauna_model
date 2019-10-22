@@ -119,7 +119,7 @@ Body surface in m² scales roughly as \f$0.09*M^{0.66}\f$ ([Hudson & White 1985]
 \todo Explain how growth is linear in \ref Fauna::HerbivoreBase::get_bodymass()
 
 ## Minimum Density Threshold {#sec_minimum_density_threshold}
-The parameter \ref Fauna::Hft::minimum_density_threshold defines at which point a dwindling population (sum of all cohorts/individuals) may be considered dead.
+The parameter \ref Fauna::Hft::mortality_minimum_density_threshold defines at which point a dwindling population (sum of all cohorts/individuals) may be considered dead.
 It is an arbitrary, but critical value for model performance.
 Possible re-establishment only happens if all cohorts are dead within one habitat.
 

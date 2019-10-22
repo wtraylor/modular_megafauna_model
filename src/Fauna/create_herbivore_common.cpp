@@ -26,7 +26,7 @@ CreateHerbivoreCommon::CreateHerbivoreCommon(const Hft* hft,
 double CreateHerbivoreCommon::get_body_condition(const int age_days) const {
   double body_condition;
   if (age_days == 0)  // birth
-    body_condition = get_hft().body_fat.birth / get_hft().body_fat.maximum;
+    body_condition = get_hft().body_fat_birth / get_hft().body_fat_maximum;
   else                     // establishment
     body_condition = 1.0;  // full fat reserves
   assert(body_condition <= 1.0 && body_condition >= 0.0);

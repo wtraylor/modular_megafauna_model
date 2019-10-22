@@ -62,7 +62,7 @@ class HerbivoreBase : public HerbivoreInterface {
   double get_bodymass_adult() const;
 
   /// Get full-body conductance [W/°C/ind].
-  /** \see \ref Hft::conductance
+  /** \see \ref Hft::thermoregulation_conductance
    * \throw std::logic_error If \ref ConductanceModel not implemented. */
   double get_conductance() const;
 
@@ -71,10 +71,10 @@ class HerbivoreBase : public HerbivoreInterface {
 
   /// Get fat-free body mass [kg/ind].
   /**
-   * Use \ref Hft::bodymass_male or \ref Hft::bodymass_female
-   * if older than \ref Hft::maturity_age_phys_male or
-   * \ref Hft::maturity_age_phys_female, respectively.
-   * Otherwise interpolate linearly from \ref Hft::bodymass_birth.
+   * Use \ref Hft::body_mass_male or \ref Hft::body_mass_female
+   * if older than \ref Hft::life_history_physical_maturity_male or
+   * \ref Hft::life_history_physical_maturity_female, respectively.
+   * Otherwise interpolate linearly from \ref Hft::body_mass_birth.
    */
   virtual double get_lean_bodymass() const;
 
@@ -108,7 +108,7 @@ class HerbivoreBase : public HerbivoreInterface {
 
   /// Birth constructor.
   /**
-   * Herbivores are born with \ref Hft::bodyfat_birth.
+   * Herbivores are born with \ref Hft::body_fat_birth.
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
    * \throw std::invalid_argument If `hft==NULL`.
@@ -163,7 +163,7 @@ class HerbivoreBase : public HerbivoreInterface {
   /**
    * Calls \ref apply_mortality(), which is implemented by
    * child classes.
-   * \see \ref Hft::factors
+   * \see \ref Hft::mortality_factors
    */
   void apply_mortality_factors_today();
 
@@ -176,8 +176,8 @@ class HerbivoreBase : public HerbivoreInterface {
    * \throw std::invalid_argument If HFT pointer is NULL. */
   Hft const* check_hft_pointer(const Hft*);
 
-  /// Forage net energy content given by the selected algorithm \ref
-  /// Hft::net_energy_model.
+  /// Forage net energy content given by the selected algorithm
+  /// \ref Hft::foraging_net_energy_model.
   /**
    * \param digestibility Proportional digestibility.
    * \return Net energy content [MJ/kgDM].
@@ -197,7 +197,7 @@ class HerbivoreBase : public HerbivoreInterface {
    * calculations accordingly.
    * \return Number of offspring per individual [ind/ind/day].
    * Zero if this herbivore is male, or has not yet reached
-   * reproductive maturity (\ref Hft::maturity_age_sex).
+   * reproductive maturity (\ref Hft::life_history_sexual_maturity).
    * \throw std::logic_error If \ref Hft::reproduction_model
    * is not implemented.
    */

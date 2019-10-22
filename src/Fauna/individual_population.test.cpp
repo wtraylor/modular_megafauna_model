@@ -25,8 +25,8 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
   // prepare HFT
   const int ESTABLISH_COUNT = 100;  // [ind]
   Hft hft = create_hfts(1, params)[0];
-  hft.establishment.density = ESTABLISH_COUNT / AREA;  // [ind/km²]
-  hft.mortality.factors.clear();                       // immortal herbivores
+  hft.establishment_density = ESTABLISH_COUNT / AREA;  // [ind/km²]
+  hft.mortality_factors.clear();                       // immortal herbivores
   REQUIRE(hft.is_valid(params));
 
   // prepare creating object
@@ -49,12 +49,12 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
     // Do we have the exact number of individuals?
     CHECK(pop.get_list().size() == ESTABLISH_COUNT);
     // Does the total density match?
-    CHECK(pop.get_ind_per_km2() == Approx(hft.establishment.density));
+    CHECK(pop.get_ind_per_km2() == Approx(hft.establishment_density));
 
     SECTION("Removal of dead individuals") {
       // kill all herbivores in the list with a copy assignment
       // trick
-      hft.mortality.factors.insert(MortalityFactor::StarvationThreshold);
+      hft.mortality_factors.insert(MortalityFactor::StarvationThreshold);
       // create a dead individual
       const int AGE = 10;
       const double BC = 0.0;  // starved to death!

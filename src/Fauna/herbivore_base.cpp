@@ -24,7 +24,7 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
       sex(sex),                     // always valid
       age_days(age_days),
       today(-1),  // not initialized yet; call simulate_day() first
-      body_condition_gestation(get_hft().reproduction.gestation_length * 30) {
+      body_condition_gestation(get_hft().reproduction_gestation_length * 30) {
   // Check validity of parameters
   if (age_days == 0)
     throw std::invalid_argument(
@@ -35,8 +35,8 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
     throw std::invalid_argument(
         "Fauna::HerbivoreBase::HerbivoreBase() "
         "age_days < 0");
-  if (get_hft().mortality.factors.count(MortalityFactor::Lifespan) &&
-      age_days > get_hft().life_history.lifespan * 365)
+  if (get_hft().mortality_factors.count(MortalityFactor::Lifespan) &&
+      age_days > get_hft().life_history_lifespan * 365)
     throw std::invalid_argument(
         "Fauna::HerbivoreBase::HerbivoreBase() "
         "age_days is greater than maximum lifespan.");
@@ -67,10 +67,10 @@ HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex)
       age_days(0),
       current_output(new Output::HerbivoreData),
       get_forage_demands_per_ind(new GetForageDemands(hft, sex)),
-      body_condition_gestation(get_hft().reproduction.gestation_length * 30) {
+      body_condition_gestation(get_hft().reproduction_gestation_length * 30) {
   // Create energy budget (validity check inside that class)
   const double initial_fat_mass =
-      get_hft().body_fat.birth * get_hft().body_mass.birth;
+      get_hft().body_fat_birth * get_hft().body_mass_birth;
   energy_budget = std::auto_ptr<FatmassEnergyBudget>(
       new FatmassEnergyBudget(initial_fat_mass, get_max_fatmass()));
 
@@ -85,7 +85,7 @@ HerbivoreBase::HerbivoreBase(const HerbivoreBase& other)
     : age_days(other.age_days),
       hft(other.hft),
       sex(other.sex),
-      body_condition_gestation(get_hft().reproduction.gestation_length * 30),
+      body_condition_gestation(get_hft().reproduction_gestation_length * 30),
       nitrogen(other.nitrogen),
       // Create new object instances for std::auto_ptr with copy construction:
       energy_budget(new FatmassEnergyBudget(other.get_energy_budget())),
@@ -126,10 +126,10 @@ void HerbivoreBase::apply_mortality_factors_today() {
 
   // iterate through all mortality factors.
   std::set<MortalityFactor>::const_iterator itr;
-  for (const auto& itr : get_hft().mortality.factors) {
+  for (const auto& itr : get_hft().mortality_factors) {
     if (itr == MortalityFactor::Background) {
-      const GetBackgroundMortality background(get_hft().mortality.juvenile_rate,
-                                              get_hft().mortality.adult_rate);
+      const GetBackgroundMortality background(get_hft().mortality_juvenile_rate,
+                                              get_hft().mortality_adult_rate);
       const double mortality = background(get_age_days());
       mortality_sum += mortality;
       // output:
@@ -138,7 +138,7 @@ void HerbivoreBase::apply_mortality_factors_today() {
 
     if (itr == MortalityFactor::Lifespan) {
       const GetSimpleLifespanMortality lifespan(
-          get_hft().life_history.lifespan);
+          get_hft().life_history_lifespan);
       const double mortality = lifespan(get_age_days());
       mortality_sum += mortality;
       // output:
@@ -156,11 +156,11 @@ void HerbivoreBase::apply_mortality_factors_today() {
       // body fat at birth is very low.
       double bodyfat_deviation = 0;
       if (get_age_years() >= 1)
-        bodyfat_deviation = get_hft().body_fat.deviation;
+        bodyfat_deviation = get_hft().body_fat_deviation;
 
       const GetStarvationIlliusOConnor2000 starv_illius(
           bodyfat_deviation,
-          get_hft().mortality.shift_body_condition_for_starvation);
+          get_hft().mortality_shift_body_condition_for_starvation);
 
       // Call the function object and obtain mortality and new body
       // condition.
@@ -258,13 +258,13 @@ double HerbivoreBase::get_bodymass() const {
 
 double HerbivoreBase::get_bodymass_adult() const {
   if (get_sex() == Sex::Male)
-    return get_hft().body_mass.male;
+    return get_hft().body_mass_male;
   else
-    return get_hft().body_mass.female;
+    return get_hft().body_mass_female;
 }
 
 double HerbivoreBase::get_conductance() const {
-  switch (get_hft().thermoregulation.conductance) {
+  switch (get_hft().thermoregulation_conductance) {
     case (ConductanceModel::BradleyDeavers1980):
       return get_conductance_bradley_deavers_1980(get_bodymass());
     case (ConductanceModel::CuylerOeritsland2004):
@@ -291,7 +291,7 @@ double HerbivoreBase::get_fatmass() const {
 }
 
 double HerbivoreBase::get_lean_bodymass() const {
-  return get_potential_bodymass() * (1.0 - get_hft().body_fat.maximum);
+  return get_potential_bodymass() * (1.0 - get_hft().body_fat_maximum);
 }
 
 ForageMass HerbivoreBase::get_forage_demands(
@@ -332,14 +332,14 @@ double HerbivoreBase::get_kg_per_km2() const {
 }
 
 double HerbivoreBase::get_max_fatmass() const {
-  return get_potential_bodymass() * get_hft().body_fat.maximum;
+  return get_potential_bodymass() * get_hft().body_fat_maximum;
 }
 
 ForageEnergyContent HerbivoreBase::get_net_energy_content(
     const Digestibility& digestibility) const {
-  switch (get_hft().foraging.net_energy_model) {
+  switch (get_hft().foraging_net_energy_model) {
     case (NetEnergyModel::Default): {
-      const GetNetEnergyContentDefault get_default(get_hft().digestion.type);
+      const GetNetEnergyContentDefault get_default(get_hft().digestion_type);
       return get_default(digestibility);
     }
       // ADD NEW NET ENERGY MODELS HERE
@@ -355,9 +355,9 @@ double HerbivoreBase::get_potential_bodymass() const {
   // age of physical maturity in years
   double maturity_age;
   if (get_sex() == Sex::Male)
-    maturity_age = get_hft().life_history.physical_maturity_male;
+    maturity_age = get_hft().life_history_physical_maturity_male;
   else
-    maturity_age = get_hft().life_history.physical_maturity_female;
+    maturity_age = get_hft().life_history_physical_maturity_female;
 
   if (get_age_years() >= maturity_age)
     return get_bodymass_adult();
@@ -366,12 +366,12 @@ double HerbivoreBase::get_potential_bodymass() const {
 
     // lean weight at birth
     const double birth_leanmass =
-        get_hft().body_mass.birth * (1.0 - get_hft().body_fat.birth);
+        get_hft().body_mass_birth * (1.0 - get_hft().body_fat_birth);
 
     // potential full mass at birth
-    assert(1.0 - get_hft().body_fat.maximum > 0.0);
+    assert(1.0 - get_hft().body_fat_maximum > 0.0);
     const double birth_potmass =
-        birth_leanmass / (1.0 - get_hft().body_fat.maximum);
+        birth_leanmass / (1.0 - get_hft().body_fat_maximum);
 
     // age fraction from birth to physical maturity
     assert(maturity_age > 0.0);
@@ -403,11 +403,11 @@ double HerbivoreBase::get_todays_expenditure() const {
 
   bool add_thermoregulation = false;
 
-  for (const auto& component : get_hft().expenditure.components)
+  for (const auto& component : get_hft().expenditure_components)
     switch (component) {
       case (ExpenditureComponent::Allometric): {
-        assert(get_hft().expenditure.allometric.coefficient > 0.0);
-        result += get_hft().expenditure.allometric.calc(get_bodymass());
+        assert(get_hft().expenditure_allometric.coefficient > 0.0);
+        result += get_hft().expenditure_allometric.calc(get_bodymass());
         break;
       }
       case (ExpenditureComponent::Taylor1981): {
@@ -437,7 +437,7 @@ double HerbivoreBase::get_todays_expenditure() const {
   if (add_thermoregulation) {
     result += get_thermoregulatory_expenditure(
         result,  // thermoneutral_rate
-        get_conductance(), get_hft().thermoregulation.core_temperature,
+        get_conductance(), get_hft().thermoregulation_core_temperature,
         get_environment().air_temperature);
   }
 
@@ -447,35 +447,35 @@ double HerbivoreBase::get_todays_expenditure() const {
 
 double HerbivoreBase::get_todays_offspring_proportion() const {
   if (get_sex() == Sex::Male ||
-      get_age_years() < get_hft().life_history.sexual_maturity)
+      get_age_years() < get_hft().life_history_sexual_maturity)
     return 0.0;
 
   // Several models use a BreedingSeason object, so we create one right
   // away.
-  const BreedingSeason breeding_season(get_hft().breeding_season.start,
-                                       get_hft().breeding_season.length);
+  const BreedingSeason breeding_season(get_hft().breeding_season_start,
+                                       get_hft().breeding_season_length);
 
   // Use the average body condition (fat mass/maximum fat mass) over the
   // last months of pregnancy.
   const double body_condition = body_condition_gestation.get_average();
 
   // choose the model
-  switch (get_hft().reproduction.model) {
+  switch (get_hft().reproduction_model) {
     case (ReproductionModel::ConstantMaximum): {
       const ReproductionConstMax const_max(
-          breeding_season, get_hft().reproduction.annual_maximum);
+          breeding_season, get_hft().reproduction_annual_maximum);
       return const_max.get_offspring_density(get_today());
     }
     case (ReproductionModel::IlliusOConnor2000): {
       // create our model object
       const ReprIlliusOconnor2000 illius_2000(
-          breeding_season, get_hft().reproduction.annual_maximum);
+          breeding_season, get_hft().reproduction_annual_maximum);
       // get today’s value
       return illius_2000.get_offspring_density(get_today(), body_condition);
     }
     case (ReproductionModel::Linear): {
       const ReproductionLinear linear(breeding_season,
-                                      get_hft().reproduction.annual_maximum);
+                                      get_hft().reproduction_annual_maximum);
       return linear.get_offspring_density(get_today(), body_condition);
     }
     case (ReproductionModel::None): {
@@ -535,7 +535,7 @@ void HerbivoreBase::simulate_day(const int day,
   /// - Update maximum fat mass and gain in \ref Fauna::FatmassEnergyBudget.
   get_energy_budget().set_max_fatmass(
       get_max_fatmass(),  // max. absolute fat mass
-      get_hft().body_fat.maximum_daily_gain *
+      get_hft().body_fat_maximum_daily_gain *
           get_bodymass());  // max. possible gain today
 
   /// - Add new output.

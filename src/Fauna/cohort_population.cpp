@@ -45,31 +45,31 @@ void CohortPopulation::establish() {
     throw std::logic_error(
         "Fauna::CohortPopulation::establish() "
         "Trying to establish into a non-empty population.");
-  if (get_hft().establishment.density == 0.0) return;
+  if (get_hft().establishment_density == 0.0) return;
 
   assert(list.empty());
 
   // We create one male and one female for each age specified in the HFT.
 
-  const double cohort_count = 2 * (get_hft().establishment.age_range.second -
-                                   get_hft().establishment.age_range.first + 1);
+  const double cohort_count = 2 * (get_hft().establishment_age_range.second -
+                                   get_hft().establishment_age_range.first + 1);
 
   // Density of one cohort (ind/km²).
-  const double cohort_density = get_hft().establishment.density / cohort_count;
+  const double cohort_density = get_hft().establishment_density / cohort_count;
 
-  for (int age = get_hft().establishment.age_range.first;
-       age <= get_hft().establishment.age_range.second; age++) {
+  for (int age = get_hft().establishment_age_range.first;
+       age <= get_hft().establishment_age_range.second; age++) {
     // Since the list is empty, we can simply create new cohorts
     // without needing to check if the age-class already exists.
 
     // add males
     list.push_back(create_cohort(
-        get_hft().establishment.density / cohort_count,  // [ind/km²]
+        get_hft().establishment_density / cohort_count,  // [ind/km²]
         age, Sex::Male));
 
     // add females
     list.push_back(create_cohort(
-        get_hft().establishment.density / cohort_count,  // [ind/km²]
+        get_hft().establishment_density / cohort_count,  // [ind/km²]
         age, Sex::Female));
   }
 }

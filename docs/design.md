@@ -92,15 +92,15 @@ That is done by the parameter \ref Fauna::Parameters::habitat_area_km2.
 The herbivore class itself can be seen as a mere framework (compare \ref sec_inversion_of_control) that integrates various components:
 
 - The herbivore’s own **energy budget**: \ref Fauna::FatmassEnergyBudget.
-- Its **energy needs**, defined by \ref Fauna::Hft::components.
+- Its **energy needs**, defined by \ref Fauna::Hft::expenditure_components.
 The herbivore object is self-responsible to call the implementation of the given expenditure models.
 (A strategy pattern would not work here as different expenditure models need to know different variables.)
-- How much the herbivore **is able to digest** is limited by a single algorithm defined in \ref Fauna::Hft::limit.
-- How much the herbivore **is able to forage** can be constrained by various factors which are defined as a set of \ref Fauna::Hft::limits.
-- The **diet composition** (i.e. feeding preferences in a scenario with multiple forage types) is controlled by a the model selected in \ref Fauna::Hft::diet_composer, whose implementation should be called in \ref Fauna::GetForageDemands::get_diet_composition().
+- How much the herbivore **is able to digest** is limited by a single algorithm defined in \ref Fauna::Hft::digestion_limit.
+- How much the herbivore **is able to forage** can be constrained by various factors which are defined as a set of \ref Fauna::Hft::foraging_limits.
+- The **diet composition** (i.e. feeding preferences in a scenario with multiple forage types) is controlled by a the model selected in \ref Fauna::Hft::foraging_diet_composer, whose implementation should be called in \ref Fauna::GetForageDemands::get_diet_composition().
 - How much **net energy** the herbivore is able to gain from feeding on forage is calculated by an implementation of \ref Fauna::GetNetEnergyContentInterface
 (given by [constructor injection](\ref sec_inversion_of_control)).
-- **Death** of herbivores is controlled by a set of \ref Fauna::Hft::factors.
+- **Death** of herbivores is controlled by a set of \ref Fauna::Hft::mortality_factors.
 For a cohort that means that the density is proportionally reduced.
 For an individual, death is a stochastic event.
 The corresponding population objects will release dead herbivore objects automatically.
