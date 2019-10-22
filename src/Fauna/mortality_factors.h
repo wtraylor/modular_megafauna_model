@@ -78,7 +78,7 @@ class GetSimpleLifespanMortality {
  * of this distribution that projects below zero.”
  * </BLOCKQUOTE>
  *
- * \image html starvation_illius_oconnor_2000.png "Starvation mortality
+ * \image html starvation_illius2000resource.png "Starvation mortality
  * after Illius & O’Connor (2000). The red area indicates the dying part of the
  * cohort. SD = standard deviation."
  *

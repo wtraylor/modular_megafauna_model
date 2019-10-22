@@ -31,7 +31,7 @@ namespace Fauna {
  * - 50% of adults will breed when F/F_max=0.3
  * - 95% will breed when F/F_max=0.5
  *
- * \image html reproduction_illiusoconnor2000.png
+ * \image html reproduction_illius2000resource.png
  *
  * The annual rate is then converted to a daily rate over the
  * breeding season length:

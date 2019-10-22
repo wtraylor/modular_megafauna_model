@@ -38,12 +38,13 @@ struct PopulationInterface {
 
   /// Create a set of new herbivores to establish a population.
   /**
+   * \throw std::logic_error If this population is not empty.
+   *
    * - The age of new herbivores is evenly distributed in the range
    *   \ref Hft::establishment_age_range.
    * - The sex ratio is even.
-   * - Total density matches \ref Hft::establishment_density
-   *   as closely as possible.
-   * \throw std::logic_error If this population is not empty.
+   * - Total density matches \ref Hft::establishment_density as closely
+   *   as possible.
    */
   virtual void establish() = 0;
 
