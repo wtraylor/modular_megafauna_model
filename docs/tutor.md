@@ -157,8 +157,11 @@ If your variable of interest is already present in \ref Fauna::Output::HabitatDa
 	+ Implement average building in the appropriate `merge()` function.
 	+ For herbivore data, you need to add it to \ref Fauna::Output::HerbivoreData::create_datapoint(). If your value is *per individual*, you don’ TODO
 	+ Assign a value to the variable somewhere in daily simulation.
+
 - Write the variable in \ref Fauna::Output::TextTableWriter.
-    + Add a selector for your new output file as a boolean variable in the category "text_tables" in \ref Fauna::Parameters.
+    + Add a selector for your new output file as a boolean member variable in \ref Fauna::TextTableWriterOptions. Pay attention to place it in the right Doxygen group.
+    + Parse the name of the selector in \ref Fauna::InsfileReader::read_table_output_text_tables() and add it there to the valid options in the error message.
+    + Consider adding it in the example output in the file `examples/megafauna.toml`.
     + Add an output file stream (`std::ofstream`) for your variable as a private member variable in \ref Fauna::Output::TextTableWriter.
     + In the constructor \ref Fauna::Output::TextTableWriter::TextTableWriter(), add your new output file to the list of file streams if it is selected in the options.
     + Initialize the column captions of your new file in \ref Fauna::Output::TextTableWriter::write_captions().
