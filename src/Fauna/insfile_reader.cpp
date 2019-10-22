@@ -293,12 +293,11 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     const auto value =
         find_hft_parameter<std::string>(table, "reproduction.model", true);
     assert(value);
-    if (lowercase(*value) == lowercase("None")){
+    if (lowercase(*value) == lowercase("None")) {
       hft.reproduction_model = ReproductionModel::None;
       hft.life_history_physical_maturity_female = 1;
       hft.life_history_physical_maturity_male = 1;
-    }
-    else if (lowercase(*value) == lowercase("ConstantMaximum"))
+    } else if (lowercase(*value) == lowercase("ConstantMaximum"))
       hft.reproduction_model = ReproductionModel::ConstantMaximum;
     else if (lowercase(*value) == lowercase("IlliusOConnor2000"))
       hft.reproduction_model = ReproductionModel::IlliusOConnor2000;
@@ -561,11 +560,14 @@ void InsfileReader::read_table_output_text_tables() {
     auto value = ins->get_qualified_array_of<std::string>(key);
     if (value) {
       for (const auto& s : *value)
-        if (lowercase(s) == "mass_density_per_hft")
+        if (lowercase(s) == "digestibility")
+          params.output_text_tables.digestibility = true;
+        else if (lowercase(s) == "mass_density_per_hft")
           params.output_text_tables.mass_density_per_hft = true;
-        // -> Add new output tables here.
+        // -> Add new output tables here (alphabetical order).
         else
-          throw invalid_option(key, s, {"mass_density_per_hft"});
+          throw invalid_option(key, s,
+                               {"digestibility", "mass_density_per_hft"});
     }
   }
 }

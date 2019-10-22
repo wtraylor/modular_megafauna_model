@@ -23,10 +23,6 @@ namespace Output {
  * boolean variable in \ref TextTableWriterOptions.
  * All files are created in a directory specified by
  * \ref TextTableWriterOptions::directory.
- *
- * Per-HFT tables have one column per HFT:
- * - `mass_density_per_hft`
- *
  */
 class TextTableWriter : public WriterInterface {
  public:
@@ -92,7 +88,9 @@ class TextTableWriter : public WriterInterface {
   const TextTableWriterOptions options;
 
   /** @{ \name File Streams */
+  std::ofstream digestibility;
   std::ofstream mass_density_per_hft;
+  // Add new output variables here (alphabetical order).
   /** @} */  // File Streams
 };
 }  // namespace Output

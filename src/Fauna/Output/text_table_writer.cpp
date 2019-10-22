@@ -13,15 +13,20 @@ using namespace Fauna::Output;
 
 const char* TextTableWriter::FILE_EXTENSION = ".tsv";
 
-TextTableWriter::TextTableWriter(
-    const OutputInterval interval,
-    const TextTableWriterOptions& options)
+TextTableWriter::TextTableWriter(const OutputInterval interval,
+                                 const TextTableWriterOptions& options)
     : interval(interval), options(options) {
   const std::string& dir = options.directory;
 
   create_directories(dir);
 
   // Add all selected output files to list of file streams.
+  if (options.digestibility) {
+    const std::string path = dir + "/digestibility" + FILE_EXTENSION;
+    check_file_exists(path);
+    file_streams.push_back(&digestibility);
+    digestibility.open(path);
+  }
   if (options.mass_density_per_hft) {
     const std::string path = dir + "/mass_density_per_hft" + FILE_EXTENSION;
     check_file_exists(path);
@@ -111,7 +116,16 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
     *f << datapoint.aggregation_unit;
   }
 
-  // Per HFT Tables
+  // Per-ForageType Tables
+  const auto digestibility_data =
+      datapoint.data.habitat_data.available_forage.get_digestibility();
+  for (const auto t : FORAGE_TYPES) {
+    if (digestibility.is_open())
+      digestibility << FIELD_SEPARATOR << digestibility_data[t];
+  }
+  digestibility << std::endl;
+
+  // Per-HFT Tables
   for (const auto i : datapoint.data.hft_data) {
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << i.second.massdens;
@@ -143,7 +157,13 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
     *f << "agg_unit";
   }
 
-  // Per HFT Tables
+  // Per-ForageType Tables
+  for (const auto t : FORAGE_TYPES) {
+    if (digestibility.is_open())
+      digestibility << FIELD_SEPARATOR << get_forage_type_name(t);
+  }
+
+  // Per-HFT Tables
   for (const auto i : datapoint.data.hft_data) {
     const std::string& hft_name = i.first->name;
 

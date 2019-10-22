@@ -22,6 +22,7 @@ interval = "Annual"
 directory = "./"
 precision = 4
 tables = [
+  "digestibility",
   "mass_density_per_hft"
 ]
 

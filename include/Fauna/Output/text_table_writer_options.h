@@ -29,8 +29,17 @@ struct TextTableWriterOptions {
   /// Number of figures after the decimal point.
   unsigned int precision = 3;
 
-  /// Table: Herbivore mass density per HFT in kg/km².
+  /** @{ \name Per-ForageType tables: one column per forage type. */
+  /// Digestibility of available forage in the habitat.
+  /** \see \ref Fauna::HabitatForage::get_digestibility() */
+  bool digestibility = false;
+  /** @} */
+
+  /** @{ \name Per-HFT tables: one column per HFT. */
+  /// Herbivore mass density per HFT in kg/km².
+  /** \see \ref Fauna::HerbivoreData::massdens */
   bool mass_density_per_hft = false;
+  /** @} */
 };
 }  // namespace Output
 }  // namespace Fauna
