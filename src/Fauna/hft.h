@@ -249,7 +249,7 @@ struct Hft {
   /// Unique name of the herbivore type.
   std::string name = "example";
 
-  /** @{ \name `body_fat`: Body fat parameters. */
+  /** @{ \name "body_fat": Body fat parameters. */
   /// Proportional fat mass at birth [kg/kg].
   double body_fat_birth = 0.2;
 
@@ -275,7 +275,7 @@ struct Hft {
   double body_fat_maximum_daily_gain = 0.05;
   /** @} */
 
-  /** @{ \name `body_mass`: Body mass parameters. */
+  /** @{ \name "body_mass": Body mass parameters. */
   /// Body mass [kg] at birth for both sexes.
   int body_mass_birth = 5;
 
@@ -286,7 +286,7 @@ struct Hft {
   int body_mass_male = 70;
   /** @} */
 
-  /** @{ \name `breeding_season`: Time period of giving birth. */
+  /** @{ \name "breeding_season": Time period of giving birth. */
   /// Length of breeding season in days.
   int breeding_season_length = 30;
 
@@ -294,7 +294,7 @@ struct Hft {
   int breeding_season_start = 121;
   /** @} */
 
-  /** @{ \name `digestion`: Digestion-related parameters. */
+  /** @{ \name "digestion": Digestion-related parameters. */
   /// Parameters for \ref DigestiveLimit::Allometric
   AllometryParameters digestion_allometric = {0.05, 0.76};
 
@@ -309,10 +309,7 @@ struct Hft {
   DigestionType digestion_type = DigestionType::Ruminant;
   /** @} */
 
-  /**
-   * @{ \name `establishment`:  Parameters for spawning new herbivores in
-   * empty habitats.
-   */
+  /** @{ \name "establishment": Spawning new herbivores in empty habitats. */
   /// Youngest and oldest age [years] for herbivore establishment.
   std::pair<int, int> establishment_age_range = {1, 15};
 
@@ -320,7 +317,7 @@ struct Hft {
   double establishment_density = 1.0;
   /** @} */
 
-  /** @{ \name `expenditure`: Energy expenditure parameters. */
+  /** @{ \name "expenditure": Energy expenditure parameters. */
   /// Parameters for \ref ExpenditureComponent::Allometric.
   AllometryParameters expenditure_allometric = {0.4, 0.75};
 
@@ -329,7 +326,7 @@ struct Hft {
       ExpenditureComponent::Allometric};
   /** @} */
 
-  /** @{ \name `foraging`: Parameters regulating food intake. */
+  /** @{ \name "foraging": Parameters regulating food intake. */
   /// Model defining the herbivore’s diet composition.
   DietComposer foraging_diet_composer = DietComposer::PureGrazer;
 
@@ -348,7 +345,7 @@ struct Hft {
   NetEnergyModel foraging_net_energy_model = NetEnergyModel::Default;
   /** @} */
 
-  /** @{ \name `life_history`: Life stages for herbivore individuals. */
+  /** @{ \name "life_history": Life stages for herbivore individuals. */
   /// Maximum age in years [1–∞).
   int life_history_lifespan = 16;
 
@@ -362,7 +359,7 @@ struct Hft {
   int life_history_sexual_maturity = 2;
   /** @} */
 
-  /** @{ \name `mortality`: Parameters to define death of herbivores. */
+  /** @{ \name "mortality": Parameters to define death of herbivores. */
   /// Annual background mortality rate [0.0–1.0) after first year of life.
   double mortality_adult_rate = 0.1;
 
@@ -384,7 +381,7 @@ struct Hft {
   bool mortality_shift_body_condition_for_starvation = true;
   /** @} */
 
-  /** @{ \name `reproduction`: Parameters relating to annual reproduction. */
+  /** @{ \name "reproduction": Parameters relating to annual reproduction. */
   /// Maximum annual reproduction rate for females (0.0–∞)
   double reproduction_annual_maximum = 1.0;
 
@@ -395,7 +392,7 @@ struct Hft {
   ReproductionModel reproduction_model = ReproductionModel::ConstantMaximum;
   /** @} */
 
-  /** @{ \name `thermoregulation`: Expenditure through heat loss. */
+  /** @{ \name "thermoregulation": Expenditure through heat loss. */
   /// Algorithm to calculate whole-body conductance for thermoregulation.
   ConductanceModel thermoregulation_conductance =
       ConductanceModel::BradleyDeavers1980;
