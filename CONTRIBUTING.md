@@ -54,7 +54,9 @@ Follow Chris Beams’ guide for crafting your Git commit messages: [How to Write
 > 7. Use the body to explain what and why vs. how
 
 ### Continuous Integration
-<!--TODO-->
+The repository should always be in a valid state.
+A number of tests are defined in the file `.gitlab-ci.yml`.
+This file works with GitLab Continuous Integration (CI).
 
 Coding Guidelines
 -----------------
