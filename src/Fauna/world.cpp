@@ -46,7 +46,7 @@ World::World(const std::string instruction_filename)
   switch (get_params().output_format) {
     case OutputFormat::TextTables:
       output_writer.reset(new Output::TextTableWriter(
-          get_params().output_interval, get_params().text_table_output));
+          get_params().output_interval, get_params().output_text_tables));
       break;
     default:
       std::logic_error(

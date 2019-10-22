@@ -86,12 +86,10 @@ struct Parameters {
 
   /// Time interval for aggregating output.
   OutputInterval output_interval = OutputInterval::Annual;
-  /** @} */
 
-  /** @{ \name "text_table_output": Preferences for Output::TextTableWriter. */
   /// Options for \ref Output::TextTableWriter, in TOML table
-  /// "text_table_output".
-  Output::TextTableWriterOptions text_table_output;
+  /// "output.text_tables".
+  Output::TextTableWriterOptions output_text_tables;
   /** @} */
 
   /// Check if the parameters are valid

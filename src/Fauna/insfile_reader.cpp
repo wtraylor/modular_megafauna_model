@@ -542,27 +542,27 @@ void InsfileReader::read_table_output() {
 
 void InsfileReader::read_table_output_text_tables() {
   {
-    const auto key = "output.text_table_output.directory";
+    const auto key = "output.text_tables.directory";
     auto value = ins->get_qualified_as<std::string>(key);
     if (value) {
-      params.text_table_output.directory = *value;
+      params.output_text_tables.directory = *value;
     } else
       throw missing_parameter(key);
   }
   {
-    const auto key = "output.text_table_output.precision";
+    const auto key = "output.text_tables.precision";
     auto value = ins->get_qualified_as<int>(key);
     if (value) {
-      params.text_table_output.precision = *value;
+      params.output_text_tables.precision = *value;
     }
   }
   {
-    const auto key = "output.text_table_output.tables";
+    const auto key = "output.text_tables.tables";
     auto value = ins->get_qualified_array_of<std::string>(key);
     if (value) {
       for (const auto& s : *value)
         if (lowercase(s) == "mass_density_per_hft")
-          params.text_table_output.mass_density_per_hft = true;
+          params.output_text_tables.mass_density_per_hft = true;
         // -> Add new output tables here.
         else
           throw invalid_option(key, s, {"mass_density_per_hft"});
