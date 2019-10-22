@@ -178,9 +178,16 @@ All user-defined simulation parameters are contained in the two classes \ref Fau
 All parameters must be constant within one simulation run.
 Since some classes work with pointers to the classes \ref Fauna::Hft, \ref Fauna::HftList, and \ref Fauna::Parameters, all objects of these classes must not be moved in memory.
 
-The host program only passes the path to the TOML instruction file to the class \ref Fauna::World.
+The host program only passes the path to the [TOML](https://github.com/toml-lang/toml) instruction file to the class \ref Fauna::World.
 The parameters are parsed by the megafauna library independently, using [cpptoml](https://github.com/skystrife/cpptoml).
 This is done by the class \ref Fauna::InsfileReader.
+
+The TOML format is chosen because it is easy to read for humans and easy to parse with a free library.
+Many people might be already familiar with similar syntax from DOS ini files.
+The table arrays are particularly useful for defining an HFT set.
+Alternative formats don’t have all these advantages.
+The YAML standard is a bit too complex for our purpose, but would have been another good candidate.
+JSON and XML are not so easy for humans to read and edit.
 
 Following the [Inversion of Control](\ref sec_inversion_of_control) principle, as few classes as possible have direct access to the classes that hold the parameters.
 These classes play the role of the “framework”: They call any client classes _only_ with the very necessary parameters instead of the complete \ref Fauna::Hft or \ref Fauna::Parameters objects.
