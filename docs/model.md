@@ -112,6 +112,10 @@ Body surface in m² scales roughly as \f$0.09*M^{0.66}\f$ ([Hudson & White 1985]
 
 \todo Find a reference for this definition of in-vitro digestibility.
 
+@startuml "Levels of herbivore intake constraints. What and how much of the available forage an herbivore ingests is limited by a cascade of internal and external factors."
+	!include diagrams.iuml!intake_limit_levels
+@enduml
+
 ## Reproduction {#sec_reproduction}
 
 ## Life History {#sec_life_history}

@@ -226,13 +226,13 @@ annotation "Metabolic Limit" as metabolic_limit
 note left: Maintenance needs + max. anabolism
 annotation "Competition Limit" as competition
 note left: Sharing resources with other herbivores
-annotation "Feeding" as feeding
+annotation "Ingestion" as ingestion
 available_forage -down-> foraging_limit
 foraging_limit   -down-> digestion_limit
 digestion_limit  -down-> diet_choice
 diet_choice      -down-> metabolic_limit
 metabolic_limit  -down-> competition
-competition      -down-> feeding
+competition      -down-> ingestion
 @enduml
 
 @startuml (id=new_forage_type)
