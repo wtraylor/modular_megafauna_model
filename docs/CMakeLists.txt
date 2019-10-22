@@ -9,9 +9,9 @@ if (DOXYGEN_FOUND)
   # For CI (Continuous Integration) this option should be turned on so
   # that the doxygen command fails if there is a warning.
   if (STOP_DOXYGEN_ON_WARNING)
-    set (DOXYGEN_WARN_AS_ERROR ON)
+    set (DOXYGEN_WARN_AS_ERROR YES)
   else()
-    set (DOXYGEN_WARN_AS_ERROR OFF)
+    set (DOXYGEN_WARN_AS_ERROR NO)
   endif()
 
   set (DOXYGEN_CITE_BIB_FILES "bibliography.bib")
