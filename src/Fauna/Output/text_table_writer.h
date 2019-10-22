@@ -9,20 +9,20 @@
 
 #include <fstream>
 #include <vector>
-#include "writer_interface.h"
 #include "parameters.h"
+#include "writer_interface.h"
 
 namespace Fauna {
 namespace Output {
 
 /// Writes output data to tabular plaintext files.
 /**
- * \ref Parameters::TextTableWriterOptions contains boolean switches to enable
- * and disable the creation of different data tables in plaintext files. The
- * files have the same name as the corresponding boolean variable in
- * \ref Parameters::TextTableWriterOptions.
+ * In \ref Parameters there are boolean variables prefixed with "text_tables".
+ * They are switches to enable and disable the creation of different data
+ * tables in plaintext files. The files have the same name as the corresponding
+ * boolean variable in \ref TextTableWriterOptions.
  * All files are created in a directory specified by
- * \ref Parameters::TextTableWriterOptions::directory.
+ * \ref TextTableWriterOptions::directory.
  *
  * Per-HFT tables have one column per HFT:
  * - `mass_density_per_hft`
@@ -38,7 +38,7 @@ class TextTableWriter : public WriterInterface {
    * \throw std::runtime_error If one of the output files already exists.
    */
   TextTableWriter(const OutputInterval interval,
-                  const Parameters::TextTableWriterOptions& options);
+                  const TextTableWriterOptions& options);
 
   /// Append spatially & temporally aggregated output data to table files.
   /**
@@ -89,7 +89,7 @@ class TextTableWriter : public WriterInterface {
   bool captions_written = false;
   std::vector<std::ofstream*> file_streams;  // only selected ones
   const OutputInterval interval;
-  const Parameters::TextTableWriterOptions options;
+  const TextTableWriterOptions options;
 
   /** @{ \name File Streams */
   std::ofstream mass_density_per_hft;

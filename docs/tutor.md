@@ -163,7 +163,7 @@ If your variable of interest is already present in \ref Fauna::Output::HabitatDa
 	+ For herbivore data, you need to add it to \ref Fauna::Output::HerbivoreData::create_datapoint(). If your value is *per individual*, you don’ TODO
 	+ Assign a value to the variable somewhere in daily simulation.
 - Write the variable in \ref Fauna::Output::TextTableWriter.
-    + Add a selector for your new output file as a boolean variable in \ref Fauna::Parameters::TextTableWriterOptions.
+    + Add a selector for your new output file as a boolean variable in the category "text_tables" in \ref Fauna::Parameters.
     + Add an output file stream (`std::ofstream`) for your variable as a private member variable in \ref Fauna::Output::TextTableWriter.
     + In the constructor \ref Fauna::Output::TextTableWriter::TextTableWriter(), add your new output file to the list of file streams if it is selected in the options.
     + Initialize the column captions of your new file in \ref Fauna::Output::TextTableWriter::write_captions().
