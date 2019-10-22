@@ -99,10 +99,10 @@ enum class DigestiveLimit {
    * mother.
    * \f[
    * DMI =
-   *   \begin{cases}
-   *   f_{ad} * M & \text{if adult: } M = M_{ad}\\\\
-   *   f_{ad}*M_{ad}^{-0.75} * M^{-0.75} & \text{if } M < M_{ad}
-   *   \end{cases}
+   *   \\begin{cases}
+   *   f_{ad} * M \\text{if adult: } M = M_{ad}\\\\
+   *   f_{ad}*M_{ad}^{-0.75} * M^{-0.75} \\text{if } M < M_{ad}
+   *   \\end{cases}
    * \f]
    * \image html scale_diglimit.svg "Scaling of digestive limit for
    * non-mature animals."
