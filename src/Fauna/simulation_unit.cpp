@@ -13,10 +13,10 @@
 
 using namespace Fauna;
 
-SimulationUnit::SimulationUnit(Habitat* habitat, PopulationList* populations)
-    :  // move ownership to private unique_ptr objects
-      habitat(habitat),
-      populations(populations),
+SimulationUnit::SimulationUnit(std::shared_ptr<Habitat> habitat,
+                               PopulationList* populations)
+    : habitat(habitat),
+      populations(populations),  // move ownership to unique_ptr object
       initial_establishment_done(false) {
   if (habitat == NULL)
     throw std::invalid_argument(

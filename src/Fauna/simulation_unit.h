@@ -24,13 +24,15 @@ class SimulationUnit {
  public:
   /// Constructor
   /**
-   * \param habitat Pointer to the habitat object. SimulationUnit will take
-   * over exclusive ownership of the pointer.
+   * \param habitat A shared pointer to the habitat object. Since the object is
+   * created not by the megafauna library, but externally, it is implemented as
+   * a shared pointer. The Habitat resource will not be released from memory
+   * when the SimulationUnit object dies.
    * \param populations Pointer to the habitat object. SimulationUnit will take
    * over exclusive ownership of the pointer.
    * \throw std::invalid_argument If one of the parameters is NULL.
    */
-  SimulationUnit(Habitat* habitat, PopulationList* populations);
+  SimulationUnit(std::shared_ptr<Habitat> habitat, PopulationList* populations);
 
   /// Default Destructor
   ~SimulationUnit();
@@ -67,7 +69,7 @@ class SimulationUnit {
   void set_initial_establishment_done() { initial_establishment_done = true; }
 
  private:
-  std::unique_ptr<Habitat> habitat;
+  std::shared_ptr<Habitat> habitat;
   bool initial_establishment_done;
   std::unique_ptr<PopulationList> populations;
 };

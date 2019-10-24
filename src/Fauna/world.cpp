@@ -59,7 +59,7 @@ World::World(const std::string instruction_filename)
 // forward-declared types are complete.
 World::~World() = default;
 
-void World::create_simulation_unit(Habitat* habitat) {
+void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
   if (habitat == NULL)
     throw std::invalid_argument(
         "World::create_simulation_unit(): Pointer to habitat is NULL.");

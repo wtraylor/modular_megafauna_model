@@ -235,8 +235,8 @@ bool Framework::run(const std::string insfile_fauna,
       try {
         // We only pass the pointer to the new habitat to the megafauna
         // library, so special care is needed that it will stay valid.
-        fauna_world->create_simulation_unit(
-            new SimpleHabitat(params.habitat, aggregation_unit));
+        fauna_world->create_simulation_unit(std::shared_ptr<Habitat>(
+            new SimpleHabitat(params.habitat, aggregation_unit)));
       } catch (const std::exception& e) {
         std::cerr << "Exception during habitat creation:" << std::endl
                   << "group number " << g << " of " << params.ngroups << '\n'
