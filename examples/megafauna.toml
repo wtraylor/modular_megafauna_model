@@ -19,7 +19,7 @@ format = "TextTables"
 interval = "Annual"
 
 [output.text_tables]
-directory = "./"
+directory = "."
 precision = 4
 tables = [
   "digestibility",
