@@ -11,6 +11,7 @@
 using namespace Fauna;
 using namespace Fauna::Output;
 
+const char* TextTableWriter::NA_VALUE = "NA";
 const char* TextTableWriter::FILE_EXTENSION = ".tsv";
 
 TextTableWriter::TextTableWriter(const OutputInterval interval,
@@ -119,9 +120,15 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   // Per-ForageType Tables
   const auto digestibility_data =
       datapoint.data.habitat_data.available_forage.get_digestibility();
+  const auto forage_mass_data =
+      datapoint.data.habitat_data.available_forage.get_mass();
   for (const auto t : FORAGE_TYPES) {
-    if (digestibility.is_open())
-      digestibility << FIELD_SEPARATOR << digestibility_data[t];
+    if (digestibility.is_open()) {
+      if (forage_mass_data[t] > 0)
+        digestibility << FIELD_SEPARATOR << digestibility_data[t];
+      else
+        digestibility << FIELD_SEPARATOR << NA_VALUE;
+    }
   }
   digestibility << std::endl;
 

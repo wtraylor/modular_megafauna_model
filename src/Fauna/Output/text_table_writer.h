@@ -61,6 +61,9 @@ class TextTableWriter : public WriterInterface {
    */
   virtual void write_datapoint(const Datapoint& datapoint);
 
+  /// String to print for values that are not available (NA).
+  static const char* NA_VALUE;
+
   /// Character to separate columns.
   static const char FIELD_SEPARATOR = '\t';
 
