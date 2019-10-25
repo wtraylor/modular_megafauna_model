@@ -30,11 +30,24 @@ For LPJ-GUESS you will find those aspects in the megafauna doxygen page of the L
 
 ## Basic Model Concepts {#sec_basicconcepts}
 
-A herbivore is defined by these state variables:
+The world of the megafauna model is comprised of **simulation units.**
+Each such unit consists of a **habitat** and the herbivore **populations** inhabiting it.
+The habitat must be implemented by the outside vegetation model.
+Each herbivore cohort (or individual) is assigned a **herbivore functional type (HFT),** the herbivore species so to say.
+An HFT is simply a user-defined, constant set of parameters defining physiology, life history, and everything else.
+Each population contains all herbivores of one HFT in a particular habitat.
+
+Herbivores can be simulated as cohorts or as individuals.
+In cohort mode, all herbivores of one annual age class have the same state variables.
+In individual mode, each individual herbivore has its own state.
+These are the state variables for each herbivore object:
+
 - Age
 - Sex
 - Current energy need
 - Fat mass
+
+![Basic model entities in the Modular Megafauna Model. Aggregation units (disjunct sets of simulation units) are only needed to aggregate output spatially.](images/model_entities.svg)
 
 ## Nitrogen Cycling {#sec_nitrogen_cycling}
 
