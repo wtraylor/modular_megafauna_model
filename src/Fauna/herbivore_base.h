@@ -8,26 +8,22 @@
 #define FAUNA_HERBIVORE_BASE_H
 
 #include <memory>
+#include "environment.h"
+#include "fatmass_energy_budget.h"
+#include "get_forage_demands.h"
+#include "herbivore_data.h"
 #include "herbivore_interface.h"
+#include "net_energy_models.h"
 #include "nitrogen.h"
 
 namespace Fauna {
-
-// Forward Declarations
-class FatmassEnergyBudget;
-class GetNetEnergyContentInterface;
-class GetForageDemands;
 
 /// The sex of a herbivore
 enum class Sex { Female, Male };
 
 /// Abstract base class for herbivores.
 /**
- * Calculations are generally performed *per* individual.
- *
- * \note Several member variables are declared as std::auto_ptr. This
- * is done in order to reduce header includes here.
- * \see \ref sec_design_the_herbivore
+ * Calculations are generally performed per individual.
  */
 class HerbivoreBase : public HerbivoreInterface {
  public:
@@ -42,7 +38,9 @@ class HerbivoreBase : public HerbivoreInterface {
     return *hft;
   }
   virtual double get_kg_per_km2() const;
-  virtual const Output::HerbivoreData& get_todays_output() const;
+  virtual const Output::HerbivoreData& get_todays_output() const {
+    return current_output;
+  }
   virtual void simulate_day(const int day,
                             const HabitatEnvironment& environment,
                             double& offspring);
@@ -115,16 +113,8 @@ class HerbivoreBase : public HerbivoreInterface {
    */
   HerbivoreBase(const Hft* hft, const Sex sex);
 
-  /// Copy constructor.
-  HerbivoreBase(const HerbivoreBase& other);
-
-  /// Copy assignment
-  HerbivoreBase& operator=(const HerbivoreBase& other);
-
   /// Destructor
-  // Note that std::auto_ptr cleans up itself, no need to do
-  // implement anything in the destructor.
-  ~HerbivoreBase() {}
+  ~HerbivoreBase() = default;
 
   /// Apply a fractional mortality.
   /**
@@ -134,26 +124,21 @@ class HerbivoreBase : public HerbivoreInterface {
    */
   virtual void apply_mortality(const double mortality) = 0;
 
-  /// @{ \brief The herbivore’s energy budget object.
-  FatmassEnergyBudget& get_energy_budget() {
-    assert(energy_budget.get() != NULL);
-    return *energy_budget;
-  }
-  const FatmassEnergyBudget& get_energy_budget() const {
-    assert(energy_budget.get() != NULL);
-    return *energy_budget;
-  }
-  /**@}*/
+  /// The herbivore’s energy budget object.
+  FatmassEnergyBudget& get_energy_budget() { return energy_budget; }
+
+  /// The herbivore’s energy budget object.
+  const FatmassEnergyBudget& get_energy_budget() const { return energy_budget; }
 
   /// Current abiotic conditions in the habitat.
   /**
    * \throw std::logic_error If \ref simulate_day() hasn’t been called
    * yet to set the \ref HabitatEnvironment object.
    */
-  const HabitatEnvironment& get_environment() const;
+  const HabitatEnvironment& get_environment() const { return environment; }
 
   /// Class-internal read/write access to current output.
-  Output::HerbivoreData& get_todays_output();
+  Output::HerbivoreData& get_todays_output() { return current_output; }
 
   /// Access for derived classes to nitrogen management.
   NitrogenInHerbivore& get_nitrogen() { return nitrogen; }
@@ -179,12 +164,10 @@ class HerbivoreBase : public HerbivoreInterface {
   /// Forage net energy content given by the selected algorithm
   /// \ref Hft::foraging_net_energy_model.
   /**
-   * \param digestibility Proportional digestibility.
-   * \return Net energy content [MJ/kgDM].
-   * \throw std::logic_error If the selected model is not
-   * implemented. */
-  ForageEnergyContent get_net_energy_content(
-      const Digestibility& digestibility) const;
+   * \return New instance of \ref GetNetEnergyContentInterface.
+   * \throw std::logic_error If the selected model is not implemented.
+   */
+  GetNetEnergyContentInterface* create_net_energy_content_model() const;
 
   /// Calculate energy expenditure as sum of given expenditure components.
   /** \return Today’s energy needs [MJ/ind/day]
@@ -203,18 +186,17 @@ class HerbivoreBase : public HerbivoreInterface {
    */
   double get_todays_offspring_proportion() const;
 
- private:  // private member variables
+ private:
   /// @{ \name Constants
   Hft const* hft;  // pointer to const Hft; initialized first!
   Sex sex;
-  std::auto_ptr<GetNetEnergyContentInterface> net_energy_content;
+  std::shared_ptr<GetNetEnergyContentInterface> get_net_energy_content;
   /** @} */  // constants
 
   /// @{ \name State Variables
   int age_days;
-  // use auto_ptr to reduce dependencies:
-  std::auto_ptr<FatmassEnergyBudget> energy_budget;
-  std::auto_ptr<HabitatEnvironment> environment;  // set in simulate_day()
+  FatmassEnergyBudget energy_budget;
+  HabitatEnvironment environment;  // set in simulate_day()
   NitrogenInHerbivore nitrogen;
   int today;
   /** @} */  // state variables
@@ -226,9 +208,8 @@ class HerbivoreBase : public HerbivoreInterface {
    * current day. This object is empty for male herbivores. */
   PeriodAverage body_condition_gestation;
 
-  // use auto_ptr to reduce dependencies:
-  std::auto_ptr<Output::HerbivoreData> current_output;
-  std::auto_ptr<GetForageDemands> get_forage_demands_per_ind;
+  Output::HerbivoreData current_output;
+  GetForageDemands get_forage_demands_per_ind;
   /** @} */  // Helper Classes
 };
 

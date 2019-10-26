@@ -7,9 +7,6 @@
 #include "herbivore_base.h"
 #include "environment.h"
 #include "expenditure_components.h"
-#include "fatmass_energy_budget.h"
-#include "get_forage_demands.h"
-#include "herbivore_data.h"
 #include "hft.h"
 #include "mortality_factors.h"
 #include "net_energy_models.h"
@@ -23,6 +20,11 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
     : hft(check_hft_pointer(hft)),  // can be NULL
       sex(sex),                     // always valid
       age_days(age_days),
+      get_net_energy_content(create_net_energy_content_model()),
+      energy_budget(body_condition * get_max_fatmass(),  // initial fat mass
+                    get_max_fatmass()                    // maximum fat mass
+                    ),
+      get_forage_demands_per_ind(hft, sex),
       today(-1),  // not initialized yet; call simulate_day() first
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {
   // Check validity of parameters
@@ -48,75 +50,17 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
     throw std::invalid_argument(
         "Fauna::HerbivoreBase::HerbivoreBase() "
         "body_condition < 0.0");
-
-  // Create energy budget (validity check inside that class)
-  energy_budget = std::auto_ptr<FatmassEnergyBudget>(new FatmassEnergyBudget(
-      body_condition * get_max_fatmass(),  // initial fat mass
-      get_max_fatmass()));                 // maximum fat mass
-
-  // Create other object instances for std::auto_ptr
-  current_output =
-      std::auto_ptr<Output::HerbivoreData>(new Output::HerbivoreData());
-  get_forage_demands_per_ind =
-      std::auto_ptr<GetForageDemands>(new GetForageDemands(hft, sex));
 }
 
 HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex)
     : hft(check_hft_pointer(hft)),
       sex(sex),
       age_days(0),
-      current_output(new Output::HerbivoreData),
-      get_forage_demands_per_ind(new GetForageDemands(hft, sex)),
-      body_condition_gestation(get_hft().reproduction_gestation_length * 30) {
-  // Create energy budget (validity check inside that class)
-  const double initial_fat_mass =
-      get_hft().body_fat_birth * get_hft().body_mass_birth;
-  energy_budget = std::auto_ptr<FatmassEnergyBudget>(
-      new FatmassEnergyBudget(initial_fat_mass, get_max_fatmass()));
-
-  // Create other object instances for std::auto_ptr
-  current_output =
-      std::auto_ptr<Output::HerbivoreData>(new Output::HerbivoreData());
-  get_forage_demands_per_ind =
-      std::auto_ptr<GetForageDemands>(new GetForageDemands(hft, sex));
-}
-
-HerbivoreBase::HerbivoreBase(const HerbivoreBase& other)
-    : age_days(other.age_days),
-      hft(other.hft),
-      sex(other.sex),
-      body_condition_gestation(get_hft().reproduction_gestation_length * 30),
-      nitrogen(other.nitrogen),
-      // Create new object instances for std::auto_ptr with copy construction:
-      energy_budget(new FatmassEnergyBudget(other.get_energy_budget())),
-      current_output(new Output::HerbivoreData(other.get_todays_output())),
-      get_forage_demands_per_ind(new GetForageDemands(other.hft, other.sex)) {}
-
-HerbivoreBase& HerbivoreBase::operator=(const HerbivoreBase& other) {
-  if (this != &other) {
-    hft = other.hft;
-    age_days = other.age_days;
-    body_condition_gestation = other.body_condition_gestation;
-    nitrogen = other.nitrogen;
-    sex = other.sex;
-
-    // Create a new copies of auto_ptr objects.
-    // The old ones will be automatically released.
-    // For those objects where there is no copy constructor available,
-    // we call operator=() to assign values from `other`.
-    energy_budget = std::auto_ptr<FatmassEnergyBudget>(
-        new FatmassEnergyBudget(other.get_energy_budget()));
-
-    get_forage_demands_per_ind =
-        std::auto_ptr<GetForageDemands>(new GetForageDemands(hft, sex));
-    *get_forage_demands_per_ind = *other.get_forage_demands_per_ind;
-
-    current_output =
-        std::auto_ptr<Output::HerbivoreData>(new Output::HerbivoreData());
-    *current_output = *other.current_output;
-  }
-  return *this;
-}
+      get_net_energy_content(create_net_energy_content_model()),
+      energy_budget(get_hft().body_fat_birth * get_hft().body_mass_birth,
+                    get_max_fatmass()),
+      get_forage_demands_per_ind(hft, sex),
+      body_condition_gestation(get_hft().reproduction_gestation_length * 30) {}
 
 void HerbivoreBase::apply_mortality_factors_today() {
   // Sum of death proportions today. Because different mortality
@@ -212,13 +156,12 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
   // Divide mass by energy content and set any forage with zero
   // energy content to zero mass.
   const ForageEnergy mj_per_ind =
-      get_net_energy_content(digestibility) * kg_per_ind;
+      (*get_net_energy_content)(digestibility)*kg_per_ind;
 
   try {
-    assert(get_forage_demands_per_ind.get() != NULL);
     // Deduct the eaten forage from today’s maximum intake.
     // This function also checks whether we are violating ingestion constraints.
-    get_forage_demands_per_ind->add_eaten(kg_per_ind);
+    get_forage_demands_per_ind.add_eaten(kg_per_ind);
   } catch (const std::logic_error e) {
     throw std::logic_error(std::string(e.what()) +
                            " (Passed on by Fauna::HerbivoreBase::eat().)");
@@ -277,15 +220,6 @@ double HerbivoreBase::get_conductance() const {
   }
 }
 
-const HabitatEnvironment& HerbivoreBase::get_environment() const {
-  if (environment.get() == NULL)
-    throw std::logic_error(
-        "Fauna::HerbivoreBase::get_environment() "
-        "Member variable `environment` is NULL. `simulate_day()` "
-        "must be called first.");
-  return *environment;
-}
-
 double HerbivoreBase::get_fatmass() const {
   return get_energy_budget().get_fatmass();
 }
@@ -298,16 +232,14 @@ ForageMass HerbivoreBase::get_forage_demands(
     const HabitatForage& available_forage) {
   if (is_dead()) return ForageMass(0.0);
 
-  assert(get_forage_demands_per_ind.get() != NULL);
-
   // Prepare GetForageDemands helper object if not yet done today.
-  if (!get_forage_demands_per_ind->is_day_initialized(this->get_today())) {
+  if (!get_forage_demands_per_ind.is_day_initialized(this->get_today())) {
     // Net energy content [MJ/kgDM]
     const ForageEnergyContent net_energy_content =
-        get_net_energy_content(available_forage.get_digestibility());
+        (*get_net_energy_content)(available_forage.get_digestibility());
 
-    get_forage_demands_per_ind->init_today(get_today(), available_forage,
-                                           net_energy_content, get_bodymass());
+    get_forage_demands_per_ind.init_today(get_today(), available_forage,
+                                          net_energy_content, get_bodymass());
 
     // Update output
     get_todays_output().energy_content.operator=(net_energy_content);
@@ -320,7 +252,7 @@ ForageMass HerbivoreBase::get_forage_demands(
 
   // Use helper object GetForageDemands to calculate per individual.
   const ForageMass demand_ind =
-      (*get_forage_demands_per_ind)(total_energy_demands);
+      get_forage_demands_per_ind(total_energy_demands);
 
   // Convert the demand per individual [kgDM/ind]
   // to demand per area [kgDM/km²]
@@ -335,18 +267,16 @@ double HerbivoreBase::get_max_fatmass() const {
   return get_potential_bodymass() * get_hft().body_fat_maximum;
 }
 
-ForageEnergyContent HerbivoreBase::get_net_energy_content(
-    const Digestibility& digestibility) const {
+GetNetEnergyContentInterface* HerbivoreBase::create_net_energy_content_model()
+    const {
   switch (get_hft().foraging_net_energy_model) {
-    case (NetEnergyModel::Default): {
-      const GetNetEnergyContentDefault get_default(get_hft().digestion_type);
-      return get_default(digestibility);
-    }
+    case (NetEnergyModel::Default):
+      return new GetNetEnergyContentDefault(get_hft().digestion_type);
       // ADD NEW NET ENERGY MODELS HERE
       // in new case statements
     default:
       throw std::logic_error(
-          "Fauna::HerbivoreBase::get_net_energy_content() "
+          "Fauna::HerbivoreBase::create_net_energy_content_model() "
           "Selected net energy model not implemented.");
   }
 }
@@ -490,16 +420,6 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
   }
 }
 
-const Output::HerbivoreData& HerbivoreBase::get_todays_output() const {
-  assert(current_output.get() != NULL);
-  return *current_output;
-}
-
-Output::HerbivoreData& HerbivoreBase::get_todays_output() {
-  assert(current_output.get() != NULL);
-  return *current_output;
-}
-
 void HerbivoreBase::simulate_day(const int day,
                                  const HabitatEnvironment& _environment,
                                  double& offspring) {
@@ -513,10 +433,7 @@ void HerbivoreBase::simulate_day(const int day,
         "This herbivore is dead. `simulate_day()` must not be called "
         "on a dead herbivore object.");
 
-  // Create a new HabitatEnvironment object in the auto_ptr object by
-  // copy-construction from the function parameter.
-  environment =
-      std::auto_ptr<HabitatEnvironment>(new HabitatEnvironment(_environment));
+  environment = _environment;
 
   // In the following, we wrote doxygen comments in the function body.
   /// - Digest last day’s nitrogen (\ref NitrogenInHerbivore::digest_today())
