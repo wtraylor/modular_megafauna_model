@@ -44,10 +44,10 @@ void SimpleHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
   // create temporary grass object. Remove eaten mass from it, and
   // then assign it to the actual grass object.
   GrassForage new_grass = grass.get_forage();
-  if (new_grass.get_mass() - eaten_forage[FT_GRASS] < 0.0)
+  if (new_grass.get_mass() - eaten_forage[ForageType::Grass] < 0.0)
     throw std::logic_error(
         "FaunaSim::SimpleHabitat::remove_eaten_forage() "
         "Eaten grass exceeds available grass.");
-  new_grass.set_mass(new_grass.get_mass() - eaten_forage[FT_GRASS]);
+  new_grass.set_mass(new_grass.get_mass() - eaten_forage[ForageType::Grass]);
   grass.set_forage(new_grass);
 }

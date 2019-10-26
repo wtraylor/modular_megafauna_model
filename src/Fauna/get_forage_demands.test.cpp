@@ -73,17 +73,17 @@ TEST_CASE("Fauna::GetForageDemands") {
     // Only grass shall be demanded.
     // The result must match the given fraction of body mass.
     const ForageMass init_demand = gfd(ENERGY_DEMAND);
-    CHECK(init_demand[FT_GRASS] == Approx(BODYMASS * DIG_FRAC));
+    CHECK(init_demand[ForageType::Grass] == Approx(BODYMASS * DIG_FRAC));
     for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
          ft != FORAGE_TYPES.end(); ft++) {
-      if (*ft != FT_GRASS) CHECK(init_demand[*ft] == 0.0);
+      if (*ft != ForageType::Grass) CHECK(init_demand[*ft] == 0.0);
     }
     // The demand may not change if we call it again.
     CHECK(gfd(ENERGY_DEMAND) == init_demand);
 
     // Now give something to eat, and the demand should become less.
     ForageMass EATEN;
-    EATEN.set(FT_GRASS, 1.0);
+    EATEN.set(ForageType::Grass, 1.0);
     gfd.add_eaten(EATEN);
     CHECK(gfd(ENERGY_DEMAND) == init_demand - EATEN);
     // … and of course the result should stay the same.

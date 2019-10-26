@@ -51,10 +51,10 @@ class HabitatForage {
    * \throw std::logic_error if `ft` is not implemented. */
   const ForageBase& operator[](const ForageType ft) const {
     switch (ft) {
-      case FT_GRASS:
+      case ForageType::Grass:
         return grass;
         // ADD NEW FORAGE TYPES HERE.
-      case FT_INEDIBLE:
+      case ForageType::Inedible:
         return inedible;
       default:
         throw std::logic_error((std::string)
@@ -68,10 +68,10 @@ class HabitatForage {
   /** \copydoc operator[]() */
   ForageBase& operator[](const ForageType ft) {
     switch (ft) {
-      case FT_GRASS:
+      case ForageType::Grass:
         return grass;
         // ADD NEW FORAGE TYPES HERE.
-      case FT_INEDIBLE:
+      case ForageType::Inedible:
         return inedible;
       default:
         throw std::logic_error(
@@ -92,7 +92,7 @@ class HabitatForage {
  private:
   /// Inedible forage in the habitat.
   /** This is currently not used, but only here to return something
-   * if \ref FT_INEDIBLE is passed to the [] operator. */
+   * if \ref ForageType::Inedible is passed to the [] operator. */
   ForageBase inedible;
 };
 }  // namespace Fauna

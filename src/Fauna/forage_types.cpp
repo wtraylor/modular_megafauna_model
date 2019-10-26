@@ -12,12 +12,11 @@ using namespace Fauna;
 namespace {
 std::set<ForageType> get_all_forage_types() {
   std::set<ForageType> result;
-  result.insert(FT_GRASS);
+  result.insert(ForageType::Grass);
   // ADD NEW FORAGE TYPES HERE
   return result;
 }
 }  // namespace
-
 
 // define global constant
 namespace Fauna {
@@ -26,10 +25,10 @@ const std::set<ForageType> FORAGE_TYPES = get_all_forage_types();
 
 const std::string& Fauna::get_forage_type_name(const ForageType ft) {
   switch (ft) {
-    case FT_GRASS:
+    case ForageType::Grass:
       static const std::string grass("grass");
       return grass;
-    case FT_INEDIBLE:
+    case ForageType::Inedible:
       static const std::string inedible("inedible");
       return inedible;
     default:
@@ -38,4 +37,3 @@ const std::string& Fauna::get_forage_type_name(const ForageType ft) {
           "Forage type is not implemented.");
   }
 }
-

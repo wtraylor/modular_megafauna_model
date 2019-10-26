@@ -46,14 +46,14 @@ const ForageEnergy GetDigestiveLimitIlliusGordon1992::operator()(
           "Not all forage types are implemented.");
 
     if (digestion_type == DigestionType::Ruminant) {
-      i.set(FT_GRASS, 0.034);
-      j.set(FT_GRASS, 3.565);
-      k.set(FT_GRASS, 0.077);
+      i.set(ForageType::Grass, 0.034);
+      j.set(ForageType::Grass, 3.565);
+      k.set(ForageType::Grass, 0.077);
       // ADD NEW FORAGE TYPES HERE
     } else if (digestion_type == DigestionType::Hindgut) {
-      i.set(FT_GRASS, 0.108);
-      j.set(FT_GRASS, 3.284);
-      k.set(FT_GRASS, 0.080);
+      i.set(ForageType::Grass, 0.108);
+      j.set(ForageType::Grass, 3.284);
+      k.set(ForageType::Grass, 0.080);
       // ADD NEW FORAGE TYPES HERE
     } else
       throw std::logic_error(
@@ -79,7 +79,7 @@ const ForageEnergy GetDigestiveLimitIlliusGordon1992::operator()(
 
     // Only for the supported forage types, the result is calculated.
     // ADD NEW FORAGE TYPES HERE IN IF QUERY
-    if ((f == FT_GRASS) && digestibility[f] > 0.0)
+    if ((f == ForageType::Grass) && digestibility[f] > 0.0)
       result.set(
           f, i[f] * exp(j[f] * d[f]) * pow(M_ad, k[f] * exp(d[f]) + .73) * u_g);
     else

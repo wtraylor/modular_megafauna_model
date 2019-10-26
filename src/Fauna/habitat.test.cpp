@@ -5,8 +5,8 @@
  * \date 2019
  */
 #include "catch.hpp"
-#include "habitat.h"
 #include "dummy_habitat.h"
+#include "habitat.h"
 #include "habitat_data.h"
 using namespace Fauna;
 using namespace Fauna::Output;
@@ -18,7 +18,7 @@ TEST_CASE("Fauna::Habitat", "") {
   DummyHabitat habitat;
 
   SECTION("kill()") {
-    CHECK(! habitat.is_dead());
+    CHECK(!habitat.is_dead());
     habitat.kill();
     CHECK(habitat.is_dead());
   }
@@ -49,14 +49,15 @@ TEST_CASE("Fauna::Habitat", "") {
     SECTION("check this day") {
       const HabitatData out = ((const Habitat&)habitat).get_todays_output();
       // Check eaten forage per day as a sample.
-      CHECK(out.eaten_forage[FT_GRASS] == Approx(EATEN_AVG[FT_GRASS]));
+      CHECK(out.eaten_forage[ForageType::Grass] ==
+            Approx(EATEN_AVG[ForageType::Grass]));
     }
 
     SECTION("init next day") {
       habitat.init_day(24);
       const HabitatData out = ((const Habitat&)habitat).get_todays_output();
       // The values should be reset to zero.
-      CHECK(out.eaten_forage[FT_GRASS] == 0.0);
+      CHECK(out.eaten_forage[ForageType::Grass] == 0.0);
     }
   }
 }

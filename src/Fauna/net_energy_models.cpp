@@ -23,9 +23,9 @@ double GetNetEnergyContentDefault::get_per_forage_type(
 
   double ME = 0.0;  // metabolizable energy
 
-  if (forage_type == FT_INEDIBLE)
+  if (forage_type == ForageType::Inedible)
     return 0.0;
-  else if (forage_type == FT_GRASS) {
+  else if (forage_type == ForageType::Grass) {
     ME = digestibility * ME_COEFFICIENT_GRASS;
     // ADD NEW FORAGE TYPES HERE
   } else

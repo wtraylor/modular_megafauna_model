@@ -24,14 +24,13 @@ TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {
 
   // Check some absolute numbers
   {  // grass for ruminants
-    const double ME = 15.0 * DIG1[FT_GRASS];
-    CHECK(ne_ruminant(DIG1[FT_GRASS])[FT_GRASS] ==
+    const double ME = 15.0 * DIG1[ForageType::Grass];
+    CHECK(ne_ruminant(DIG1[ForageType::Grass])[ForageType::Grass] ==
           Approx(ME * (0.019 * ME + 0.503)));
   }
   {  // grass for hindguts
-    const double ME = 15.0 * DIG1[FT_GRASS];
-    CHECK(ne_hindgut(DIG1[FT_GRASS])[FT_GRASS] ==
+    const double ME = 15.0 * DIG1[ForageType::Grass];
+    CHECK(ne_hindgut(DIG1[ForageType::Grass])[ForageType::Grass] ==
           Approx(ME * (0.019 * ME + 0.503) * 0.93));
   }
 }
-

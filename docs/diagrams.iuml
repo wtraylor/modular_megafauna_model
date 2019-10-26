@@ -89,8 +89,8 @@
     class ForageValues< ForageValueTag >
     ForageValueTag -- ForageValues
     enum ForageType{
-      FT_GRASS,
-      FT_INEDIBLE
+      Grass,
+      Inedible
     }
     show ForageType members
   }
@@ -238,8 +238,9 @@ competition      -down-> ingestion
 @startuml (id=new_forage_type)
   namespace Fauna{
     enum ForageType {
-      FT_GRASS,
-      FT_NEWFORAGE
+      Grass
+      NewForage
+      Inedible
     }
     class ForageValues< ForageValueTag >
     ForageValues ..> ForageType : <<use>>

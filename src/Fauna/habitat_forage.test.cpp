@@ -27,12 +27,13 @@ TEST_CASE("Fauna::HabitatForage", "") {
     CHECK_THROWS(hf1.grass.set_nitrogen_mass(GRASSMASS * 1.1));
     hf1.grass.set_nitrogen_mass(NMASS);
     CHECK(hf1.grass.get_nitrogen_mass() == NMASS);
-    CHECK(hf1.get_nitrogen_content()[FT_GRASS] == Approx(NMASS / GRASSMASS));
+    CHECK(hf1.get_nitrogen_content()[ForageType::Grass] ==
+          Approx(NMASS / GRASSMASS));
     CHECK_THROWS(hf1.grass.set_mass(NMASS * .9));
 
     // Check value access
     REQUIRE(hf1.grass.get_mass() == GRASSMASS);
-    CHECK(hf1.grass.get_mass() == hf1.get_mass()[FT_GRASS]);
+    CHECK(hf1.grass.get_mass() == hf1.get_mass()[ForageType::Grass]);
     REQUIRE(hf1.get_total().get_mass() == GRASSMASS);
     CHECK(hf1.get_total().get_mass() == Approx(hf1.get_mass().sum()));
     REQUIRE(hf1.get_total().get_digestibility() == 0.5);

@@ -14,11 +14,11 @@
 namespace Fauna {
 
 /// Different types of forage.
-enum ForageType {
+enum class ForageType {
   /// Forage type grass.
-  FT_GRASS,
+  Grass,
   /// Plants that are not edible for herbivores.
-  FT_INEDIBLE
+  Inedible
 };
 
 /// Set with all enum entries of \ref ForageType.

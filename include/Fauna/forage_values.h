@@ -26,7 +26,7 @@ enum class ForageValueTag {
 /// Multi-purpose template class for double values mapped by edible(!) forage
 /// type.
 /**
- * The forage type \ref FT_INEDIBLE is excluded from all operations.
+ * The forage type \ref ForageType::Inedible is excluded from all operations.
  * \tparam tag Defines the allowed data range.
  *
  * \note Operators that take a number as argument will interpret that as
@@ -104,16 +104,16 @@ class ForageValues {
 
   /// Get a value (read-only).
   /**
-   * \throw std::invalid_argument If \ref FT_INEDIBLE is passed.
+   * \throw std::invalid_argument If \ref ForageType::Inedible is passed.
    * \throw std::logic_error If forage type not accessible.
    * This error should never occur, as all forage types are
    * initialized in the constructors.
    */
   double get(const ForageType ft) const {
-    if (ft == FT_INEDIBLE)
+    if (ft == ForageType::Inedible)
       throw std::invalid_argument(
           "Fauna::ForageValues<>::get() "
-          "The forage type `FT_INEDIBLE` is not allowed.");
+          "The forage type `ForageType::Inedible` is not allowed.");
     const_iterator element = map.find(ft);
     if (element != map.end())
       return element->second;
@@ -172,7 +172,7 @@ class ForageValues {
   /**
    * \throw std::invalid_argument If `value` is not allowed
    * by given `tag`, is NAN or is INFINITY.
-   * \throw std::invalid_argument If `forage_type==FT_INEDIBLE`.
+   * \throw std::invalid_argument If `forage_type==ForageType::Inedible`.
    * \throw std::logic_error If `tag` is not implemented.
    */
   void set(const ForageType forage_type, const double value) {
@@ -205,9 +205,9 @@ class ForageValues {
       throw std::invalid_argument((std::string)"ForageValues<> "
 							"INFINITY is not allowed as a value."+
 							" ("+get_forage_type_name(forage_type)+")");
-    if (forage_type == FT_INEDIBLE)
+    if (forage_type == ForageType::Inedible)
       throw std::invalid_argument((std::string)"ForageValues<> "
-							"Forage type `FT_INEDIBLE` is not allowed."+
+							"Forage type `ForageType::Inedible` is not allowed."+
 							" ("+get_forage_type_name(forage_type)+")");
 
     // The map entry for any forage type should have been

@@ -43,7 +43,7 @@ class GetNetEnergyContentInterface {
   /// Get net energy content for one forage type [MJ/kgDM]
   /**
    * \param forage_type The type of forage, guaranteed to be
-   * not \ref FT_INEDIBLE.
+   * not \ref ForageType::Inedible.
    * \param digestibility Proportional digestibility,
    * guaranteed to be in [0,1].
    * \return Net energy content [MJ/kgDM].

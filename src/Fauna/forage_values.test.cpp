@@ -26,30 +26,30 @@ TEST_CASE("Fauna::ForageValues", "") {
       CHECK(fv[*ft] == 0.0);
 
     // exceptions
-    CHECK_THROWS(fv.get(FT_INEDIBLE));
-    CHECK_THROWS(fv[FT_INEDIBLE]);
-    CHECK_THROWS(fv.set(FT_GRASS, -1.0));
-    CHECK_THROWS(fv.set(FT_GRASS, NAN));
-    CHECK_THROWS(fv.set(FT_GRASS, INFINITY));
+    CHECK_THROWS(fv.get(ForageType::Inedible));
+    CHECK_THROWS(fv[ForageType::Inedible]);
+    CHECK_THROWS(fv.set(ForageType::Grass, -1.0));
+    CHECK_THROWS(fv.set(ForageType::Grass, NAN));
+    CHECK_THROWS(fv.set(ForageType::Grass, INFINITY));
     CHECK_THROWS(fv / 0.0);
     CHECK_THROWS(fv /= 0.0);
 
     const double G = 2.0;
-    fv.set(FT_GRASS, G);
-    CHECK(fv.get(FT_GRASS) == G);
-    CHECK(fv[FT_GRASS] == G);
+    fv.set(ForageType::Grass, G);
+    CHECK(fv.get(ForageType::Grass) == G);
+    CHECK(fv[ForageType::Grass] == G);
     CHECK(fv.sum() == G);  // because only grass changed
 
     // assignment
     ForageValues<ForageValueTag::PositiveAndZero> fv2 = fv;
     CHECK(fv2 == fv);
-    CHECK(fv2[FT_GRASS] == fv[FT_GRASS]);
+    CHECK(fv2[ForageType::Grass] == fv[ForageType::Grass]);
     CHECK(fv2.sum() == fv.sum());
 
     // value initialization
     const double V = 3.0;
     ForageValues<ForageValueTag::PositiveAndZero> fv3(V);
-    CHECK(fv3[FT_GRASS] == V);
+    CHECK(fv3[ForageType::Grass] == V);
     CHECK(fv3.sum() == FORAGE_TYPES.size() * V);
 
     // Sums
@@ -173,15 +173,15 @@ TEST_CASE("Fauna::ForageValues", "") {
 
     SECTION("Numbers with tolerance") {
       const double TOLERANCE = .1;
-      fv.set(FT_GRASS, 1.0 + TOLERANCE);
+      fv.set(ForageType::Grass, 1.0 + TOLERANCE);
       const ForageFraction ff = foragevalues_to_foragefractions(fv, TOLERANCE);
 
-      CHECK(ff[FT_GRASS] == 1.0);
+      CHECK(ff[ForageType::Grass] == 1.0);
     }
 
     SECTION("Exception exceeding tolerance") {
       const double TOLERANCE = .1;
-      fv.set(FT_GRASS, 1.0 + TOLERANCE + .001);
+      fv.set(ForageType::Grass, 1.0 + TOLERANCE + .001);
       CHECK_THROWS(foragevalues_to_foragefractions(fv, TOLERANCE));
     }
   }

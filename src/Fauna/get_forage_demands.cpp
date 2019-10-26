@@ -52,7 +52,7 @@ ForageFraction GetForageDemands::get_diet_composition() const {
 
   switch (get_hft().foraging_diet_composer) {
     case (DietComposer::PureGrazer): {
-      result.set(FT_GRASS, 1.0);  // put all into grass
+      result.set(ForageType::Grass, 1.0);  // put all into grass
       break;
     }
     // ** Add new diet composer algorithms here in case statements. **
@@ -151,7 +151,7 @@ ForageMass GetForageDemands::get_max_foraging() const {
         // Convert half_max_intake_density from gDM/m² to kgDM/km²
         const HalfMaxIntake half_max(
             get_hft().foraging_half_max_intake_density * 1000.0,
-            get_digestive_limit(bodymass, digestibility)[FT_GRASS]);
+            get_digestive_limit(bodymass, digestibility)[ForageType::Grass]);
 
         // Like Pachzelt et al. (2013), we use the whole-habitat grass density,
         // not the ‘sward density’.
@@ -159,14 +159,15 @@ ForageMass GetForageDemands::get_max_foraging() const {
             available_forage.grass.get_mass());  // [MJ/day]
 
         double grass_limit_kg;
-        if (energy_content[FT_GRASS] > 0.0)
-          grass_limit_kg = grass_limit_mj / energy_content[FT_GRASS];
+        if (energy_content[ForageType::Grass] > 0.0)
+          grass_limit_kg = grass_limit_mj / energy_content[ForageType::Grass];
         else
           grass_limit_kg = 0.0;  // no energy ⇒ no feeding
 
         // The Illius & O’Connor (2000) model applies only to grass, and
         // hence we only constrain the grass part of `result`.
-        result.set(FT_GRASS, std::min(result[FT_GRASS], grass_limit_kg));
+        result.set(ForageType::Grass,
+                   std::min(result[ForageType::Grass], grass_limit_kg));
         break;
       }
       case (ForagingLimit::GeneralFunctionalResponse):
@@ -272,15 +273,15 @@ void GetForageDemands::init_today(const int day,
   // BUT ONLY FOR THE GRASS COMPONENT.
   if (get_hft().foraging_limits.count(
           ForagingLimit::GeneralFunctionalResponse) &&
-      max_intake[FT_GRASS] > 0.0) {
+      max_intake[ForageType::Grass] > 0.0) {
     // Create functional response with current limit as maximum.
     // Convert half_max_intake_density from gDM/m² to kgDM/km²
     const HalfMaxIntake half_max(
         get_hft().foraging_half_max_intake_density * 1000.0,
-        max_intake[FT_GRASS]);
+        max_intake[ForageType::Grass]);
 
     // Apply the result to the grass component.
-    max_intake.set(FT_GRASS,
+    max_intake.set(ForageType::Grass,
                    half_max.get_intake_rate(
                        available_forage.grass.get_mass()));  // [kgDM/ind/day]
   }

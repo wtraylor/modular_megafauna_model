@@ -47,12 +47,12 @@ TEST_CASE("Fauna::GetDigestiveLimitIlliusGordon1992", "") {
     GetDigestiveLimitIlliusGordon1992 hind(ADULT, DigestionType::Hindgut);
 
     SECTION("...for grass") {
-      const double d = digestibility[FT_GRASS];
-      CHECK(rum(CURRENT, d)[FT_GRASS] ==
+      const double d = digestibility[ForageType::Grass];
+      CHECK(rum(CURRENT, d)[ForageType::Grass] ==
             Approx(0.034 * exp(3.565 * d) * pow(ADULT, 0.077 * exp(d) + 0.73) *
                    pow(CURRENT / ADULT, 0.75)));
 
-      CHECK(hind(CURRENT, d)[FT_GRASS] ==
+      CHECK(hind(CURRENT, d)[ForageType::Grass] ==
             Approx(0.108 * exp(3.284 * d) * pow(ADULT, 0.080 * exp(d) + 0.73) *
                    pow(CURRENT / ADULT, 0.75)));
     }
@@ -88,11 +88,11 @@ TEST_CASE("Fauna::GetDigestiveLimitIlliusGordon1992", "") {
       const GetDigestiveLimitIlliusGordon1992 rumi(ADULT,
                                                    DigestionType::Ruminant);
 
-      INFO("Ruminant, digestibility=" << DIG1[FT_GRASS]);
-      INFO("grass: " << rumi(ADULT, DIG1)[FT_GRASS]);
+      INFO("Ruminant, digestibility=" << DIG1[ForageType::Grass]);
+      INFO("grass: " << rumi(ADULT, DIG1)[ForageType::Grass]);
 
-      INFO("Ruminant, digestibility=" << DIG2[FT_GRASS]);
-      INFO("grass: " << rumi(ADULT, DIG2)[FT_GRASS]);
+      INFO("Ruminant, digestibility=" << DIG2[ForageType::Grass]);
+      INFO("grass: " << rumi(ADULT, DIG2)[ForageType::Grass]);
 
       CHECK(rumi(ADULT, DIG1) < rumi(ADULT, DIG2));
     }
@@ -100,11 +100,11 @@ TEST_CASE("Fauna::GetDigestiveLimitIlliusGordon1992", "") {
       const GetDigestiveLimitIlliusGordon1992 hind(ADULT,
                                                    DigestionType::Hindgut);
 
-      INFO("Hindgut, digestibility=" << DIG1[FT_GRASS]);
-      INFO("grass: " << hind(ADULT, DIG1)[FT_GRASS]);
+      INFO("Hindgut, digestibility=" << DIG1[ForageType::Grass]);
+      INFO("grass: " << hind(ADULT, DIG1)[ForageType::Grass]);
 
-      INFO("Hindgut, digestibility=" << DIG2[FT_GRASS]);
-      INFO("grass: " << hind(ADULT, DIG2)[FT_GRASS]);
+      INFO("Hindgut, digestibility=" << DIG2[ForageType::Grass]);
+      INFO("grass: " << hind(ADULT, DIG2)[ForageType::Grass]);
 
       CHECK(hind(ADULT, DIG1) < hind(ADULT, DIG2));
     }
@@ -119,4 +119,3 @@ TEST_CASE("Fauna::GetDigestiveLimitIlliusGordon1992", "") {
               ADULT, ZERO) == 0.0);
   }
 }
-
