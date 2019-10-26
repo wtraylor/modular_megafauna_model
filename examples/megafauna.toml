@@ -12,7 +12,7 @@ forage_distribution    = "Equally"
 habitat_area_km2       = 1.0  # km² per habitat
 establishment_interval = 3650 # every 10 years
 herbivore_type         = "Cohort"
-one_hft_per_patch      = true
+one_hft_per_habitat    = true
 
 [output]
 format = "TextTables"

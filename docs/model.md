@@ -153,7 +153,7 @@ The classical competitive exclusion principle predicts that no two species can c
 One species will inevitably outcompete the other one.
 Though there are indeed ecological mechanisms that can facilitate coexistence with a shared resource (\cite chesson2000mechanisms), the parameter space for this to happen in a model is usually very narrow (e.g. \cite vanlangevelde2008intantaneous).
 
-In order to simply avoid competition among different HFTs, the option `one_hft_per_patch` can be enabled: Each HFT exists on its own, without any interaction with other species.
+In order to simply avoid competition among different HFTs, the option `one_hft_per_habitat` can be enabled: Each HFT exists on its own, without any interaction with other species.
 With that option enabled, all HFTs should each be assigned to the same number of habitats.
 It is the responsibility of the host application (the vegetation model) to ensure that the number of habitats is an integer multiple of the HFT count.
 

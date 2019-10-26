@@ -610,10 +610,10 @@ void InsfileReader::read_table_simulation() {
       throw missing_parameter(key);
   }
   {
-    const auto key = "simulation.one_hft_per_patch";
+    const auto key = "simulation.one_hft_per_habitat";
     auto value = ins->get_qualified_as<bool>(key);
     if (value) {
-      params.one_hft_per_patch = *value;
+      params.one_hft_per_habitat = *value;
     }
   }
 }

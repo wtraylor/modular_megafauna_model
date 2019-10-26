@@ -76,8 +76,8 @@ struct Parameters {
   /// Which kind of herbivore class to use.
   HerbivoreType herbivore_type = HerbivoreType::Cohort;
 
-  /// Whether to allow only herbivores of one HFT in each patch (default false).
-  bool one_hft_per_patch = false;
+  /// Whether to allow only herbivores of one HFT in each habitat.
+  bool one_hft_per_habitat = false;
   /** @} */
 
   /** @{ \name "output": General output options. */
