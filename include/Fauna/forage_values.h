@@ -16,11 +16,11 @@ namespace Fauna {
 class HerbivoreInterface;  // for ForageDistribution
 
 /// Describes which values are allowed in \ref Fauna::ForageValues.
-enum ForageValueTag {
+enum class ForageValueTag {
   /// Only values in interval [0,∞) are allowed.
-  POSITIVE_AND_ZERO,
+  PositiveAndZero,
   /// Only values in interval [0,1] are allowed.
-  ZERO_TO_ONE
+  ZeroToOne
 };
 
 /// Multi-purpose template class for double values mapped by edible(!) forage
@@ -177,24 +177,24 @@ class ForageValues {
    */
   void set(const ForageType forage_type, const double value) {
     switch (tag) {
-      case POSITIVE_AND_ZERO:
+      case ForageValueTag::PositiveAndZero:
         if (value < 0.0)
           throw std::invalid_argument((std::string)
-									"ForageValues<POSITIVE_AND_ZERO> "
+									"ForageValues<PositiveAndZero> "
 									"Value < 0 not allowed."+
 									" ("+get_forage_type_name(forage_type)+")");
         break;
-      case ZERO_TO_ONE:
+      case ForageValueTag::ZeroToOne:
         if (value < 0.0 || value > 1.0)
           throw std::invalid_argument((std::string)
-									"ForageValues<ZERO_TO_ONE> "
+									"ForageValues<ZeroToOne> "
 									"Value is not in interval [0,1]."+
 									" ("+get_forage_type_name(forage_type)+")");
         break;
       default:
         throw std::logic_error(
             "ForageValues<> "
-            "ForageValueType not implemented.");
+            "ForageValueTag not implemented.");
     }
     if (std::isnan(value))
       throw std::invalid_argument((std::string)
@@ -367,19 +367,19 @@ class ForageValues {
 };
 
 /// Digestibility [fraction] for different forage types.
-typedef ForageValues<ZERO_TO_ONE> Digestibility;
+typedef ForageValues<ForageValueTag::ZeroToOne> Digestibility;
 
 /// Energy values [MJ] for different forage types.
-typedef ForageValues<POSITIVE_AND_ZERO> ForageEnergy;
+typedef ForageValues<ForageValueTag::PositiveAndZero> ForageEnergy;
 
 /// Net energy content [MJ/kgDM] for different forage types.
-typedef ForageValues<POSITIVE_AND_ZERO> ForageEnergyContent;
+typedef ForageValues<ForageValueTag::PositiveAndZero> ForageEnergyContent;
 
 /// A fraction for each forage type.
-typedef ForageValues<ZERO_TO_ONE> ForageFraction;
+typedef ForageValues<ForageValueTag::ZeroToOne> ForageFraction;
 
 /// Dry matter mass values [kgDM or kgDM/km²] for different forage types.
-typedef ForageValues<POSITIVE_AND_ZERO> ForageMass;
+typedef ForageValues<ForageValueTag::PositiveAndZero> ForageMass;
 
 /// Map defining which herbivore gets what to eat [kgDM/km²].
 typedef std::map<HerbivoreInterface*, ForageMass> ForageDistribution;
@@ -392,32 +392,34 @@ typedef std::map<HerbivoreInterface*, ForageMass> ForageDistribution;
  * whereas the member function ForageValues<>::operator*() takes the
  * double value as the right operand and returns a ForageValues<> object
  * of the same template, which doesn’t allow numbers exceeding 1.0 in
- * case of the ForageFraction (=ForageValues<ZERO_TO_ONE>) class.
+ * case of the ForageFraction (=ForageValues<ForageValueTag::ZeroToOne>) class.
  */
-inline ForageValues<POSITIVE_AND_ZERO> operator*(const double lhs,
-                                                 const ForageFraction& rhs) {
-  ForageValues<POSITIVE_AND_ZERO> result;
+inline ForageValues<ForageValueTag::PositiveAndZero> operator*(
+    const double lhs, const ForageFraction& rhs) {
+  ForageValues<ForageValueTag::PositiveAndZero> result;
   for (ForageFraction::const_iterator i = rhs.begin(); i != rhs.end(); i++)
     result.set(i->first, i->second * lhs);
   return result;
 }
 
-inline ForageValues<POSITIVE_AND_ZERO> operator*(
-    const ForageFraction& lhs, const ForageValues<POSITIVE_AND_ZERO>& rhs) {
-  ForageValues<POSITIVE_AND_ZERO> result;
+inline ForageValues<ForageValueTag::PositiveAndZero> operator*(
+    const ForageFraction& lhs,
+    const ForageValues<ForageValueTag::PositiveAndZero>& rhs) {
+  ForageValues<ForageValueTag::PositiveAndZero> result;
   for (ForageFraction::const_iterator i = rhs.begin(); i != rhs.end(); i++)
     result.set(i->first, i->second * lhs[i->first]);
   return result;
 }
 
-inline ForageValues<POSITIVE_AND_ZERO> operator*(
-    const ForageValues<POSITIVE_AND_ZERO>& lhs, const ForageFraction& rhs) {
+inline ForageValues<ForageValueTag::PositiveAndZero> operator*(
+    const ForageValues<ForageValueTag::PositiveAndZero>& lhs,
+    const ForageFraction& rhs) {
   return operator*(rhs, lhs);
 }
 /** @} */
 
 /// Convert forage fractions (in [0,1]) into values in [0,∞].
-ForageValues<POSITIVE_AND_ZERO> foragefractions_to_foragevalues(
+ForageValues<ForageValueTag::PositiveAndZero> foragefractions_to_foragevalues(
     const ForageFraction& fractions);
 
 /// Convert forage values to fractional values.
@@ -432,7 +434,8 @@ ForageValues<POSITIVE_AND_ZERO> foragefractions_to_foragevalues(
  * \throw std::invalid_argument If `tolerance < 0.0`.
  */
 ForageFraction foragevalues_to_foragefractions(
-    const ForageValues<POSITIVE_AND_ZERO> values, const double tolerance);
+    const ForageValues<ForageValueTag::PositiveAndZero> values,
+    const double tolerance);
 
 /// Convert forage energy to mass keeping the energy-wise proportions.
 /**

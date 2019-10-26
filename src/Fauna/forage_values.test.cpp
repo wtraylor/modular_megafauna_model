@@ -14,12 +14,12 @@ TEST_CASE("Fauna::ForageValues", "") {
   // exceptions for invalid values, the constructors, and
   // get, set, and sum.
   SECTION("positive and zero") {
-    CHECK_THROWS(ForageValues<POSITIVE_AND_ZERO>(-1.0));
-    CHECK_THROWS(ForageValues<POSITIVE_AND_ZERO>(NAN));
-    CHECK_THROWS(ForageValues<POSITIVE_AND_ZERO>(INFINITY));
+    CHECK_THROWS(ForageValues<ForageValueTag::PositiveAndZero>(-1.0));
+    CHECK_THROWS(ForageValues<ForageValueTag::PositiveAndZero>(NAN));
+    CHECK_THROWS(ForageValues<ForageValueTag::PositiveAndZero>(INFINITY));
 
     // zero initialization
-    ForageValues<POSITIVE_AND_ZERO> fv;
+    ForageValues<ForageValueTag::PositiveAndZero> fv;
     CHECK(fv.sum() == Approx(0.0));
     for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
          ft != FORAGE_TYPES.end(); ft++)
@@ -41,14 +41,14 @@ TEST_CASE("Fauna::ForageValues", "") {
     CHECK(fv.sum() == G);  // because only grass changed
 
     // assignment
-    ForageValues<POSITIVE_AND_ZERO> fv2 = fv;
+    ForageValues<ForageValueTag::PositiveAndZero> fv2 = fv;
     CHECK(fv2 == fv);
     CHECK(fv2[FT_GRASS] == fv[FT_GRASS]);
     CHECK(fv2.sum() == fv.sum());
 
     // value initialization
     const double V = 3.0;
-    ForageValues<POSITIVE_AND_ZERO> fv3(V);
+    ForageValues<ForageValueTag::PositiveAndZero> fv3(V);
     CHECK(fv3[FT_GRASS] == V);
     CHECK(fv3.sum() == FORAGE_TYPES.size() * V);
 
@@ -59,16 +59,16 @@ TEST_CASE("Fauna::ForageValues", "") {
   }
 
   SECTION("zero to one") {
-    CHECK_THROWS(ForageValues<ZERO_TO_ONE>(-1.0));
-    CHECK_THROWS(ForageValues<ZERO_TO_ONE>(1.1));
-    CHECK_THROWS(ForageValues<ZERO_TO_ONE>(NAN));
-    CHECK_THROWS(ForageValues<ZERO_TO_ONE>(INFINITY));
+    CHECK_THROWS(ForageValues<ForageValueTag::ZeroToOne>(-1.0));
+    CHECK_THROWS(ForageValues<ForageValueTag::ZeroToOne>(1.1));
+    CHECK_THROWS(ForageValues<ForageValueTag::ZeroToOne>(NAN));
+    CHECK_THROWS(ForageValues<ForageValueTag::ZeroToOne>(INFINITY));
   }
 
   SECTION("Comparison") {
-    ForageValues<POSITIVE_AND_ZERO> fv1(0.0);
-    ForageValues<POSITIVE_AND_ZERO> fv2(1.0);
-    ForageValues<POSITIVE_AND_ZERO> fv3(fv2);
+    ForageValues<ForageValueTag::PositiveAndZero> fv1(0.0);
+    ForageValues<ForageValueTag::PositiveAndZero> fv2(1.0);
+    ForageValues<ForageValueTag::PositiveAndZero> fv3(fv2);
 
     CHECK(fv1 < fv2);
     CHECK(fv1 <= fv2);
@@ -83,8 +83,8 @@ TEST_CASE("Fauna::ForageValues", "") {
   SECTION("Merging: positive and zero") {
     const double V1 = 3.0;
     const double V2 = 19.0;
-    ForageValues<POSITIVE_AND_ZERO> a(V1);
-    const ForageValues<POSITIVE_AND_ZERO> b(V2);
+    ForageValues<ForageValueTag::PositiveAndZero> a(V1);
+    const ForageValues<ForageValueTag::PositiveAndZero> b(V2);
     const double W1 = 12.0;
     const double W2 = 23.0;
     a.merge(b, W1, W2);
@@ -96,8 +96,8 @@ TEST_CASE("Fauna::ForageValues", "") {
   SECTION("Merging: zero to one") {
     const double V1 = 0.1;
     const double V2 = 0.8;
-    ForageValues<POSITIVE_AND_ZERO> a(V1);
-    const ForageValues<POSITIVE_AND_ZERO> b(V2);
+    ForageValues<ForageValueTag::PositiveAndZero> a(V1);
+    const ForageValues<ForageValueTag::PositiveAndZero> b(V2);
     const double W1 = 12.0;
     const double W2 = 23.0;
     a.merge(b, W1, W2);
@@ -107,8 +107,8 @@ TEST_CASE("Fauna::ForageValues", "") {
   }
 
   SECTION("Minimums") {
-    ForageValues<POSITIVE_AND_ZERO> a(1.0);
-    ForageValues<POSITIVE_AND_ZERO> b(2.0);
+    ForageValues<ForageValueTag::PositiveAndZero> a(1.0);
+    ForageValues<ForageValueTag::PositiveAndZero> b(2.0);
     CHECK(a.min(a) == a);
     CHECK(a.min(b) == b.min(a));
     CHECK(a.min(b) == a);
@@ -125,26 +125,28 @@ TEST_CASE("Fauna::ForageValues", "") {
       ff.set(*ft, 1.0 / ++i);
 
     double d = 123.4;
-    const ForageValues<POSITIVE_AND_ZERO> result = d * ff;
+    const ForageValues<ForageValueTag::PositiveAndZero> result = d * ff;
 
     for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
          ft != FORAGE_TYPES.end(); ft++)
       CHECK(result[*ft] == ff[*ft] * d);
   }
 
-  SECTION("operator*(ForageFraction, ForageValues<POSITIVE_AND_ZERO>") {
+  SECTION(
+      "operator*(ForageFraction, "
+      "ForageValues<ForageValueTag::PositiveAndZero>") {
     ForageFraction ff;
     double i = 1.0;
     for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
          ft != FORAGE_TYPES.end(); ft++)
       ff.set(*ft, 1.0 / ++i);
 
-    ForageValues<POSITIVE_AND_ZERO> fv;
+    ForageValues<ForageValueTag::PositiveAndZero> fv;
     for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
          ft != FORAGE_TYPES.end(); ft++)
       fv.set(*ft, ++i);
 
-    const ForageValues<POSITIVE_AND_ZERO> result = ff * fv;
+    const ForageValues<ForageValueTag::PositiveAndZero> result = ff * fv;
 
     for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
          ft != FORAGE_TYPES.end(); ft++)
@@ -154,9 +156,9 @@ TEST_CASE("Fauna::ForageValues", "") {
   SECTION("foragevalues_to_foragefractions()") {
     // `tolerance` mustn’t be negative
     CHECK_THROWS(foragevalues_to_foragefractions(
-        ForageValues<POSITIVE_AND_ZERO>(), -.1));
+        ForageValues<ForageValueTag::PositiveAndZero>(), -.1));
 
-    ForageValues<POSITIVE_AND_ZERO> fv;
+    ForageValues<ForageValueTag::PositiveAndZero> fv;
     SECTION("All numbers below 1.0") {
       double i = 1;
       // create some numbers between 0 and 1
@@ -192,10 +194,11 @@ TEST_CASE("Fauna::ForageValues", "") {
          ft != FORAGE_TYPES.end(); ft++)
       ff.set(*ft, 1.0 / (++i));
 
-    const ForageValues<POSITIVE_AND_ZERO> fv =
+    const ForageValues<ForageValueTag::PositiveAndZero> fv =
         foragefractions_to_foragevalues(ff);
 
-    for (ForageValues<POSITIVE_AND_ZERO>::const_iterator i = fv.begin();
+    for (ForageValues<ForageValueTag::PositiveAndZero>::const_iterator i =
+             fv.begin();
          i != fv.end(); i++)
       CHECK(i->second == ff[i->first]);
   }

@@ -8,9 +8,9 @@
 
 using namespace Fauna;
 
-ForageValues<POSITIVE_AND_ZERO> Fauna::foragefractions_to_foragevalues(
-    const ForageFraction& fractions) {
-  ForageValues<POSITIVE_AND_ZERO> result;
+ForageValues<ForageValueTag::PositiveAndZero>
+Fauna::foragefractions_to_foragevalues(const ForageFraction& fractions) {
+  ForageValues<ForageValueTag::PositiveAndZero> result;
   for (ForageFraction::const_iterator i = fractions.begin();
        i != fractions.end(); i++)
     result.set(i->first, i->second);
@@ -18,7 +18,8 @@ ForageValues<POSITIVE_AND_ZERO> Fauna::foragefractions_to_foragevalues(
 }
 
 ForageFraction Fauna::foragevalues_to_foragefractions(
-    const ForageValues<POSITIVE_AND_ZERO> values, const double tolerance) {
+    const ForageValues<ForageValueTag::PositiveAndZero> values,
+    const double tolerance) {
   if (tolerance < 0.0)
     throw std::invalid_argument(
         "Fauna::foragevalues_to_foragefractions() "
@@ -46,7 +47,7 @@ ForageFraction Fauna::foragevalues_to_foragefractions(
 ForageFraction Fauna::convert_mj_to_kg_proportionally(
     const ForageEnergyContent& mj_per_kg,
     const ForageFraction& mj_proportions) {
-  ForageValues<POSITIVE_AND_ZERO> kg_proportions =
+  ForageValues<ForageValueTag::PositiveAndZero> kg_proportions =
       foragefractions_to_foragevalues(mj_proportions)
           .divide_safely(mj_per_kg, 0.0);
 
@@ -60,4 +61,3 @@ ForageFraction Fauna::convert_mj_to_kg_proportionally(
   } else
     return ForageFraction(0.0);
 }
-

@@ -81,13 +81,13 @@
     ForageBase <|-- GrassForage
     class HabitatForage
     HabitatForage *->GrassForage
-    enum ForageValueType{
-      POSITIVE_AND_ZERO
-      ZERO_TO_ONE
+    enum ForageValueTag{
+      PositiveAndZero
+      ZeroToOne
     }
-    show ForageValueType members
-    class ForageValues< ForageValueType >
-    ForageValueType -- ForageValues
+    show ForageValueTag members
+    class ForageValues< ForageValueTag >
+    ForageValueTag -- ForageValues
     enum ForageType{
       FT_GRASS,
       FT_INEDIBLE
@@ -241,7 +241,7 @@ competition      -down-> ingestion
       FT_GRASS,
       FT_NEWFORAGE
     }
-    class ForageValues< ForageValueType >
+    class ForageValues< ForageValueTag >
     ForageValues ..> ForageType : <<use>>
     abstract ForageBase
     class NewForage{

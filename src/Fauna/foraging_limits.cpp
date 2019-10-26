@@ -33,7 +33,7 @@ const ForageEnergy GetDigestiveLimitIlliusGordon1992::operator()(
         "Fauna::GetDigestiveLimitIlliusGordon1992::operator()() "
         "bodymass > bodymass_adult");
 
-  typedef ForageValues<POSITIVE_AND_ZERO> ParameterConstant;
+  typedef ForageValues<ForageValueTag::PositiveAndZero> ParameterConstant;
 
   ParameterConstant i, j, k;
 
@@ -113,4 +113,3 @@ double HalfMaxIntake::get_intake_rate(const double density) const {
         "Parameter `density` must be zero or a positive number.");
   return max_intake * density / (half_max_density + density);
 }
-
