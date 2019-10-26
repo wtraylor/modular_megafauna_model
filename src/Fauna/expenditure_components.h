@@ -86,11 +86,11 @@ inline double get_conductance_bradley_deavers_1980(const double bodymass) {
 }
 
 /// Selector for winter or summer pelt.
-enum FurSeason {
+enum class FurSeason {
   /// Summer fur
-  FS_SUMMER,
+  Summer,
   /// Winter fur
-  FS_WINTER
+  Winter
 };
 
 /// Extrapolate conductance from reindeer fur.
@@ -135,8 +135,8 @@ inline double get_conductance_cuyler_oeritsland_2004(const double bodymass,
     throw std::invalid_argument(
         "Fauna::get_conductance_cuyler_oeritsland_2004() "
         "Parameter `bodymass` is <=0.");
-  assert((season == FS_SUMMER) || (season == FS_WINTER));
-  if (season == FS_SUMMER)
+  assert((season == FurSeason::Summer) || (season == FurSeason::Winter));
+  if (season == FurSeason::Summer)
     return 0.29 * pow(bodymass, 0.57);
   else  // Winter:
     return 0.08 * pow(bodymass, 0.57);

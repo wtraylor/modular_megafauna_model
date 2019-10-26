@@ -212,7 +212,8 @@ double HerbivoreBase::get_conductance() const {
       return get_conductance_bradley_deavers_1980(get_bodymass());
     case (ConductanceModel::CuylerOeritsland2004):
       // Currently, we only choose winter fur.
-      return get_conductance_cuyler_oeritsland_2004(get_bodymass(), FS_WINTER);
+      return get_conductance_cuyler_oeritsland_2004(get_bodymass(),
+                                                    FurSeason::Winter);
     default:
       throw std::logic_error(
           "Fauna::HerbivoreBase::get_conductance() "
