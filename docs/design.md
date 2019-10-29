@@ -1,9 +1,6 @@
 # Software Design {#page_design}
-<!-- For doxygen, this is the *page* header -->
 \brief Notes on the software design of the herbivore model from a programmer’s perspective.
 
-# Software Design {#sec_design}
-<!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
 ## Overview {#sec_design_overview}

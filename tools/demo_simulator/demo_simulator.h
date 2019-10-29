@@ -26,7 +26,7 @@ struct missing_parameter : public std::runtime_error {
 /// Performs demo simulations for the Modular Megafauna Model.
 /**
  * \see \ref sec_singleton for an explanation of the design pattern used.
- * \see \ref sec_demo_simulator
+ * \see \ref page_demo_simulator
  */
 class Framework {
  public:

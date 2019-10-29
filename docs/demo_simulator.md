@@ -1,9 +1,6 @@
 # Demo Simulator {#page_demo_simulator}
-<!-- For doxygen, this is the *page* header -->
 \brief Introduction to the demo vegetation model that uses the megafauna library.
 
-# Demo Simulator {#sec_demo_simulator}
-<!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
 ## Overview

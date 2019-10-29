@@ -1,9 +1,6 @@
 # Ecological Model Description {#page_model}
-<!-- For doxygen, this is the *page* header -->
 \brief Scientific background of the Modular Megafauna Model.
 
-# Ecological Model Description {#sec_model}
-<!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
 This document explains the design choices for the megafauna model from a scientific rather than technical angle.

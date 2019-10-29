@@ -1,9 +1,6 @@
 # Object-oriented Design Concepts {#page_object_orientation}
-<!-- For doxygen, this is the *page* header -->
 \brief Some programming principles and paradigms in object-oriented software engineering.
 
-# Object-oriented Design {#sec_object_orientation}
-<!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
 In the megafauna model a couple of object-oriented design patterns were employed that are explained here along with general concepts of object-oriented programming.

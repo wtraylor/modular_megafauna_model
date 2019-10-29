@@ -1,9 +1,6 @@
 # Quickstart Guide {#page_quickstart}
-<!-- For doxygen, this is the *page* header -->
 \brief How to get the first simulations running.
 
-# Quickstart Guide {#sec_quickstart}
-<!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
 ## Compile and Run Unit Tests {#sec_compile_and_run_unit_tests}

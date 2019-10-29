@@ -1,9 +1,6 @@
 # Tutor {#page_tutor}
-<!-- For doxygen, this is the *page* header -->
 \brief Instructions how expand the code base for your own needs.
 
-# Tutor {#sec_tutor}
-<!-- For doxygen, this is the *section* header -->
 \tableofcontents
 
 ## Herbivores Tutorials {#sec_tutor_herbivores}
