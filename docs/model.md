@@ -1,8 +1,8 @@
-# Modular Megafauna Model {#page_model}
+# Ecological Model Description {#page_model}
 <!-- For doxygen, this is the *page* header -->
 \brief Scientific background of the Modular Megafauna Model.
 
-# Modular Megafauna Model {#sec_model}
+# Ecological Model Description {#sec_model}
 <!-- For doxygen, this is the *section* header -->
 \tableofcontents
 

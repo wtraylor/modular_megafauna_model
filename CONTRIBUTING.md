@@ -1,5 +1,5 @@
-Contributing to the Megafauna Model
-===================================
+Contributing to the Codebase
+============================
 
 This document is a guide for developers who want to contribute to the megafauna library.
 It explains the organization of the software project and sets guidelines for code style, structure, and format.

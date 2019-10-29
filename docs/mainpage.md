@@ -1,5 +1,5 @@
-Doxygen Documentation of the Modular Megafauna Model
-====================================================
+Welcome Page
+============
 
 This source code documentation is a guide for users and developers of the megafauna library.
 Before you continue, make sure you have read the `README.md` in the root of this repository in order to gain a general overview.
