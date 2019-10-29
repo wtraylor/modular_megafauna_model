@@ -28,7 +28,10 @@ build:
       -DBUILD_TESTING=ON
       -DBUILD_DEMO_SIMULATOR=ON
       -DBUILD_DOC=ON ..
-    - make --jobs=6 megafauna_docs megafauna_unit_tests megafauna_demo_simulator
+    - make --jobs=6
+      megafauna_docs
+      megafauna_unit_tests
+      megafauna_demo_simulator
   artifacts:
     paths:
       - build/demo_results.Rmd
