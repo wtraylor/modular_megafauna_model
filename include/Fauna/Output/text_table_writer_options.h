@@ -37,7 +37,7 @@ struct TextTableWriterOptions {
 
   /** @{ \name Per-HFT tables: one column per HFT. */
   /// Herbivore mass density per HFT in kg/km².
-  /** \see \ref Fauna::HerbivoreData::massdens */
+  /** \see \ref Fauna::Output::HerbivoreData::massdens */
   bool mass_density_per_hft = false;
   /** @} */
 };

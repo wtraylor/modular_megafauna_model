@@ -156,7 +156,7 @@ If your variable of interest is already present in \ref Fauna::Output::HabitatDa
 	+ Assign a value to the variable somewhere in daily simulation.
 
 - Write the variable in \ref Fauna::Output::TextTableWriter.
-    + Add a selector for your new output file as a boolean member variable in \ref Fauna::TextTableWriterOptions. Pay attention to place it in the right Doxygen group.
+    + Add a selector for your new output file as a boolean member variable in \ref Fauna::Output::TextTableWriterOptions. Pay attention to place it in the right Doxygen group.
     + Parse the name of the selector in \ref Fauna::InsfileReader::read_table_output_text_tables() and add it there to the valid options in the error message.
     + Consider adding it in the example output in the file `examples/megafauna.toml`.
     + Add an output file stream (`std::ofstream`) for your variable as a private member variable in \ref Fauna::Output::TextTableWriter.
