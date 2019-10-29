@@ -253,12 +253,13 @@ bool Framework::run(const std::string insfile_fauna,
   std::cerr << "Starting simulation." << std::endl;
 
   for (int year = 0; year < params.nyears; year++) {
-    // PRINT PROGRESS
-    std::cerr << "\r\e[2K"  // clear line
-              << "Current year: " << year + 1 << "/" << params.nyears
-              << std::flush;
-
     for (int day_of_year = 0; day_of_year < 365; day_of_year++) {
+      // PRINT PROGRESS
+      std::cerr << "\r\e[2K"  // clear line
+                << "Year: " << year + 1 << "/" << params.nyears
+                << " Day: " << day_of_year + 1
+                << std::flush;
+
       // VEGATATION AND HERBIVORE SIMULATION
       const bool do_herbivores = true;
       const Date date(day_of_year, year);
