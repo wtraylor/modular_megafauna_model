@@ -18,6 +18,7 @@ build:
       g++
       graphviz
       texlive-base
+      valgrind
   script:
     - mkdir --parents build
     - cp examples/demo_simulation.toml build/
@@ -43,6 +44,22 @@ unit_tests:
   script:
     - cd build
     - ./megafauna_unit_tests
+
+memcheck:
+  stage: test
+  script:
+    - cd build
+    - valgrind
+      --leak-check=full
+      --show-leak-kinds=all
+      --track-origins=yes
+      --verbose
+      megafauna_demo_simulator
+      "megafauna.toml"
+      "demo_simulation.toml"
+      | tee memcheck.log
+    # If the error summary has not zero errors, the grep command will fail.
+    - grep --silent "ERROR SUMMARY: 0 errors" memcheck.log
 
 demo_simulation:
   stage: test
