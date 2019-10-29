@@ -194,11 +194,11 @@ Execute the helper script `./tools/cppclean.sh` in the Bash.
 
 #### BibTeX Bibliography
 [BibTeX](www.bibtex.org) is used for bibliographic references: [docs/bibliography.bib](docs/bibliography.bib).
-The Doxygen command `cite` is used for that.
+The Doxygen command `cite` (with backslash in front) is used for that.
 This makes browsing the Doxygen documentation easier.
 
 In general you should not need to put any references to scientific publications in _comments_ in the source code.
-Better you explain everything in a narrative form in the Doxygen _documentation_ and use the `\cite` command for that.
+Better you explain everything in a narrative form in the Doxygen _documentation_ and use the `cite` command for that.
 If you do cite in source code comments, make sure that the reference is uniquely identifiable in `bibliography.bib`.
 
 Use [bibsort](http://ftp.math.utah.edu/pub/bibsort/) to sort the
