@@ -1,0 +1,68 @@
+#!/bin/bash
+#
+# Search for memory leaks in the Modular Megafauna Model using Valgrind.
+#
+# Author: Wolfgang Traylor, Senckenberg BiK-Frankfurt, Germany
+# Copyright: ... (to be determined)
+# Date: 2019
+
+set -o nounset # Exit on unset variables.
+set -o errexit # Exit on errors.
+
+if ! command -v valgrind >/dev/null 2>&1; then
+  echo 'valgrind is not installed. Aborting.' >&2
+  exit 1
+fi
+
+if ! command -v cmake >/dev/null 2>&1; then
+  echo 'cmake is not installed. Aborting.' >&2
+  exit 1
+fi
+
+if ! command -v git >/dev/null 2>&1; then
+  echo 'git is not installed. Aborting.' >&2
+  exit 1
+fi
+
+# Root of the Git repository.
+readonly ROOT_DIR=$(git rev-parse --show-toplevel)
+
+# Build in current subdirectory.
+readonly BUILD_DIR=${ROOT_DIR}/build
+
+# Run in subdirectory of build dir.
+readonly RUN_DIR=${BUILD_DIR}/valgrind_memcheck
+
+echo >&2 "Compiling..."
+mkdir --verbose --parents "$BUILD_DIR"
+(cd "$BUILD_DIR" &&
+  cmake -DCMAKE_BUILD_TYPE=debug "$ROOT_DIR" &&
+  make --jobs=8 megafauna_demo_simulator)
+
+echo >&2 "Preparing instruction files..."
+readonly MMM_INS="$RUN_DIR/megafauna.toml"
+readonly DEMO_INS="$RUN_DIR/demo_simulation.toml"
+cp "$ROOT_DIR/examples/megafauna.toml" "$MMM_INS"
+
+# Only run minimum number of years.
+sed 's/^\s*years\s*=.*/years = 2/' \
+  "$ROOT_DIR/examples/demo_simulation.toml" \
+  > "$DEMO_INS"
+
+rm --force "$RUN_DIR/*.tsv"
+
+echo >&2 "Running valgrind..."
+readonly LOG_FILE=$(readlink -f "valgrind_memcheck.log")
+mkdir --verbose --parents "$RUN_DIR"
+rm --force "$RUN_DIR"/*.tsv
+cd "$RUN_DIR"
+valgrind \
+  --leak-check=full \
+  --show-leak-kinds=all \
+  --track-origins=yes \
+  --verbose \
+  --log-file="$LOG_FILE" \
+  "$BUILD_DIR/megafauna_demo_simulator" "$MMM_INS" "$DEMO_INS"
+
+echo >&2 "Memory check complete!"
+echo >&2 "Output lies in '$LOG_FILE'."

@@ -58,6 +58,9 @@ The repository should always be in a valid state.
 A number of tests are defined in the file `.gitlab-ci.yml`.
 This file works with GitLab Continuous Integration (CI).
 
+With the bash script `tools/run_valgrind_memcheck` you can execute a memory check manually on your local machine.
+**Always make sure contributions to the codebase don’t have memory leaks.**
+
 Coding Guidelines
 -----------------
 
