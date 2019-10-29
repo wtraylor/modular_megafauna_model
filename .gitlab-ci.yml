@@ -52,17 +52,19 @@ memcheck:
   stage: test
   script:
     - cd build
-    - valgrind
+    # The following command needs to be quoted as a whole so that the YAML
+    # parser does not interpret the "|" special character.
+    - "valgrind
       --leak-check=full
       --show-leak-kinds=all
       --track-origins=yes
       --verbose
       megafauna_demo_simulator
-      "megafauna.toml"
-      "demo_simulation.toml"
-      | tee memcheck.log
+      megafauna.toml
+      demo_simulation.toml
+      | tee memcheck.log"
     # If the error summary has not zero errors, the grep command will fail.
-    - grep --silent "ERROR SUMMARY: 0 errors" memcheck.log
+    - "grep --silent 'ERROR SUMMARY: 0 errors' memcheck.log"
 
 demo_simulation:
   stage: test
