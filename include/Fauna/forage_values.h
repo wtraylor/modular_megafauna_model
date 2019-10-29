@@ -419,8 +419,16 @@ inline ForageValues<ForageValueTag::PositiveAndZero> operator*(
 /** @} */
 
 /// Convert forage fractions (in [0,1]) into values in [0,∞].
+/**
+ * \param fractions A \ref ForageValues object limited to values between zero
+ * and one.
+ * \return A \ref ForageValues object that has no upper limit for values.
+ */
+// Note that we don’t use the typedef "ForageFraction" as the type of parameter
+// "fractions" here because Doxygen (1.8.16) does not recognize it and throws a
+// warning.
 ForageValues<ForageValueTag::PositiveAndZero> foragefractions_to_foragevalues(
-    const ForageFraction& fractions);
+    const ForageValues<ForageValueTag::ZeroToOne>& fractions);
 
 /// Convert forage values to fractional values.
 /**
@@ -446,8 +454,12 @@ ForageFraction foragevalues_to_foragefractions(
  * `mj_proportions`. When converting back from mass to energy, the
  * proportion relative to each other will be like in `mj_proportions`.
  */
+// Note that we don’t use the typedefs "ForageFraction" and "ForageEnergy" as
+// the parameter types here because Doxygen (1.8.16) does not recognize it and
+// throws a warning.
 ForageFraction convert_mj_to_kg_proportionally(
-    const ForageEnergyContent& mj_per_kg, const ForageFraction& mj_proportions);
+    const ForageValues<ForageValueTag::PositiveAndZero>& mj_per_kg,
+    const ForageValues<ForageValueTag::ZeroToOne>& mj_proportions);
 
 }  // namespace Fauna
 #endif  // FAUNA_FORAGE_VALUES_H
