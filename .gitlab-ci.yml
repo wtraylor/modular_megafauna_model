@@ -92,6 +92,9 @@ memcheck:
       | tee memcheck.log"
     # If the error summary has not zero errors, the grep command will fail.
     - "! grep --silent 'ERROR SUMMARY: 0 errors' memcheck.log"
+  artifacts:
+    paths:
+      - build/memcheck.log
 
 demo_simulation:
   stage: test
