@@ -3,6 +3,7 @@ image: ubuntu:latest
 stages:
   - build
   - test
+  - postprocess
 
 variables:
   # Install packages without user interaction.
@@ -97,9 +98,26 @@ demo_simulation:
     - ./megafauna_demo_simulator
       "megafauna.toml"
       "demo_simulation.toml"
+  artifacts:
+    paths:
+      - build/digestibility.tsv
+      - build/mass_density_per_hft.tsv
+
+plot_demo_results:
+  stage: postprocess
+  needs: ["demo_simulation"]
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq r-base
+    - Rscript -e 'install.packages(c("ggplot2", "knitr", "markdown", "tidyr"))'
+  script:
+    - cd build
     - Rscript -e
-      "library(knitr);\
-       library(markdown);\
-       knit('demo_results.Rmd', 'demo_results.md');\
+      "library(knitr);
+       library(markdown);
+       knit('demo_results.Rmd', 'demo_results.md');
        markdownToHTML('demo_results.md', 'demo_results.html')"
     - test -f "demo_results.html"
+  artifacts:
+    paths:
+      - build/demo_results.html
