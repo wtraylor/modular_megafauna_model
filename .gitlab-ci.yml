@@ -45,6 +45,7 @@ doxygen:
       cmake
       default-jre
       doxygen
+      g++
       graphviz
       texlive-base
       valgrind
