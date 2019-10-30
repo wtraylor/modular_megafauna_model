@@ -4,32 +4,24 @@ stages:
   - build
   - test
 
-# Build documentation and unit tests at once so that we don’t need to install
-# all the Debian packages in another job again.
-build:
+# The documentation and the source code are compiled separately so that the
+# pipeline can continue with the unit tests even if doxygen fails.
+
+compile:
   stage: build
   before_script:
     - export DEBIAN_FRONTEND=noninteractive
     - apt-get update -qq
-    - apt-get install -y -qq
-      cmake
-      default-jre
-      doxygen
-      g++
-      graphviz
-      texlive-base
-      valgrind
+    - apt-get install -y -qq cmake g++
   script:
     - mkdir --parents build
     - cp examples/demo_simulation.toml build/
     - cd build
     - cmake
-      -DSTOP_DOXYGEN_ON_WARNING=ON
       -DBUILD_TESTING=ON
       -DBUILD_DEMO_SIMULATOR=ON
-      -DBUILD_DOC=ON ..
+      -DBUILD_DOC=OFF ..
     - make --jobs=6
-      megafauna_docs
       megafauna_unit_tests
       megafauna_demo_simulator
   artifacts:
@@ -42,6 +34,28 @@ build:
       - build/megafauna_unit_tests
     expire_in: 20 minutes
 
+doxygen:
+  stage: build
+  before_script:
+    - export DEBIAN_FRONTEND=noninteractive
+    - apt-get update -qq
+    - apt-get install -y -qq
+      cmake
+      default-jre
+      doxygen
+      graphviz
+      texlive-base
+      valgrind
+  script:
+    - mkdir --parents build
+    - cd build
+    - cmake
+      -DSTOP_DOXYGEN_ON_WARNING=ON
+      -DBUILD_TESTING=OFF
+      -DBUILD_DEMO_SIMULATOR=OFF
+      -DBUILD_DOC=ON ..
+    - make --jobs=6 megafauna_docs
+
 unit_tests:
   stage: test
   script:
@@ -50,6 +64,10 @@ unit_tests:
 
 memcheck:
   stage: test
+  before_script:
+    - export DEBIAN_FRONTEND=noninteractive
+    - apt-get update -qq
+    - apt-get install -y -qq valgrind
   script:
     - cd build
     # The following command needs to be quoted as a whole so that the YAML
@@ -79,3 +97,5 @@ demo_simulation:
        knit('demo_results.Rmd', 'demo_results.md');\
        markdownToHTML('demo_results.md', 'demo_results.html')"
     - test -f "demo_results.html"
+
+
