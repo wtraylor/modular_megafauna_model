@@ -76,6 +76,9 @@ memcheck:
     - apt-get install -y -qq valgrind
   script:
     - cd build
+    # Only run two years:
+    - sed -e 's/^\s*years\s*=.*/years = 2/' --in-place
+      demo_simulation.toml
     # The following command needs to be quoted as a whole so that the YAML
     # parser does not interpret the "|" special character.
     - "valgrind
