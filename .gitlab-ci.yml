@@ -58,12 +58,14 @@ doxygen:
 
 unit_tests:
   stage: test
+  needs: ["compile"]
   script:
     - cd build
     - ./megafauna_unit_tests
 
 memcheck:
   stage: test
+  needs: ["compile"]
   before_script:
     - export DEBIAN_FRONTEND=noninteractive
     - apt-get update -qq
@@ -86,6 +88,7 @@ memcheck:
 
 demo_simulation:
   stage: test
+  needs: ["compile"]
   script:
     - cd build
     - ./megafauna_demo_simulator
@@ -97,5 +100,3 @@ demo_simulation:
        knit('demo_results.Rmd', 'demo_results.md');\
        markdownToHTML('demo_results.md', 'demo_results.html')"
     - test -f "demo_results.html"
-
-
