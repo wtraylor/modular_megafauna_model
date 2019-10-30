@@ -4,13 +4,16 @@ stages:
   - build
   - test
 
+variables:
+  # Install packages without user interaction.
+  DEBIAN_FRONTEND: "noninteractive"
+
 # The documentation and the source code are compiled separately so that the
 # pipeline can continue with the unit tests even if doxygen fails.
 
 compile:
   stage: build
   before_script:
-    - export DEBIAN_FRONTEND=noninteractive
     - apt-get update -qq
     - apt-get install -y -qq cmake g++
   script:
@@ -37,7 +40,6 @@ compile:
 doxygen:
   stage: build
   before_script:
-    - export DEBIAN_FRONTEND=noninteractive
     - apt-get update -qq
     - apt-get install -y -qq
       cmake
@@ -67,7 +69,6 @@ memcheck:
   stage: test
   needs: ["compile"]
   before_script:
-    - export DEBIAN_FRONTEND=noninteractive
     - apt-get update -qq
     - apt-get install -y -qq valgrind
   script:
