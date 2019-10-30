@@ -105,6 +105,7 @@ demo_simulation:
     paths:
       - build/digestibility.tsv
       - build/mass_density_per_hft.tsv
+    expire_in: 20 minutes
 
 plot_demo_results:
   stage: postprocess
