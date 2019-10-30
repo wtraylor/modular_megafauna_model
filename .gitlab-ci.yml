@@ -82,7 +82,7 @@ memcheck:
       --show-leak-kinds=all
       --track-origins=yes
       --verbose
-      megafauna_demo_simulator
+      ./megafauna_demo_simulator
       megafauna.toml
       demo_simulation.toml
       | tee memcheck.log"
