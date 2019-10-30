@@ -103,6 +103,7 @@ demo_simulation:
       "demo_simulation.toml"
   artifacts:
     paths:
+      - build/demo_results.Rmd
       - build/digestibility.tsv
       - build/mass_density_per_hft.tsv
     expire_in: 20 minutes
