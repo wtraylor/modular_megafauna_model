@@ -31,7 +31,6 @@ compile:
     paths:
       - build/demo_results.Rmd
       - build/demo_simulation.toml
-      - build/docs/html/
       - build/megafauna.toml
       - build/megafauna_demo_simulator
       - build/megafauna_unit_tests
@@ -57,6 +56,9 @@ doxygen:
       -DBUILD_DEMO_SIMULATOR=OFF
       -DBUILD_DOC=ON ..
     - make --jobs=6 megafauna_docs
+  artifacts:
+    paths:
+      - build/docs/html/
 
 unit_tests:
   stage: test
