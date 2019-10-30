@@ -91,7 +91,7 @@ memcheck:
       demo_simulation.toml
       | tee memcheck.log"
     # If the error summary has not zero errors, the grep command will fail.
-    - "grep --silent 'ERROR SUMMARY: 0 errors' memcheck.log"
+    - "! grep --silent 'ERROR SUMMARY: 0 errors' memcheck.log"
 
 demo_simulation:
   stage: test
