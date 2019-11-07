@@ -1,0 +1,357 @@
+/' PlantUML diagrams for the herbivory module.
+ ' author: Wolfgang Traylor, Senckenberg BiK-F
+ ' date: August 2017
+ '
+ ' PlantUML is free software under the GPL license.
+ ' See http://plantuml.com
+ '
+ ' Please keep the **alphabetical order** of the diagrams.
+ '/
+
+@startuml (id=basic_components)
+  [Megafauna Library] as library
+  () "Fauna::Habitat" as habitat
+  () "Fauna::World" as world
+  () "Implementation\nof Fauna::Habitat" as myhabitat
+  node "Megafauna Output Files" as outputfiles
+  [Vegetation Model] as vegetation
+  node "TOML Instruction File" as insfile
+  vegetation   <..>  myhabitat
+  myhabitat     --|> habitat
+  habitat       --   library
+  library       ..>  outputfiles : write
+  library       ..>  insfile  : read
+  vegetation    ..>  world : simulate_day()
+  world         --   library
+@enduml
+
+@startuml (id=demo_simulator_classes)
+  hide members
+  hide methods
+  namespace Fauna {
+    namespace Demo {
+      class Framework <<singleton>>
+      Framework *-> "1..*" SimpleHabitat
+      SimpleHabitat *-> "1" LogisticGrass
+      SimpleHabitat --|> Fauna.Habitat
+      Framework *-> "1" Fauna.World
+    }
+    abstract Habitat
+    World          ..> Habitat : <<call>>
+  }
+  annotation "main()" as main
+  main .down.> Fauna.Demo.Framework : <<call>>
+@enduml
+
+@startuml (id=exception_classes)
+  hide members
+  hide methods
+  namespace std{
+    exception   <|-- logic_error
+    exception   <|-up- runtime_error
+    logic_error <|-- invalid_argument
+    logic_error <|-- out_of_range
+  }
+  namespace Fauna{
+    invalid_option        --|> std.runtime_error
+    missing_parameter     --|> std.runtime_error
+    missing_hft_parameter --|> std.runtime_error
+    missing_group         --|> std.runtime_error
+  }
+  namespace cpptoml{
+    array_exception --|> std.runtime_error
+    parse_exception --|> std.runtime_error
+  }
+@enduml
+
+@startuml (id=forage_classes)
+  hide members
+  hide methods
+  namespace Fauna{
+    class ForageBase{
+      digestibility
+      mass
+    }
+    show ForageBase members
+    class GrassForage{
+      fpc
+      sward_density
+    }
+    show GrassForage members
+    ForageBase <|-- GrassForage
+    class HabitatForage
+    HabitatForage *->GrassForage
+    enum ForageValueTag{
+      PositiveAndZero
+      ZeroToOne
+    }
+    show ForageValueTag members
+    class ForageValues< ForageValueTag >
+    ForageValueTag -- ForageValues
+    enum ForageType{
+      Grass,
+      Inedible
+    }
+    show ForageType members
+  }
+@enduml
+
+@startuml (id=herbivore_classes)
+  hide members
+  hide methods
+  namespace Fauna {
+    interface HerbivoreInterface
+    interface PopulationInterface
+    abstract HerbivoreBase
+    HerbivoreInterface  <|-- HerbivoreBase
+    HerbivoreBase       <|-- HerbivoreIndividual
+    HerbivoreBase       <|-- HerbivoreCohort
+    PopulationInterface <|-up- IndividualPopulation
+    PopulationInterface <|-up- CohortPopulation
+    HerbivoreIndividual "*" <--* "1" IndividualPopulation
+    HerbivoreCohort     "*" <--* "1" CohortPopulation
+    HerbivoreIndividual  <..  IndividualPopulation : <<create>>
+    (HerbivoreIndividual, IndividualPopulation) .. CreateHerbivoreIndividual
+    HerbivoreCohort      <..  CohortPopulation     : <<create>>
+    (HerbivoreCohort, CohortPopulation) .. CreateHerbivoreCohort
+  }
+@enduml
+
+@startuml (id=herbivorebase_compartments)
+  hide methods
+  namespace Fauna{
+  abstract HerbivoreBase{
+    -Hft hft
+    -int age_days
+  }
+  class FatmassEnergyBudget{
+    +catabolize_fat()
+    +metabolize_energy()
+    -double energy_needs
+    -double fatmass
+    -double max_fatmass
+  }
+  show FatmassEnergyBudget methods
+  HerbivoreBase *-up-> "1" FatmassEnergyBudget
+  package "Forage Energy" <<rectangle>> {
+    enum NetEnergyModel{
+      Default
+    }
+  }
+  HerbivoreBase .up.> "1" "Forage Energy"
+  package "Reproduction" <<rectangle>> {
+    enum ReproductionModel{
+      None
+      ConstantMaximum
+      IlliusOConnor2000
+      Linear
+    }
+  }
+  HerbivoreBase .up.> "1" "Reproduction"
+  package "Diet" <<rectangle>> {
+    enum DietComposer{
+      PureGrazer
+    }
+  }
+  HerbivoreBase  .up.> "1" "Diet"
+  package "Energy Expenditure" <<rectangle>>  {
+    enum ExpenditureComponent{
+      Allometric
+      Taylor1981
+      Thermoregulation
+    }
+  }
+  HerbivoreBase  ..> "*" "Energy Expenditure"
+    package "Digestive Limit" <<rectangle>>  {
+    enum DigestiveLimit{
+      None
+      Allometric
+      FixedFraction
+      IlliusGordon1992
+    }
+  }
+  HerbivoreBase  ..> "1" "Digestive Limit"
+  package "Foraging Limits" <<rectangle>>  {
+    enum ForagingLimit{
+      IlliusOConnor2000
+      GeneralFunctionalRespone
+    }
+  }
+  HerbivoreBase  ..> "*" "Foraging Limits"
+  package "Mortality" <<rectangle>> {
+    enum MortalityFactor{
+      Background
+      Lifespan
+      StarvationIlliusOConnor2000
+      StarvationThreshold
+    }
+  }
+  HerbivoreBase ..> "*" "Mortality"
+  }
+@enduml
+
+@startuml (id=important_classes)
+  hide members
+  hide methods
+  namespace Fauna{
+    class World
+    abstract Habitat
+    interface HerbivoreInterface
+    class Hft
+    interface PopulationInterface
+    World            --> SimulationUnit : owns >
+    class SimulationUnit
+    SimulationUnit      *--> "1" Habitat
+    SimulationUnit      *--> "1..*" PopulationList : contains >
+    class PopulationList
+    PopulationList      *--> "*" PopulationInterface
+    PopulationInterface *--> "*" HerbivoreInterface
+    HerbivoreInterface   --> "1" Hft
+  }
+@enduml
+
+@startuml (id=intake_limit_levels)
+hide members
+hide circle
+hide methods
+annotation "Available Forage" as available_forage
+note left: Plant biomass in the patch
+annotation "Foraging Limit" as foraging_limit
+note left: Potential ingestion
+annotation "Digestive Limit" as digestion_limit
+note left: Potential digestion
+annotation "Diet Choice" as diet_choice
+note left: Preference for forage types
+annotation "Metabolic Limit" as metabolic_limit
+note left: Maintenance needs + max. anabolism
+annotation "Competition Limit" as competition
+note left: Sharing resources with other herbivores
+annotation "Ingestion" as ingestion
+available_forage -down-> foraging_limit
+foraging_limit   -down-> digestion_limit
+digestion_limit  -down-> diet_choice
+diet_choice      -down-> metabolic_limit
+metabolic_limit  -down-> competition
+competition      -down-> ingestion
+@enduml
+
+@startuml (id=new_forage_type)
+  namespace Fauna{
+    enum ForageType {
+      Grass
+      NewForage
+      Inedible
+    }
+    class ForageValues< ForageValueTag >
+    ForageValues ..> ForageType : <<use>>
+    abstract ForageBase
+    class NewForage{
+      your_custom_members
+    }
+    NewForage --|> ForageBase
+    class HabitatForage{
+      get_total()
+      merge()
+    }
+    HabitatForage *--> NewForage
+    abstract HerbivoreBase
+    HerbivoreBase ..> HabitatForage : <<use>>
+    class YourHabitatImplementation{
+      get_available_forage()
+      reduce_forage_mass()
+    }
+    YourHabitatImplementation ..> HabitatForage : <<use>>
+    abstract Habitat
+    YourHabitatImplementation -up-|> Habitat
+    namespace Demo{
+      SimpleHabitat  ..> Fauna.HabitatForage : <<use>>
+      SimpleHabitat -up-|> Fauna.Habitat
+    }
+  }
+@enduml
+
+@startuml (id=new_herbivore_type)
+  namespace Fauna{
+    hide members
+    hide methods
+    interface HerbivoreInterface
+    abstract HerbivoreBase
+    HerbivoreInterface  <|-- HerbivoreBase
+    HerbivoreBase       <|-- HerbivoreIndividual
+    HerbivoreBase       <|-- HerbivoreCohort
+    HerbivoreInterface  <|-- NewHerbivore
+    interface PopulationInterface
+    PopulationInterface <|-- NewPopulation
+    NewPopulation        ..> NewHerbivore : create & manage
+  }
+@enduml
+
+@startuml (id=net_energy_content)
+  hide members
+  hide methods
+  namespace Fauna{
+    enum NetEnergyModel{
+      Default
+    }
+    show NetEnergyModel members
+    Hft *--> NetEnergyModel
+    interface GetNetEnergyContentInterface <<strategy>>
+    GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
+    abstract HerbivoreBase
+    HerbivoreBase ..> GetNetEnergyContentInterface : <<create>>
+  }
+@enduml
+
+@startuml (id=output_classes)
+  hide methods
+  hide members
+  namespace Fauna{
+    namespace Output{
+      Aggregator o-down-> "*" Datapoint
+      Datapoint o-down-> "1" CombinedData
+      Datapoint o-left-> "1" DateInterval
+      CombinedData o-down-> "*" HerbivoreData
+      note on link : by HFT
+      CombinedData o-down-> "1" HabitatData
+    }
+  }
+@enduml
+
+@startuml (id=parameters_access)
+  hide members
+  hide methods
+  namespace Fauna{
+    CreateHerbivoreIndividual ..> Parameters
+    CreateHerbivoreIndividual ..> Hft
+    CreateHerbivoreCohort     ..> Parameters
+    CreateHerbivoreCohort     ..> Hft
+    CohortPopulation          .up.> Hft
+    IndividualPopulation      .up.> Hft
+    abstract HerbivoreBase
+    HerbivoreBase             .up.> Hft
+    World                     *-down-> Parameters
+    World                     *-down-> Hft
+  }
+  package "Host Program"{
+  }
+  "Host Program" .right.> Fauna.Parameters
+  "Host Program" .right.> Fauna.World
+@enduml
+
+@startuml (id=population_classes)
+  hide members
+  hide methods
+  namespace Fauna{
+    interface PopulationInterface
+    PopulationInterface <|-- IndividualPopulation
+    PopulationInterface <|-- CohortPopulation
+    IndividualPopulation *-- "*" HerbivoreIndividual
+    CohortPopulation     *-- "*" HerbivoreCohort
+    class SimulationUnit
+    SimulationUnit *-- "*" PopulationInterface
+    (SimulationUnit, PopulationInterface) .. HftPopulationsMap
+    abstract Habitat
+    SimulationUnit *-- "1" Habitat
+  }
+@enduml
+

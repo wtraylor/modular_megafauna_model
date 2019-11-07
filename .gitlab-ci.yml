@@ -1,0 +1,132 @@
+image: ubuntu:latest
+
+stages:
+  - build
+  - test
+  - postprocess
+
+variables:
+  # Install packages without user interaction.
+  DEBIAN_FRONTEND: "noninteractive"
+
+# The documentation and the source code are compiled separately so that the
+# pipeline can continue with the unit tests even if doxygen fails.
+
+compile:
+  stage: build
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq cmake g++
+  script:
+    - mkdir --parents build
+    - cp examples/demo_simulation.toml build/
+    - cd build
+    - cmake
+      -DBUILD_TESTING=ON
+      -DBUILD_DEMO_SIMULATOR=ON
+      -DBUILD_DOC=OFF ..
+    - make --jobs=6
+      megafauna_unit_tests
+      megafauna_demo_simulator
+  artifacts:
+    paths:
+      - build/demo_results.Rmd
+      - build/demo_simulation.toml
+      - build/megafauna.toml
+      - build/megafauna_demo_simulator
+      - build/megafauna_unit_tests
+    expire_in: 20 minutes
+
+doxygen:
+  stage: build
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq
+      cmake
+      default-jre
+      doxygen
+      g++
+      graphviz
+      texlive-base
+      valgrind
+  script:
+    - mkdir --parents build
+    - cd build
+    - cmake
+      -DSTOP_DOXYGEN_ON_WARNING=ON
+      -DBUILD_TESTING=OFF
+      -DBUILD_DEMO_SIMULATOR=OFF
+      -DBUILD_DOC=ON ..
+    - make --jobs=6 megafauna_docs
+  artifacts:
+    paths:
+      - build/docs/html/
+
+unit_tests:
+  stage: test
+  needs: ["compile"]
+  script:
+    - cd build
+    - ./megafauna_unit_tests
+
+memcheck:
+  stage: test
+  needs: ["compile"]
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq valgrind
+  script:
+    - cd build
+    # Only run two years:
+    - sed -e 's/^\s*years\s*=.*/years = 2/' --in-place
+      demo_simulation.toml
+    # The following command needs to be quoted as a whole so that the YAML
+    # parser does not interpret the "|" special character.
+    - "valgrind
+      --leak-check=full
+      --show-leak-kinds=all
+      --track-origins=yes
+      --verbose
+      ./megafauna_demo_simulator
+      megafauna.toml
+      demo_simulation.toml
+      | tee memcheck.log"
+    # If the error summary has not zero errors, the grep command will fail.
+    - "! grep --silent 'ERROR SUMMARY: 0 errors' memcheck.log"
+  artifacts:
+    paths:
+      - build/memcheck.log
+
+demo_simulation:
+  stage: test
+  needs: ["compile"]
+  script:
+    - cd build
+    - ./megafauna_demo_simulator
+      "megafauna.toml"
+      "demo_simulation.toml"
+  artifacts:
+    paths:
+      - build/demo_results.Rmd
+      - build/digestibility.tsv
+      - build/mass_density_per_hft.tsv
+    expire_in: 20 minutes
+
+plot_demo_results:
+  stage: postprocess
+  needs: ["demo_simulation"]
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq r-base
+    - Rscript -e 'install.packages(c("ggplot2", "knitr", "markdown", "tidyr"))'
+  script:
+    - cd build
+    - Rscript -e
+      "library(knitr);
+       library(markdown);
+       knit('demo_results.Rmd', 'demo_results.md');
+       markdownToHTML('demo_results.md', 'demo_results.html')"
+    - test -f "demo_results.html"
+  artifacts:
+    paths:
+      - build/demo_results.html
