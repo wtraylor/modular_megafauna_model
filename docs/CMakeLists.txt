@@ -28,7 +28,7 @@ if (DOXYGEN_FOUND)
   set (DOXYGEN_PLANTUML_JAR_PATH "plantuml/plantuml.jar")
   set (DOXYGEN_USE_MDFILE_AS_MAINPAGE "mainpage.md")
 
-  if (DOXYGEN_VERSION < 1.8.16)
+  if (DOXYGEN_VERSION VERSION_LESS 1.8.16)
     message (
       WARNING "You are using an older version of Doxygen (${DOXYGEN_VERSION}).
       Perhaps errors will occur. This documentation was tested with Doxygen
