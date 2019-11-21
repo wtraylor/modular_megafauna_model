@@ -52,10 +52,8 @@ ForageBase HabitatForage::get_total() const {
 
     double dig_sum_weight = 0.0;
     // loop through each forage type
-    for (ForageMass::const_iterator itr = mass.begin(); itr != mass.end();
-         itr++) {
-      const ForageType ft = itr->first;
-      dig_sum_weight += itr->second * operator[](ft).get_digestibility();
+    for (const auto ft : FORAGE_TYPES) {
+      dig_sum_weight += mass[ft] * operator[](ft).get_digestibility();
     }
     result.set_digestibility(dig_sum_weight / mass.sum());
   } else
@@ -75,9 +73,7 @@ HabitatForage& HabitatForage::merge(const HabitatForage& other,
 
 void HabitatForage::set_nitrogen_content(const ForageFraction& n_content) {
   // loop through each forage type
-  for (ForageMass::const_iterator itr = n_content.begin();
-       itr != n_content.end(); itr++) {
-    const ForageType ft = itr->first;
+  for (const auto ft : FORAGE_TYPES) {
     const double dry_matter = (*this)[ft].get_mass();
     if (n_content[ft] == 1.0)
       throw std::invalid_argument(

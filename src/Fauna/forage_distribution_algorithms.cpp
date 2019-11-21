@@ -40,14 +40,9 @@ void DistributeForageEqually::operator()(
     ForageMass& portion = itr->second;       // output
 
     // calculate the right portion for each forage type
-    for (ForageMass::const_iterator itr_ft = demand.begin();
-         itr_ft != demand.end(); itr_ft++) {
-      const ForageType ft = itr_ft->first;
-
+    for (const auto ft : FORAGE_TYPES) {
       if (demand_sum[ft] != 0.0)
         portion.set(ft, avail_mass[ft] * demand[ft] / demand_sum[ft]);
     }
   }
 }
-
-

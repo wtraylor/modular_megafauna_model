@@ -9,6 +9,7 @@
 
 #include <cmath>
 #include <map>
+#include <numeric>
 #include "Fauna/average.h"
 #include "Fauna/forage_types.h"
 
@@ -49,25 +50,6 @@ enum class ForageValueTag {
  */
 template <ForageValueTag tag>
 class ForageValues {
- private:
-  typedef std::map<ForageType, double> MapType;
-
-  /** @{ \name Write access iteration */
-  typedef MapType::iterator iterator;  // write access
-  iterator begin() { return map.begin(); }
-  iterator end() { return map.end(); }
-  /** @} */
-
-  /// Initialize: create map entries for every forage type.
-  /** \see \ref FORAGE_TYPES */
-  void init() {
-    assert(map.empty());
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      map[*ft] = 0.0;
-    assert(map.size() == FORAGE_TYPES.size());
-  }
-
  public:
   /// Constructor with initializing value.
   /**
@@ -77,8 +59,7 @@ class ForageValues {
    *
    */
   ForageValues(const double init_value = 0.0) {
-    init();
-    for (iterator i = begin(); i != end(); i++) set(i->first, init_value);
+    for (const auto ft : FORAGE_TYPES) set(ft, init_value);
   }
 
   /// Divide safely also by zero values.
@@ -92,12 +73,12 @@ class ForageValues {
   ForageValues<tag> divide_safely(const ForageValues<tag>& divisor,
                                   const double na_value) const {
     ForageValues<tag> result(*this);
-    for (const_iterator i = begin(); i != end(); i++) {
-      const double d = divisor.get(i->first);
+    for (int ft = 0; ft < array.size(); ft++) {
+      const double d = divisor.array[ft];
       if (d != 0.0)
-        result.set(i->first, i->second / d);  // normal
+        result.set((ForageType)ft, array[ft] / d);  // normal
       else
-        result.set(i->first, na_value);  // division by zero
+        result.set((ForageType)ft, na_value);  // division by zero
     }
     return result;
   }
@@ -105,23 +86,15 @@ class ForageValues {
   /// Get a value (read-only).
   /**
    * \throw std::invalid_argument If \ref ForageType::Inedible is passed.
-   * \throw std::logic_error If forage type not accessible.
-   * This error should never occur, as all forage types are
-   * initialized in the constructors.
    */
   double get(const ForageType ft) const {
     if (ft == ForageType::Inedible)
       throw std::invalid_argument(
           "Fauna::ForageValues<>::get() "
           "The forage type `ForageType::Inedible` is not allowed.");
-    const_iterator element = map.find(ft);
-    if (element != map.end())
-      return element->second;
-    else
-      throw std::logic_error(
-          "Fauna::ForageValues<>::get() "
-          "Forage type \"" +
-          get_forage_type_name(ft) + "\" not implemented or invalid.");
+    assert((int)ft < array.size());
+    assert((int)ft >= 0);
+    return array[(int)ft];
   }
 
   /// Merge this object with another one by building (weighted) means.
@@ -136,9 +109,9 @@ class ForageValues {
   ForageValues<tag>& merge(const ForageValues<tag>& other,
                            const double this_weight = 1.0,
                            const double other_weight = 1.0) {
-    for (const_iterator i = other.begin(); i != other.end(); i++)
-      set(i->first,
-          average((*this)[i->first], i->second, this_weight, other_weight));
+    for (int ft = 0; ft < array.size(); ft++)
+      set((ForageType)ft,
+          average(array[ft], other.array[ft], this_weight, other_weight));
     return *this;
   }
 
@@ -147,8 +120,8 @@ class ForageValues {
    * \return This object. */
   ForageValues<tag>& max(const ForageValues<tag>& other) {
     if (&other == this) return *this;
-    for (const_iterator i = other.begin(); i != other.end(); i++)
-      set(i->first, std::max(get(i->first), i->second));
+    for (int ft = 0; ft < array.size(); ft++)
+      set((ForageType)ft, std::max(array[ft], other.array[ft]));
     return *this;
   }
 
@@ -157,16 +130,24 @@ class ForageValues {
    * \return This object. */
   ForageValues<tag>& min(const ForageValues<tag>& other) {
     if (&other == this) return *this;
-    for (const_iterator i = other.begin(); i != other.end(); i++)
-      set(i->first, std::min(get(i->first), i->second));
+    for (int ft = 0; ft < array.size(); ft++)
+      set((ForageType)ft, std::min(array[ft], other.array[ft]));
     return *this;
   }
 
   /// Read-only value access.
-  /** \throw std::logic_error If forage type not accessible.
-   * This error should never occur, as all forage types are
-   * initialized in the constructors. */
   double operator[](const ForageType ft) const { return get(ft); }
+
+  /// Write access to values.
+  double& operator[](const ForageType ft) {
+    if (ft == ForageType::Inedible)
+      throw std::invalid_argument(
+          "Fauna::ForageValues<>::get() "
+          "The forage type `ForageType::Inedible` is not allowed.");
+    assert((int)ft < array.size());
+    assert((int)ft >= 0);
+    return array[(int)ft];
+  }
 
   /// Set a value, only finite values are allowed..
   /**
@@ -210,49 +191,39 @@ class ForageValues {
 							"Forage type `ForageType::Inedible` is not allowed."+
 							" ("+get_forage_type_name(forage_type)+")");
 
-    // The map entry for any forage type should have been
-    // created on initialization.
-    assert(map.size() == FORAGE_TYPES.size());
-    assert(map.count(forage_type));
-
     // Change the value.
-    map[forage_type] = value;
-
-    assert(map.size() == FORAGE_TYPES.size());
+    assert((int)forage_type < array.size());
+    assert((int)forage_type >= 0);
+    array[(int)forage_type] = value;
   }
 
   /// Sum of all values.
   double sum() const {
-    double sum = 0.0;
-    for (const_iterator i = begin(); i != end(); i++) sum += i->second;
-    return sum;
+    return std::accumulate(array.begin(), array.end(), 0.0);
   }
 
-  /** @{ \name Read-only wrapper around std::map. */
-  typedef MapType::const_iterator const_iterator;
-  const_iterator begin() const { return map.begin(); }
-  const_iterator end() const { return map.end(); }
-  /** @} */  // Wrapper around std::map
-
- public:
   /** @{ \name Operator overload. */
   ForageValues<tag>& operator+=(const double rhs) {
-    for (iterator i = begin(); i != end(); i++) set(i->first, i->second + rhs);
+    for (int ft = 0; ft < array.size(); ft++)
+      set((ForageType)ft, array[ft] + rhs);
     return *this;
   }
   ForageValues<tag>& operator-=(const double rhs) {
-    for (iterator i = begin(); i != end(); i++) set(i->first, i->second - rhs);
+    for (int ft = 0; ft < array.size(); ft++)
+      set((ForageType)ft, array[ft] - rhs);
     return *this;
   }
   ForageValues<tag>& operator*=(const double rhs) {
-    for (iterator i = begin(); i != end(); i++) set(i->first, i->second * rhs);
+    for (int ft = 0; ft < array.size(); ft++)
+      set((ForageType)ft, array[ft] * rhs);
     return *this;
   }
   /** \throw std::domain_error If `rhs==0.0`. */
   ForageValues<tag>& operator/=(const double rhs) {
     if (rhs == 0)
       throw std::domain_error("Fauna::ForageValues<> Division by zero.");
-    for (iterator i = begin(); i != end(); i++) set(i->first, i->second / rhs);
+    for (int ft = 0; ft < array.size(); ft++)
+      set((ForageType)ft, array[ft] / rhs);
     return *this;
   }
 
@@ -293,77 +264,69 @@ class ForageValues {
   }
 
   ForageValues<tag>& operator+=(const ForageValues<tag>& rhs) {
-    for (iterator i = begin(); i != end(); i++)
-      set(i->first, i->second + rhs.get(i->first));
+    for (int ft = 0; ft < array.size(); ft++)
+      set((ForageType)ft, array[ft] + rhs.array[ft]);
     return *this;
   }
   ForageValues<tag>& operator-=(const ForageValues<tag>& rhs) {
-    for (iterator i = begin(); i != end(); i++)
-      set(i->first, i->second - rhs.get(i->first));
+    for (int ft = 0; ft < array.size(); ft++)
+      set((ForageType)ft, array[ft] - rhs.array[ft]);
     return *this;
   }
   ForageValues<tag>& operator*=(const ForageValues<tag>& rhs) {
-    for (iterator i = begin(); i != end(); i++)
-      set(i->first, i->second * rhs.get(i->first));
+    for (int ft = 0; ft < array.size(); ft++)
+      set((ForageType)ft, array[ft] * rhs.array[ft]);
     return *this;
   }
   /** \throw std::domain_error On division by zero. */
   ForageValues<tag>& operator/=(const ForageValues<tag>& rhs) {
-    for (iterator i = begin(); i != end(); i++) {
-      const double divisor = rhs.get(i->first);
-      if (divisor == 0)
+    for (int ft = 0; ft < array.size(); ft++) {
+      if (rhs.array[ft] == 0)
         throw std::domain_error(
             (std::string) "Fauna::ForageValues<> Division by zero." + " (" +
-            get_forage_type_name(i->first) + ")");
-      set(i->first, i->second / divisor);
+            get_forage_type_name((ForageType)ft) + ")");
+      set((ForageType)ft, array[ft] / rhs.array[ft]);
     }
     return *this;
   }
 
-  ForageValues<tag>& operator=(const ForageValues<tag>& rhs) {
-    for (const_iterator i = rhs.begin(); i != rhs.end(); i++)
-      set(i->first, i->second);
-    return *this;
-  }
-
   bool operator==(const ForageValues<tag>& rhs) const {
-    for (const_iterator i = rhs.begin(); i != rhs.end(); i++)
-      if (get(i->first) != i->second) return false;
+    for (int ft = 0; ft < array.size(); ft++)
+      if (array[ft] != rhs.array[ft]) return false;
     return true;
   }
+
+  // TODO: Is this function necessary and logical?
   bool operator!=(const ForageValues<tag>& rhs) const {
-    for (const_iterator i = rhs.begin(); i != rhs.end(); i++)
-      if (get(i->first) == i->second) return false;
+    for (int ft = 0; ft < array.size(); ft++)
+      if (array[ft] == rhs.array[ft]) return false;
     return true;
   }
 
   bool operator<(const ForageValues<tag>& rhs) const {
-    bool result = true;
-    for (const_iterator i = rhs.begin(); i != rhs.end(); i++)
-      result &= (get(i->first) < i->second);
-    return result;
+    for (int ft = 0; ft < array.size(); ft++)
+      if (array[ft] >= rhs.array[ft]) return false;
+    return true;
   }
   bool operator<=(const ForageValues<tag>& rhs) const {
-    bool result = true;
-    for (const_iterator i = rhs.begin(); i != rhs.end(); i++)
-      result &= (get(i->first) <= i->second);
-    return result;
+    for (int ft = 0; ft < array.size(); ft++)
+      if (array[ft] > rhs.array[ft]) return false;
+    return true;
   }
   bool operator>(const ForageValues<tag>& rhs) const {
-    bool result = true;
-    for (const_iterator i = rhs.begin(); i != rhs.end(); i++)
-      result &= (get(i->first) > i->second);
-    return result;
+    for (int ft = 0; ft < array.size(); ft++)
+      if (array[ft] <= rhs.array[ft]) return false;
+    return true;
   }
   bool operator>=(const ForageValues<tag>& rhs) const {
-    bool result = true;
-    for (const_iterator i = rhs.begin(); i != rhs.end(); i++)
-      result &= (get(i->first) >= i->second);
-    return result;
+    for (int ft = 0; ft < array.size(); ft++)
+      if (array[ft] < rhs.array[ft]) return false;
+    return true;
   }
   /** @} */  // Operator overload
  private:
-  MapType map;
+  /// Forage values for all but \ref ForageType::Inedible.
+  std::array<double, 1> array;
 };
 
 /// Digestibility [fraction] for different forage types.
@@ -397,8 +360,7 @@ typedef std::map<HerbivoreInterface*, ForageMass> ForageDistribution;
 inline ForageValues<ForageValueTag::PositiveAndZero> operator*(
     const double lhs, const ForageFraction& rhs) {
   ForageValues<ForageValueTag::PositiveAndZero> result;
-  for (ForageFraction::const_iterator i = rhs.begin(); i != rhs.end(); i++)
-    result.set(i->first, i->second * lhs);
+  for (const auto ft : FORAGE_TYPES) result.set(ft, rhs[ft] * lhs);
   return result;
 }
 
@@ -406,8 +368,7 @@ inline ForageValues<ForageValueTag::PositiveAndZero> operator*(
     const ForageFraction& lhs,
     const ForageValues<ForageValueTag::PositiveAndZero>& rhs) {
   ForageValues<ForageValueTag::PositiveAndZero> result;
-  for (ForageFraction::const_iterator i = rhs.begin(); i != rhs.end(); i++)
-    result.set(i->first, i->second * lhs[i->first]);
+  for (const auto ft : FORAGE_TYPES) result.set(ft, rhs[ft] * lhs[ft]);
   return result;
 }
 

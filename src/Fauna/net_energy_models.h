@@ -26,10 +26,9 @@ class GetNetEnergyContentInterface {
       const Digestibility& digestibility) const {
     ForageEnergyContent result;
     // loop through all forage types and call abstract method.
-    for (Digestibility::const_iterator itr = digestibility.begin();
-         itr != digestibility.end(); itr++) {
-      const double NE = get_per_forage_type(itr->first, itr->second);
-      result.set(itr->first, NE);
+    for (const auto ft : FORAGE_TYPES) {
+      const double NE = get_per_forage_type(ft, digestibility[ft]);
+      result[ft] = NE;
     }
     return result;
   }
