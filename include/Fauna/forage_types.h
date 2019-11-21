@@ -26,10 +26,7 @@ enum class ForageType {
  * This set serves mainly the purpose to iterate easily over
  * all forage types:
  * \code
- * for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
- *      ft != FORAGE_TYPES.end(); ft++)
- * {
- *   const ForageType forage_type = *ft;
+ * for (const auto& forage_type : FORAGE_TYPES) {
  *   \/\/Do your calculations
  * }
  * \endcode
