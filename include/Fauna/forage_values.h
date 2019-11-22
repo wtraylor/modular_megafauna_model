@@ -7,8 +7,8 @@
 #ifndef FAUNA_FORAGE_VALUES_H
 #define FAUNA_FORAGE_VALUES_H
 
+#include <array>
 #include <cmath>
-#include <map>
 #include <numeric>
 #include "Fauna/average.h"
 #include "Fauna/forage_types.h"
@@ -344,8 +344,9 @@ typedef ForageValues<ForageValueTag::ZeroToOne> ForageFraction;
 /// Dry matter mass values [kgDM or kgDM/km²] for different forage types.
 typedef ForageValues<ForageValueTag::PositiveAndZero> ForageMass;
 
-/// Map defining which herbivore gets what to eat [kgDM/km²].
-typedef std::map<HerbivoreInterface*, ForageMass> ForageDistribution;
+/// Data structure defining which herbivore gets what to eat [kgDM/km²].
+typedef std::vector<std::pair<HerbivoreInterface*, ForageMass>>
+    ForageDistribution;
 
 /** @{ \name Overload operator * as non-member. */
 

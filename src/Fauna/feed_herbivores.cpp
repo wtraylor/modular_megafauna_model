@@ -36,18 +36,18 @@ void FeedHerbivores::operator()(HabitatForage& available,
     //------------------------------------------------------------
     // GET FORAGE DEMANDS
     ForageDistribution forage_demand;
-    for (HerbivoreVector::const_iterator itr = herbivores.begin();
-         itr != herbivores.end(); itr++) {
-      HerbivoreInterface& herbivore = **itr;
-
+    forage_demand.reserve(herbivores.size());
+    for (const auto& herbivore : herbivores) {
       // Skip dead herbivores.
-      if (herbivore.is_dead()) continue;
+      if (herbivore->is_dead()) continue;
 
       // calculate forage demand for this herbivore
-      const ForageMass ind_demand = herbivore.get_forage_demands(available);
+      const ForageMass ind_demand = herbivore->get_forage_demands(available);
 
       // only add those herbivores that do want to eat
-      if (!(ind_demand == 0.0)) forage_demand[&herbivore] = ind_demand;
+      if (!(ind_demand == 0.0)) {
+        forage_demand.emplace_back(herbivore, ind_demand);
+      }
     }
 
     // abort if all herbivores are satisfied
