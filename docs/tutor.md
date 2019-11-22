@@ -150,7 +150,8 @@ Forage net energy content is implemented with the [strategy design pattern](\ref
 After separating the megafauna model from LPJ-GUESS into its own library only a minimal set of variables are made available for output.
 If your variable of interest is already present in \ref Fauna::Output::HabitatData or \ref Fauna::Output::HerbivoreData, then you can skip the first step in the following tutorial.
 
-- Extend the appropriate container: \ref Fauna::Output::HabitatData or \ref Fauna::Output::HerbivoreData by a new member variable and initialize it in the constructor with zero values.
+- Extend the appropriate container: \ref Fauna::Output::HabitatData or \ref Fauna::Output::HerbivoreData by a new member variable and initialize it with zero.
+    + Add it in the `reset()` function.
 	+ Implement average building in the appropriate `merge()` function.
 	+ For herbivore data, you need to add it to \ref Fauna::Output::HerbivoreData::create_datapoint(). If your value is *per individual*, you don’ TODO
 	+ Assign a value to the variable somewhere in daily simulation.
