@@ -8,6 +8,7 @@
 #define FAUNA_HERBIVORE_BASE_H
 
 #include <memory>
+#include "breeding_season.h"
 #include "environment.h"
 #include "fatmass_energy_budget.h"
 #include "get_forage_demands.h"
@@ -190,6 +191,7 @@ class HerbivoreBase : public HerbivoreInterface {
   Hft const* hft;  // pointer to const Hft; initialized first!
   Sex sex;
   std::shared_ptr<GetNetEnergyContentInterface> get_net_energy_content;
+  BreedingSeason breeding_season;
   /** @} */  // constants
 
   /// @{ \name State Variables

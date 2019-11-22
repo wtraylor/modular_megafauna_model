@@ -18,6 +18,7 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
     : hft(check_hft_pointer(hft)),  // can be NULL
       sex(sex),                     // always valid
       age_days(age_days),
+      breeding_season(hft->breeding_season_start, hft->breeding_season_length),
       get_net_energy_content(create_net_energy_content_model()),
       energy_budget(body_condition * get_max_fatmass(),  // initial fat mass
                     get_max_fatmass()                    // maximum fat mass
@@ -54,6 +55,7 @@ HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex)
     : hft(check_hft_pointer(hft)),
       sex(sex),
       age_days(0),
+      breeding_season(hft->breeding_season_start, hft->breeding_season_length),
       get_net_energy_content(create_net_energy_content_model()),
       energy_budget(get_hft().body_fat_birth * get_hft().body_mass_birth,
                     get_max_fatmass()),
@@ -379,11 +381,6 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
       get_age_years() < get_hft().life_history_sexual_maturity)
     return 0.0;
 
-  // Several models use a BreedingSeason object, so we create one right away.
-  const BreedingSeason breeding_season(get_hft().breeding_season_start,
-                                       get_hft().breeding_season_length);
-
-  // choose the model
   switch (get_hft().reproduction_model) {
     case (ReproductionModel::ConstantMaximum): {
       const ReproductionConstMax const_max(
