@@ -383,10 +383,6 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
   const BreedingSeason breeding_season(get_hft().breeding_season_start,
                                        get_hft().breeding_season_length);
 
-  // Use the average body condition (fat mass/maximum fat mass) over the last
-  // months of pregnancy.
-  const double body_condition = body_condition_gestation.get_average();
-
   // choose the model
   switch (get_hft().reproduction_model) {
     case (ReproductionModel::ConstantMaximum): {
@@ -399,12 +395,14 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
       const ReprIlliusOconnor2000 illius_2000(
           breeding_season, get_hft().reproduction_annual_maximum);
       // get today’s value
-      return illius_2000.get_offspring_density(get_today(), body_condition);
+      return illius_2000.get_offspring_density(
+          get_today(), body_condition_gestation.get_average());
     }
     case (ReproductionModel::Linear): {
       const ReproductionLinear linear(breeding_season,
                                       get_hft().reproduction_annual_maximum);
-      return linear.get_offspring_density(get_today(), body_condition);
+      return linear.get_offspring_density(
+          get_today(), body_condition_gestation.get_average());
     }
     case (ReproductionModel::None): {
       return 0.0;
