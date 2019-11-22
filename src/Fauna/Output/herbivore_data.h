@@ -92,10 +92,21 @@ struct HerbivoreData {
   HerbivoreData& merge(const HerbivoreData& other, const double this_weight,
                        const double other_weight);
 
-  /// Reset to initial values.
+  /// Reset all member variables to initial zero values.
   void reset() {
-    // Simply call the copy assignment operator
-    this->operator=(HerbivoreData());
+    age_years = 0.0;
+    bodyfat = 0.0;
+    bound_nitrogen = 0.0;
+    eaten_forage_per_ind = 0.0;
+    eaten_forage_per_mass = 0.0;
+    eaten_nitrogen_per_ind = 0.0;
+    energy_content = 0.0;
+    energy_intake_per_ind = 0.0;
+    energy_intake_per_mass = 0.0;
+    expenditure = 0.0;
+    inddens = 0.0;
+    massdens = 0.0;
+    offspring = 0.0;
   }
 
   /// Aggregate herbivore data *within one habitat*.
