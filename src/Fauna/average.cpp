@@ -7,6 +7,7 @@
 #include "average.h"
 #include <cassert>
 #include <cmath>
+#include <numeric>
 #include <stdexcept>
 
 using namespace Fauna;
@@ -63,17 +64,10 @@ void PeriodAverage::add_value(const double v) {
 
 double PeriodAverage::get_average() const {
   assert(deque.size() <= count);
-
   if (deque.empty())
     throw std::logic_error(
         "Fauna::PeriodAverage::get_average() "
         "No values have been added yet. Cannot build average.");
-
-  double sum = 0.0;
-  for (std::deque<double>::const_iterator itr = deque.begin();
-       itr != deque.end(); itr++) {
-    sum += *itr;
-  }
-  assert(deque.size() > 0);
+  const double sum = std::accumulate(deque.begin(), deque.end(), 0.0);
   return sum / (double)deque.size();
 }
