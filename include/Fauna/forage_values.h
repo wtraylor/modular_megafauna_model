@@ -59,7 +59,7 @@ class ForageValues {
    *
    */
   ForageValues(const double init_value = 0.0) {
-    for (const auto ft : FORAGE_TYPES) set(ft, init_value);
+    set(init_value);
   }
 
   /// Divide safely also by zero values.
@@ -149,7 +149,7 @@ class ForageValues {
     return array[(int)ft];
   }
 
-  /// Set a value, only finite values are allowed..
+  /// Set a value, only finite values are allowed.
   /**
    * \throw std::invalid_argument If `value` is not allowed
    * by given `tag`, is NAN or is INFINITY.
@@ -157,35 +157,7 @@ class ForageValues {
    * \throw std::logic_error If `tag` is not implemented.
    */
   void set(const ForageType forage_type, const double value) {
-    switch (tag) {
-      case ForageValueTag::PositiveAndZero:
-        if (value < 0.0)
-          throw std::invalid_argument((std::string)
-									"ForageValues<PositiveAndZero> "
-									"Value < 0 not allowed."+
-									" ("+get_forage_type_name(forage_type)+")");
-        break;
-      case ForageValueTag::ZeroToOne:
-        if (value < 0.0 || value > 1.0)
-          throw std::invalid_argument((std::string)
-									"ForageValues<ZeroToOne> "
-									"Value is not in interval [0,1]."+
-									" ("+get_forage_type_name(forage_type)+")");
-        break;
-      default:
-        throw std::logic_error(
-            "ForageValues<> "
-            "ForageValueTag not implemented.");
-    }
-    if (std::isnan(value))
-      throw std::invalid_argument((std::string)
-							"ForageValues<> "
-							"NAN is not allowed as a value."+
-							" ("+get_forage_type_name(forage_type)+")");
-    if (std::isinf(value))
-      throw std::invalid_argument((std::string)"ForageValues<> "
-							"INFINITY is not allowed as a value."+
-							" ("+get_forage_type_name(forage_type)+")");
+    check_value(value);
     if (forage_type == ForageType::Inedible)
       throw std::invalid_argument((std::string)"ForageValues<> "
 							"Forage type `ForageType::Inedible` is not allowed."+
@@ -195,6 +167,18 @@ class ForageValues {
     assert((int)forage_type < array.size());
     assert((int)forage_type >= 0);
     array[(int)forage_type] = value;
+  }
+
+  /// Set all forage types to one value.
+  /**
+   * \throw std::invalid_argument If `value` is not allowed
+   * by given `tag`, is NAN or is INFINITY.
+   * \throw std::invalid_argument If `forage_type==ForageType::Inedible`.
+   * \throw std::logic_error If `tag` is not implemented.
+   */
+  void set(const double value) {
+    check_value(value);
+    array.fill(value);
   }
 
   /// Sum of all values.
@@ -327,6 +311,32 @@ class ForageValues {
  private:
   /// Forage values for all but \ref ForageType::Inedible.
   std::array<double, 1> array;
+
+  /// Helper function to throw exceptions in the `set()` functions.
+  void check_value(const double& value) const {
+    switch (tag) {
+      case ForageValueTag::PositiveAndZero:
+        if (value < 0.0)
+          throw std::invalid_argument(
+              "ForageValues<PositiveAndZero> Value < 0 not allowed.");
+        break;
+      case ForageValueTag::ZeroToOne:
+        if (value < 0.0 || value > 1.0)
+          throw std::invalid_argument(
+              "ForageValues<ZeroToOne> Value is not in interval [0,1].");
+        break;
+      default:
+        throw std::logic_error(
+            "ForageValues<> "
+            "ForageValueTag not implemented.");
+    }
+    if (std::isnan(value))
+      throw std::invalid_argument(
+          "ForageValues<> NAN is not allowed as a value.");
+    if (std::isinf(value))
+      throw std::invalid_argument(
+          "ForageValues<> INFINITY is not allowed as a value.");
+  }
 };
 
 /// Digestibility [fraction] for different forage types.
