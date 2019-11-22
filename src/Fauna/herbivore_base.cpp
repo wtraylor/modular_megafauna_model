@@ -379,13 +379,12 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
       get_age_years() < get_hft().life_history_sexual_maturity)
     return 0.0;
 
-  // Several models use a BreedingSeason object, so we create one right
-  // away.
+  // Several models use a BreedingSeason object, so we create one right away.
   const BreedingSeason breeding_season(get_hft().breeding_season_start,
                                        get_hft().breeding_season_length);
 
-  // Use the average body condition (fat mass/maximum fat mass) over the
-  // last months of pregnancy.
+  // Use the average body condition (fat mass/maximum fat mass) over the last
+  // months of pregnancy.
   const double body_condition = body_condition_gestation.get_average();
 
   // choose the model

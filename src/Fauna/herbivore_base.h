@@ -176,8 +176,7 @@ class HerbivoreBase : public HerbivoreInterface {
 
   /// Get the proportional offspring for today using selected model.
   /**
-   * Reads \ref Hft::reproduction_model and performs
-   * calculations accordingly.
+   * Reads \ref Hft::reproduction_model and performs calculations accordingly.
    * \return Number of offspring per individual [ind/ind/day].
    * Zero if this herbivore is male, or has not yet reached
    * reproductive maturity (\ref Hft::life_history_sexual_maturity).
