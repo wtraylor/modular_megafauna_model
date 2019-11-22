@@ -50,24 +50,26 @@ PeriodAverage::PeriodAverage(const int count) : count(count) {
     throw std::invalid_argument(
         "Fauna:: PeriodAverage::PeriodAverage() "
         "Parameter `count` is zero or negative.");
+  values.reserve(count);
 }
 
 void PeriodAverage::add_value(const double v) {
-  assert(deque.size() <= count);
-
-  // Add new value to the front.
-  deque.push_front(v);
-
-  // Remove old value in the back.
-  if (deque.size() > count) deque.pop_back();
+  assert(current_index < count);
+  if (current_index < values.size())
+    values[current_index] = v; // Overwrite existing value.
+  else
+    values.push_back(v);  // Build up vector in the first round.
+  current_index++;
+  // Start counting from the beginning again if necessary.
+  current_index = current_index % count;
 }
 
 double PeriodAverage::get_average() const {
-  assert(deque.size() <= count);
-  if (deque.empty())
+  assert(values.size() <= count);
+  if (values.empty())
     throw std::logic_error(
         "Fauna::PeriodAverage::get_average() "
         "No values have been added yet. Cannot build average.");
-  const double sum = std::accumulate(deque.begin(), deque.end(), 0.0);
-  return sum / (double)deque.size();
+  const double sum = std::accumulate(values.begin(), values.end(), 0.0);
+  return sum / (double)values.size();
 }
