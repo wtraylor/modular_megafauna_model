@@ -298,6 +298,14 @@ struct Hft {
   /// Parameters for \ref DigestiveLimit::Allometric
   AllometryParameters digestion_allometric = {0.05, 0.76};
 
+  /// Conversion factor from net forage energy to fat mass [MJ/kg].
+  /** The default value is from Peters (1983)\cite peters1983ecological. */
+  double digestion_anabolism_coefficient = 54.6;
+
+  /// Conversion factor from fat mass to net energy [MJ/kg].
+  /** The default value is from Peters (1983)\cite peters1983ecological. */
+  double digestion_catabolism_coefficient = 39.3;
+
   /// Daily dry matter intake per kg body mass for
   /// \ref DigestiveLimit::FixedFraction.
   double digestion_fixed_fraction = 0.05;

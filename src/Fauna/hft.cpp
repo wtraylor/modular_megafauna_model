@@ -218,6 +218,20 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       is_valid = false;
     }
 
+    if (digestion_anabolism_coefficient <= 0.0) {
+      stream << "`digestion.anabolism_coefficient` must be a positive number."
+             << " (current value: " << digestion_anabolism_coefficient << ")"
+             << std::endl;
+      is_valid = false;
+    }
+
+    if (digestion_catabolism_coefficient <= 0.0) {
+      stream << "`digestion.catabolism_coefficient` must be a positive number."
+             << " (current value: " << digestion_catabolism_coefficient << ")"
+             << std::endl;
+      is_valid = false;
+    }
+
     if (digestion_limit == DigestiveLimit::Allometric &&
         digestion_allometric.coefficient < 0.0) {
       stream << "Coefficient in `digestion.allometric` must not be negative "

@@ -62,10 +62,12 @@ length = 30  # days
 start  = 121 # Julian day
 
 [hft.digestion]
-allometric     = { coefficient = 0.050, exponent = 0.76 }
-fixed_fraction = 0.05 # kgDM per kg body mass
-limit          = "FixedFraction"
-type           = "Ruminant"
+allometric             = { coefficient = 0.050, exponent = 0.76 }
+anabolism_coefficient  = 54.6 # MJ/kg
+catabolism_coefficient = 39.3 # MJ/kg
+fixed_fraction         = 0.05 # kgDM per kg body mass
+limit                  = "FixedFraction"
+type                   = "Ruminant"
 
 [hft.establishment]
 age_range = { first = 1, last = 15 } # years
