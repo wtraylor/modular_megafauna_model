@@ -381,6 +381,9 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
       get_age_years() < get_hft().life_history_sexual_maturity)
     return 0.0;
 
+  if (!breeding_season.is_in_season(get_today()))
+    return 0.0;
+
   switch (get_hft().reproduction_model) {
     case (ReproductionModel::ConstantMaximum): {
       const ReproductionConstMax const_max(
