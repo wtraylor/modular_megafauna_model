@@ -39,12 +39,20 @@ birth = 0.2
 # instead of "hft.". Any HFT parameter that is not found in the HFT table
 # itself will be taken from the groups the HFT belongs to.
 
+[[group]]
+name = "hindguts"
+digestion.type = "Hindgut"
+
+[[group]]
+name = "ruminants"
+digestion.type = "Ruminant"
+
 ###############################################################################
 
 [[hft]]
 
 name   = "example"
-groups = [ "all_hfts" ] # Descending priority: first overrides last group.
+groups = [ "ruminants", "all_hfts" ] # first overrides last group
 
 [hft.body_fat]
 birth              = 0.2   # kg/kg
@@ -67,7 +75,6 @@ anabolism_coefficient  = 54.6 # MJ/kg
 catabolism_coefficient = 39.3 # MJ/kg
 fixed_fraction         = 0.05 # kgDM per kg body mass
 limit                  = "FixedFraction"
-type                   = "Ruminant"
 
 [hft.establishment]
 age_range = { first = 1, last = 15 } # years
