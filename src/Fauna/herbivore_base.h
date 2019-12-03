@@ -14,7 +14,6 @@
 #include "get_forage_demands.h"
 #include "herbivore_data.h"
 #include "herbivore_interface.h"
-#include "net_energy_models.h"
 #include "nitrogen.h"
 
 namespace Fauna {
@@ -162,13 +161,16 @@ class HerbivoreBase : public HerbivoreInterface {
    * \throw std::invalid_argument If HFT pointer is NULL. */
   Hft const* check_hft_pointer(const Hft*);
 
-  /// Forage net energy content given by the selected algorithm
-  /// \ref Hft::foraging_net_energy_model.
+  /// Get forage energy content [MJ/kgDM] using selected net energy model.
   /**
-   * \return New instance of \ref GetNetEnergyContentInterface.
-   * \throw std::logic_error If the selected model is not implemented.
+   * \param digestibility Forage digestibility.
+   * \return Net energy content in MJ/kgDM.
+   * \throw std::logic_error If the net energy model is not implemented.
+   * \see \ref Hft::foraging_net_energy_model
+   * \see \ref NetEnergyModel
    */
-  GetNetEnergyContentInterface* create_net_energy_content_model() const;
+  ForageEnergyContent get_net_energy_content(
+      const Digestibility digestibility) const;
 
   /// Calculate energy expenditure as sum of given expenditure components.
   /** \return Today’s energy needs [MJ/ind/day]
@@ -190,7 +192,6 @@ class HerbivoreBase : public HerbivoreInterface {
   /// @{ \name Constants
   Hft const* hft;  // pointer to const Hft; initialized first!
   Sex sex;
-  std::shared_ptr<GetNetEnergyContentInterface> get_net_energy_content;
   BreedingSeason breeding_season;
   /** @} */  // constants
 

@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Changed
 - Replaced `std::map` with `std::array` in `Fauna::ForageValues` to improve speed.
 - Various little performance improvements.
+- Turned `Fauna::GetNetEnergyContent` interface (strategy design pattern) to a function.
 
 ## 0.1.0 - 2019-11-07
 ### Added

@@ -184,7 +184,7 @@ enum class ForagingLimit {
 
 /// How forage net energy content is calculated.
 enum class NetEnergyModel {
-  /// Use \ref GetNetEnergyContentDefault
+  /// Use \ref get_net_energy_content_default()
   Default
 };
 

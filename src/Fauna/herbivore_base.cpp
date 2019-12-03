@@ -8,6 +8,7 @@
 #include "expenditure_components.h"
 #include "hft.h"
 #include "mortality_factors.h"
+#include "net_energy_models.h"
 #include "reproduction_models.h"
 
 using namespace Fauna;
@@ -19,12 +20,10 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
       sex(sex),                     // always valid
       age_days(age_days),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
-      get_net_energy_content(create_net_energy_content_model()),
       energy_budget(body_condition * get_max_fatmass(),  // initial fat mass
                     get_max_fatmass(),                   // maximum fat mass
                     hft->digestion_anabolism_coefficient,
-                    hft->digestion_catabolism_coefficient
-                    ),
+                    hft->digestion_catabolism_coefficient),
       get_forage_demands_per_ind(hft, sex),
       today(-1),  // not initialized yet; call simulate_day() first
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {
@@ -58,10 +57,8 @@ HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex)
       sex(sex),
       age_days(0),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
-      get_net_energy_content(create_net_energy_content_model()),
       energy_budget(get_hft().body_fat_birth * get_hft().body_mass_birth,
-                    get_max_fatmass(),
-                    hft->digestion_anabolism_coefficient,
+                    get_max_fatmass(), hft->digestion_anabolism_coefficient,
                     hft->digestion_catabolism_coefficient),
       get_forage_demands_per_ind(hft, sex),
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {}
@@ -156,11 +153,11 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
   const ForageMass kg_per_ind = kg_per_km2 / get_ind_per_km2();
   const ForageMass N_kg_per_ind = N_kg_per_km2 / get_ind_per_km2();
 
-  // net energy in the forage [MJ/ind]
+  // net energy in the forage per individual [MJ/ind]
   // Divide mass by energy content and set any forage with zero
   // energy content to zero mass.
   const ForageEnergy mj_per_ind =
-      (*get_net_energy_content)(digestibility)*kg_per_ind;
+      get_net_energy_content(digestibility) * kg_per_ind;
 
   try {
     // Deduct the eaten forage from today’s maximum intake.
@@ -241,7 +238,7 @@ ForageMass HerbivoreBase::get_forage_demands(
   if (!get_forage_demands_per_ind.is_day_initialized(this->get_today())) {
     // Net energy content [MJ/kgDM]
     const ForageEnergyContent net_energy_content =
-        (*get_net_energy_content)(available_forage.get_digestibility());
+        get_net_energy_content(available_forage.get_digestibility());
 
     get_forage_demands_per_ind.init_today(get_today(), available_forage,
                                           net_energy_content, get_bodymass());
@@ -272,17 +269,18 @@ double HerbivoreBase::get_max_fatmass() const {
   return get_potential_bodymass() * get_hft().body_fat_maximum;
 }
 
-GetNetEnergyContentInterface* HerbivoreBase::create_net_energy_content_model()
-    const {
+ForageEnergyContent HerbivoreBase::get_net_energy_content(
+    const Digestibility digestibility) const {
   switch (get_hft().foraging_net_energy_model) {
     case (NetEnergyModel::Default):
-      return new GetNetEnergyContentDefault(get_hft().digestion_type);
+      return get_net_energy_content_default(digestibility,
+                                            get_hft().digestion_type);
       // ADD NEW NET ENERGY MODELS HERE
       // in new case statements
     default:
       throw std::logic_error(
-          "Fauna::HerbivoreBase::create_net_energy_content_model() "
-          "Selected net energy model not implemented.");
+          "Fauna::HerbivoreBase::get_net_energy_content() "
+          "Selected net energy model is not implemented.");
   }
 }
 
@@ -385,8 +383,7 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
       get_age_years() < get_hft().life_history_sexual_maturity)
     return 0.0;
 
-  if (!breeding_season.is_in_season(get_today()))
-    return 0.0;
+  if (!breeding_season.is_in_season(get_today())) return 0.0;
 
   switch (get_hft().reproduction_model) {
     case (ReproductionModel::ConstantMaximum): {

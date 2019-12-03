@@ -286,22 +286,6 @@ competition      -down-> ingestion
   }
 @enduml
 
-@startuml (id=net_energy_content)
-  hide members
-  hide methods
-  namespace Fauna{
-    enum NetEnergyModel{
-      Default
-    }
-    show NetEnergyModel members
-    Hft *--> NetEnergyModel
-    interface GetNetEnergyContentInterface <<strategy>>
-    GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
-    abstract HerbivoreBase
-    HerbivoreBase ..> GetNetEnergyContentInterface : <<create>>
-  }
-@enduml
-
 @startuml (id=output_classes)
   hide methods
   hide members
