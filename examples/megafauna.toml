@@ -8,10 +8,11 @@
 
 [simulation]
 
+establishment_interval = 3650 # every 10 years
 forage_distribution    = "Equally"
 habitat_area_km2       = 1.0  # km² per habitat
-establishment_interval = 3650 # every 10 years
 herbivore_type         = "Cohort"
+metabolizable_energy   = { grass = 15.0 } # MJ/kgDM
 one_hft_per_habitat    = true
 
 [output]
@@ -41,11 +42,13 @@ birth = 0.2
 
 [[group]]
 name = "hindguts"
-digestion.type = "Hindgut"
+[digestion]
+type = "Hindgut"
 
 [[group]]
 name = "ruminants"
-digestion.type = "Ruminant"
+[digestion]
+type = "Ruminant"
 
 ###############################################################################
 
