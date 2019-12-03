@@ -23,18 +23,19 @@ namespace Fauna {
  * \cite illius1992modelling
  * citing ARC (1980)
  * \cite agricultural_research_council1980nutrient
- * \f[Net Energy [MJ/kgDM] =  ME * (0.503\frac{MJ}{kgDM} + 0.019 * ME) * e\f]
- * - ME = metabolizable energy of dry matter [MJ/kgDM]
- * - e = digestion efficiency factor; for ruminants always e=1.0
+ * \f[Net Energy [MJ/kgDM] =  ME * (0.503\frac{MJ}{kgDM} + 0.019 * ME)\f]
+ * ME = metabolizable energy of dry matter [MJ/kgDM]
+ *
+ * For hindgut fermenters, which have a lower digestive efficiency than
+ * ruminants, the result may be multiplied with an efficiency factor <=1.
  *
  * Metabolizable energy content ME is calculated by
  * multiplying digestibility with a forage-specific coefficient.
  * \param digestibility Proportional digestibility.
- * \param digestion_type Is it a ruminant or hindgut herbivore?
  * \return Net energy content [MJ/kgDM].
  */
 ForageEnergyContent get_net_energy_content_default(
-    const Digestibility& digestibility, const DigestionType digestion_type);
+    const Digestibility& digestibility);
 }  // namespace Fauna
 
 #endif  // FAUNA_NET_ENERGY_MODELS_H

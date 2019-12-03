@@ -211,6 +211,13 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       is_valid = false;
     }
 
+    if (foraging_net_energy_model == NetEnergyModel::Default &&
+        (digestion_efficiency <= 0.0 || digestion_efficiency > 1.0)) {
+      stream << "digestion.efficiency must be in the interval (0,1]."
+             << std::endl;
+      is_valid = false;
+    }
+
     if (reproduction_gestation_length <= 0) {
       stream << "`reproduction.gestation_length` must be a positive number."
              << " (current value: " << reproduction_gestation_length << ")"

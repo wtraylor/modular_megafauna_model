@@ -180,6 +180,12 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto value =
+        find_hft_parameter<double>(table, "digestion.efficiency", true);
+    assert(value);
+    hft.digestion_efficiency = *value;
+  }
+  {
+    const auto value =
         find_hft_parameter<std::string>(table, "digestion.limit", true);
     assert(value);
     if (lowercase(*value) == lowercase("None"))

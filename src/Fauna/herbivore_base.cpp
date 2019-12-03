@@ -273,8 +273,8 @@ ForageEnergyContent HerbivoreBase::get_net_energy_content(
     const Digestibility digestibility) const {
   switch (get_hft().foraging_net_energy_model) {
     case (NetEnergyModel::Default):
-      return get_net_energy_content_default(digestibility,
-                                            get_hft().digestion_type);
+      return get_net_energy_content_default(digestibility) *
+        get_hft().digestion_efficiency;
       // ADD NEW NET ENERGY MODELS HERE
       // in new case statements
     default:

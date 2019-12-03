@@ -306,6 +306,23 @@ struct Hft {
   /** The default value is from Peters (1983)\cite peters1983ecological. */
   double digestion_catabolism_coefficient = 39.3;
 
+  /// Factor for reducing forage net energy content for non-ruminants.
+  /**
+   * The default model for net energy content
+   * (\ref get_net_energy_content_default())
+   * is designed for ruminant digestion. A constant factor may be applied to
+   * account for less efficient digestive systems, e.g. hindgut fermentation.
+   *
+   * For hindgut fermenters there are various factors in the literature, e.g.:
+   * - Johnson et al. (1982) give a value of 0.89 \cite johnson1982intake
+   * - Foose (1982) gives a value of 0.84 \cite foose1982trophic
+   * - The model by Illius & Gordon (1992) gives a value of 0.93 \cite illius1992modelling
+   * \see \ref NetEnergyModel::Default
+   * \see \ref get_net_energy_content_default()
+   * \see \ref HerbivoreBase::get_net_energy_content()
+   */
+  double digestion_efficiency = 1.0;
+
   /// Daily dry matter intake per kg body mass for
   /// \ref DigestiveLimit::FixedFraction.
   double digestion_fixed_fraction = 0.05;

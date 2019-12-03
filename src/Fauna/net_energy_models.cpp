@@ -30,24 +30,9 @@ using namespace Fauna;
  */
 
 static const double ME_COEFFICIENT_GRASS = 15.0;
-/// Hindgut digestion factor
-/**
- * - Johnson et al. (1982) give a value of 0.89
- *   \cite johnson1982intake
- * - Foose (1982) gives a value of 0.84
- *   \cite foose1982trophic
- * - The model by Illius & Gordon (1992) gives a value of 0.93
- *   \cite illius1992modelling
- *
- * Here, the last figure is used.
- */
-static const double DIGESTION_EFFICIENCY_HINDGUTS = 0.93;
 
 ForageEnergyContent Fauna::get_net_energy_content_default(
-    const Digestibility& digestibility, const DigestionType digestion_type) {
-  const double digestion_efficiency = digestion_type == DigestionType::Ruminant
-                                          ? 1.0
-                                          : DIGESTION_EFFICIENCY_HINDGUTS;
+    const Digestibility& digestibility) {
 
   if (!(digestibility >= 0.0 && digestibility <= 1.0))
     throw std::invalid_argument(
@@ -70,11 +55,9 @@ ForageEnergyContent Fauna::get_net_energy_content_default(
           "Fauna::GetNetEnergyContentDefault() "
           "Forage type is not implemented");
 
-    const double e = digestion_efficiency;
-
     // COMPOSE THE FORMULA
 
-    result[forage_type] = ME * (0.019 * ME + 0.503) * e;  // [MJ/kgDM]
+    result[forage_type] = ME * (0.019 * ME + 0.503);  // [MJ/kgDM]
 
     assert(result[forage_type] >= 0.0);
   }
