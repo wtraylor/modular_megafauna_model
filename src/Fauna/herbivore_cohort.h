@@ -53,9 +53,6 @@ class HerbivoreCohort : public HerbivoreBase {
    */
   HerbivoreCohort(const Hft* hft, const Sex sex, const double ind_per_km2);
 
-  /// Destructor.
-  ~HerbivoreCohort(){};
-
   /// Check if this and the other cohort are of the same age
   /**
    * Two cohorts are considered coeval if they are in the

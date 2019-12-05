@@ -113,8 +113,8 @@ class HerbivoreBase : public HerbivoreInterface {
    */
   HerbivoreBase(const Hft* hft, const Sex sex);
 
-  /// Destructor
-  ~HerbivoreBase() = default;
+  /// Virtual destructor, which will be called by derived classes.
+  virtual ~HerbivoreBase() = default;
 
   /// Apply a fractional mortality.
   /**

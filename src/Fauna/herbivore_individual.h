@@ -50,9 +50,6 @@ class HerbivoreIndividual : public HerbivoreBase {
    */
   HerbivoreIndividual(const Hft* hft, const Sex sex, const double area_km2);
 
-  /// Destructor
-  ~HerbivoreIndividual(){};
-
   /// Habitat area [km²]
   double get_area_km2() const { return area_km2; }
 
