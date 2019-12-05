@@ -148,6 +148,13 @@ class HerbivoreBase : public HerbivoreInterface {
   /// Access for derived classes to nitrogen management.
   NitrogenInHerbivore& get_nitrogen() { return nitrogen; }
 
+  /// Check whether the constant member variables match those of another object.
+  bool constant_members_match(const HerbivoreBase& other) const {
+    return sex == other.sex && hft == other.hft &&
+           metabolizable_energy == other.metabolizable_energy &&
+           breeding_season == other.breeding_season;
+  }
+
  private:  // private member functions
   /// Calculate mortality according to user-selected mortality factors
   /**

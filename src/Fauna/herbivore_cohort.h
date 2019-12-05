@@ -78,9 +78,9 @@ class HerbivoreCohort : public HerbivoreBase {
    * \param other The other cohort that is merged into `this`.
    * The density of `other` will be reduced.
    * \throw std::invalid_argument If `fraction` not in [0,1].
-   * \throw std::logic_error If the other cohort is not
-   * compatible: different age, different HFT, or different
-   * sex.
+   * \throw std::logic_error If the other cohort is not compatible: different
+   * age, different HFT, different metabolizable_energy, or different sex. See
+   * \ref HerbivoreBase::constant_members_match()
    */
   void merge(HerbivoreCohort& other);
 

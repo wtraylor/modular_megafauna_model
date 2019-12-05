@@ -52,14 +52,11 @@ void HerbivoreCohort::merge(HerbivoreCohort& other) {
     throw std::invalid_argument(
         "Fauna::HerbivoreCohort::merge() "
         "The other cohort is not the same age.");
-  if (this->get_sex() != other.get_sex())
+  if (!constant_members_match(other))
     throw std::invalid_argument(
         "Fauna::HerbivoreCohort::merge() "
-        "The other cohort is not the same sex.");
-  if (this->get_hft() != other.get_hft())
-    throw std::invalid_argument(
-        "Fauna::HerbivoreCohort::merge() "
-        "The other cohort is not the same HFT.");
+        "The constant member variables of the other cohort don’t all "
+        "match the ones from this cohort.");
 
   // Merge energy budget
   this->get_energy_budget().merge(other.get_energy_budget(),
