@@ -269,7 +269,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto array = find_hft_array_parameter<std::string>(
-        table, "hft.mortality.factors", false);
+        table, "mortality.factors", false);
     hft.mortality_factors = {};
     if (array) {
       for (const auto& i : *array)
@@ -284,7 +284,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
           hft.mortality_factors.insert(MortalityFactor::StarvationThreshold);
         else
           throw invalid_option(
-              hft, "hft.mortality.factors", i,
+              hft, "mortality.factors", i,
               {"Background", "Lifespan", "StarvationIlliusOConnor2000",
                "StarvationThreshold"});
     }
