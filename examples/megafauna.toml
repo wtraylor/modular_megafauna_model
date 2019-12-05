@@ -43,14 +43,16 @@ birth = 0.2
 [[group]]
 name = "hindguts"
 [group.digestion]
-efficiency = 0.93
-type = "Hindgut"
+efficiency   = 0.93
+i_g_1992_ijk = [0.108, 3.284, 0.080]
+type         = "Hindgut"
 
 [[group]]
 name = "ruminants"
 [group.digestion]
-efficiency = 1.0
-type = "Ruminant"
+efficiency   = 1.0
+i_g_1992_ijk = [0.034, 3.565, 0.077]
+type         = "Ruminant"
 
 ###############################################################################
 

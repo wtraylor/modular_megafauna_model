@@ -12,7 +12,7 @@
 
 namespace Fauna {
 
-/// Get digestion-limited daily net energy intake after Illius & Gordon (1992)
+/// Get digestion-limited daily grass energy intake after Illius & Gordon (1992)
 /**
  * The model of digestive passage rates by Illius & Gordon
  * (1992)\cite illius1992modelling constrains maximum daily energy intake
@@ -28,37 +28,27 @@ namespace Fauna {
  * - \f$u_g = (M/M_{ad})^{0.75}\f$ is a scaling factor for
  *   gut capacity, introduced by Illius & Gordon (1999)
  *   \cite illius1999scaling
- * - Parameters i, j, and k are derived from regression analysis
- *   with 12 mammalian herbivores (0.05--547 kg) and are specific
- *   to hindguts and ruminants (Shipley et al. 1999)
- *   \cite shipley1999predicting.
- *
- * Grass forage:
- * |     | Hindgut | Ruminant |
- * |-----|---------|----------|
- * | i   | 0.108   | 0.034    |
- * | j   | 3.284   | 3.565    |
- * | k   | 0.080   | 0.077    |
- *
- * \note This function currently only works for pure grass diet.
+ * - Parameters i, j, and k are derived from regression analysis with 12
+ *   mammalian herbivores (0.05--547 kg) and are specific to hindguts and
+ *   ruminants (Shipley et al. 1999)\cite shipley1999predicting. They are
+ *   specified per HFT in \ref Hft::digestion_i_g_1992_ijk
  *
  * \param bodymass_adult Body mass [kg] at physical maturity.
- * \param digestion_type The herbivore’s digestion type.
  * \param bodymass current body mass [kg/ind]
- * \param digestibility proportional digestibility of the forage
- * \return maximum energy intake [MJ/day/ind]
+ * \param digestibility proportional digestibility of the grass forage
+ * \param ijk The parameter constants i, j, k for the exponential function.
+ * \return Maximum energy intake of **grass** [MJ/day/ind]
  *
  * \throw std::invalid_argument If `bodymass_adult<=0.0`.
  * \throw std::invalid_argument If `bodymass<=0.0`
  * \throw std::logic_error If `bodymass > bodymass_adult`.
- * \throw std::logic_error If `digestion_type` not implemented.
- * \throw std::logic_error If not all forage types are implemented.
  *
  * \see \ref DigestiveLimit::IlliusGordon1992
  */
-ForageEnergy get_digestive_limit_illius_gordon_1992(
-    const double bodymass_adult, const DigestionType digestion_type,
-    const double bodymass, const Digestibility& digestibility);
+double get_digestive_limit_illius_gordon_1992(const double bodymass_adult,
+                                              const double bodymass,
+                                              const double digestibility,
+                                              const std::array<double, 3>& ijk);
 
 /// Ingestion rate as Holling’s Type II functional response.
 /**

@@ -186,6 +186,14 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto value =
+        find_hft_array_parameter<double>(table, "digestion.i_g_1992_ijk", true);
+    assert(value);
+    if (value->size() != 3)
+      throw bad_array_size("hf.digestion.i_g_1992_ijk", value->size(), "3");
+    for (int i = 0; i < 3; i++) hft.digestion_i_g_1992_ijk[i] = (*value)[i];
+  }
+  {
+    const auto value =
         find_hft_parameter<std::string>(table, "digestion.limit", true);
     assert(value);
     if (lowercase(*value) == lowercase("None"))

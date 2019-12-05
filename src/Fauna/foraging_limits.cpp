@@ -8,77 +8,37 @@
 
 using namespace Fauna;
 
-ForageEnergy Fauna::get_digestive_limit_illius_gordon_1992(
-    const double bodymass_adult, const DigestionType digestion_type,
-    const double bodymass, const Digestibility& digestibility) {
+double Fauna::get_digestive_limit_illius_gordon_1992(
+    const double bodymass_adult, const double bodymass,
+    const double digestibility, const std::array<double, 3>& ijk) {
   if (bodymass_adult <= 0.0)
     throw std::invalid_argument(
-        "Fauna::GetDigestiveLimitIlliusGordon1992::"
-        "GetDigestiveLimitIlliusGordon1992() "
+        "Fauna::get_digestive_limit_illius_gordon_1992() "
         "Parameter `bodymass_adult` <= zero.");
   if (bodymass <= 0.0)
     throw std::invalid_argument(
-        "Fauna::GetDigestiveLimitIlliusGordon1992::operator()() "
+        "Fauna::get_digestive_limit_illius_gordon_1992() "
         "Parameter `bodymass` <= zero.");
   if (bodymass > bodymass_adult)
     throw std::invalid_argument(
-        "Fauna::GetDigestiveLimitIlliusGordon1992::operator()() "
+        "Fauna::get_digestive_limit_illius_gordon_1992() "
         "bodymass > bodymass_adult");
 
-  typedef ForageValues<ForageValueTag::PositiveAndZero> ParameterConstant;
-
-  ParameterConstant i, j, k;
-
-  // Initialize constants
-  bool initialized = false;
-  if (!initialized) {
-    if (FORAGE_TYPES.size() > 1)  // change this if adding new forage types
-      throw std::logic_error(
-          "Fauna::GetDigestiveLimitIlliusGordon1992::operator()() "
-          "Not all forage types are implemented.");
-
-    if (digestion_type == DigestionType::Ruminant) {
-      i.set(ForageType::Grass, 0.034);
-      j.set(ForageType::Grass, 3.565);
-      k.set(ForageType::Grass, 0.077);
-      // ADD NEW FORAGE TYPES HERE
-    } else if (digestion_type == DigestionType::Hindgut) {
-      i.set(ForageType::Grass, 0.108);
-      j.set(ForageType::Grass, 3.284);
-      k.set(ForageType::Grass, 0.080);
-      // ADD NEW FORAGE TYPES HERE
-    } else
-      throw std::logic_error(
-          "Fauna::GetDigestiveLimitIlliusGordon1992::operator()() "
-          "Digestion type not implemented.");
-    initialized = true;
-  }
-
-  ForageEnergy result;
+  const double i = ijk[0];
+  const double j = ijk[1];
+  const double k = ijk[2];
 
   // rename variables to match formula
-  const Digestibility& d = digestibility;
+  const double d = digestibility;
   const double& M_ad = bodymass_adult;  // [kg]
   const double& M = bodymass;           // [kg]
   const double u_g = pow(M / M_ad, .75);
 
-  // Because of power calculations we cannot use the
-  // arithmetic operators of ForageValues<>, but need to
-  // iterate over all forage types.
-  for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-       ft != FORAGE_TYPES.end(); ft++) {
-    const ForageType f = *ft;
-
-    // Only for the supported forage types, the result is calculated.
-    // ADD NEW FORAGE TYPES HERE IN IF QUERY
-    if ((f == ForageType::Grass) && digestibility[f] > 0.0)
-      result.set(
-          f, i[f] * exp(j[f] * d[f]) * pow(M_ad, k[f] * exp(d[f]) + .73) * u_g);
-    else
-      result.set(f, 0.0);  // zero digestibility -> zero energy
-  }
-
-  return result;
+  // Only for the supported forage types, the result is calculated.
+  if (digestibility > 0.0)
+    return i * exp(j * d) * pow(M_ad, k * exp(d) + .73) * u_g;
+  else
+    return 0.0;  // zero digestibility -> zero energy
 }
 
 //============================================================

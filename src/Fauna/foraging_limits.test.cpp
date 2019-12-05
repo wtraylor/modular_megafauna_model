@@ -25,21 +25,21 @@ TEST_CASE("Fauna::HalfMaxIntake") {
 }
 
 TEST_CASE("Fauna::get_digestive_limit_illius_gordon_1992()", "") {
-  static const Digestibility DIG(0.5);
+  static const double DIG = 0.5;
+  static const std::array<double, 3> IJK_HIND = {0.108, 3.284, 0.080};
+  static const std::array<double, 3> IJK_RUM = {0.034, 3.565, 0.077};
 
-  CHECK_THROWS(get_digestive_limit_illius_gordon_1992(
-      -1.0, DigestionType::Ruminant, -1.0, DIG));
-  CHECK_THROWS(get_digestive_limit_illius_gordon_1992(
-      0.0, DigestionType::Ruminant, 0.0, DIG));
+  CHECK_THROWS(
+      get_digestive_limit_illius_gordon_1992(-1.0, -1.0, DIG, IJK_RUM));
+  CHECK_THROWS(get_digestive_limit_illius_gordon_1992(0.0, 0.0, DIG, IJK_RUM));
 
   SECTION("exceptions") {
     static const double AD = 100.0;
-    CHECK_THROWS(get_digestive_limit_illius_gordon_1992(
-        AD, DigestionType::Ruminant, AD + 1, DIG));
-    CHECK_THROWS(get_digestive_limit_illius_gordon_1992(
-        AD, DigestionType::Ruminant, 0.0, DIG));
-    CHECK_THROWS(get_digestive_limit_illius_gordon_1992(
-        AD, DigestionType::Ruminant, -1.0, DIG));
+    CHECK_THROWS(
+        get_digestive_limit_illius_gordon_1992(AD, AD + 1, DIG, IJK_RUM));
+    CHECK_THROWS(get_digestive_limit_illius_gordon_1992(AD, 0.0, DIG, IJK_RUM));
+    CHECK_THROWS(
+        get_digestive_limit_illius_gordon_1992(AD, -1.0, DIG, IJK_RUM));
   }
 
   SECTION("check some example numbers") {
@@ -47,14 +47,12 @@ TEST_CASE("Fauna::get_digestive_limit_illius_gordon_1992()", "") {
     static const double CURRENT = 20.0;  // current weight [kg]
 
     SECTION("...for grass") {
-      static const double d = DIG[ForageType::Grass];
-      CHECK(get_digestive_limit_illius_gordon_1992(
-                AD, DigestionType::Ruminant, CURRENT, d)[ForageType::Grass] ==
+      static const double d = DIG;
+      CHECK(get_digestive_limit_illius_gordon_1992(AD, CURRENT, d, IJK_RUM) ==
             Approx(0.034 * exp(3.565 * d) * pow(AD, 0.077 * exp(d) + 0.73) *
                    pow(CURRENT / AD, 0.75)));
 
-      CHECK(get_digestive_limit_illius_gordon_1992(
-                AD, DigestionType::Hindgut, CURRENT, d)[ForageType::Grass] ==
+      CHECK(get_digestive_limit_illius_gordon_1992(AD, CURRENT, d, IJK_HIND) ==
             Approx(0.108 * exp(3.284 * d) * pow(AD, 0.080 * exp(d) + 0.73) *
                    pow(CURRENT / AD, 0.75)));
     }
@@ -62,69 +60,57 @@ TEST_CASE("Fauna::get_digestive_limit_illius_gordon_1992()", "") {
 
   SECTION("pre-adult has less capacity") {
     static const double AD = 100.0;
-    CHECK(get_digestive_limit_illius_gordon_1992(AD, DigestionType::Ruminant,
-                                                 AD / 2, DIG) <
-          get_digestive_limit_illius_gordon_1992(AD, DigestionType::Ruminant,
-                                                 AD, DIG));
-    CHECK(get_digestive_limit_illius_gordon_1992(AD, DigestionType::Hindgut,
-                                                 AD / 2, DIG) <
-          get_digestive_limit_illius_gordon_1992(AD, DigestionType::Hindgut, AD,
-                                                 DIG));
+    CHECK(get_digestive_limit_illius_gordon_1992(AD, AD / 2, DIG, IJK_RUM) <
+          get_digestive_limit_illius_gordon_1992(AD, AD, DIG, IJK_RUM));
+    CHECK(get_digestive_limit_illius_gordon_1992(AD, AD / 2, DIG, IJK_HIND) <
+          get_digestive_limit_illius_gordon_1992(AD, AD, DIG, IJK_HIND));
   }
 
   SECTION("bigger animals have more capacity") {
     static const double AD1 = 100.0;
     static const double AD2 = AD1 * 1.4;
-    CHECK(get_digestive_limit_illius_gordon_1992(AD1, DigestionType::Hindgut,
-                                                 AD1, DIG) <
-          get_digestive_limit_illius_gordon_1992(AD2, DigestionType::Hindgut,
-                                                 AD2, DIG));
-    CHECK(get_digestive_limit_illius_gordon_1992(AD1, DigestionType::Ruminant,
-                                                 AD1, DIG) <
-          get_digestive_limit_illius_gordon_1992(AD2, DigestionType::Ruminant,
-                                                 AD2, DIG));
+    CHECK(get_digestive_limit_illius_gordon_1992(AD1, AD1, DIG, IJK_HIND) <
+          get_digestive_limit_illius_gordon_1992(AD2, AD2, DIG, IJK_HIND));
+    CHECK(get_digestive_limit_illius_gordon_1992(AD1, AD1, DIG, IJK_RUM) <
+          get_digestive_limit_illius_gordon_1992(AD2, AD2, DIG, IJK_RUM));
   }
 
   SECTION("higher digestibility brings higher capacity") {
     const double AD = 100.0;
-    const Digestibility DIG1(.8);
-    const Digestibility DIG2(.9);
+    const double DIG1(.8);
+    const double DIG2(.9);
     {  // RUMINANT
-      INFO("Ruminant, digestibility=" << DIG1[ForageType::Grass]);
-      INFO("grass: " << get_digestive_limit_illius_gordon_1992(
-               AD, DigestionType::Ruminant, AD, DIG1)[ForageType::Grass]);
+      INFO("Ruminant, digestibility=" << DIG1);
+      INFO("grass: " << get_digestive_limit_illius_gordon_1992(AD, AD, DIG1,
+                                                               IJK_RUM));
 
-      INFO("Ruminant, digestibility=" << DIG2[ForageType::Grass]);
-      INFO("grass: " << get_digestive_limit_illius_gordon_1992(
-               AD, DigestionType::Ruminant, AD, DIG2)[ForageType::Grass]);
+      INFO("Ruminant, digestibility=" << DIG2);
+      INFO("grass: " << get_digestive_limit_illius_gordon_1992(AD, AD, DIG2,
+                                                               IJK_RUM));
 
-      CHECK(get_digestive_limit_illius_gordon_1992(AD, DigestionType::Ruminant,
-                                                   AD, DIG1) <
-            get_digestive_limit_illius_gordon_1992(AD, DigestionType::Ruminant,
-                                                   AD, DIG2));
+      CHECK(get_digestive_limit_illius_gordon_1992(AD, AD, DIG1, IJK_RUM) <
+            get_digestive_limit_illius_gordon_1992(AD, AD, DIG2, IJK_RUM));
     }
     {  // HINDGUT
-      INFO("Hindgut, digestibility=" << DIG1[ForageType::Grass]);
-      INFO("grass: " << get_digestive_limit_illius_gordon_1992(
-               AD, DigestionType::Hindgut, AD, DIG1)[ForageType::Grass]);
+      INFO("Hindgut, digestibility=" << DIG1);
+      INFO("grass: " << get_digestive_limit_illius_gordon_1992(AD, AD, DIG1,
+                                                               IJK_HIND));
 
-      INFO("Hindgut, digestibility=" << DIG2[ForageType::Grass]);
-      INFO("grass: " << get_digestive_limit_illius_gordon_1992(
-               AD, DigestionType::Hindgut, AD, DIG2)[ForageType::Grass]);
+      INFO("Hindgut, digestibility=" << DIG2);
+      INFO("grass: " << get_digestive_limit_illius_gordon_1992(AD, AD, DIG2,
+                                                               IJK_HIND));
 
-      CHECK(get_digestive_limit_illius_gordon_1992(AD, DigestionType::Hindgut,
-                                                   AD, DIG1) <
-            get_digestive_limit_illius_gordon_1992(AD, DigestionType::Hindgut,
-                                                   AD, DIG2));
+      CHECK(get_digestive_limit_illius_gordon_1992(AD, AD, DIG1, IJK_HIND) <
+            get_digestive_limit_illius_gordon_1992(AD, AD, DIG2, IJK_HIND));
     }
   }
 
   SECTION("zero digestibility => zero energy") {
     const double ADULT = 100.0;
-    const Digestibility ZERO(0.0);
-    CHECK(get_digestive_limit_illius_gordon_1992(ADULT, DigestionType::Hindgut,
-                                                 ADULT, ZERO) == 0.0);
-    CHECK(get_digestive_limit_illius_gordon_1992(ADULT, DigestionType::Ruminant,
-                                                 ADULT, ZERO) == 0.0);
+    const double ZERO(0.0);
+    CHECK(get_digestive_limit_illius_gordon_1992(ADULT, ADULT, ZERO,
+                                                 IJK_HIND) == 0.0);
+    CHECK(get_digestive_limit_illius_gordon_1992(ADULT, ADULT, ZERO,
+                                                 IJK_HIND) == 0.0);
   }
 }

@@ -7,6 +7,7 @@
 #ifndef FAUNA_HFT_H
 #define FAUNA_HFT_H
 
+#include <array>
 #include <cmath>
 #include <set>
 #include <stdexcept>
@@ -110,7 +111,7 @@ enum class DigestiveLimit {
    */
   FixedFraction,
 
-  /// Limit digestive limit with \ref GetDigestiveLimitIlliusGordon1992.
+  /// Limit digestive limit with \ref get_digestive_limit_illius_gordon_1992().
   IlliusGordon1992
 };
 
@@ -168,7 +169,7 @@ enum class ForagingLimit {
    * food intake rate as a Holling Type II functional response
    * (compare \ref HalfMaxIntake).
    * As the maximum daily energy intake they choose the digestive
-   * capacity (compare \ref GetDigestiveLimitIlliusGordon1992).
+   * capacity (compare \ref get_digestive_limit_illius_gordon_1992()).
    *
    * Like in the model of Pachzelt et al. (2013)
    * \cite pachzelt2013coupling, the grass forage density of the
@@ -316,12 +317,29 @@ struct Hft {
    * For hindgut fermenters there are various factors in the literature, e.g.:
    * - Johnson et al. (1982) give a value of 0.89 \cite johnson1982intake
    * - Foose (1982) gives a value of 0.84 \cite foose1982trophic
-   * - The model by Illius & Gordon (1992) gives a value of 0.93 \cite illius1992modelling
-   * \see \ref NetEnergyModel::Default
-   * \see \ref get_net_energy_content_default()
-   * \see \ref HerbivoreBase::get_net_energy_content()
+   * - The model by Illius & Gordon (1992) gives a value of 0.93 \cite
+   * illius1992modelling \see \ref NetEnergyModel::Default \see \ref
+   * get_net_energy_content_default() \see \ref
+   * HerbivoreBase::get_net_energy_content()
    */
   double digestion_efficiency = 1.0;
+
+  /// Constants i, j, k for \ref DigestionLimit::IlliusGordon1992 (grass only).
+  /**
+   * Shipley et al. (1999)\cite shipley1999predicting derived the parameters i,
+   * j, and k from regression analysis with 12 mammalian herbivores (0.05--547
+   * kg) and are specific to hindguts and ruminants.
+   *
+   * |     | Hindgut | Ruminant |
+   * |-----|---------|----------|
+   * | i   | 0.108   | 0.034    |
+   * | j   | 3.284   | 3.565    |
+   * | k   | 0.080   | 0.077    |
+   *
+   * \see \ref get_digestive_limit_illius_gordon_1992()
+   * \see \ref DigestionLimit::IlliusGordon1992
+   */
+  std::array<double, 3> digestion_i_g_1992_ijk = {0.034, 3.565, 0.077};
 
   /// Daily dry matter intake per kg body mass for
   /// \ref DigestiveLimit::FixedFraction.
