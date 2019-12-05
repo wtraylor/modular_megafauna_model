@@ -80,6 +80,7 @@ anabolism_coefficient  = 54.6 # MJ/kg
 catabolism_coefficient = 39.3 # MJ/kg
 fixed_fraction         = 0.05 # kgDM per kg body mass
 limit                  = "FixedFraction"
+net_energy_model       = "Default"
 
 [hft.establishment]
 age_range = { first = 1, last = 15 } # years
@@ -93,7 +94,6 @@ components = [ "Allometric" ]
 diet_composer           = "PureGrazer"
 half_max_intake_density = 20 # gDM/m²
 limits                  = []
-net_energy_model        = "Default"
 
 [hft.life_history]
 lifespan                 = 16 # years

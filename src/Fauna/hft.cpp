@@ -114,6 +114,13 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       // the HFT is still valid (e.g. for testing purpose)
     }
 
+    if (digestion_net_energy_model == NetEnergyModel::Default &&
+        (digestion_efficiency <= 0.0 || digestion_efficiency > 1.0)) {
+      stream << "digestion.efficiency must be in the interval (0,1]."
+             << std::endl;
+      is_valid = false;
+    }
+
     if (establishment_age_range.first < 0 ||
         establishment_age_range.second < 0) {
       stream << "establishment.age_range must be 2 positive numbers ("
@@ -207,13 +214,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
                 "they are functionally equivalent. The former applies a "
                 "functional response to maximum energy intake. The latter "
                 "applies it to mass intake."
-             << std::endl;
-      is_valid = false;
-    }
-
-    if (foraging_net_energy_model == NetEnergyModel::Default &&
-        (digestion_efficiency <= 0.0 || digestion_efficiency > 1.0)) {
-      stream << "digestion.efficiency must be in the interval (0,1]."
              << std::endl;
       is_valid = false;
     }

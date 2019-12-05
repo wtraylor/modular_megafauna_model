@@ -259,12 +259,12 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto value = find_hft_parameter<std::string>(
-        table, "foraging.net_energy_model", true);
+        table, "digestion.net_energy_model", true);
     assert(value);
     if (lowercase(*value) == lowercase("Default"))
-      hft.foraging_net_energy_model = NetEnergyModel::Default;
+      hft.digestion_net_energy_model = NetEnergyModel::Default;
     else
-      throw invalid_option(hft, "foraging.net_energy_model", *value,
+      throw invalid_option(hft, "digestion.net_energy_model", *value,
                            {"Default"});
   }
   {

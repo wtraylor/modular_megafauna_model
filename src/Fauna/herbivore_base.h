@@ -166,7 +166,7 @@ class HerbivoreBase : public HerbivoreInterface {
    * \param digestibility Forage digestibility.
    * \return Net energy content in MJ/kgDM.
    * \throw std::logic_error If the net energy model is not implemented.
-   * \see \ref Hft::foraging_net_energy_model
+   * \see \ref Hft::digestion_net_energy_model
    * \see \ref NetEnergyModel
    */
   ForageEnergyContent get_net_energy_content(

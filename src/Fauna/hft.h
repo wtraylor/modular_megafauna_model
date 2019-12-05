@@ -338,6 +338,9 @@ struct Hft {
 
   /// Constraint for maximum daily forage intake.
   DigestiveLimit digestion_limit = DigestiveLimit::FixedFraction;
+
+  /// Algorithm for forage energy content.
+  NetEnergyModel digestion_net_energy_model = NetEnergyModel::Default;
   /** @} */
 
   /** @{ \name "establishment": Spawning new herbivores in empty habitats. */
@@ -371,9 +374,6 @@ struct Hft {
    * Required by specific foraging limits.
    */
   double foraging_half_max_intake_density = 20;
-
-  /// Algorithm for forage energy content.
-  NetEnergyModel foraging_net_energy_model = NetEnergyModel::Default;
   /** @} */
 
   /** @{ \name "life_history": Life stages for herbivore individuals. */

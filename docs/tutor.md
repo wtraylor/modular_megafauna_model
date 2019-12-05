@@ -113,7 +113,7 @@ Whether you want to have herbivores die by for instance disease, drought, or pre
 
 - Implement your model in a function or class in the file \ref net_energy_models.h.
 - Add a new enum item in \ref Fauna::NetEnergyModel.
-- Parse that value for the HFT parameter `foraging.net_energy_model` in \ref Fauna::InsfileReader::read_hft().
+- Parse that value for the HFT parameter `digestion.net_energy_model` in \ref Fauna::InsfileReader::read_hft().
 - Execute your function or class in \ref Fauna::HerbivoreBase::get_net_energy_content().
 - Update the UML diagram in \ref sec_herbivorebase.
 

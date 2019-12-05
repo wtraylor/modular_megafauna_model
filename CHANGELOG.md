@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Various little performance improvements.
 - Turned `Fauna::GetNetEnergyContent` interface (strategy design pattern) to a function.
 - Turned `Fauna::GetDigestiveLimitIlliusGordon1992` into the function `Fauna::get_digestive_limit_illius_gordon_1992()`.
+- Renamed TOML parameter `hft.foraging.net_energy_model` to `hft.digestion.net_energy_model`
 
 ### Removed
 - Instruction file parameter `hft.digestion.type` and the corresponding `Fauna::DigestionType` and `Fauna::Hft::digestion_type`.
