@@ -32,10 +32,13 @@ namespace Fauna {
  * Metabolizable energy content ME is calculated by
  * multiplying digestibility with a forage-specific coefficient.
  * \param digestibility Proportional digestibility.
+ * \param metabolizable_energy The parameter `ME` in the above formula in
+ * MJ/kgDM.
  * \return Net energy content [MJ/kgDM].
  */
 ForageEnergyContent get_net_energy_content_default(
-    const Digestibility& digestibility);
+    const Digestibility& digestibility,
+    const ForageEnergyContent& metabolizable_energy);
 }  // namespace Fauna
 
 #endif  // FAUNA_NET_ENERGY_MODELS_H

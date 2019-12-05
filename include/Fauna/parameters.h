@@ -10,6 +10,7 @@
 #include <cassert>
 #include <stdexcept>
 #include "Fauna/Output/text_table_writer_options.h"
+#include "forage_values.h"
 
 namespace Fauna {
 
@@ -75,6 +76,30 @@ struct Parameters {
 
   /// Which kind of herbivore class to use.
   HerbivoreType herbivore_type = HerbivoreType::Cohort;
+
+  /// Metabolizable energy content for forage types [MJ/kgDM].
+  /**
+   * \see \ref get_net_energy_content_default()
+   *
+   * \section Grass
+   * Givens et al. (1989, p. 39)\cite givens1989digestibility :
+   *
+   * > “In the absence of energetic data, it has been common to calculate ME
+   * > from DOMD content. MAFF et al. (1984) \cite maff1984energy stated that
+   * > for a wide range of feedstuffs ME may be calculated as 0.015*DOMD. This
+   * > is based on the assumption that the GE of digested OM is 19.0 MJ/kg
+   * > together with a ME/DE ratio of 0.81.”
+   *
+   * - ME = Metabolizable Energy [MJ/kg]
+   * - DE = Digestible Energy [MJ/kg]
+   * - GE = Gross Energy [MJ/kg]
+   * - OM = Organic Matter [kg]
+   * - DOMD = Digestible Organic Matter Content [percent]
+   *        = digestibility for dry matter forage
+   * \note ME is in MJ/kg, but appears in the above quotation as divided
+   * by 100 to compensate for DOMD being in percent [0--100].
+   */
+  ForageEnergyContent metabolizable_energy = {15.0};
 
   /// Whether to allow only herbivores of one HFT in each habitat.
   bool one_hft_per_habitat = false;

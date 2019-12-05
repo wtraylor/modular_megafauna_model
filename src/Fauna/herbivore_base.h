@@ -98,20 +98,25 @@ class HerbivoreBase : public HerbivoreInterface {
    * of physiological maximum [kg/kg].
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
+   * \param metabolizable_energy The (constant) metabolizable energy content
+   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
    * \throw std::invalid_argument If `hft==NULL` or
    * `age_days <= 0` or `body_condition` not in [0,1].
    */
   HerbivoreBase(const int age_days, const double body_condition, const Hft* hft,
-                const Sex sex);
+                const Sex sex, const ForageEnergyContent& metabolizable_energy);
 
   /// Birth constructor.
   /**
    * Herbivores are born with \ref Hft::body_fat_birth.
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
+   * \param metabolizable_energy The (constant) metabolizable energy content
+   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
    * \throw std::invalid_argument If `hft==NULL`.
    */
-  HerbivoreBase(const Hft* hft, const Sex sex);
+  HerbivoreBase(const Hft* hft, const Sex sex,
+                const ForageEnergyContent& metabolizable_energy);
 
   /// Virtual destructor, which will be called by derived classes.
   virtual ~HerbivoreBase() = default;
@@ -193,6 +198,7 @@ class HerbivoreBase : public HerbivoreInterface {
   Hft const* hft;  // pointer to const Hft; initialized first!
   Sex sex;
   BreedingSeason breeding_season;
+  ForageEnergyContent metabolizable_energy;
   /** @} */  // constants
 
   /// @{ \name State Variables

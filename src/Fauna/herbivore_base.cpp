@@ -14,12 +14,13 @@
 using namespace Fauna;
 
 HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
-                             const Hft* hft,
-                             const Sex sex)
+                             const Hft* hft, const Sex sex,
+                             const ForageEnergyContent& metabolizable_energy)
     : hft(check_hft_pointer(hft)),  // can be NULL
       sex(sex),                     // always valid
       age_days(age_days),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
+      metabolizable_energy(metabolizable_energy),
       energy_budget(body_condition * get_max_fatmass(),  // initial fat mass
                     get_max_fatmass(),                   // maximum fat mass
                     hft->digestion_anabolism_coefficient,
@@ -52,10 +53,12 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
         "body_condition < 0.0");
 }
 
-HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex)
+HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex,
+                             const ForageEnergyContent& metabolizable_energy)
     : hft(check_hft_pointer(hft)),
       sex(sex),
       age_days(0),
+      metabolizable_energy(metabolizable_energy),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
       energy_budget(get_hft().body_fat_birth * get_hft().body_mass_birth,
                     get_max_fatmass(), hft->digestion_anabolism_coefficient,
@@ -273,8 +276,9 @@ ForageEnergyContent HerbivoreBase::get_net_energy_content(
     const Digestibility digestibility) const {
   switch (get_hft().digestion_net_energy_model) {
     case (NetEnergyModel::Default):
-      return get_net_energy_content_default(digestibility) *
-        get_hft().digestion_efficiency;
+      return get_net_energy_content_default(digestibility,
+                                            metabolizable_energy) *
+             get_hft().digestion_efficiency;
       // ADD NEW NET ENERGY MODELS HERE
       // in new case statements
     default:

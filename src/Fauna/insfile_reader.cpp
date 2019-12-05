@@ -7,6 +7,7 @@
 #include "insfile_reader.h"
 #include <algorithm>
 #include <string>
+#include "forage_types.h"
 #include "hft.h"
 
 using namespace Fauna;
@@ -610,6 +611,15 @@ void InsfileReader::read_table_simulation() {
         throw invalid_option(key, *value, {"Cohort", "Individual"});
     } else
       throw missing_parameter(key);
+  }
+  for (const auto& ft : Fauna::FORAGE_TYPES) {
+    const auto key =
+        "simulation.metabolizable_energy." + get_forage_type_name(ft);
+    auto value = ins->get_qualified_as<double>(key);
+    if (!value) throw missing_parameter(key);
+    if (*value < 0)
+      throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
+    params.metabolizable_energy[ft] = *value;
   }
   {
     const auto key = "simulation.one_hft_per_habitat";

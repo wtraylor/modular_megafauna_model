@@ -34,24 +34,30 @@ class HerbivoreCohort : public HerbivoreBase {
    * of physiological maximum [kg/kg].
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
+   * \param metabolizable_energy The (constant) metabolizable energy content
+   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
    * \throw std::invalid_argument if any parameter is invalid
    *
    * \param ind_per_km2 Initial individual density [ind/km²].
    * Can be 0.0, but must not be negative.
    */
   HerbivoreCohort(const int age_days, const double body_condition,
-                  const Hft* hft, const Sex sex, const double ind_per_km2);
+                  const Hft* hft, const Sex sex, const double ind_per_km2,
+                  const ForageEnergyContent& metabolizable_energy);
 
   /// Birth constructor
   /**
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
+   * \param metabolizable_energy The (constant) metabolizable energy content
+   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
    * \throw std::invalid_argument if any parameter is invalid
    *
    * \param ind_per_km2 Initial individual density [ind/km²].
    * Can be 0.0, but must not be negative.
    */
-  HerbivoreCohort(const Hft* hft, const Sex sex, const double ind_per_km2);
+  HerbivoreCohort(const Hft* hft, const Sex sex, const double ind_per_km2,
+                  const ForageEnergyContent& metabolizable_energy);
 
   /// Check if this and the other cohort are of the same age
   /**
