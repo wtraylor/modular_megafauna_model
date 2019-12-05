@@ -63,15 +63,6 @@ enum class DietComposer {
   PureGrazer
 };
 
-/// Digestion type of a herbivore.
-enum class DigestionType {
-  /// Hindgut fermenter (colonic caecalid).
-  Hindgut,
-
-  /// Ruminant forgut fermenter.
-  Ruminant
-};
-
 /// Algorithm to calculate the daily digestive capacity of a herbivore.
 enum class DigestiveLimit {
   /// No digestive limit.
@@ -347,9 +338,6 @@ struct Hft {
 
   /// Constraint for maximum daily forage intake.
   DigestiveLimit digestion_limit = DigestiveLimit::FixedFraction;
-
-  /// Digestion physiology (ruminant or hindgut fermenter).
-  DigestionType digestion_type = DigestionType::Ruminant;
   /** @} */
 
   /** @{ \name "establishment": Spawning new herbivores in empty habitats. */

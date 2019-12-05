@@ -211,18 +211,6 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto value =
-        find_hft_parameter<std::string>(table, "digestion.type", true);
-    assert(value);
-    if (lowercase(*value) == lowercase("Hindgut"))
-      hft.digestion_type = DigestionType::Hindgut;
-    else if (lowercase(*value) == lowercase("Ruminant"))
-      hft.digestion_type = DigestionType::Ruminant;
-    else
-      throw invalid_option(hft, "digestion.type", *value,
-                           {"Hindgut", "Ruminant"});
-  }
-  {
-    const auto value =
         find_hft_parameter<int>(table, "establishment.age_range.first", true);
     assert(value);
     hft.establishment_age_range.first = *value;

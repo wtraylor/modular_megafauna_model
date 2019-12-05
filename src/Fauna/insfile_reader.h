@@ -136,7 +136,7 @@ class InsfileReader {
    * If the key is not defined in the HFT itself, the groups are checked in the
    * order they are defined until the value is found.
    * \param hft_table The TOML table of the HFT itself.
-   * \param key The string identifier of the parameter, e.g. "digestion.type".
+   * \param key The string identifier of the parameter, e.g. "digestion.limit".
    * \param mandatory Whether to throw \ref missing_parameter if the value
    * couldn’t be found.
    * \return A pointer to the value. If the value wasn’t found and is not
