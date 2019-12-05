@@ -183,11 +183,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       is_valid = false;
     }
 
-    if (foraging_limits.empty()) {
-      stream << "No foraging limits defined." << std::endl;
-      // the HFT is still valid (e.g. for testing purpose)
-    }
-
     if (foraging_limits.count(ForagingLimit::IlliusOConnor2000) &&
         foraging_diet_composer != DietComposer::PureGrazer) {
       stream << "`ILLIUS_OCONNOR_2000` is set as a foraging limit and"
