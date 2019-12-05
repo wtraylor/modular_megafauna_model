@@ -102,13 +102,10 @@ ForageMass GetForageDemands::get_max_digestion() const {
       // already checked in Hft::is_valid().
       assert(get_hft().foraging_diet_composer == DietComposer::PureGrazer);
 
-      // create function object
-      const GetDigestiveLimitIlliusGordon1992 get_digestive_limit(
-          get_bodymass_adult(), get_hft().digestion_type);
-
       // calculate the digestive limit [MJ/ind/day]
-      const ForageEnergy limit_mj =
-          get_digestive_limit(bodymass, digestibility);
+      const ForageEnergy limit_mj = get_digestive_limit_illius_gordon_1992(
+          get_bodymass_adult(), get_hft().digestion_type, bodymass,
+          digestibility);
 
       // Convert energy to kg dry matter
       // kg * MJ/kg = kg; where zero values remain zero values even
@@ -143,15 +140,13 @@ ForageMass GetForageDemands::get_max_foraging() const {
         // already checked in Hft::is_valid().
         assert(get_hft().foraging_diet_composer == DietComposer::PureGrazer);
 
-        // create function object for maximum intake
-        const GetDigestiveLimitIlliusGordon1992 get_digestive_limit(
-            get_bodymass_adult(), get_hft().digestion_type);
-
         // Create functional response with digestive limit as maximum.
         // Convert half_max_intake_density from gDM/m² to kgDM/km²
         const HalfMaxIntake half_max(
             get_hft().foraging_half_max_intake_density * 1000.0,
-            get_digestive_limit(bodymass, digestibility)[ForageType::Grass]);
+            get_digestive_limit_illius_gordon_1992(
+                get_bodymass_adult(), get_hft().digestion_type, bodymass,
+                digestibility)[ForageType::Grass]);
 
         // Like Pachzelt et al. (2013), we use the whole-habitat grass density,
         // not the ‘sward density’.

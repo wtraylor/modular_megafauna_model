@@ -8,22 +8,14 @@
 
 using namespace Fauna;
 
-//============================================================
-// GetDigestiveLimitIlliusGordon1992
-//============================================================
-
-GetDigestiveLimitIlliusGordon1992::GetDigestiveLimitIlliusGordon1992(
-    const double bodymass_adult, const DigestionType digestion_type)
-    : bodymass_adult(bodymass_adult), digestion_type(digestion_type) {
+ForageEnergy Fauna::get_digestive_limit_illius_gordon_1992(
+    const double bodymass_adult, const DigestionType digestion_type,
+    const double bodymass, const Digestibility& digestibility) {
   if (bodymass_adult <= 0.0)
     throw std::invalid_argument(
         "Fauna::GetDigestiveLimitIlliusGordon1992::"
         "GetDigestiveLimitIlliusGordon1992() "
         "Parameter `bodymass_adult` <= zero.");
-}
-
-const ForageEnergy GetDigestiveLimitIlliusGordon1992::operator()(
-    const double bodymass, const Digestibility& digestibility) const {
   if (bodymass <= 0.0)
     throw std::invalid_argument(
         "Fauna::GetDigestiveLimitIlliusGordon1992::operator()() "
