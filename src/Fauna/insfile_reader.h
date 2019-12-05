@@ -104,6 +104,32 @@ struct missing_group : public std::runtime_error {
                            "\". " + "Required by HFT \"" + hft_name + "\"."){};
 };
 
+/// Exception if an integer or double parameter is out of range.
+/**
+ * Usually the functions \ref Hft::is_valid() and \ref
+ * Parameters::is_valid() are responsible for checking the bounds of a
+ * parameter. Use this exception only if the data type of the \ref Hft
+ * or \ref Parameter member variable does not allow being assigned the
+ * user-specified value.
+ */
+struct param_out_of_range : public std::runtime_error {
+  /// Constructor for a double value.
+  /**
+   * \param key The fully qualified TOML key.
+   * \param value The given (invalid) value. Use `std::to_string()` to convert
+   * from double or integer to string. \param allowed_interval The permitted
+   * range of the parameter in mathematical notation. For example [0,1) allows
+   * values between zero and one, including zero, but excluding one. Use the
+   * infinity symbol, ∞, for intervals not bound on one side.
+   */
+  param_out_of_range(const std::string& key, const std::string& value,
+                     const std::string& allowed_interval)
+      : std::runtime_error("The parameter \"" + key + "\" " +
+                           "is out of range. The specified value is " + value +
+                           ", which lies outside of the interval " +
+                           allowed_interval + "."){};
+};
+
 /// Class to read parameters and HFTs from given instruction file.
 class InsfileReader {
  public:
