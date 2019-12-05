@@ -53,12 +53,6 @@ class HerbivoreCohort : public HerbivoreBase {
    */
   HerbivoreCohort(const Hft* hft, const Sex sex, const double ind_per_km2);
 
-  /// Copy constructor.
-  HerbivoreCohort(const HerbivoreCohort& other);
-
-  /// Copy assignment operator.
-  HerbivoreCohort& operator=(const HerbivoreCohort& other);
-
   /// Destructor.
   ~HerbivoreCohort(){};
 

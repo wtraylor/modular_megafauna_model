@@ -31,15 +31,6 @@ HerbivoreCohort::HerbivoreCohort(const Hft* hft, const Sex sex,
         "ind_per_km2 <0.0");
 }
 
-HerbivoreCohort::HerbivoreCohort(const HerbivoreCohort& other)
-    : HerbivoreBase(other), ind_per_km2(other.ind_per_km2) {}
-
-HerbivoreCohort& HerbivoreCohort::operator=(const HerbivoreCohort& other) {
-  HerbivoreBase::operator=(other);
-  ind_per_km2 = other.ind_per_km2;
-  return *this;
-}
-
 void HerbivoreCohort::apply_mortality(const double mortality) {
   if (mortality < 0.0 || mortality > 1.0)
     throw std::invalid_argument(

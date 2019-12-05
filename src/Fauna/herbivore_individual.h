@@ -50,12 +50,6 @@ class HerbivoreIndividual : public HerbivoreBase {
    */
   HerbivoreIndividual(const Hft* hft, const Sex sex, const double area_km2);
 
-  /// Copy Constructor.
-  HerbivoreIndividual(const HerbivoreIndividual& other);
-
-  /// Copy assignment operator.
-  HerbivoreIndividual& operator=(const HerbivoreIndividual& other);
-
   /// Destructor
   ~HerbivoreIndividual(){};
 

@@ -31,17 +31,6 @@ HerbivoreIndividual::HerbivoreIndividual(const Hft* hft, const Sex sex,
         "area_km2 <=0.0");
 }
 
-HerbivoreIndividual::HerbivoreIndividual(const HerbivoreIndividual& other)
-    : HerbivoreBase(other), area_km2(other.area_km2), dead(other.dead) {}
-
-HerbivoreIndividual& HerbivoreIndividual::operator=(
-    const HerbivoreIndividual& other) {
-  HerbivoreBase::operator=(other);
-  area_km2 = other.area_km2;
-  dead = other.dead;
-  return *this;
-}
-
 void HerbivoreIndividual::apply_mortality(const double mortality) {
   if (mortality < 0.0 || mortality > 1.0)
     throw std::invalid_argument(
