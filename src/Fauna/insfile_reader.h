@@ -21,6 +21,22 @@ struct InsfileContent {
   Parameters params;
 };
 
+/// Exception that an array parameter does not have the correct length.
+class bad_array_size : public std::runtime_error {
+ public:
+  /// Constructor
+  /**
+   * \param key The fully qualified TOML key.
+   * \param given_size The number of elements found in the TOML file.
+   * \param expected_size The required size of the array.
+   */
+  bad_array_size(const std::string& key, const unsigned int given_size,
+                 const std::string& expected_size)
+      : std::runtime_error("Array parameter '" + key + "' has " +
+                           std::to_string(given_size) + "'elements," +
+                           " but required are: " + expected_size){};
+};
+
 /// Exception that a string parameter does not match possible options.
 class invalid_option : public std::runtime_error {
  public:
