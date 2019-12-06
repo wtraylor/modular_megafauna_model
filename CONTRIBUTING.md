@@ -1,12 +1,10 @@
-Contributing to the Codebase
-============================
+# Contributing to the Codebase
 
 This document is a guide for developers who want to contribute to the megafauna library.
 It explains the organization of the software project and sets guidelines for code style, structure, and format.
-This document is only about _syntax_ only.
+This document is only about *syntax* only.
 
-Table of Contents
------------------
+## Table of Contents
 
 - [Version Control](#version-control)
     - [Branches](#branches)
@@ -14,18 +12,17 @@ Table of Contents
     - [Commit Messages](#commit-messages)
     - [Continuous Integration](#continuous-integration)
 - [Coding Guidelines](#coding-guidelines)
-    + [Repository Structure](#repository-structure)
-    + [Code Format](#code-format)
-        + [Naming Code Elments](#naming-code-elements)
-        + [Ordering](#ordering)
-        + [File Header](#file-header)
-    + [Unit Tests](#unit-tests)
-    + [Code Checkers](#code-checkers)
-    + [Doxygen Documentation](#doxygen-documentation)
-        + [BibTeX Bibliography](#bibtex-bibliography)
+    - [Repository Structure](#repository-structure)
+    - [Code Format](#code-format)
+        - [Naming Code Elments](#naming-code-elements)
+        - [Ordering](#ordering)
+        - [File Header](#file-header)
+    - [Unit Tests](#unit-tests)
+    - [Code Checkers](#code-checkers)
+    - [Doxygen Documentation](#doxygen-documentation)
+        - [BibTeX Bibliography](#bibtex-bibliography)
 
-Version Control
----------------
+## Version Control
 
 ### Branches
 - The `master` branch is reserved for stable releases, tagged with the version numbers.
@@ -35,23 +32,23 @@ Version Control
 ### Release Versioning
 - This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Each merge into the `master` branch is a release and should have a Git tag.
-    + The tag’s name is just the exact version, e.g. “0.1.2”.
-    + The tag’s decription should summarize the introduced changes.
+    - The tag’s name is just the exact version, e.g. “0.1.2”.
+    - The tag’s decription should summarize the introduced changes.
 - Before merging into `master`:
-    + Set the new version in `CMakeLists.txt`.
-    + List your changes in `CHANGELOG.md`, following the formatting guidelines there.
+    - Set the new version in `CMakeLists.txt`.
+    - List your changes in `CHANGELOG.md`, following the formatting guidelines there.
 - If you cite this code in a journal publication, consider getting a DOI for the specific model version you used.
 
 ### Commit Messages
 Follow Chris Beams’ guide for crafting your Git commit messages: [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
 
 > 1. Separate subject from body with a blank line
-> 2. Limit the subject line to 50 characters
-> 3. Capitalize the subject line
-> 4. Do not end the subject line with a period
-> 5. Use the imperative mood in the subject line
-> 6. Wrap the body at 72 characters
-> 7. Use the body to explain what and why vs. how
+> 1. Limit the subject line to 50 characters
+> 1. Capitalize the subject line
+> 1. Do not end the subject line with a period
+> 1. Use the imperative mood in the subject line
+> 1. Wrap the body at 72 characters
+> 1. Use the body to explain what and why vs. how
 
 ### Continuous Integration
 The repository should always be in a valid state.
@@ -62,19 +59,15 @@ The CI script also runs [Valgrind](https://valgrind.org) memory check.
 With the bash script `tools/run_valgrind_memcheck` you can execute a memory check manually on your local machine.
 **Always make sure contributions to the codebase don’t have memory leaks.**
 
-Coding Guidelines
------------------
+## Coding Guidelines
 
 ### Repository Structure
 This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pitchfork) for C++ projects.
 Here is a summary of the relevant parts:
 
 - **Namespace Folders:** The `src/` directory has subfolders reflecting the namespaces of the contained components. To minimize the danger of name collision, the header **include guards** contain the namespace hierarchy also, e.g. `FAUNA_OUTPUT_HABITAT_DATA_H`.
-
-- **Separate Header Placement:** Header (`*.h`) and source (`*.cpp`) files are kept together in `src/` if they are _private_ (not part of the library interface). _Public_ headers are placed in `include/` while their corresponding source files remain in `src/`.
-
-- **Coherence:** A header and corresponding source file (= _physical component_)contain code for _logical component._ If in doubt, rather air on the side of granularity and create several individual components.
-
+- **Separate Header Placement:** Header (`*.h`) and source (`*.cpp`) files are kept together in `src/` if they are *private* (not part of the library interface). *Public* headers are placed in `include/` while their corresponding source files remain in `src/`.
+- **Coherence:** A header and corresponding source file (= *physical component*)contain code for *logical component.* If in doubt, rather air on the side of granularity and create several individual components.
 - **Merged Test Placement:** Any logical/physical unit has its unit test in a file in the same folder with the same file name, but with the suffix `.test.cpp`.
 
 ### Code Format
@@ -89,19 +82,15 @@ Please install the plugin for your text editor if available: [editorconfig.org/]
 #### Naming Code Elements
 
 - **Files** are always lower-case with underscores to separate words.
-    + Header files end with `.h`, source files with `.cpp`, and the corresponding unit test files with `.test.cpp`.
-    + If a file only contains one class, name the file like the class.
-    + If a file contains several classes, use a plural like `net_energy_models.h`.
-    + If a file contains a collection of functionality, use an abstract grouping noun, e.g. `stochasticity.h` or `nitrogen.h`.
-
+    - Header files end with `.h`, source files with `.cpp`, and the corresponding unit test files with `.test.cpp`.
+    - If a file only contains one class, name the file like the class.
+    - If a file contains several classes, use a plural like `net_energy_models.h`.
+    - If a file contains a collection of functionality, use an abstract grouping noun, e.g. `stochasticity.h` or `nitrogen.h`.
 - **Classes** are named in CamelCase with upper-case first letter, e.g. `MyExampleClass`. Don’t repeat the namespace in the class name (avoid something like `Output::OutputDataClass`).
-    + **Enum** types are like classes.
-
+    - **Enum** types are like classes.
 - **Functions** are imperative verbs with underscores, e.g. `create_new_herbivores()`.
-
 - Global **constants** as well as static const member and function variables are all-uppercase with underscores, e.g. `MY_GLOBAL_CONSTANT`.
-    + C++11-style **enum class elements** don’t have global scope and thus don’t require a prefix. Since the shouting tone of all-uppercase names is distracting, just use CamelCase for the enum members, e.g. `OutputInterval::Annual`.
-
+    - C++11-style **enum class elements** don’t have global scope and thus don’t require a prefix. Since the shouting tone of all-uppercase names is distracting, just use CamelCase for the enum members, e.g. `OutputInterval::Annual`.
 - **Namespaces** are short and lower-case with first letter capitalized, e.g. `Fauna`.
 
 #### Ordering
@@ -136,7 +125,7 @@ class MyExampleClass{
 };
 ```
 
-In the corresponding source file, _all_ function definitions (both private & public) are in alphabetical order, except for the constructors and destructor, which come first.
+In the corresponding source file, *all* function definitions (both private & public) are in alphabetical order, except for the constructors and destructor, which come first.
 
 If there is more than one class in the header file, separate their function definitions in blocks with big comment captions, for example like this:
 ```cpp
@@ -197,8 +186,8 @@ Execute the helper script `./tools/cppclean.sh` in the Bash.
 The Doxygen command `\cite` is used for that.
 This makes browsing the Doxygen documentation easier.
 
-In general you should not need to put any references to scientific publications in _comments_ in the source code.
-Better you explain everything in a narrative form in the Doxygen _documentation_ and use the `\cite` command for that.
+In general you should not need to put any references to scientific publications in *comments* in the source code.
+Better you explain everything in a narrative form in the Doxygen *documentation* and use the `\cite` command for that.
 If you do cite in source code comments, make sure that the reference is uniquely identifiable in `bibliography.bib`.
 
 Use [bibsort](http://ftp.math.utah.edu/pub/bibsort/) to sort the
@@ -212,10 +201,9 @@ version control software.
 - Don’t use `journaltitle` and `date`. They are not recognized by Doxygen. Use `year`, `month`, etc. instead of `date`.
 - Use `{...}` brackets instead of `""`.
 - Have equal signs (`=`) line up vertically (for prettiness).
-
 - BibTeX identifiers (inspired by the BibTeX export of [Google Scholar](https://scholar.google.com)):
 `<author><year><firstword>` (all lowercase and without delimiter)
-    + author: Family name of first author as it would be cited (including van/von/…)
-    + year: Publication year.
-    + firstword: First word of the title excluding ‘the’, ‘a’, ‘an’, ‘of’, ‘is’, ‘are’, ‘were’, and the like. Hyphens, dashes, apostrophes, and slashes within the first (compound) word are simply omitted.
-    + If the above produces non-unique IDs, use the second word, or (if even that fails) the third.
+    - author: Family name of first author as it would be cited (including van/von/…)
+    - year: Publication year.
+    - firstword: First word of the title excluding ‘the’, ‘a’, ‘an’, ‘of’, ‘is’, ‘are’, ‘were’, and the like. Hyphens, dashes, apostrophes, and slashes within the first (compound) word are simply omitted.
+    - If the above produces non-unique IDs, use the second word, or (if even that fails) the third.
