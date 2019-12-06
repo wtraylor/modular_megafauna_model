@@ -7,6 +7,7 @@
 #ifndef FAUNA_WORLD_CONSTRUCTOR_H
 #define FAUNA_WORLD_CONSTRUCTOR_H
 
+#include <cassert>
 #include <memory>
 
 namespace Fauna {
@@ -28,7 +29,8 @@ class DistributeForage;
 class WorldConstructor {
  public:
   /// Constructor: only set member variables.
-  WorldConstructor(const Parameters& params, const HftList& hftlist);
+  WorldConstructor(const std::shared_ptr<const Parameters> params,
+                   const HftList& hftlist);
 
   /// Create one (empty) herbivore population for one HFT.
   /**
@@ -63,10 +65,13 @@ class WorldConstructor {
   const HftList& get_hftlist() const { return hftlist; }
 
   /// Get global parameters.
-  const Parameters& get_params() const { return params; }
+  const Parameters& get_params() const {
+    assert(params.get());
+    return *params;
+  }
 
  private:
-  const Parameters& params;
+  const std::shared_ptr<const Parameters> params;
   const HftList& hftlist;
 };
 }  // namespace Fauna

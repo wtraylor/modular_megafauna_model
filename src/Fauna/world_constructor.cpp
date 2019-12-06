@@ -15,9 +15,9 @@
 
 using namespace Fauna;
 
-WorldConstructor::WorldConstructor(const Parameters& params,
+WorldConstructor::WorldConstructor(const std::shared_ptr<const Parameters> params,
                                    const HftList& hftlist)
-    : params(params), hftlist(hftlist) {}
+    : params(std::move(params)), hftlist(hftlist) {}
 
 DistributeForage* WorldConstructor::create_distribute_forage() const {
   switch (get_params().forage_distribution) {
@@ -34,11 +34,11 @@ PopulationInterface* WorldConstructor::create_population(
     const Hft* phft) const {
   // Create population instance according to selected herbivore type.
   if (get_params().herbivore_type == HerbivoreType::Cohort) {
-    return new CohortPopulation(CreateHerbivoreCohort(phft, &get_params()));
+    return new CohortPopulation(CreateHerbivoreCohort(phft, params));
   } else if (get_params().herbivore_type == HerbivoreType::Individual) {
     const double AREA = 1.0;  // TODO THis is only a test
     return new IndividualPopulation(
-        CreateHerbivoreIndividual(phft, &get_params()));
+        CreateHerbivoreIndividual(phft, params));
     // TODO Where does the area size come from??
     // -> from Habitat (then merge() doesn’t work anymore)
     // -> from Parameters (then CreateHerbivoreIndividual

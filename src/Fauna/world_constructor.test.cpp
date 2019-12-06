@@ -15,11 +15,11 @@
 using namespace Fauna;
 
 TEST_CASE("Fauna::WorldConstructor", "") {
-  Fauna::Parameters params;
-  REQUIRE(params.is_valid());
+  std::shared_ptr<Parameters> params(new Parameters);
+  REQUIRE(params->is_valid());
 
   // prepare HFT list
-  HftList hftlist = create_hfts(3, params);
+  HftList hftlist = create_hfts(3, *params);
 
   WorldConstructor world_cons(params, hftlist);
 
@@ -37,4 +37,3 @@ TEST_CASE("Fauna::WorldConstructor", "") {
     CHECK(pops->get(*phft).get_hft() == *phft);
   }
 }
-

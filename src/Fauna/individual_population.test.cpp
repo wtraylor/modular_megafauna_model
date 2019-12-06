@@ -18,19 +18,19 @@ using namespace Fauna;
 TEST_CASE("Fauna::IndividualPopulation", "") {
   const double AREA = 10.0;  // habitat area [km²]
   // prepare parameters
-  Parameters params;
-  params.habitat_area_km2 = AREA;
-  REQUIRE(params.is_valid());
+  std::shared_ptr<Parameters> params(new Parameters());
+  params->habitat_area_km2 = AREA;
+  REQUIRE(params->is_valid());
 
   // prepare HFT
   const int ESTABLISH_COUNT = 100;  // [ind]
-  Hft hft = create_hfts(1, params)[0];
+  Hft hft = create_hfts(1, *params)[0];
   hft.establishment_density = ESTABLISH_COUNT / AREA;  // [ind/km²]
   hft.mortality_factors.clear();                       // immortal herbivores
-  REQUIRE(hft.is_valid(params));
+  REQUIRE(hft.is_valid(*params));
 
   // prepare creating object
-  CreateHerbivoreIndividual create_ind(&hft, &params);
+  CreateHerbivoreIndividual create_ind(&hft, params);
 
   IndividualPopulation pop(create_ind);
 

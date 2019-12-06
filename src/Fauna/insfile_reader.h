@@ -13,14 +13,6 @@
 
 namespace Fauna {
 
-/// All global and herbivore parameters in an instruction file.
-struct InsfileContent {
-  /// Herbivore functional types from the instruction file.
-  HftList hftlist;
-  /// Global parameters from the instruction file.
-  Parameters params;
-};
-
 /// Exception that an array parameter does not have the correct length.
 class bad_array_size : public std::runtime_error {
  public:

@@ -17,17 +17,17 @@ using namespace Fauna;
 
 TEST_CASE("Fauna::CohortPopulation", "") {
   // prepare parameters
-  Parameters params;
-  REQUIRE(params.is_valid());
+  std::shared_ptr<Parameters> params(new Parameters());
+  REQUIRE(params->is_valid());
 
   // prepare HFT
-  Hft hft = create_hfts(1, params)[0];
+  Hft hft = create_hfts(1, *params)[0];
   hft.establishment_density = 10.0;  // [ind/km²]
   hft.mortality_factors.clear();     // immortal herbivores
-  REQUIRE(hft.is_valid(params));
+  REQUIRE(hft.is_valid(*params));
 
   // prepare creating object
-  CreateHerbivoreCohort create_cohort(&hft, &params);
+  CreateHerbivoreCohort create_cohort(&hft, params);
 
   // create cohort population
   CohortPopulation pop(create_cohort);

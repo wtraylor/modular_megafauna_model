@@ -17,7 +17,8 @@ class CreateHerbivoreIndividual : public CreateHerbivoreCommon {
  public:
   /// Constructor
   /** \copydoc CreateHerbivoreCommon::CreateHerbivoreCommon() */
-  CreateHerbivoreIndividual(const Hft* hft, const Parameters* parameters)
+  CreateHerbivoreIndividual(const Hft* hft,
+                            const std::shared_ptr<const Parameters> parameters)
       : CreateHerbivoreCommon(hft, parameters) {}
 
   /// Habitat area size [km²].
