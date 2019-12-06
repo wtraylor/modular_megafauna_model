@@ -36,14 +36,8 @@ PopulationInterface* WorldConstructor::create_population(
   if (get_params().herbivore_type == HerbivoreType::Cohort) {
     return new CohortPopulation(CreateHerbivoreCohort(phft, params));
   } else if (get_params().herbivore_type == HerbivoreType::Individual) {
-    const double AREA = 1.0;  // TODO THis is only a test
     return new IndividualPopulation(
         CreateHerbivoreIndividual(phft, params));
-    // TODO Where does the area size come from??
-    // -> from Habitat (then merge() doesn’t work anymore)
-    // -> from Parameters (then CreateHerbivoreIndividual
-    //    can read it directly + new validity checks)
-    // -> calculated by framework() ?
   } else
     throw std::logic_error(
         "WorldConstructor::create_population(): unknown herbivore type");
