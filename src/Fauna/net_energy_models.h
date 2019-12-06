@@ -7,9 +7,7 @@
 #ifndef FAUNA_NET_ENERGY_MODELS_H
 #define FAUNA_NET_ENERGY_MODELS_H
 
-#include "forage_types.h"
 #include "forage_values.h"
-#include "hft.h"
 
 namespace Fauna {
 

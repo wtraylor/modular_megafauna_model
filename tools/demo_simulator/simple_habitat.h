@@ -13,9 +13,6 @@
 using namespace Fauna;
 
 namespace Fauna {
-// Forward Declarations
-class SimulationUnit;
-
 namespace Demo {
 
 /// A herbivore habitat independent of the LPJ-GUESS framework for testing.
