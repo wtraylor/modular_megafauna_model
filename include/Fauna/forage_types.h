@@ -18,18 +18,19 @@ enum class ForageType {
   /// Forage type grass.
   Grass,
   /// Plants that are not edible for herbivores.
-  Inedible
+  Inedible  // KEEP THIS THE LAST ELEMENT!!
 };
 
-/// Set with all enum entries of \ref ForageType.
+/// Number of elements in \ref ForageType.
+const int FORAGE_TYPE_COUNT = (int)ForageType::Inedible + 1;
+
+/// Set with all enum entries of \ref ForageType except
+/// \ref ForageType::Inedible.
 /**
  * This set serves mainly the purpose to iterate easily over
  * all forage types:
  * \code
- * for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
- *      ft != FORAGE_TYPES.end(); ft++)
- * {
- *   const ForageType forage_type = *ft;
+ * for (const auto& forage_type : FORAGE_TYPES) {
  *   \/\/Do your calculations
  * }
  * \endcode

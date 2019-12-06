@@ -16,11 +16,7 @@ void DistributeForageEqually::operator()(
 
   // BUILD SUM OF ALL DEMANDED FORAGE
   ForageMass demand_sum;
-  // iterate through all herbivores
-  for (ForageDistribution::iterator itr = forage_distribution.begin();
-       itr != forage_distribution.end(); itr++) {
-    demand_sum += itr->second;
-  }
+  for (const auto& pair : forage_distribution) demand_sum += pair.second;
 
   // Only distribute a little less than `available` in order
   // to mitigate precision errors.
@@ -32,22 +28,16 @@ void DistributeForageEqually::operator()(
 
   // MAKE EQUAL PORTIONS
   // iterate through all herbivores
-  for (ForageDistribution::iterator itr = forage_distribution.begin();
-       itr != forage_distribution.end(); itr++) {
-    assert(itr->first != NULL);
-    const HerbivoreInterface& herbivore = *(itr->first);
-    const ForageMass& demand = itr->second;  // input
-    ForageMass& portion = itr->second;       // output
+  for (auto& pair : forage_distribution) {
+    assert(pair.first != NULL);
+    const HerbivoreInterface& herbivore = *(pair.first);
+    const ForageMass& demand = pair.second;  // input
+    ForageMass& portion = pair.second;       // output
 
     // calculate the right portion for each forage type
-    for (ForageMass::const_iterator itr_ft = demand.begin();
-         itr_ft != demand.end(); itr_ft++) {
-      const ForageType ft = itr_ft->first;
-
+    for (const auto ft : FORAGE_TYPES) {
       if (demand_sum[ft] != 0.0)
         portion.set(ft, avail_mass[ft] * demand[ft] / demand_sum[ft]);
     }
   }
 }
-
-

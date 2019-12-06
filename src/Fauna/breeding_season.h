@@ -31,6 +31,11 @@ class BreedingSeason {
   /// Convert an annual reproduction rate to a daily one in season.
   double annual_to_daily_rate(const double annual) const;
 
+  /// Whether all member variables are the same in the other object.
+  bool operator==(const BreedingSeason& other) const {
+    return start == other.start && length == other.length;
+  }
+
  private:
   int start;   // day of year (0=Jan 1st)
   int length;  // number of days

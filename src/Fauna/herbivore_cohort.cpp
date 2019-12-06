@@ -10,10 +10,11 @@
 
 using namespace Fauna;
 
-HerbivoreCohort::HerbivoreCohort(const int age_days,
-                                 const double body_condition, const Hft* hft,
-                                 const Sex sex, const double ind_per_km2)
-    : HerbivoreBase(age_days, body_condition, hft, sex),
+HerbivoreCohort::HerbivoreCohort(
+    const int age_days, const double body_condition, const Hft* hft,
+    const Sex sex, const double ind_per_km2,
+    const ForageEnergyContent& metabolizable_energy)
+    : HerbivoreBase(age_days, body_condition, hft, sex, metabolizable_energy),
       ind_per_km2(ind_per_km2) {
   if (ind_per_km2 < 0.0)
     throw std::invalid_argument(
@@ -21,23 +22,14 @@ HerbivoreCohort::HerbivoreCohort(const int age_days,
         "ind_per_km2 <0.0");
 }
 
-HerbivoreCohort::HerbivoreCohort(const Hft* hft, const Sex sex,
-                                 const double ind_per_km2)
-    : HerbivoreBase(hft, sex),  // parent establishment constructor
-      ind_per_km2(ind_per_km2) {
+HerbivoreCohort::HerbivoreCohort(
+    const Hft* hft, const Sex sex, const double ind_per_km2,
+    const ForageEnergyContent& metabolizable_energy)
+    : HerbivoreBase(hft, sex, metabolizable_energy), ind_per_km2(ind_per_km2) {
   if (ind_per_km2 < 0.0)
     throw std::invalid_argument(
         "Fauna::HerbivoreIndividual::HerbivoreIndividual() "
         "ind_per_km2 <0.0");
-}
-
-HerbivoreCohort::HerbivoreCohort(const HerbivoreCohort& other)
-    : HerbivoreBase(other), ind_per_km2(other.ind_per_km2) {}
-
-HerbivoreCohort& HerbivoreCohort::operator=(const HerbivoreCohort& other) {
-  HerbivoreBase::operator=(other);
-  ind_per_km2 = other.ind_per_km2;
-  return *this;
 }
 
 void HerbivoreCohort::apply_mortality(const double mortality) {
@@ -60,14 +52,11 @@ void HerbivoreCohort::merge(HerbivoreCohort& other) {
     throw std::invalid_argument(
         "Fauna::HerbivoreCohort::merge() "
         "The other cohort is not the same age.");
-  if (this->get_sex() != other.get_sex())
+  if (!constant_members_match(other))
     throw std::invalid_argument(
         "Fauna::HerbivoreCohort::merge() "
-        "The other cohort is not the same sex.");
-  if (this->get_hft() != other.get_hft())
-    throw std::invalid_argument(
-        "Fauna::HerbivoreCohort::merge() "
-        "The other cohort is not the same HFT.");
+        "The constant member variables of the other cohort don’t all "
+        "match the ones from this cohort.");
 
   // Merge energy budget
   this->get_energy_budget().merge(other.get_energy_budget(),

@@ -7,6 +7,7 @@
 #ifndef TESTS_DUMMY_HERBIVORE_BASE_H
 #define TESTS_DUMMY_HERBIVORE_BASE_H
 #include "herbivore_base.h"
+#include "parameters.h"
 
 namespace Fauna {
 /// Dummy class to test \ref HerbivoreBase
@@ -19,11 +20,14 @@ class HerbivoreBaseDummy : public HerbivoreBase {
   /// Establishment Constructor
   HerbivoreBaseDummy(const int age_days, const double body_condition,
                      const Hft* hft, const Sex sex)
-      : HerbivoreBase(age_days, body_condition, hft, sex), ind_per_km2(1.0) {}
+      : HerbivoreBase(age_days, body_condition, hft, sex,
+                      Parameters().metabolizable_energy),
+        ind_per_km2(1.0) {}
 
   /// Birth Constructor
   HerbivoreBaseDummy(const Hft* hft, const Sex sex)
-      : HerbivoreBase(hft, sex), ind_per_km2(1.0) {}
+      : HerbivoreBase(hft, sex, Parameters().metabolizable_energy),
+        ind_per_km2(1.0) {}
 
   HerbivoreBaseDummy(const HerbivoreBaseDummy& other)
       : HerbivoreBase(other), ind_per_km2(other.ind_per_km2) {}
@@ -43,4 +47,4 @@ class HerbivoreBaseDummy : public HerbivoreBase {
 };
 }  // namespace Fauna
 
-#endif // TESTS_DUMMY_HERBIVORE_BASE_H
+#endif  // TESTS_DUMMY_HERBIVORE_BASE_H

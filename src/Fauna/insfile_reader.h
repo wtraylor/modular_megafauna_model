@@ -21,6 +21,22 @@ struct InsfileContent {
   Parameters params;
 };
 
+/// Exception that an array parameter does not have the correct length.
+class bad_array_size : public std::runtime_error {
+ public:
+  /// Constructor
+  /**
+   * \param key The fully qualified TOML key.
+   * \param given_size The number of elements found in the TOML file.
+   * \param expected_size The required size of the array.
+   */
+  bad_array_size(const std::string& key, const unsigned int given_size,
+                 const std::string& expected_size)
+      : std::runtime_error("Array parameter '" + key + "' has " +
+                           std::to_string(given_size) + "'elements," +
+                           " but required are: " + expected_size){};
+};
+
 /// Exception that a string parameter does not match possible options.
 class invalid_option : public std::runtime_error {
  public:
@@ -88,6 +104,32 @@ struct missing_group : public std::runtime_error {
                            "\". " + "Required by HFT \"" + hft_name + "\"."){};
 };
 
+/// Exception if an integer or double parameter is out of range.
+/**
+ * Usually the functions \ref Hft::is_valid() and \ref
+ * Parameters::is_valid() are responsible for checking the bounds of a
+ * parameter. Use this exception only if the data type of the \ref Hft
+ * or \ref Parameters member variable does not allow being assigned the
+ * user-specified value.
+ */
+struct param_out_of_range : public std::runtime_error {
+  /// Constructor for a double value.
+  /**
+   * \param key The fully qualified TOML key.
+   * \param value The given (invalid) value. Use `std::to_string()` to convert
+   * from double or integer to string. \param allowed_interval The permitted
+   * range of the parameter in mathematical notation. For example [0,1) allows
+   * values between zero and one, including zero, but excluding one. Use the
+   * infinity symbol, ∞, for intervals not bound on one side.
+   */
+  param_out_of_range(const std::string& key, const std::string& value,
+                     const std::string& allowed_interval)
+      : std::runtime_error("The parameter \"" + key + "\" " +
+                           "is out of range. The specified value is " + value +
+                           ", which lies outside of the interval " +
+                           allowed_interval + "."){};
+};
+
 /// Class to read parameters and HFTs from given instruction file.
 class InsfileReader {
  public:
@@ -120,7 +162,7 @@ class InsfileReader {
    * If the key is not defined in the HFT itself, the groups are checked in the
    * order they are defined until the value is found.
    * \param hft_table The TOML table of the HFT itself.
-   * \param key The string identifier of the parameter, e.g. "digestion.type".
+   * \param key The string identifier of the parameter, e.g. "digestion.limit".
    * \param mandatory Whether to throw \ref missing_parameter if the value
    * couldn’t be found.
    * \return A pointer to the value. If the value wasn’t found and is not

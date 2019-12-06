@@ -39,17 +39,16 @@ TEST_CASE("Fauna::Demo::SimpleHabitat", "") {
       const ForageMass eaten = avail.get_mass() * 0.5;
       habitat.remove_eaten_forage(eaten);
       // check each forage type with Approx()
-      for (ForageMass::const_iterator i = eaten.begin(); i != eaten.end(); i++)
-        CHECK(habitat.get_available_forage().get_mass()[i->first] ==
-              Approx(avail.get_mass()[i->first] - i->second));
+      for (const auto ft : FORAGE_TYPES)
+        CHECK(habitat.get_available_forage().get_mass()[ft] ==
+              Approx(avail.get_mass()[ft] - eaten[ft]));
     }
 
     SECTION("Remove all forage") {
       const ForageMass eaten = avail.get_mass();
       habitat.remove_eaten_forage(eaten);
-      for (ForageMass::const_iterator i = eaten.begin(); i != eaten.end(); i++)
-        CHECK(habitat.get_available_forage().get_mass()[i->first] ==
-              Approx(0.0));
+      for (const auto ft : FORAGE_TYPES)
+        CHECK(habitat.get_available_forage().get_mass()[ft] == Approx(0.0));
     }
 
     SECTION("Remove more forage than is available") {

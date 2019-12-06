@@ -12,10 +12,11 @@ class Hft;
 class Parameters;
 enum class Sex;
 
-/// Parent class for \ref CreateHerbivoreIndividual and \ref
-/// CreateHerbivoreCohort
-/** This parent class simply provides some common functionality
- * common to both child classes.
+/// Parent class for \ref CreateHerbivoreIndividual and
+/// \ref  CreateHerbivoreCohort
+/**
+ * This parent class simply provides some common functionality common to both
+ * child classes.
  */
 class CreateHerbivoreCommon {
  public:

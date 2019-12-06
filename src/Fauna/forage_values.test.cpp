@@ -21,9 +21,7 @@ TEST_CASE("Fauna::ForageValues", "") {
     // zero initialization
     ForageValues<ForageValueTag::PositiveAndZero> fv;
     CHECK(fv.sum() == Approx(0.0));
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      CHECK(fv[*ft] == 0.0);
+    for (const auto ft : FORAGE_TYPES) CHECK(fv[ft] == 0.0);
 
     // exceptions
     CHECK_THROWS(fv.get(ForageType::Inedible));
@@ -88,9 +86,8 @@ TEST_CASE("Fauna::ForageValues", "") {
     const double W1 = 12.0;
     const double W2 = 23.0;
     a.merge(b, W1, W2);
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      CHECK(a[*ft] == Approx((V1 * W1 + V2 * W2) / (W2 + W1)));
+    for (const auto ft : FORAGE_TYPES)
+      CHECK(a[ft] == Approx((V1 * W1 + V2 * W2) / (W2 + W1)));
   }
 
   SECTION("Merging: zero to one") {
@@ -101,9 +98,8 @@ TEST_CASE("Fauna::ForageValues", "") {
     const double W1 = 12.0;
     const double W2 = 23.0;
     a.merge(b, W1, W2);
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      CHECK(a[*ft] == Approx((V1 * W1 + V2 * W2) / (W2 + W1)));
+    for (const auto ft : FORAGE_TYPES)
+      CHECK(a[ft] == Approx((V1 * W1 + V2 * W2) / (W2 + W1)));
   }
 
   SECTION("Minimums") {
@@ -120,16 +116,12 @@ TEST_CASE("Fauna::ForageValues", "") {
   SECTION("operator*(ForageFraction, double)") {
     ForageFraction ff;
     double i = 1.0;
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      ff.set(*ft, 1.0 / ++i);
+    for (const auto ft : FORAGE_TYPES) ff.set(ft, 1.0 / ++i);
 
     double d = 123.4;
     const ForageValues<ForageValueTag::PositiveAndZero> result = d * ff;
 
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      CHECK(result[*ft] == ff[*ft] * d);
+    for (const auto ft : FORAGE_TYPES) CHECK(result[ft] == ff[ft] * d);
   }
 
   SECTION(
@@ -137,20 +129,14 @@ TEST_CASE("Fauna::ForageValues", "") {
       "ForageValues<ForageValueTag::PositiveAndZero>") {
     ForageFraction ff;
     double i = 1.0;
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      ff.set(*ft, 1.0 / ++i);
+    for (const auto ft : FORAGE_TYPES) ff.set(ft, 1.0 / ++i);
 
     ForageValues<ForageValueTag::PositiveAndZero> fv;
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      fv.set(*ft, ++i);
+    for (const auto ft : FORAGE_TYPES) fv.set(ft, ++i);
 
     const ForageValues<ForageValueTag::PositiveAndZero> result = ff * fv;
 
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      CHECK(result[*ft] == ff[*ft] * fv[*ft]);
+    for (const auto ft : FORAGE_TYPES) CHECK(result[ft] == ff[ft] * fv[ft]);
   }
 
   SECTION("foragevalues_to_foragefractions()") {
@@ -162,13 +148,10 @@ TEST_CASE("Fauna::ForageValues", "") {
     SECTION("All numbers below 1.0") {
       double i = 1;
       // create some numbers between 0 and 1
-      for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-           ft != FORAGE_TYPES.end(); ft++)
-        fv.set(*ft, 1.0 / (++i));
+      for (const auto ft : FORAGE_TYPES) fv.set(ft, 1.0 / (++i));
       const ForageFraction ff = foragevalues_to_foragefractions(fv, 0.0);
 
-      for (ForageFraction::const_iterator i = ff.begin(); i != ff.end(); i++)
-        CHECK(i->second == fv[i->first]);
+      for (const auto ft : FORAGE_TYPES) CHECK(ff[ft] == fv[ft]);
     }
 
     SECTION("Numbers with tolerance") {
@@ -190,32 +173,23 @@ TEST_CASE("Fauna::ForageValues", "") {
     ForageFraction ff;
     double i = 1;
     // create some numbers between 0 and 1
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      ff.set(*ft, 1.0 / (++i));
+    for (const auto ft : FORAGE_TYPES) ff.set(ft, 1.0 / (++i));
 
     const ForageValues<ForageValueTag::PositiveAndZero> fv =
         foragefractions_to_foragevalues(ff);
 
-    for (ForageValues<ForageValueTag::PositiveAndZero>::const_iterator i =
-             fv.begin();
-         i != fv.end(); i++)
-      CHECK(i->second == ff[i->first]);
+    for (const auto ft : FORAGE_TYPES) CHECK(fv[ft] == ff[ft]);
   }
 
   SECTION("convert_mj_to_kg_proportionally()") {
     // set some arbitrary energy content
     double i = 31.0;
     ForageEnergyContent energy_content;
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      energy_content.set(*ft, i++);
+    for (const auto ft : FORAGE_TYPES) energy_content.set(ft, i++);
 
     // set some arbitrary proportions
     ForageFraction prop_mj;  // energy proportions
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      prop_mj.set(*ft, 1.0 / (++i));
+    for (const auto ft : FORAGE_TYPES) prop_mj.set(ft, 1.0 / (++i));
 
     // calculate mass proportions
     const ForageFraction prop_kg =
@@ -231,8 +205,7 @@ TEST_CASE("Fauna::ForageValues", "") {
 
     // The relation between each energy component towards the total
     // energy must stay the same.
-    for (std::set<ForageType>::const_iterator ft = FORAGE_TYPES.begin();
-         ft != FORAGE_TYPES.end(); ft++)
-      CHECK(mj[*ft] / mj.sum() == Approx(prop_mj[*ft] / prop_mj.sum()));
+    for (const auto ft : FORAGE_TYPES)
+      CHECK(mj[ft] / mj.sum() == Approx(prop_mj[ft] / prop_mj.sum()));
   }
 }

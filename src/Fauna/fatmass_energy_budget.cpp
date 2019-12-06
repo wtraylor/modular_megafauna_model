@@ -10,28 +10,38 @@
 
 using namespace Fauna;
 
-// Definition of static constants.
-const double FatmassEnergyBudget::FACTOR_ANABOLISM = 54.6;   // [MJ/kg]
-const double FatmassEnergyBudget::FACTOR_CATABOLISM = 39.3;  // [MJ/kg]
-
 FatmassEnergyBudget::FatmassEnergyBudget(const double initial_fatmass,
-                                         const double maximum_fatmass)
-    : energy_needs(0.0),
+                                         const double maximum_fatmass,
+                                         const double anabolism_coefficient,
+                                         const double catabolism_coefficient)
+    : anabolism_coefficient(anabolism_coefficient),
+      catabolism_coefficient(catabolism_coefficient),
       fatmass(initial_fatmass),
-      max_fatmass(maximum_fatmass),
-      max_fatmass_gain(0.0) {
+      max_fatmass(maximum_fatmass) {
+  if (anabolism_coefficient <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
+        "anabolism_coefficient <= 0.0");
+  if (catabolism_coefficient <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
+        "catabolism_coefficient <= 0.0");
+  if (catabolism_coefficient >= anabolism_coefficient)
+    throw std::logic_error(
+        "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
+        "catabolism_coefficient >= anabolism_coefficient");
   if (initial_fatmass < 0.0)
     throw std::invalid_argument(
         "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
         "initial_fatmass < 0.0");
+  if (initial_fatmass > maximum_fatmass)
+    throw std::logic_error(
+        "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
+        "initial_fatmass > maximum_fatmass");
   if (maximum_fatmass <= 0.0)
     throw std::invalid_argument(
         "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
         "maximum_fatmass <= 0.0");
-  if (initial_fatmass > maximum_fatmass)
-    throw std::invalid_argument(
-        "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
-        "initial_fatmass > maximum_fatmass");
 }
 
 void FatmassEnergyBudget::add_energy_needs(const double energy) {
@@ -48,7 +58,7 @@ void FatmassEnergyBudget::catabolize_fat() {
   if (energy_needs == 0.0) return;
 
   // fat mass [kg] to burn in order to meet energy needs
-  const double burned_fatmass = energy_needs / FACTOR_CATABOLISM;
+  const double burned_fatmass = energy_needs / catabolism_coefficient;
 
   /// Fat mass never drops below zero.
   fatmass = std::max(0.0, fatmass - burned_fatmass);
@@ -75,7 +85,7 @@ double FatmassEnergyBudget::get_max_anabolism_per_day() const {
   if (max_fatmass_gain != 0.0)
     increment = std::min(max_fatmass_gain, increment);
 
-  return increment * FACTOR_ANABOLISM;
+  return increment * anabolism_coefficient;
 }
 
 void FatmassEnergyBudget::merge(const FatmassEnergyBudget& other,
@@ -106,7 +116,7 @@ void FatmassEnergyBudget::metabolize_energy(double energy) {
     energy_needs = 0.0;
 
     // store surplus as fat (anabolism) [kg/ind]
-    const double fatmass_gain = energy / FACTOR_ANABOLISM;
+    const double fatmass_gain = energy / anabolism_coefficient;
 
     // Check if fat mass gain is too high, but allow for some rounding
     // errors.

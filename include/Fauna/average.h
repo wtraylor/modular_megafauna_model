@@ -7,7 +7,7 @@
 #ifndef FAUNA_AVERAGE_H
 #define FAUNA_AVERAGE_H
 
-#include <deque>
+#include <vector>
 
 namespace Fauna {
 
@@ -23,7 +23,6 @@ namespace Fauna {
  */
 double average(const double a, const double b, const double weight_a = 1.0,
                const double weight_b = 1.0);
-
 
 /// Average of a `double` value over a given time period.
 /**
@@ -57,8 +56,9 @@ class PeriodAverage {
   double get_average() const;
 
  private:
-  std::deque<double> deque;
-  int count;  // const
+  std::vector<double> values;
+  unsigned int count;  // constant
+  unsigned int current_index = 0;
 };
 
 }  // namespace Fauna

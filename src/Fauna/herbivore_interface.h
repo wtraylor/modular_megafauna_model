@@ -30,9 +30,8 @@ class HabitatEnvironment;
  * \see \ref sec_design_the_herbivore
  */
 struct HerbivoreInterface {
-  /// Virtual Destructor
-  /** Destructor must be virtual in an interface. */
-  virtual ~HerbivoreInterface() {}
+  /// Virtual destructor, which will be called by derived classes.
+  virtual ~HerbivoreInterface() = default;
 
   /// Feed the herbivore dry matter forage.
   /**

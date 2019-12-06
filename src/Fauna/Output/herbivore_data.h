@@ -16,33 +16,16 @@ namespace Output {
 /// Herbivore output data for one time unit.
 /** \see \ref sec_design_output_classes */
 struct HerbivoreData {
-  /// Constructor, initializing with zero values.
-  HerbivoreData()
-      : age_years(0.0),
-        bodyfat(0.0),
-        bound_nitrogen(0.0),
-        eaten_forage_per_ind(0.0),
-        eaten_forage_per_mass(0.0),
-        eaten_nitrogen_per_ind(0.0),
-        energy_content(0.0),
-        energy_intake_per_ind(0.0),
-        energy_intake_per_mass(0.0),
-        expenditure(0.0),
-        inddens(0.0),
-        massdens(0.0),
-        offspring(0.0) {}
-
-  //------------------------------------------------------------
   /** @{ \name Per-individual variables */
 
   /// Age in years.
-  double age_years;
+  double age_years = 0.0;
 
   /// Body fat [fraction].
-  double bodyfat;
+  double bodyfat = 0.0;
 
   /// Energy expenditure [MJ/ind/day].
-  double expenditure;
+  double expenditure = 0.0;
 
   /** @} */  // Per-Individual variables
 
@@ -50,37 +33,37 @@ struct HerbivoreData {
   /** @{ \name Per-habitat variables */
 
   /// Pool of nitrogen bound in the herbivores [kgN/km²]
-  double bound_nitrogen;
+  double bound_nitrogen = 0.0;
 
   /// Individual density [ind/km²].
-  double inddens;
+  double inddens = 0.0;
 
   /// Mass density [kg/km²].
-  double massdens;
+  double massdens = 0.0;
 
   /// Daily mortality rate [ind/ind/day].
   std::map<Fauna::MortalityFactor, double> mortality;
 
   /// Newborns (offspring) per day [ind/km²/day].
-  double offspring;
+  double offspring = 0.0;
 
   /// Eaten forage per individual [kgDM/ind/day].
-  Fauna::ForageMass eaten_forage_per_ind;
+  Fauna::ForageMass eaten_forage_per_ind = 0.0;
 
   /// Eaten forage per body mass [kgDM/kg/day].
-  Fauna::ForageMass eaten_forage_per_mass;
+  Fauna::ForageMass eaten_forage_per_mass = 0.0;
 
   /// Ingested nitrogen mass per individual and day [kgN/ind/day].
-  double eaten_nitrogen_per_ind;
+  double eaten_nitrogen_per_ind = 0.0;
 
   /// Net energy content of available forage [MJ/kgDM].
-  Fauna::ForageEnergyContent energy_content;
+  Fauna::ForageEnergyContent energy_content = 0.0;
 
   /// Intake of net energy in forage per individual [MJ/ind/day]
-  Fauna::ForageEnergy energy_intake_per_ind;
+  Fauna::ForageEnergy energy_intake_per_ind = 0.0;
 
   /// Intake of net energy in forage per herbivore mass [MJ/kg/day]
-  Fauna::ForageEnergy energy_intake_per_mass;
+  Fauna::ForageEnergy energy_intake_per_mass = 0.0;
 
   /** @} */  // Per-habitat variables
 
@@ -109,10 +92,21 @@ struct HerbivoreData {
   HerbivoreData& merge(const HerbivoreData& other, const double this_weight,
                        const double other_weight);
 
-  /// Reset to initial values.
+  /// Reset all member variables to initial zero values.
   void reset() {
-    // Simply call the copy assignment operator
-    this->operator=(HerbivoreData());
+    age_years = 0.0;
+    bodyfat = 0.0;
+    bound_nitrogen = 0.0;
+    eaten_forage_per_ind = 0.0;
+    eaten_forage_per_mass = 0.0;
+    eaten_nitrogen_per_ind = 0.0;
+    energy_content = 0.0;
+    energy_intake_per_ind = 0.0;
+    energy_intake_per_mass = 0.0;
+    expenditure = 0.0;
+    inddens = 0.0;
+    massdens = 0.0;
+    offspring = 0.0;
   }
 
   /// Aggregate herbivore data *within one habitat*.

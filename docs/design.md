@@ -95,7 +95,7 @@ The herbivore object is self-responsible to call the implementation of the given
 - How much the herbivore **is able to digest** is limited by a single algorithm defined in \ref Fauna::Hft::digestion_limit.
 - How much the herbivore **is able to forage** can be constrained by various factors which are defined as a set of \ref Fauna::Hft::foraging_limits.
 - The **diet composition** (i.e. feeding preferences in a scenario with multiple forage types) is controlled by a the model selected in \ref Fauna::Hft::foraging_diet_composer, whose implementation should be called in \ref Fauna::GetForageDemands::get_diet_composition().
-- How much **net energy** the herbivore is able to gain from feeding on forage is calculated by an implementation of \ref Fauna::GetNetEnergyContentInterface
+- How much **net energy** the herbivore is able to gain from feeding on forage is calculated by a selected net energy model: \ref Fauna::NetEnergyModel.
 (given by [constructor injection](\ref sec_inversion_of_control)).
 - **Death** of herbivores is controlled by a set of \ref Fauna::Hft::mortality_factors.
 For a cohort that means that the density is proportionally reduced.

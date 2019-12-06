@@ -7,8 +7,8 @@
 #ifndef FAUNA_OUTPUT_HABITAT_DATA_H
 #define FAUNA_OUTPUT_HABITAT_DATA_H
 
-#include "Fauna/habitat_forage.h"
 #include "Fauna/environment.h"
+#include "Fauna/habitat_forage.h"
 
 namespace Fauna {
 namespace Output {
@@ -17,12 +17,6 @@ namespace Output {
  * \see \ref sec_design_output_classes
  */
 struct HabitatData {
-  /// Constructor, initializing with zero values.
-  HabitatData()
-      : available_forage(),  // already zeros by default.
-        eaten_forage()       // already zeros by default.
-  {}
-
   /// Available forage in the habitat.
   Fauna::HabitatForage available_forage;
 
@@ -53,15 +47,16 @@ struct HabitatData {
   HabitatData& merge(const HabitatData& other, const double this_weight,
                      const double other_weight);
 
-  /// Reset to initial values.
+  /// Reset member variables to initial values.
   void reset() {
-    // Simply call the copy assignment operator
-    this->operator=(HabitatData());
+    available_forage = Fauna::HabitatForage();
+    eaten_forage = 0.0;
+    environment = Fauna::HabitatEnvironment();
   }
   /** @} */  // Aggregation Functionality
 };
 
-} // namespace Fauna
-} // namespace Fauna::Out
+}  // namespace Output
+}  // namespace Fauna
 
-#endif // FAUNA_OUTPUT_HABITAT_DATA_H
+#endif  // FAUNA_OUTPUT_HABITAT_DATA_H

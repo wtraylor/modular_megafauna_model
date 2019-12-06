@@ -7,6 +7,7 @@
 #include "insfile_reader.h"
 #include <algorithm>
 #include <string>
+#include "forage_types.h"
 #include "hft.h"
 
 using namespace Fauna;
@@ -180,6 +181,20 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto value =
+        find_hft_parameter<double>(table, "digestion.efficiency", true);
+    assert(value);
+    hft.digestion_efficiency = *value;
+  }
+  {
+    const auto value =
+        find_hft_array_parameter<double>(table, "digestion.i_g_1992_ijk", true);
+    assert(value);
+    if (value->size() != 3)
+      throw bad_array_size("hf.digestion.i_g_1992_ijk", value->size(), "3");
+    for (int i = 0; i < 3; i++) hft.digestion_i_g_1992_ijk[i] = (*value)[i];
+  }
+  {
+    const auto value =
         find_hft_parameter<std::string>(table, "digestion.limit", true);
     assert(value);
     if (lowercase(*value) == lowercase("None"))
@@ -194,18 +209,6 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
       throw invalid_option(
           hft, "digestion.limit", *value,
           {"None", "Allometric", "FixedFraction", "IlliusGordon1992"});
-  }
-  {
-    const auto value =
-        find_hft_parameter<std::string>(table, "digestion.type", true);
-    assert(value);
-    if (lowercase(*value) == lowercase("Hindgut"))
-      hft.digestion_type = DigestionType::Hindgut;
-    else if (lowercase(*value) == lowercase("Ruminant"))
-      hft.digestion_type = DigestionType::Ruminant;
-    else
-      throw invalid_option(hft, "digestion.type", *value,
-                           {"Hindgut", "Ruminant"});
   }
   {
     const auto value =
@@ -257,17 +260,17 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto value = find_hft_parameter<std::string>(
-        table, "foraging.net_energy_model", true);
+        table, "digestion.net_energy_model", true);
     assert(value);
     if (lowercase(*value) == lowercase("Default"))
-      hft.foraging_net_energy_model = NetEnergyModel::Default;
+      hft.digestion_net_energy_model = NetEnergyModel::Default;
     else
-      throw invalid_option(hft, "foraging.net_energy_model", *value,
+      throw invalid_option(hft, "digestion.net_energy_model", *value,
                            {"Default"});
   }
   {
     const auto array = find_hft_array_parameter<std::string>(
-        table, "hft.mortality.factors", false);
+        table, "mortality.factors", false);
     hft.mortality_factors = {};
     if (array) {
       for (const auto& i : *array)
@@ -282,7 +285,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
           hft.mortality_factors.insert(MortalityFactor::StarvationThreshold);
         else
           throw invalid_option(
-              hft, "hft.mortality.factors", i,
+              hft, "mortality.factors", i,
               {"Background", "Lifespan", "StarvationIlliusOConnor2000",
                "StarvationThreshold"});
     }
@@ -297,14 +300,14 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
       hft.life_history_physical_maturity_male = 1;
     } else if (lowercase(*value) == lowercase("ConstantMaximum"))
       hft.reproduction_model = ReproductionModel::ConstantMaximum;
-    else if (lowercase(*value) == lowercase("IlliusOConnor2000"))
-      hft.reproduction_model = ReproductionModel::IlliusOConnor2000;
+    else if (lowercase(*value) == lowercase("Logistic"))
+      hft.reproduction_model = ReproductionModel::Logistic;
     else if (lowercase(*value) == lowercase("Linear"))
       hft.reproduction_model = ReproductionModel::Linear;
     else
       throw invalid_option(
           hft, "reproduction.model", *value,
-          {"None", "ConstantMaximum", "IlliusOConnor2000", "Linear"});
+          {"None", "ConstantMaximum", "Logistic", "Linear"});
   }
 
   // ======== NON-MANDATORY PARAMETERS =======
@@ -464,7 +467,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
 
   if (hft.reproduction_model == ReproductionModel::ConstantMaximum ||
-      hft.reproduction_model == ReproductionModel::IlliusOConnor2000 ||
+      hft.reproduction_model == ReproductionModel::Logistic ||
       hft.reproduction_model == ReproductionModel::Linear) {
     const auto value =
         find_hft_parameter<double>(table, "reproduction.annual_maximum", true);
@@ -477,6 +480,19 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         find_hft_parameter<int>(table, "reproduction.gestation_length", true);
     assert(value);
     hft.reproduction_gestation_length = *value;
+  }
+
+  if (hft.reproduction_model == ReproductionModel::Logistic) {
+    // growth_rate
+    const auto growth_rate = find_hft_parameter<double>(
+        table, "reproduction.logistic.growth_rate", true);
+    assert(growth_rate);
+    hft.reproduction_logistic[0] = *growth_rate;
+    // midpoint
+    const auto midpoint = find_hft_parameter<double>(
+        table, "reproduction.logistic.midpoint", true);
+    assert(midpoint);
+    hft.reproduction_logistic[1] = *midpoint;
   }
 
   if (hft.expenditure_components.count(
@@ -608,6 +624,15 @@ void InsfileReader::read_table_simulation() {
         throw invalid_option(key, *value, {"Cohort", "Individual"});
     } else
       throw missing_parameter(key);
+  }
+  for (const auto& ft : Fauna::FORAGE_TYPES) {
+    const auto key =
+        "simulation.metabolizable_energy." + get_forage_type_name(ft);
+    auto value = ins->get_qualified_as<double>(key);
+    if (!value) throw missing_parameter(key);
+    if (*value < 0)
+      throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
+    params.metabolizable_energy[ft] = *value;
   }
   {
     const auto key = "simulation.one_hft_per_habitat";

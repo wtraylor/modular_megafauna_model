@@ -41,7 +41,7 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
   for (auto& h : pops.get_all_herbivores()) {
     // create with zero demands
     static const ForageMass ZERO_DEMAND;
-    demands[h] = ZERO_DEMAND;
+    demands.emplace_back(h, ZERO_DEMAND);
   }
 
   // PREPARE AVAILABLE FORAGE

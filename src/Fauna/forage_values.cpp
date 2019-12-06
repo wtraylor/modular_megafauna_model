@@ -11,9 +11,7 @@ using namespace Fauna;
 ForageValues<ForageValueTag::PositiveAndZero>
 Fauna::foragefractions_to_foragevalues(const ForageFraction& fractions) {
   ForageValues<ForageValueTag::PositiveAndZero> result;
-  for (ForageFraction::const_iterator i = fractions.begin();
-       i != fractions.end(); i++)
-    result.set(i->first, i->second);
+  for (const auto ft : FORAGE_TYPES) result.set(ft, fractions[ft]);
   return result;
 }
 
@@ -26,9 +24,8 @@ ForageFraction Fauna::foragevalues_to_foragefractions(
         "Parameter `tolerance` is negative.");
 
   ForageFraction result;
-  for (ForageFraction::const_iterator i = values.begin(); i != values.end();
-       i++) {
-    double v = i->second;
+  for (const auto ft : FORAGE_TYPES) {
+    double v = values[ft];
     if (v > 1.0) {
       if (v <= 1.0 + tolerance)
         v = 1.0;
@@ -38,8 +35,7 @@ ForageFraction Fauna::foragevalues_to_foragefractions(
             "One forage value exceeds 1.0 and cannot be converted to "
             "a fraction.");
     }
-
-    result.set(i->first, v);
+    result.set(ft, v);
   }
   return result;
 }

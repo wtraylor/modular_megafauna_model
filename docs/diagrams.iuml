@@ -143,8 +143,8 @@
     enum ReproductionModel{
       None
       ConstantMaximum
-      IlliusOConnor2000
       Linear
+      Logistic
     }
   }
   HerbivoreBase .up.> "1" "Reproduction"
@@ -283,22 +283,6 @@ competition      -down-> ingestion
     interface PopulationInterface
     PopulationInterface <|-- NewPopulation
     NewPopulation        ..> NewHerbivore : create & manage
-  }
-@enduml
-
-@startuml (id=net_energy_content)
-  hide members
-  hide methods
-  namespace Fauna{
-    enum NetEnergyModel{
-      Default
-    }
-    show NetEnergyModel members
-    Hft *--> NetEnergyModel
-    interface GetNetEnergyContentInterface <<strategy>>
-    GetNetEnergyContentInterface <|-- GetNetEnergyContentDefault
-    abstract HerbivoreBase
-    HerbivoreBase ..> GetNetEnergyContentInterface : <<create>>
   }
 @enduml
 

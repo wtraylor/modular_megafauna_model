@@ -22,26 +22,29 @@ TEST_CASE("Fauna::HerbivoreIndividual", "") {
   const int AGE = 842;       // som arbitrary number [days]
   const double AREA = 10.0;  // [km²]
 
+  static const auto ME = Parameters().metabolizable_energy;
+
   // exceptions (only specific to HerbivoreIndividual)
   // invalid area
-  CHECK_THROWS(HerbivoreIndividual(AGE, BC, &hft, Sex::Male, -1.0));
-  CHECK_THROWS(HerbivoreIndividual(AGE, BC, &hft, Sex::Male, 0.0));
-  CHECK_THROWS(HerbivoreIndividual(&hft, Sex::Male, -1.0));
-  CHECK_THROWS(HerbivoreIndividual(&hft, Sex::Male, 0.0));
+  CHECK_THROWS(HerbivoreIndividual(AGE, BC, &hft, Sex::Male, -1.0, ME));
+  CHECK_THROWS(HerbivoreIndividual(AGE, BC, &hft, Sex::Male, 0.0, ME));
+  CHECK_THROWS(HerbivoreIndividual(&hft, Sex::Male, -1.0, ME));
+  CHECK_THROWS(HerbivoreIndividual(&hft, Sex::Male, 0.0, ME));
 
   // birth constructor
-  REQUIRE(HerbivoreIndividual(&hft, Sex::Male, AREA).get_area_km2() ==
+  REQUIRE(HerbivoreIndividual(&hft, Sex::Male, AREA, ME).get_area_km2() ==
           Approx(AREA));
   // establishment constructor
-  REQUIRE(HerbivoreIndividual(AGE, BC, &hft, Sex::Male, AREA).get_area_km2() ==
-          Approx(AREA));
+  REQUIRE(
+      HerbivoreIndividual(AGE, BC, &hft, Sex::Male, AREA, ME).get_area_km2() ==
+      Approx(AREA));
 
   SECTION("Mortality") {
     hft.mortality_factors.insert(MortalityFactor::StarvationThreshold);
 
     // create with zero fat reserves
     const double BC_DEAD = 0.0;  // body condition
-    HerbivoreIndividual ind(AGE, BC_DEAD, &hft, Sex::Male, AREA);
+    HerbivoreIndividual ind(AGE, BC_DEAD, &hft, Sex::Male, AREA, ME);
 
     // after one simulation day it should be dead
     double offspring_dump;   // ignored
@@ -52,4 +55,3 @@ TEST_CASE("Fauna::HerbivoreIndividual", "") {
   // NOTE: We cannot test mortality because it is a stochastic
   // event.
 }
-

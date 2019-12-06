@@ -24,10 +24,10 @@ namespace Fauna {
  * - k: maximum annual offspring count of one female
  * - F: current fat mass
  * - F_max: maximum fat mass
- * - b and c are parameters controlling the effect of body
- *   condition (F/F_max) on the reproductive rate and are set
- *   in Illius and O’Connor (2000) to 15 and 0.3, respectively
- *   (unfortunately without explanation).
+ * - b and c are parameters controlling the effect of body condition (F/F_max)
+ *   on the reproductive rate and are set in Illius and O’Connor (2000) to b=15
+ *   and c=0.3 (unfortunately without explanation). c is called the *midpoint*,
+ *   and b is called the *growth rate* a generalized logistic function.
  * - 50% of adults will breed when F/F_max=0.3
  * - 95% will breed when F/F_max=0.5
  *
@@ -46,9 +46,11 @@ namespace Fauna {
  * by Pachzelt et al. (2013) \cite pachzelt2013coupling and
  * Pachzelt et al. (2015) \cite pachzelt2015potential
  * \see \ref Fauna::ReproductionModel
+ * \see \ref Hft::reproduction_model
+ * \see \ref Hft::reproduction_logistic
  * \todo How does I&O determine the month?
  */
-class ReprIlliusOconnor2000 {
+class ReproductionLogistic {
  public:
   /// Constructor.
   /**
@@ -57,10 +59,18 @@ class ReprIlliusOconnor2000 {
    * average. A value of 1.0 means, a female begets one child every
    * year.
    * \param breeding_season When parturition occurs.
+   * \param growth_rate Parameter `b` in the equation, defining the slope of
+   * the sigmoid curve.
+   * \param midpoint Parameter `c` in the equation, defining the turning point
+   * (threshold) of the sigmoid curve.
    * \throw std::invalid_argument If `max_annual_increase` is negative.
+   * \throw std::invalid_argument If `midpoint` is not in interval (0,1).
+   * \throw std::invalid_argument If `growth_rate` is <=0.
    */
-  ReprIlliusOconnor2000(BreedingSeason breeding_season,
-                        const double max_annual_increase);
+  ReproductionLogistic(BreedingSeason breeding_season,
+                       const double max_annual_increase,
+                       const double growth_rate,
+                       const double midpoint);
 
   /// Get the amount of offspring for one day in the year.
   /**
@@ -78,6 +88,8 @@ class ReprIlliusOconnor2000 {
  private:
   BreedingSeason breeding_season;  // const
   double max_annual_increase;      // const
+  double growth_rate;
+  double midpoint;
 };
 
 /// Use a constant annual increase rate for herbivore reproduction.
@@ -111,8 +123,6 @@ class ReproductionConstMax {
 };
 
 /// Reproduction rate increases linearly with fat reserves up to maximum.
-/**
- */
 class ReproductionLinear {
  public:
   /// Constructor

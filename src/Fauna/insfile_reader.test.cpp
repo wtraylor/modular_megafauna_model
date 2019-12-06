@@ -20,6 +20,23 @@ TEST_CASE("Fauna::InsfileReader") {
     CHECK_THROWS(InsfileReader(""));
     CHECK_THROWS(InsfileReader("this_file_does_not_exist"));
 
-    CHECK_NOTHROW(InsfileReader(INSFILE));
+    REQUIRE_NOTHROW(InsfileReader(INSFILE));
+
+    const InsfileReader reader = InsfileReader(INSFILE);
+    SECTION("Check Parameters.is_valid()") {
+      std::string msg;
+      REQUIRE(reader.get_params().is_valid(msg));
+      INFO("Message from is_valid():\n" + msg);
+      CHECK(msg.empty());  // There should also be no warnings.
+    }
+    SECTION("Check Hft.is_valid()") {
+      std::string msg;
+      for (const auto& hft : reader.get_hfts()) {
+        INFO("HFT name: " + hft.name);
+        REQUIRE(hft.is_valid(reader.get_params(), msg));
+        INFO("Message from is_valid():\n" + msg);
+        CHECK(msg.empty());  // There should also be no warnings.
+      }
+    }
   }
 }
