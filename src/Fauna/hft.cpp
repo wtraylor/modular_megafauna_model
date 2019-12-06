@@ -333,7 +333,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       }
     }
 
-    if (reproduction_model == ReproductionModel::IlliusOConnor2000 ||
+    if (reproduction_model == ReproductionModel::Logistic ||
         reproduction_model == ReproductionModel::ConstantMaximum ||
         reproduction_model == ReproductionModel::Linear) {
       if (reproduction_annual_maximum <= 0.0) {

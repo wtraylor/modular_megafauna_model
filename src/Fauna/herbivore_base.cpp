@@ -395,12 +395,12 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
           breeding_season, get_hft().reproduction_annual_maximum);
       return const_max.get_offspring_density(get_today());
     }
-    case (ReproductionModel::IlliusOConnor2000): {
+    case (ReproductionModel::Logistic): {
       // create our model object
-      const ReprIlliusOconnor2000 illius_2000(
+      const ReproductionLogistic logistic(
           breeding_season, get_hft().reproduction_annual_maximum);
       // get today’s value
-      return illius_2000.get_offspring_density(
+      return logistic.get_offspring_density(
           get_today(), body_condition_gestation.get_average());
     }
     case (ReproductionModel::Linear): {

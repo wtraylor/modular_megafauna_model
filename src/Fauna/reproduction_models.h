@@ -48,7 +48,7 @@ namespace Fauna {
  * \see \ref Fauna::ReproductionModel
  * \todo How does I&O determine the month?
  */
-class ReprIlliusOconnor2000 {
+class ReproductionLogistic {
  public:
   /// Constructor.
   /**
@@ -59,8 +59,8 @@ class ReprIlliusOconnor2000 {
    * \param breeding_season When parturition occurs.
    * \throw std::invalid_argument If `max_annual_increase` is negative.
    */
-  ReprIlliusOconnor2000(BreedingSeason breeding_season,
-                        const double max_annual_increase);
+  ReproductionLogistic(BreedingSeason breeding_season,
+                       const double max_annual_increase);
 
   /// Get the amount of offspring for one day in the year.
   /**

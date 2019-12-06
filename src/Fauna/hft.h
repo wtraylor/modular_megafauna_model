@@ -204,10 +204,10 @@ enum class ReproductionModel {
   None,
   /// Use class \ref ReproductionConstMax for reproduction.
   ConstantMaximum,
-  /// Use class \ref ReprIlliusOconnor2000 to calculate reproduction.
-  IlliusOConnor2000,
   /// Use class \ref ReproductionLinear for reproduction.
-  Linear
+  Linear,
+  /// Use class \ref ReproductionLogistic to calculate reproduction.
+  Logistic
 };
 
 /// One herbivore functional type (i.e. one species).

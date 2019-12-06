@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Turned `Fauna::GetNetEnergyContent` interface (strategy design pattern) to a function.
 - Turned `Fauna::GetDigestiveLimitIlliusGordon1992` into the function `Fauna::get_digestive_limit_illius_gordon_1992()`.
 - Renamed TOML parameter `hft.foraging.net_energy_model` to `hft.digestion.net_energy_model`
+- Renamed `Fauna::ReproductionModel::IlliusOConnor2000` to `Logistic`.
 
 ### Fixed
 - The parameter `hft.mortality.factors` was not parsed.

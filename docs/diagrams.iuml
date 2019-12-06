@@ -143,8 +143,8 @@
     enum ReproductionModel{
       None
       ConstantMaximum
-      IlliusOConnor2000
       Linear
+      Logistic
     }
   }
   HerbivoreBase .up.> "1" "Reproduction"

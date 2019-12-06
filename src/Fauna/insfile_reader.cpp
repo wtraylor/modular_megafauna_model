@@ -301,7 +301,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     } else if (lowercase(*value) == lowercase("ConstantMaximum"))
       hft.reproduction_model = ReproductionModel::ConstantMaximum;
     else if (lowercase(*value) == lowercase("IlliusOConnor2000"))
-      hft.reproduction_model = ReproductionModel::IlliusOConnor2000;
+      hft.reproduction_model = ReproductionModel::Logistic;
     else if (lowercase(*value) == lowercase("Linear"))
       hft.reproduction_model = ReproductionModel::Linear;
     else
@@ -467,7 +467,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
 
   if (hft.reproduction_model == ReproductionModel::ConstantMaximum ||
-      hft.reproduction_model == ReproductionModel::IlliusOConnor2000 ||
+      hft.reproduction_model == ReproductionModel::Logistic ||
       hft.reproduction_model == ReproductionModel::Linear) {
     const auto value =
         find_hft_parameter<double>(table, "reproduction.annual_maximum", true);
