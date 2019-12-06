@@ -7,6 +7,7 @@
 #ifndef FAUNA_HFT_H
 #define FAUNA_HFT_H
 
+#include <array>
 #include <cmath>
 #include <set>
 #include <stdexcept>
@@ -62,15 +63,6 @@ enum class DietComposer {
   PureGrazer
 };
 
-/// Digestion type of a herbivore.
-enum class DigestionType {
-  /// Hindgut fermenter (colonic caecalid).
-  Hindgut,
-
-  /// Ruminant forgut fermenter.
-  Ruminant
-};
-
 /// Algorithm to calculate the daily digestive capacity of a herbivore.
 enum class DigestiveLimit {
   /// No digestive limit.
@@ -110,7 +102,7 @@ enum class DigestiveLimit {
    */
   FixedFraction,
 
-  /// Limit digestive limit with \ref GetDigestiveLimitIlliusGordon1992.
+  /// Limit digestive limit with \ref get_digestive_limit_illius_gordon_1992().
   IlliusGordon1992
 };
 
@@ -168,7 +160,7 @@ enum class ForagingLimit {
    * food intake rate as a Holling Type II functional response
    * (compare \ref HalfMaxIntake).
    * As the maximum daily energy intake they choose the digestive
-   * capacity (compare \ref GetDigestiveLimitIlliusGordon1992).
+   * capacity (compare \ref get_digestive_limit_illius_gordon_1992()).
    *
    * Like in the model of Pachzelt et al. (2013)
    * \cite pachzelt2013coupling, the grass forage density of the
@@ -184,7 +176,7 @@ enum class ForagingLimit {
 
 /// How forage net energy content is calculated.
 enum class NetEnergyModel {
-  /// Use \ref GetNetEnergyContentDefault
+  /// Use \ref get_net_energy_content_default()
   Default
 };
 
@@ -212,10 +204,10 @@ enum class ReproductionModel {
   None,
   /// Use class \ref ReproductionConstMax for reproduction.
   ConstantMaximum,
-  /// Use class \ref ReprIlliusOconnor2000 to calculate reproduction.
-  IlliusOConnor2000,
   /// Use class \ref ReproductionLinear for reproduction.
-  Linear
+  Linear,
+  /// Use class \ref ReproductionLogistic to calculate reproduction.
+  Logistic
 };
 
 /// One herbivore functional type (i.e. one species).
@@ -298,6 +290,48 @@ struct Hft {
   /// Parameters for \ref DigestiveLimit::Allometric
   AllometryParameters digestion_allometric = {0.05, 0.76};
 
+  /// Conversion factor from net forage energy to fat mass [MJ/kg].
+  /** The default value is from Peters (1983)\cite peters1983ecological. */
+  double digestion_anabolism_coefficient = 54.6;
+
+  /// Conversion factor from fat mass to net energy [MJ/kg].
+  /** The default value is from Peters (1983)\cite peters1983ecological. */
+  double digestion_catabolism_coefficient = 39.3;
+
+  /// Factor for reducing forage net energy content for non-ruminants.
+  /**
+   * The default model for net energy content
+   * (\ref get_net_energy_content_default())
+   * is designed for ruminant digestion. A constant factor may be applied to
+   * account for less efficient digestive systems, e.g. hindgut fermentation.
+   *
+   * For hindgut fermenters there are various factors in the literature, e.g.:
+   * - Johnson et al. (1982) give a value of 0.89 \cite johnson1982intake
+   * - Foose (1982) gives a value of 0.84 \cite foose1982trophic
+   * - The model by Illius & Gordon (1992) gives a value of 0.93 \cite
+   * illius1992modelling \see \ref NetEnergyModel::Default \see \ref
+   * get_net_energy_content_default() \see \ref
+   * HerbivoreBase::get_net_energy_content()
+   */
+  double digestion_efficiency = 1.0;
+
+  /// Constants i, j, k for \ref DigestionLimit::IlliusGordon1992 (grass only).
+  /**
+   * Shipley et al. (1999)\cite shipley1999predicting derived the parameters i,
+   * j, and k from regression analysis with 12 mammalian herbivores (0.05--547
+   * kg) and are specific to hindguts and ruminants.
+   *
+   * |     | Hindgut | Ruminant |
+   * |-----|---------|----------|
+   * | i   | 0.108   | 0.034    |
+   * | j   | 3.284   | 3.565    |
+   * | k   | 0.080   | 0.077    |
+   *
+   * \see \ref get_digestive_limit_illius_gordon_1992()
+   * \see \ref DigestionLimit::IlliusGordon1992
+   */
+  std::array<double, 3> digestion_i_g_1992_ijk = {0.034, 3.565, 0.077};
+
   /// Daily dry matter intake per kg body mass for
   /// \ref DigestiveLimit::FixedFraction.
   double digestion_fixed_fraction = 0.05;
@@ -305,8 +339,8 @@ struct Hft {
   /// Constraint for maximum daily forage intake.
   DigestiveLimit digestion_limit = DigestiveLimit::FixedFraction;
 
-  /// Digestion physiology (ruminant or hindgut fermenter).
-  DigestionType digestion_type = DigestionType::Ruminant;
+  /// Algorithm for forage energy content.
+  NetEnergyModel digestion_net_energy_model = NetEnergyModel::Default;
   /** @} */
 
   /** @{ \name "establishment": Spawning new herbivores in empty habitats. */
@@ -340,9 +374,6 @@ struct Hft {
    * Required by specific foraging limits.
    */
   double foraging_half_max_intake_density = 20;
-
-  /// Algorithm for forage energy content.
-  NetEnergyModel foraging_net_energy_model = NetEnergyModel::Default;
   /** @} */
 
   /** @{ \name "life_history": Life stages for herbivore individuals. */
@@ -387,6 +418,15 @@ struct Hft {
 
   /// Duration of pregnancy [number of months].
   int reproduction_gestation_length = 9;
+
+  /// Growth rate and midpoint for the logistic reproduction model.
+  /**
+   * 1. Growth rate (called b) must not be negative.
+   * 2. The midpoint (called c) must lie between 0 and 1.
+   * \see \ref ReproductionLogistic
+   * \see \ref ReproductionModel::Logistic
+   */
+  std::array<double, 2> reproduction_logistic = {15.0, 0.3};
 
   /// Algorithm to calculate herbivore reproduction.
   ReproductionModel reproduction_model = ReproductionModel::ConstantMaximum;

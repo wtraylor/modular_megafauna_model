@@ -9,14 +9,12 @@
 
 namespace Fauna {
 
-
 /// A herbivore’s energy budget with fat reserves
 /**
  * Terminology:
  * - Anabolism  = build up fat mass
  * - Catabolism = burn fat mass
- * - Metabolism = us burn food energy directly and use surplus for
- *   anabolism
+ * - Metabolism = burn food energy directly and use surplus for anabolism
  */
 class FatmassEnergyBudget {
  public:
@@ -24,11 +22,18 @@ class FatmassEnergyBudget {
   /**
    * \param initial_fatmass Initial fat mass [kg/ind]
    * \param maximum_fatmass Maximum fat mass [kg/ind]
+   * \param anabolism_coefficient Conversion factor from net forage energy to
+   * fat mass [MJ/kg].
+   * \param catabolism_coefficient Conversion factor from fat mass to net
+   * energy [MJ/kg].
    * \throw std::invalid_argument If one parameter is <=0.0
    * \throw std::logic_error `initial_fatmass > maximum_fatmass`
+   * \throw std::logic_error `catabolism_coefficient >= anabolism_coefficient`
    */
   FatmassEnergyBudget(const double initial_fatmass,
-                      const double maximum_fatmass);
+                      const double maximum_fatmass,
+                      const double anabolism_coefficient,
+                      const double catabolism_coefficient);
 
   /// Increase energy needs
   /** \param energy Additional energy needs [MJ/ind]
@@ -91,17 +96,12 @@ class FatmassEnergyBudget {
   void set_max_fatmass(const double max_fatmass, const double max_gain);
 
  private:
-  double energy_needs;      // MJ/ind
-  double fatmass;           // kg/ind
-  double max_fatmass;       // kg/ind
-  double max_fatmass_gain;  // kg/ind/day
-
-  /// Metabolic coefficient for anabolism [MJ/kg] (Blaxter 1989)
-  /// \cite blaxter1989energy
-  static const double FACTOR_ANABOLISM;
-  /// Metabolism coefficient for catabolism [MJ/kg] (Blaxter 1989)
-  /// \cite blaxter1989energy
-  static const double FACTOR_CATABOLISM;
+  double anabolism_coefficient;   // MJ/kg
+  double catabolism_coefficient;  // MJ/kg
+  double energy_needs = 0.0;      // MJ/ind
+  double fatmass;                 // kg/ind
+  double max_fatmass;             // kg/ind
+  double max_fatmass_gain = 0.0;  // kg/ind/day
 };
-}
+}  // namespace Fauna
 #endif  // FAUNA_FATMASS_ENERGY_BUDGET_H

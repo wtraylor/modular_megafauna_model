@@ -9,11 +9,11 @@
 
 using namespace Fauna;
 
-HerbivoreIndividual::HerbivoreIndividual(const int age_days,
-                                         const double body_condition,
-                                         const Hft* hft, const Sex sex,
-                                         const double area_km2)
-    : HerbivoreBase(age_days, body_condition, hft, sex),
+HerbivoreIndividual::HerbivoreIndividual(
+    const int age_days, const double body_condition, const Hft* hft,
+    const Sex sex, const double area_km2,
+    const ForageEnergyContent& metabolizable_energy)
+    : HerbivoreBase(age_days, body_condition, hft, sex, metabolizable_energy),
       area_km2(area_km2),
       dead(false) {
   if (area_km2 <= 0.0)
@@ -22,24 +22,16 @@ HerbivoreIndividual::HerbivoreIndividual(const int age_days,
         "area_km2 <=0.0");
 }
 
-HerbivoreIndividual::HerbivoreIndividual(const Hft* hft, const Sex sex,
-                                         const double area_km2)
-    : HerbivoreBase(hft, sex), area_km2(area_km2), dead(false) {
+HerbivoreIndividual::HerbivoreIndividual(
+    const Hft* hft, const Sex sex, const double area_km2,
+    const ForageEnergyContent& metabolizable_energy)
+    : HerbivoreBase(hft, sex, metabolizable_energy),
+      area_km2(area_km2),
+      dead(false) {
   if (area_km2 <= 0.0)
     throw std::invalid_argument(
         "Fauna::HerbivoreIndividual::HerbivoreIndividual() "
         "area_km2 <=0.0");
-}
-
-HerbivoreIndividual::HerbivoreIndividual(const HerbivoreIndividual& other)
-    : HerbivoreBase(other), area_km2(other.area_km2), dead(other.dead) {}
-
-HerbivoreIndividual& HerbivoreIndividual::operator=(
-    const HerbivoreIndividual& other) {
-  HerbivoreBase::operator=(other);
-  area_km2 = other.area_km2;
-  dead = other.dead;
-  return *this;
 }
 
 void HerbivoreIndividual::apply_mortality(const double mortality) {
@@ -57,4 +49,3 @@ void HerbivoreIndividual::apply_mortality(const double mortality) {
   const int seed = get_today();
   if (get_random_fraction(seed) < mortality) dead = true;
 }
-

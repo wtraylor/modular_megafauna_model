@@ -8,21 +8,23 @@
 #include "expenditure_components.h"
 #include "hft.h"
 #include "mortality_factors.h"
+#include "net_energy_models.h"
 #include "reproduction_models.h"
 
 using namespace Fauna;
 
 HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
-                             const Hft* hft,
-                             const Sex sex)
+                             const Hft* hft, const Sex sex,
+                             const ForageEnergyContent& metabolizable_energy)
     : hft(check_hft_pointer(hft)),  // can be NULL
       sex(sex),                     // always valid
       age_days(age_days),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
-      get_net_energy_content(create_net_energy_content_model()),
+      metabolizable_energy(metabolizable_energy),
       energy_budget(body_condition * get_max_fatmass(),  // initial fat mass
-                    get_max_fatmass()                    // maximum fat mass
-                    ),
+                    get_max_fatmass(),                   // maximum fat mass
+                    hft->digestion_anabolism_coefficient,
+                    hft->digestion_catabolism_coefficient),
       get_forage_demands_per_ind(hft, sex),
       today(-1),  // not initialized yet; call simulate_day() first
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {
@@ -51,14 +53,16 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
         "body_condition < 0.0");
 }
 
-HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex)
+HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex,
+                             const ForageEnergyContent& metabolizable_energy)
     : hft(check_hft_pointer(hft)),
       sex(sex),
       age_days(0),
+      metabolizable_energy(metabolizable_energy),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
-      get_net_energy_content(create_net_energy_content_model()),
       energy_budget(get_hft().body_fat_birth * get_hft().body_mass_birth,
-                    get_max_fatmass()),
+                    get_max_fatmass(), hft->digestion_anabolism_coefficient,
+                    hft->digestion_catabolism_coefficient),
       get_forage_demands_per_ind(hft, sex),
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {}
 
@@ -152,11 +156,11 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
   const ForageMass kg_per_ind = kg_per_km2 / get_ind_per_km2();
   const ForageMass N_kg_per_ind = N_kg_per_km2 / get_ind_per_km2();
 
-  // net energy in the forage [MJ/ind]
+  // net energy in the forage per individual [MJ/ind]
   // Divide mass by energy content and set any forage with zero
   // energy content to zero mass.
   const ForageEnergy mj_per_ind =
-      (*get_net_energy_content)(digestibility)*kg_per_ind;
+      get_net_energy_content(digestibility) * kg_per_ind;
 
   try {
     // Deduct the eaten forage from today’s maximum intake.
@@ -237,7 +241,7 @@ ForageMass HerbivoreBase::get_forage_demands(
   if (!get_forage_demands_per_ind.is_day_initialized(this->get_today())) {
     // Net energy content [MJ/kgDM]
     const ForageEnergyContent net_energy_content =
-        (*get_net_energy_content)(available_forage.get_digestibility());
+        get_net_energy_content(available_forage.get_digestibility());
 
     get_forage_demands_per_ind.init_today(get_today(), available_forage,
                                           net_energy_content, get_bodymass());
@@ -268,17 +272,19 @@ double HerbivoreBase::get_max_fatmass() const {
   return get_potential_bodymass() * get_hft().body_fat_maximum;
 }
 
-GetNetEnergyContentInterface* HerbivoreBase::create_net_energy_content_model()
-    const {
-  switch (get_hft().foraging_net_energy_model) {
+ForageEnergyContent HerbivoreBase::get_net_energy_content(
+    const Digestibility digestibility) const {
+  switch (get_hft().digestion_net_energy_model) {
     case (NetEnergyModel::Default):
-      return new GetNetEnergyContentDefault(get_hft().digestion_type);
+      return get_net_energy_content_default(digestibility,
+                                            metabolizable_energy) *
+             get_hft().digestion_efficiency;
       // ADD NEW NET ENERGY MODELS HERE
       // in new case statements
     default:
       throw std::logic_error(
-          "Fauna::HerbivoreBase::create_net_energy_content_model() "
-          "Selected net energy model not implemented.");
+          "Fauna::HerbivoreBase::get_net_energy_content() "
+          "Selected net energy model is not implemented.");
   }
 }
 
@@ -381,8 +387,7 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
       get_age_years() < get_hft().life_history_sexual_maturity)
     return 0.0;
 
-  if (!breeding_season.is_in_season(get_today()))
-    return 0.0;
+  if (!breeding_season.is_in_season(get_today())) return 0.0;
 
   switch (get_hft().reproduction_model) {
     case (ReproductionModel::ConstantMaximum): {
@@ -390,12 +395,14 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
           breeding_season, get_hft().reproduction_annual_maximum);
       return const_max.get_offspring_density(get_today());
     }
-    case (ReproductionModel::IlliusOConnor2000): {
+    case (ReproductionModel::Logistic): {
       // create our model object
-      const ReprIlliusOconnor2000 illius_2000(
-          breeding_season, get_hft().reproduction_annual_maximum);
+      const ReproductionLogistic logistic(breeding_season,
+                                          get_hft().reproduction_annual_maximum,
+                                          get_hft().reproduction_logistic[0],
+                                          get_hft().reproduction_logistic[1]);
       // get today’s value
-      return illius_2000.get_offspring_density(
+      return logistic.get_offspring_density(
           get_today(), body_condition_gestation.get_average());
     }
     case (ReproductionModel::Linear): {

@@ -38,7 +38,8 @@ class HerbivoreIndividual : public HerbivoreBase {
    * \param area_km2 The absolute area of the habitat [km²].
    */
   HerbivoreIndividual(const int age_days, const double body_condition,
-                      const Hft* hft, const Sex sex, const double area_km2);
+                      const Hft* hft, const Sex sex, const double area_km2,
+                      const ForageEnergyContent& metabolizable_energy);
 
   /// Birth constructor
   /**
@@ -48,16 +49,8 @@ class HerbivoreIndividual : public HerbivoreBase {
    *
    * \param area_km2 The absolute area of the habitat [km²].
    */
-  HerbivoreIndividual(const Hft* hft, const Sex sex, const double area_km2);
-
-  /// Copy Constructor.
-  HerbivoreIndividual(const HerbivoreIndividual& other);
-
-  /// Copy assignment operator.
-  HerbivoreIndividual& operator=(const HerbivoreIndividual& other);
-
-  /// Destructor
-  ~HerbivoreIndividual(){};
+  HerbivoreIndividual(const Hft* hft, const Sex sex, const double area_km2,
+                      const ForageEnergyContent& metabolizable_energy);
 
   /// Habitat area [km²]
   double get_area_km2() const { return area_km2; }

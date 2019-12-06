@@ -8,10 +8,11 @@
 
 [simulation]
 
+establishment_interval = 3650 # every 10 years
 forage_distribution    = "Equally"
 habitat_area_km2       = 1.0  # km² per habitat
-establishment_interval = 3650 # every 10 years
 herbivore_type         = "Cohort"
+metabolizable_energy   = { grass = 15.0 } # MJ/kgDM
 one_hft_per_habitat    = true
 
 [output]
@@ -39,12 +40,24 @@ birth = 0.2
 # instead of "hft.". Any HFT parameter that is not found in the HFT table
 # itself will be taken from the groups the HFT belongs to.
 
+[[group]]
+name = "hindguts"
+[group.digestion]
+efficiency   = 0.93
+i_g_1992_ijk = [0.108, 3.284, 0.080]
+
+[[group]]
+name = "ruminants"
+[group.digestion]
+efficiency   = 1.0
+i_g_1992_ijk = [0.034, 3.565, 0.077]
+
 ###############################################################################
 
 [[hft]]
 
 name   = "example"
-groups = [ "all_hfts" ] # Descending priority: first overrides last group.
+groups = [ "ruminants", "all_hfts" ] # first overrides last group
 
 [hft.body_fat]
 birth              = 0.2   # kg/kg
@@ -62,10 +75,12 @@ length = 30  # days
 start  = 121 # Julian day
 
 [hft.digestion]
-allometric     = { coefficient = 0.050, exponent = 0.76 }
-fixed_fraction = 0.05 # kgDM per kg body mass
-limit          = "FixedFraction"
-type           = "Ruminant"
+allometric             = { coefficient = 0.050, exponent = 0.76 }
+anabolism_coefficient  = 54.6 # MJ/kg
+catabolism_coefficient = 39.3 # MJ/kg
+fixed_fraction         = 0.05 # kgDM per kg body mass
+limit                  = "FixedFraction"
+net_energy_model       = "Default"
 
 [hft.establishment]
 age_range = { first = 1, last = 15 } # years
@@ -79,7 +94,6 @@ components = [ "Allometric" ]
 diet_composer           = "PureGrazer"
 half_max_intake_density = 20 # gDM/m²
 limits                  = []
-net_energy_model        = "Default"
 
 [hft.life_history]
 lifespan                 = 16 # years
@@ -97,6 +111,7 @@ shift_body_condition_for_starvation = true
 [hft.reproduction]
 annual_maximum   = 1.0 # offspring per female per year
 gestation_length = 9   # months
+logistic         = { growth_rate = 15.0, midpoint = 0.3 }
 model            = "ConstantMaximum"
 
 [hft.thermoregulation]

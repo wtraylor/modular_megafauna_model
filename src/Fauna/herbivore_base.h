@@ -14,7 +14,6 @@
 #include "get_forage_demands.h"
 #include "herbivore_data.h"
 #include "herbivore_interface.h"
-#include "net_energy_models.h"
 #include "nitrogen.h"
 
 namespace Fauna {
@@ -99,23 +98,28 @@ class HerbivoreBase : public HerbivoreInterface {
    * of physiological maximum [kg/kg].
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
+   * \param metabolizable_energy The (constant) metabolizable energy content
+   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
    * \throw std::invalid_argument If `hft==NULL` or
    * `age_days <= 0` or `body_condition` not in [0,1].
    */
   HerbivoreBase(const int age_days, const double body_condition, const Hft* hft,
-                const Sex sex);
+                const Sex sex, const ForageEnergyContent& metabolizable_energy);
 
   /// Birth constructor.
   /**
    * Herbivores are born with \ref Hft::body_fat_birth.
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
+   * \param metabolizable_energy The (constant) metabolizable energy content
+   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
    * \throw std::invalid_argument If `hft==NULL`.
    */
-  HerbivoreBase(const Hft* hft, const Sex sex);
+  HerbivoreBase(const Hft* hft, const Sex sex,
+                const ForageEnergyContent& metabolizable_energy);
 
-  /// Destructor
-  ~HerbivoreBase() = default;
+  /// Virtual destructor, which will be called by derived classes.
+  virtual ~HerbivoreBase() = default;
 
   /// Apply a fractional mortality.
   /**
@@ -144,6 +148,13 @@ class HerbivoreBase : public HerbivoreInterface {
   /// Access for derived classes to nitrogen management.
   NitrogenInHerbivore& get_nitrogen() { return nitrogen; }
 
+  /// Check whether the constant member variables match those of another object.
+  bool constant_members_match(const HerbivoreBase& other) const {
+    return sex == other.sex && hft == other.hft &&
+           metabolizable_energy == other.metabolizable_energy &&
+           breeding_season == other.breeding_season;
+  }
+
  private:  // private member functions
   /// Calculate mortality according to user-selected mortality factors
   /**
@@ -162,13 +173,16 @@ class HerbivoreBase : public HerbivoreInterface {
    * \throw std::invalid_argument If HFT pointer is NULL. */
   Hft const* check_hft_pointer(const Hft*);
 
-  /// Forage net energy content given by the selected algorithm
-  /// \ref Hft::foraging_net_energy_model.
+  /// Get forage energy content [MJ/kgDM] using selected net energy model.
   /**
-   * \return New instance of \ref GetNetEnergyContentInterface.
-   * \throw std::logic_error If the selected model is not implemented.
+   * \param digestibility Forage digestibility.
+   * \return Net energy content in MJ/kgDM.
+   * \throw std::logic_error If the net energy model is not implemented.
+   * \see \ref Hft::digestion_net_energy_model
+   * \see \ref NetEnergyModel
    */
-  GetNetEnergyContentInterface* create_net_energy_content_model() const;
+  ForageEnergyContent get_net_energy_content(
+      const Digestibility digestibility) const;
 
   /// Calculate energy expenditure as sum of given expenditure components.
   /** \return Today’s energy needs [MJ/ind/day]
@@ -190,8 +204,8 @@ class HerbivoreBase : public HerbivoreInterface {
   /// @{ \name Constants
   Hft const* hft;  // pointer to const Hft; initialized first!
   Sex sex;
-  std::shared_ptr<GetNetEnergyContentInterface> get_net_energy_content;
   BreedingSeason breeding_season;
+  ForageEnergyContent metabolizable_energy;
   /** @} */  // constants
 
   /// @{ \name State Variables

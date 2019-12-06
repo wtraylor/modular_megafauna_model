@@ -5,10 +5,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## Unreleased
 ### Added
+- New instruction file parameters, which were constants before:
+    - `hft.digestion.anabolism_coefficient` (formerly `Fauna::FatMassEnergyBudget::FACTOR_ANABOLISM`)
+    - `hft.digestion.catabolism_coefficient` (formerly `Fauna::FatMassEnergyBudget::FACTOR_CATABOLISM`)
+    - `hft.digestion.efficiency` (formerly `Fauna::DIGESTION_EFFICIENCY_HINDGUTS`)
+    - `hft.digestion.i_g_1992_ijk` (formerly constants in the function object `Fauna::GetDigestiveLimitIlliusGordon1992`)
+    - `simulation.metabolizable_energy` (formerly `Fauna::ME_COEFFICIENT_GRASS`)
+    - `hft.reproduction.logistic.growth_rate` and `.midpoint` (formerly constant parameters in `Fauna::ReprIlliusOConnor2000`).
+- Default HFT groups “ruminants” and “hindguts” (replacing parameter `hft.digestion.type`)
 
 ### Changed
 - Replaced `std::map` with `std::array` in `Fauna::ForageValues` to improve speed.
 - Various little performance improvements.
+- Turned `Fauna::GetNetEnergyContent` interface (strategy design pattern) to a function.
+- Turned `Fauna::GetDigestiveLimitIlliusGordon1992` into the function `Fauna::get_digestive_limit_illius_gordon_1992()`.
+- Renamed TOML parameter `hft.foraging.net_energy_model` to `hft.digestion.net_energy_model`
+- Renamed `Fauna::ReproductionModel::IlliusOConnor2000` to `Logistic`.
+
+### Fixed
+- The parameter `hft.mortality.factors` was not parsed.
+
+### Removed
+- Instruction file parameter `hft.digestion.type` and the corresponding `Fauna::DigestionType` and `Fauna::Hft::digestion_type`.
 
 ## 0.1.0 - 2019-11-07
 ### Added

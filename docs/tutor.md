@@ -95,7 +95,7 @@ Whether you want to have herbivores die by for instance disease, drought, or pre
 
 - Adjust the implementation of \ref Fauna::Habitat::get_available_forage() and \ref Fauna::Habitat::remove_eaten_forage() in your vegetation model.
 
-- Extend \ref Fauna::GetNetEnergyContentDefault, and possibly other energy content models (\ref net_energy_models.h).
+- Extend \ref Fauna::get_net_energy_content_default(), and possibly other energy content models (\ref net_energy_models.h).
 
 - Herbivores
 	+ Check all foraging and digestion limits (\ref foraging_limits.h) whether they need to be expanded.
@@ -111,15 +111,11 @@ Whether you want to have herbivores die by for instance disease, drought, or pre
 
 ### How to change forage net energy content {#sec_change_netenergy}
 
-Forage net energy content is implemented with the [strategy design pattern](\ref sec_strategy):
-@startuml "Net energy content design."
-	!include diagrams.iuml!net_energy_content
-@enduml
-- Derive a new class from \ref Fauna::GetNetEnergyContentInterface and implement the `operator()` member function.
+- Implement your model in a function or class in the file \ref net_energy_models.h.
 - Add a new enum item in \ref Fauna::NetEnergyModel.
-- Parse that value for the HfT parameter `foraging.net_energy_model` in \ref Fauna::InsfileReader::read_hft().
-- Let your new class be created in \ref Fauna::HerbivoreBase::get_net_energy_content() if it is selected in the parameters.
-- Update the UML diagram in \ref sec_herbivorebase and the diagram above.
+- Parse that value for the HFT parameter `digestion.net_energy_model` in \ref Fauna::InsfileReader::read_hft().
+- Execute your function or class in \ref Fauna::HerbivoreBase::get_net_energy_content().
+- Update the UML diagram in \ref sec_herbivorebase.
 
 ### How to add a new forage distribution algorithm {#sec_new_forage_distribution}
 

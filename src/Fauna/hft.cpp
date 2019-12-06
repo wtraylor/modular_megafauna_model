@@ -114,6 +114,13 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       // the HFT is still valid (e.g. for testing purpose)
     }
 
+    if (digestion_net_energy_model == NetEnergyModel::Default &&
+        (digestion_efficiency <= 0.0 || digestion_efficiency > 1.0)) {
+      stream << "digestion.efficiency must be in the interval (0,1]."
+             << std::endl;
+      is_valid = false;
+    }
+
     if (establishment_age_range.first < 0 ||
         establishment_age_range.second < 0) {
       stream << "establishment.age_range must be 2 positive numbers ("
@@ -176,11 +183,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       is_valid = false;
     }
 
-    if (foraging_limits.empty()) {
-      stream << "No foraging limits defined." << std::endl;
-      // the HFT is still valid (e.g. for testing purpose)
-    }
-
     if (foraging_limits.count(ForagingLimit::IlliusOConnor2000) &&
         foraging_diet_composer != DietComposer::PureGrazer) {
       stream << "`ILLIUS_OCONNOR_2000` is set as a foraging limit and"
@@ -214,6 +216,20 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
     if (reproduction_gestation_length <= 0) {
       stream << "`reproduction.gestation_length` must be a positive number."
              << " (current value: " << reproduction_gestation_length << ")"
+             << std::endl;
+      is_valid = false;
+    }
+
+    if (digestion_anabolism_coefficient <= 0.0) {
+      stream << "`digestion.anabolism_coefficient` must be a positive number."
+             << " (current value: " << digestion_anabolism_coefficient << ")"
+             << std::endl;
+      is_valid = false;
+    }
+
+    if (digestion_catabolism_coefficient <= 0.0) {
+      stream << "`digestion.catabolism_coefficient` must be a positive number."
+             << " (current value: " << digestion_catabolism_coefficient << ")"
              << std::endl;
       is_valid = false;
     }
@@ -317,7 +333,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       }
     }
 
-    if (reproduction_model == ReproductionModel::IlliusOConnor2000 ||
+    if (reproduction_model == ReproductionModel::Logistic ||
         reproduction_model == ReproductionModel::ConstantMaximum ||
         reproduction_model == ReproductionModel::Linear) {
       if (reproduction_annual_maximum <= 0.0) {
@@ -335,6 +351,21 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       if (breeding_season_start < 0 || breeding_season_start >= 365) {
         stream << "breeding_season.start must be in [0,364]"
                << " (" << breeding_season_start << ")" << std::endl;
+        is_valid = false;
+      }
+    }
+
+    if (reproduction_model == ReproductionModel::Logistic) {
+      // Growth rate
+      if (reproduction_logistic[0] <= 0.0) {
+        stream << "reproduction.logistic.growth_rate must be a positive number."
+               << " (" << reproduction_logistic[0] << ")" << std::endl;
+        is_valid = false;
+      }
+      // Midpoint
+      if (reproduction_logistic[1] <= 0.0 || reproduction_logistic[1] >= 1.0) {
+        stream << "reproduction.logistic.midpoint must be in interval (0,1). "
+               << "(" << reproduction_logistic[1] << ")" << std::endl;
         is_valid = false;
       }
     }

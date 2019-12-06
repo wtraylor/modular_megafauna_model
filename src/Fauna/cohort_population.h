@@ -7,9 +7,9 @@
 #ifndef FAUNA_COHORT_POPULATION_H
 #define FAUNA_COHORT_POPULATION_H
 
-#include "population_interface.h"
 #include <list>
 #include "create_herbivore_cohort.h"
+#include "population_interface.h"
 
 namespace Fauna {
 
@@ -62,5 +62,5 @@ class CohortPopulation : public PopulationInterface {
   /// Offspring accumulated until above minimum threshold [ind/km²].
   List list;
 };
-}
-#endif // FAUNA_COHORT_POPULATION_H
+}  // namespace Fauna
+#endif  // FAUNA_COHORT_POPULATION_H

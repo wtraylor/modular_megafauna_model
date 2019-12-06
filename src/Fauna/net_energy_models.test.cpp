@@ -4,33 +4,27 @@
  * \copyright ...
  * \date 2019
  */
+#include <sstream>
 #include "catch.hpp"
 #include "net_energy_models.h"
+#include "parameters.h"
 using namespace Fauna;
 
-TEST_CASE("Fauna::GetNetEnergyContentDefault", "") {
-  GetNetEnergyContentDefault ne_ruminant(DigestionType::Ruminant);
-  GetNetEnergyContentDefault ne_hindgut(DigestionType::Hindgut);
-
-  const Digestibility DIG1(0.5);
-  const Digestibility DIG2(0.3);
+TEST_CASE("Fauna::get_net_energy_content_default()", "") {
+  static const Digestibility DIG1(0.5);
+  static const Digestibility DIG2(0.3);
+  static const ForageEnergyContent ME = Parameters().metabolizable_energy;
 
   // higher digestibility ==> more energy
-  CHECK(ne_ruminant(DIG1) > ne_ruminant(DIG2));
-  CHECK(ne_hindgut(DIG1) > ne_hindgut(DIG2));
-
-  // hindguts have lower efficiency
-  CHECK(ne_ruminant(DIG1) > ne_hindgut(DIG1));
-
-  // Check some absolute numbers
-  {  // grass for ruminants
-    const double ME = 15.0 * DIG1[ForageType::Grass];
-    CHECK(ne_ruminant(DIG1[ForageType::Grass])[ForageType::Grass] ==
-          Approx(ME * (0.019 * ME + 0.503)));
+  auto energy1 = get_net_energy_content_default(DIG1, ME);
+  auto energy2 = get_net_energy_content_default(DIG2, ME);
+  for (const auto& ft : FORAGE_TYPES) {
+    INFO("ft = " + get_forage_type_name(ft));
+    INFO("ME[" + get_forage_type_name(ft) + "] = " + std::to_string(ME[ft]));
+    CHECK(energy1[ft] > energy2[ft]);
   }
-  {  // grass for hindguts
-    const double ME = 15.0 * DIG1[ForageType::Grass];
-    CHECK(ne_hindgut(DIG1[ForageType::Grass])[ForageType::Grass] ==
-          Approx(ME * (0.019 * ME + 0.503) * 0.93));
-  }
+
+  const double ME_GRASS = ME[ForageType::Grass] * DIG1[ForageType::Grass];
+  CHECK(get_net_energy_content_default(DIG1, ME)[ForageType::Grass] ==
+        Approx(ME_GRASS * (0.019 * ME_GRASS + 0.503)));
 }

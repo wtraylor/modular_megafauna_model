@@ -33,6 +33,6 @@ class CreateHerbivoreIndividual : public CreateHerbivoreCommon {
   virtual HerbivoreIndividual operator()(const int age_days,
                                          const Sex sex) const;
 };
-}
+}  // namespace Fauna
 
-#endif  //FAUNA_CREATE_HERBIVORE_INDIVIDUAL_H
+#endif  // FAUNA_CREATE_HERBIVORE_INDIVIDUAL_H

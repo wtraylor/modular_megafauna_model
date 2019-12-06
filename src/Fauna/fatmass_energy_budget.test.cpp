@@ -10,14 +10,20 @@
 using namespace Fauna;
 
 TEST_CASE("Fauna::FatmassEnergyBudget", "") {
-  CHECK_THROWS(FatmassEnergyBudget(-1.0, 1.0));
-  CHECK_THROWS(FatmassEnergyBudget(0.0, 0.0));
-  CHECK_THROWS(FatmassEnergyBudget(0.0, -1.0));
-  CHECK_THROWS(FatmassEnergyBudget(1.1, 1.0));
+  static const double ANA = 54.6;          // anabolism_coefficient [MJ/kg]
+  static const double CATA = 39.3;         // catabolism_coefficient [MJ/kg]
+  static const double INIT_FATMASS = 1.0;  // initial fat mass
+  static const double MAX_FATMASS = 2.0;   // maximum fat mass
 
-  const double INIT_FATMASS = 1.0;  // initial fat mass
-  const double MAX_FATMASS = 2.0;   // maximim fat mass
-  FatmassEnergyBudget budget(INIT_FATMASS, MAX_FATMASS);
+  CHECK_THROWS(FatmassEnergyBudget(-1.0, MAX_FATMASS, ANA, CATA));
+  CHECK_THROWS(FatmassEnergyBudget(0.0, 0.0, ANA, CATA));
+  CHECK_THROWS(FatmassEnergyBudget(0.0, -1.0, ANA, CATA));
+  CHECK_THROWS(
+      FatmassEnergyBudget(INIT_FATMASS, INIT_FATMASS * 0.8, ANA, CATA));
+  CHECK_THROWS(FatmassEnergyBudget(INIT_FATMASS, MAX_FATMASS, ANA, -1));
+  CHECK_THROWS(FatmassEnergyBudget(INIT_FATMASS, MAX_FATMASS, -1, CATA));
+
+  FatmassEnergyBudget budget(INIT_FATMASS, MAX_FATMASS, ANA, CATA);
 
   // Initialization
   REQUIRE(budget.get_fatmass() == INIT_FATMASS);
@@ -102,7 +108,7 @@ TEST_CASE("Fauna::FatmassEnergyBudget", "") {
     const double OTHER_FATMASS = 3.0;
     const double OTHER_MAX_FATMASS = 4.0;
     const double OTHER_ENERGY = 13.0;
-    FatmassEnergyBudget other(OTHER_FATMASS, OTHER_MAX_FATMASS);
+    FatmassEnergyBudget other(OTHER_FATMASS, OTHER_MAX_FATMASS, ANA, CATA);
     other.add_energy_needs(OTHER_ENERGY);
 
     SECTION("Merge with equal weight") {

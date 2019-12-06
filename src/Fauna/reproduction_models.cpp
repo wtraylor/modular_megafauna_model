@@ -12,36 +12,48 @@
 using namespace Fauna;
 
 // ##################################################################
-// ######################### ReprIlliusOconnor2000 #################
+// ######################### ReproductionLogistic #################
 // ##################################################################
 
-ReprIlliusOconnor2000::ReprIlliusOconnor2000(BreedingSeason breeding_season,
-                                             const double max_annual_increase)
+ReproductionLogistic::ReproductionLogistic(BreedingSeason breeding_season,
+                                           const double max_annual_increase,
+                                           const double growth_rate,
+                                           const double midpoint)
     : max_annual_increase(max_annual_increase),
-      breeding_season(breeding_season) {
+      breeding_season(breeding_season),
+      growth_rate(growth_rate),
+      midpoint(midpoint) {
   if (max_annual_increase < 0.0)
     throw std::invalid_argument(
-        "Fauna::ReprIlliusOconnor2000::ReprIlliusOconnor2000() "
+        "Fauna::ReproductionLogistic::ReproductionLogistic() "
         "max_annual_increase below zero.");
+  if (growth_rate <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::ReproductionLogistic::ReproductionLogistic() "
+        "growth_rate is smaller than or equal to zero.");
+  if (midpoint <= 0.0 || midpoint >= 1.0)
+    throw std::invalid_argument(
+        "Fauna::ReproductionLogistic::ReproductionLogistic() "
+        "midpoint is not between zero and one.");
 }
 
-double ReprIlliusOconnor2000::get_offspring_density(
+double ReproductionLogistic::get_offspring_density(
     const int day_of_year, const double body_condition) const {
   if (day_of_year < 0 || day_of_year >= 365)
     throw std::invalid_argument(
-        "Fauna::ReprIlliusOconnor2000::get_offspring_density() "
+        "Fauna::ReproductionLogistic::get_offspring_density() "
         "day_of_year is out of range.");
   if (body_condition < 0.0 || body_condition > 1.0)
     throw std::invalid_argument(
-        "Fauna::ReprIlliusOconnor2000::get_offspring_density() "
+        "Fauna::ReproductionLogistic::get_offspring_density() "
         "body_condition is out of range.");
 
   // No reproduction if we are not in season.
   if (!breeding_season.is_in_season(day_of_year)) return 0.0;
 
   // Yes, we are in breeding season and just apply the formula.
-  static const double b = 15.0;
-  static const double c = 0.3;
+  const double b = growth_rate;
+  const double c = midpoint;
   const double k = max_annual_increase;
 
   // see doxygen documentation of the class for formula

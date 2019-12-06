@@ -58,9 +58,7 @@ class ForageValues {
    * \throw std::logic_error If `tag` is not implemented.
    *
    */
-  ForageValues(const double init_value = 0.0) {
-    set(init_value);
-  }
+  ForageValues(const double init_value = 0.0) { set(init_value); }
 
   /// Divide safely also by zero values.
   /**
