@@ -14,7 +14,7 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
   // PREPARE SETTINGS
   Parameters params;
   REQUIRE(params.is_valid());
-  Hft hft = create_hfts(1, params)[0];
+  Hft hft(*create_hfts(1, params)[0]);
   REQUIRE(hft.is_valid(params));
 
   static const auto ME = Parameters().metabolizable_energy;
@@ -62,7 +62,7 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
         CHECK_THROWS(cohort.merge(other));
       }
       SECTION("wrong HFT") {  // wrong HFT
-        Hft hft2 = create_hfts(2, params)[1];
+        Hft hft2(*create_hfts(2, params)[1]);
         REQUIRE(hft2 != hft);
         HerbivoreCohort other(AGE, BC, &hft2, Sex::Male, DENS, ME);
         CHECK_THROWS(cohort.merge(other));

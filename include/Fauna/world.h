@@ -9,15 +9,19 @@
 
 #include <list>
 #include <memory>
+#include <vector>
 
 namespace Fauna {
 // Forward declarations
 class Date;
 class Habitat;
-class HftList;
+class Hft;
 class Parameters;
 class SimulationUnit;
 class WorldConstructor;
+
+// Repeat typedef from hft.h
+typedef std::vector< std::shared_ptr<const Hft> > HftList;
 
 namespace Output {
 class Aggregator;

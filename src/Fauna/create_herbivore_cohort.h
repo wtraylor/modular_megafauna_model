@@ -17,7 +17,8 @@ class CreateHerbivoreCohort : public CreateHerbivoreCommon {
  public:
   /// Constructor
   /** \copydoc CreateHerbivoreCommon::CreateHerbivoreCommon() */
-  CreateHerbivoreCohort(const Hft* hft, const std::shared_ptr<const Parameters> parameters)
+  CreateHerbivoreCohort(const std::shared_ptr<const Hft> hft,
+                        const std::shared_ptr<const Parameters> parameters)
       : CreateHerbivoreCommon(hft, parameters) {}
 
   /// Create a new object instance

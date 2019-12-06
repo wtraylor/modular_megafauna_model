@@ -9,15 +9,18 @@
 
 #include <cassert>
 #include <memory>
+#include <vector>
 
 namespace Fauna {
 // Forward declarations
 class Parameters;
 class Hft;
-class HftList;
 class PopulationInterface;
 class PopulationList;
 class DistributeForage;
+
+// Repeat typedef from hft.h
+typedef std::vector<std::shared_ptr<const Hft> > HftList;
 
 /// Helper class of World to create various megafauna components.
 /**
@@ -34,12 +37,12 @@ class WorldConstructor {
 
   /// Create one (empty) herbivore population for one HFT.
   /**
-   * \param phft Pointer to the Hft.
+   * \param hft Pointer to the Hft.
    * \throw std::logic_error if \ref Parameters::herbivore_type is not
    * implemented
    * \return Pointer to new object.
    */
-  PopulationInterface* create_population(const Hft* phft) const;
+  PopulationInterface* create_population(std::shared_ptr<const Hft> hft) const;
 
   /// Instantiate populations for all HFTs in one \ref Habitat.
   /**
@@ -51,12 +54,12 @@ class WorldConstructor {
 
   /// Instantiate a population of only one \ref Hft for one \ref Habitat.
   /**
-   * \param phft Pointer to the one \ref Hft.
+   * \param hft Pointer to the one \ref Hft.
    * \throw std::logic_error if \ref Parameters::herbivore_type is not
    * implemented.
    * \return Pointer to new object.
    */
-  PopulationList* create_populations(const Hft* phft) const;
+  PopulationList* create_populations(std::shared_ptr<const Hft> hft) const;
 
   /// Create new \ref DistributeForage object according to parameters.
   DistributeForage* create_distribute_forage() const;

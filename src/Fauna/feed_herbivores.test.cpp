@@ -41,7 +41,7 @@ TEST_CASE("Fauna::FeedHerbivores") {
   }
 
   SECTION("single herbivore") {
-    DummyHerbivore herbi(&HFTS[0], DENS);
+    DummyHerbivore herbi(HFTS[0].get(), DENS);
 
     // create some arbitrary demand (different for each forage type)
     ForageMass DEMAND;
@@ -109,9 +109,9 @@ TEST_CASE("Fauna::FeedHerbivores") {
     const int HERBI_COUNT = 10;
     std::list<DummyHerbivore> dummylist;
     // create herbivores
-    for (HftList::const_iterator hft = HFTS.begin(); hft != HFTS.end(); hft++) {
+    for (const auto& hft : HFTS) {
       for (int i = 0; i < HERBI_COUNT; i++) {
-        dummylist.push_back(DummyHerbivore(&*hft, DENS));
+        dummylist.push_back(DummyHerbivore(hft.get(), DENS));
         herbivores.push_back(&dummylist.back());
         // set some arbitrary demand
         const ForageMass IND_DEMAND((double)i);

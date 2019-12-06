@@ -11,9 +11,10 @@
 using namespace Fauna;
 
 CreateHerbivoreCommon::CreateHerbivoreCommon(
-    const Hft* hft, const std::shared_ptr<const Parameters> parameters)
+    const std::shared_ptr<const Hft> hft,
+    const std::shared_ptr<const Parameters> parameters)
     : hft(hft), parameters(std::move(parameters)) {
-  if (hft == NULL)
+  if (hft.get() == NULL)
     throw std::invalid_argument(
         "Fauna::CreateHerbivoreCommon::CreateHerbivoreCommon() "
         "hft == NULL");

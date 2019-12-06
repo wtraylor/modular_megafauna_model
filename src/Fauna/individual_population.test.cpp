@@ -24,13 +24,13 @@ TEST_CASE("Fauna::IndividualPopulation", "") {
 
   // prepare HFT
   const int ESTABLISH_COUNT = 100;  // [ind]
-  Hft hft = create_hfts(1, *params)[0];
+  Hft hft(*create_hfts(1, *params)[0]);
   hft.establishment_density = ESTABLISH_COUNT / AREA;  // [ind/km²]
   hft.mortality_factors.clear();                       // immortal herbivores
   REQUIRE(hft.is_valid(*params));
 
   // prepare creating object
-  CreateHerbivoreIndividual create_ind(&hft, params);
+  CreateHerbivoreIndividual create_ind(std::make_shared<const Hft>(hft), params);
 
   IndividualPopulation pop(create_ind);
 

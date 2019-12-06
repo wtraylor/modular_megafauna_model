@@ -53,7 +53,6 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
   opt.mass_density_per_hft = true;
   opt.directory = generate_output_dir();
 
-
   REQUIRE(!directory_exists(opt.directory));
 
   INFO((std::string) "Random output directory: " + opt.directory);
@@ -67,9 +66,9 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
   // Fill data with some arbitrary numbers.
   // -> Set more variables for tests for new output tables.
-  datapoint.data.hft_data[&HFTS[0]].massdens = 10.0;
-  datapoint.data.hft_data[&HFTS[1]].massdens = 16.0;
-  datapoint.data.hft_data[&HFTS[2]].massdens = 29.0;
+  datapoint.data.hft_data[HFTS[0].get()].massdens = 10.0;
+  datapoint.data.hft_data[HFTS[1].get()].massdens = 16.0;
+  datapoint.data.hft_data[HFTS[2].get()].massdens = 29.0;
   datapoint.data.datapoint_count = 1;
 
   SECTION("Annual") {
@@ -125,9 +124,9 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
       CHECK(fields[0] == "year");
       CHECK(fields[1] == "agg_unit");
-      CHECK(fields[2] == HFTS[0].name);
-      CHECK(fields[3] == HFTS[1].name);
-      CHECK(fields[4] == HFTS[2].name);
+      CHECK(fields[2] == HFTS[0]->name);
+      CHECK(fields[3] == HFTS[1]->name);
+      CHECK(fields[4] == HFTS[2]->name);
     }
 
     // Check tuple
@@ -154,9 +153,9 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
       CHECK(year == YEAR);
       CHECK(agg_unit == AGG_UNIT);
-      CHECK(hft1 == Approx(datapoint.data.hft_data[&HFTS[0]].massdens));
-      CHECK(hft2 == Approx(datapoint.data.hft_data[&HFTS[1]].massdens));
-      CHECK(hft3 == Approx(datapoint.data.hft_data[&HFTS[2]].massdens));
+      CHECK(hft1 == Approx(datapoint.data.hft_data[HFTS[0].get()].massdens));
+      CHECK(hft2 == Approx(datapoint.data.hft_data[HFTS[1].get()].massdens));
+      CHECK(hft3 == Approx(datapoint.data.hft_data[HFTS[2].get()].massdens));
     }
 
     SECTION("Error on illegal aggregation unit name") {
@@ -178,6 +177,5 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
   // output schemes are very similarly implemented.
 
   // Delete directory recursively.
-  if (directory_exists(opt.directory))
-      remove_directory(opt.directory);
+  if (directory_exists(opt.directory)) remove_directory(opt.directory);
 }

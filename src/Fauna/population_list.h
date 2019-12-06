@@ -15,7 +15,6 @@
 namespace Fauna {
 // Forward Declarations
 class Hft;
-class HftList;
 class PopulationInterface;
 
 /// List of \ref PopulationInterface objects per \ref Hft.

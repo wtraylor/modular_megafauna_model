@@ -28,7 +28,7 @@ class CreateHerbivoreCommon {
  protected:
   /// Protected constructor.
   /** \throw std::invalid_argument If `hft==NULL` or `parameters==NULL`*/
-  CreateHerbivoreCommon(const Hft* hft,
+  CreateHerbivoreCommon(const std::shared_ptr<const Hft> hft,
                         const std::shared_ptr<const Parameters> parameters);
 
   /// Fat mass per maximum fat mass.
@@ -38,7 +38,7 @@ class CreateHerbivoreCommon {
   const Parameters& get_params() const;
 
  private:
-  const Hft* hft;
+  const std::shared_ptr<const Hft> hft;
   const std::shared_ptr<const Parameters> parameters;
 };
 

@@ -61,12 +61,19 @@ InsfileReader::InsfileReader(const std::string filename)
   auto hft_table_array = ins->get_table_array("hft");
   if (hft_table_array)
     for (const auto& hft_table : *hft_table_array) {
-      const Hft hft = read_hft(hft_table);
+      std::shared_ptr<const Hft> new_hft(new Hft(read_hft(hft_table)));
       std::string err_msg;
-      if (!hft.is_valid(params, err_msg))
-        throw std::runtime_error("HFT \"" + hft.name + "\" is not valid:\n" +
-                                 err_msg);
-      hfts.insert(std::move(hft));
+      if (!new_hft->is_valid(params, err_msg))
+        throw std::runtime_error("HFT \"" + new_hft->name +
+                                 "\" is not valid:\n" + err_msg);
+      // Add HFT to list, but check if HFT with that name already exists.
+      for (const auto& hft : hfts) {
+        assert(hft.get());
+        if (hft->name == new_hft->name)
+          throw std::runtime_error("HFT with name \"" + hft->name +
+                                   "\" is defined twice.");
+      }
+      hfts.push_back(new_hft);
     }
 }
 
@@ -305,9 +312,8 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     else if (lowercase(*value) == lowercase("Linear"))
       hft.reproduction_model = ReproductionModel::Linear;
     else
-      throw invalid_option(
-          hft, "reproduction.model", *value,
-          {"None", "ConstantMaximum", "Logistic", "Linear"});
+      throw invalid_option(hft, "reproduction.model", *value,
+                           {"None", "ConstantMaximum", "Logistic", "Linear"});
   }
 
   // ======== NON-MANDATORY PARAMETERS =======

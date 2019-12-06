@@ -8,15 +8,14 @@
 #include "cohort_population.h"
 #include "forage_distribution_algorithms.h"
 #include "hft.h"
-#include "hft_list.h"
 #include "individual_population.h"
 #include "parameters.h"
 #include "population_list.h"
 
 using namespace Fauna;
 
-WorldConstructor::WorldConstructor(const std::shared_ptr<const Parameters> params,
-                                   const HftList& hftlist)
+WorldConstructor::WorldConstructor(
+    const std::shared_ptr<const Parameters> params, const HftList& hftlist)
     : params(std::move(params)), hftlist(hftlist) {}
 
 DistributeForage* WorldConstructor::create_distribute_forage() const {
@@ -31,13 +30,12 @@ DistributeForage* WorldConstructor::create_distribute_forage() const {
 }
 
 PopulationInterface* WorldConstructor::create_population(
-    const Hft* phft) const {
+    std::shared_ptr<const Hft> hft) const {
   // Create population instance according to selected herbivore type.
   if (get_params().herbivore_type == HerbivoreType::Cohort) {
-    return new CohortPopulation(CreateHerbivoreCohort(phft, params));
+    return new CohortPopulation(CreateHerbivoreCohort(hft, params));
   } else if (get_params().herbivore_type == HerbivoreType::Individual) {
-    return new IndividualPopulation(
-        CreateHerbivoreIndividual(phft, params));
+    return new IndividualPopulation(CreateHerbivoreIndividual(hft, params));
   } else
     throw std::logic_error(
         "WorldConstructor::create_population(): unknown herbivore type");
@@ -47,19 +45,19 @@ PopulationList* WorldConstructor::create_populations() const {
   PopulationList* plist = new PopulationList();
 
   // Fill the object with one population per HFT
-  for (int i = 0; i < get_hftlist().size(); i++) {
-    const Hft* phft = &get_hftlist()[i];
-    plist->add(create_population(phft));
+  for (const auto& hft_ptr : get_hftlist()) {
+    plist->add(create_population(hft_ptr));
   }
   assert(plist != NULL);
   return plist;
 }
 
-PopulationList* WorldConstructor::create_populations(const Hft* phft) const {
+PopulationList* WorldConstructor::create_populations(
+    std::shared_ptr<const Hft> hft) const {
   PopulationList* plist = new PopulationList();
 
   // Fill the object with one population of one HFT
-  plist->add(create_population(phft));
+  plist->add(create_population(hft));
   assert(plist != NULL);
   return plist;
 }

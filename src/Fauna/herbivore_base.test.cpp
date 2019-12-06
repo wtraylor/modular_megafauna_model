@@ -18,7 +18,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
   // PREPARE SETTINGS
   Parameters params;
   REQUIRE(params.is_valid());
-  Hft hft = create_hfts(1, params)[0];
+  Hft hft(*create_hfts(1, params)[0]);
   REQUIRE(hft.is_valid(params));
 
   // Let’s throw some exceptions

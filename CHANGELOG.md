@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Changed
+- Use `std::shared_ptr` for `Fauna::Parameters` and `Fauna::Hft`.
+
+### Removed
+- The class `Fauna::HftList` is not needed anymore and replaced by a `typedef`.
+
 ## 0.2.0 - 2019-12-06
 ### Added
 - New instruction file parameters, which were constants before:

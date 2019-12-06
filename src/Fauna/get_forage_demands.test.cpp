@@ -17,7 +17,7 @@ TEST_CASE("Fauna::GetForageDemands") {
   CHECK_THROWS(GetForageDemands(NULL, Sex::Male));
 
   const Parameters params;
-  Hft hft = create_hfts(1, params)[0];
+  Hft hft(*create_hfts(1, params)[0]);
   hft.foraging_limits.clear();
   hft.digestion_limit = DigestiveLimit::None;
 

@@ -15,7 +15,7 @@ TEST_CASE("Fauna::HerbivoreIndividual", "") {
   // PREPARE SETTINGS
   Parameters params;
   REQUIRE(params.is_valid());
-  Hft hft = create_hfts(1, params)[0];
+  Hft hft(*create_hfts(1, params)[0]);
   REQUIRE(hft.is_valid(params));
 
   const double BC = 0.5;     // body condition

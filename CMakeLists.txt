@@ -73,8 +73,6 @@ set (SOURCE_FILES
   src/Fauna/herbivore_vector.h
   src/Fauna/hft.cpp
   src/Fauna/hft.h
-  src/Fauna/hft_list.cpp
-  src/Fauna/hft_list.h
   src/Fauna/individual_population.cpp
   src/Fauna/individual_population.h
   src/Fauna/insfile_reader.cpp
@@ -157,7 +155,6 @@ if (BUILD_TESTING)
     src/Fauna/herbivore_cohort.test.cpp
     src/Fauna/herbivore_individual.test.cpp
     src/Fauna/hft.test.cpp
-    src/Fauna/hft_list.test.cpp
     src/Fauna/individual_population.test.cpp
     src/Fauna/insfile_reader.test.cpp
     src/Fauna/mortality_factors.test.cpp
