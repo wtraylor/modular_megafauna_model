@@ -19,10 +19,19 @@ TEST_CASE("Fauna::ReproductionLogistic", "") {
 
   const BreedingSeason season(START, LENGTH);
 
+  static const double B = 15.0;  // growth rate
+  static const double C = 0.3;   // midpoint
+
   // exceptions
   SECTION("exceptions") {
-    CHECK_THROWS(ReproductionLogistic(season, -1.0));
-    ReproductionLogistic rep(season, INC);
+    CHECK_THROWS(ReproductionLogistic(season, -1.0, B, C));
+    CHECK_THROWS(ReproductionLogistic(season, INC, 0.0, C));
+    CHECK_THROWS(ReproductionLogistic(season, INC, -1.0, C));
+    CHECK_THROWS(ReproductionLogistic(season, INC, B, 0.0));
+    CHECK_THROWS(ReproductionLogistic(season, INC, B, -1.0));
+    CHECK_THROWS(ReproductionLogistic(season, INC, B, 1.0));
+    CHECK_THROWS(ReproductionLogistic(season, INC, B, 1.1));
+    ReproductionLogistic rep(season, INC, B, C);
     CHECK_THROWS(rep.get_offspring_density(-1, OPT));
     CHECK_THROWS(rep.get_offspring_density(365, OPT));
     CHECK_THROWS(rep.get_offspring_density(START, -0.1));
@@ -32,8 +41,8 @@ TEST_CASE("Fauna::ReproductionLogistic", "") {
   SECTION("higher annual increase makes more offspring") {
     const double INC2 = INC * 1.5;
     REQUIRE(INC2 > INC);
-    ReproductionLogistic rep1(season, INC);
-    ReproductionLogistic rep2(season, INC2);
+    ReproductionLogistic rep1(season, INC, B, C);
+    ReproductionLogistic rep2(season, INC2, B, C);
     CHECK(rep1.get_offspring_density(START, OPT) <
           rep2.get_offspring_density(START, OPT));
     CHECK(rep1.get_offspring_density(START, OPT) < INC);
@@ -42,7 +51,7 @@ TEST_CASE("Fauna::ReproductionLogistic", "") {
 
   SECTION("better body condition makes more offspring") {
     const double BAD = OPT / 2.0;  // bad body condition
-    ReproductionLogistic rep(season, INC);
+    ReproductionLogistic rep(season, INC, B, C);
     CHECK(rep.get_offspring_density(START, BAD) <
           rep.get_offspring_density(START, OPT));
   }
@@ -50,7 +59,7 @@ TEST_CASE("Fauna::ReproductionLogistic", "") {
   SECTION("one-day season length -> all offspring at once") {
     const double BAD = OPT / 2.0;  // bad body condition
     BreedingSeason season_short(START, 1);
-    ReproductionLogistic rep(season_short, INC);
+    ReproductionLogistic rep(season_short, INC, B, C);
     CHECK(rep.get_offspring_density(START, OPT) == Approx(INC).epsilon(0.05));
     CHECK(rep.get_offspring_density(START, BAD) < INC);
 
@@ -61,7 +70,7 @@ TEST_CASE("Fauna::ReproductionLogistic", "") {
   }
 
   SECTION("Sum of offspring over year must be max. annual increase") {
-    ReproductionLogistic rep(season, INC);
+    ReproductionLogistic rep(season, INC, B, C);
     // sum over whole year
     double sum_year = 0.0;
     for (int d = 0; d < 365; d++)

@@ -397,8 +397,10 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
     }
     case (ReproductionModel::Logistic): {
       // create our model object
-      const ReproductionLogistic logistic(
-          breeding_season, get_hft().reproduction_annual_maximum);
+      const ReproductionLogistic logistic(breeding_season,
+                                          get_hft().reproduction_annual_maximum,
+                                          get_hft().reproduction_logistic[0],
+                                          get_hft().reproduction_logistic[1]);
       // get today’s value
       return logistic.get_offspring_density(
           get_today(), body_condition_gestation.get_average());

@@ -300,14 +300,14 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
       hft.life_history_physical_maturity_male = 1;
     } else if (lowercase(*value) == lowercase("ConstantMaximum"))
       hft.reproduction_model = ReproductionModel::ConstantMaximum;
-    else if (lowercase(*value) == lowercase("IlliusOConnor2000"))
+    else if (lowercase(*value) == lowercase("Logistic"))
       hft.reproduction_model = ReproductionModel::Logistic;
     else if (lowercase(*value) == lowercase("Linear"))
       hft.reproduction_model = ReproductionModel::Linear;
     else
       throw invalid_option(
           hft, "reproduction.model", *value,
-          {"None", "ConstantMaximum", "IlliusOConnor2000", "Linear"});
+          {"None", "ConstantMaximum", "Logistic", "Linear"});
   }
 
   // ======== NON-MANDATORY PARAMETERS =======
@@ -480,6 +480,19 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         find_hft_parameter<int>(table, "reproduction.gestation_length", true);
     assert(value);
     hft.reproduction_gestation_length = *value;
+  }
+
+  if (hft.reproduction_model == ReproductionModel::Logistic) {
+    // growth_rate
+    const auto growth_rate = find_hft_parameter<double>(
+        table, "reproduction.logistic.growth_rate", true);
+    assert(growth_rate);
+    hft.reproduction_logistic[0] = *growth_rate;
+    // midpoint
+    const auto midpoint = find_hft_parameter<double>(
+        table, "reproduction.logistic.midpoint", true);
+    assert(midpoint);
+    hft.reproduction_logistic[1] = *midpoint;
   }
 
   if (hft.expenditure_components.count(

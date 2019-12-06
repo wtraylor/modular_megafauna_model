@@ -419,6 +419,15 @@ struct Hft {
   /// Duration of pregnancy [number of months].
   int reproduction_gestation_length = 9;
 
+  /// Growth rate and midpoint for the logistic reproduction model.
+  /**
+   * 1. Growth rate (called b) must not be negative.
+   * 2. The midpoint (called c) must lie between 0 and 1.
+   * \see \ref ReproductionLogistic
+   * \see \ref ReproductionModel::Logistic
+   */
+  std::array<double, 2> reproduction_logistic = {15.0, 0.3};
+
   /// Algorithm to calculate herbivore reproduction.
   ReproductionModel reproduction_model = ReproductionModel::ConstantMaximum;
   /** @} */

@@ -354,6 +354,21 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
         is_valid = false;
       }
     }
+
+    if (reproduction_model == ReproductionModel::Logistic) {
+      // Growth rate
+      if (reproduction_logistic[0] <= 0.0) {
+        stream << "reproduction.logistic.growth_rate must be a positive number."
+               << " (" << reproduction_logistic[0] << ")" << std::endl;
+        is_valid = false;
+      }
+      // Midpoint
+      if (reproduction_logistic[1] <= 0.0 || reproduction_logistic[1] >= 1.0) {
+        stream << "reproduction.logistic.midpoint must be in interval (0,1). "
+               << "(" << reproduction_logistic[1] << ")" << std::endl;
+        is_valid = false;
+      }
+    }
     // add more checks in alphabetical order
   }
 

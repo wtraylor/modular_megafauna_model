@@ -111,6 +111,7 @@ shift_body_condition_for_starvation = true
 [hft.reproduction]
 annual_maximum   = 1.0 # offspring per female per year
 gestation_length = 9   # months
+logistic         = { growth_rate = 15.0, midpoint = 0.3 }
 model            = "ConstantMaximum"
 
 [hft.thermoregulation]

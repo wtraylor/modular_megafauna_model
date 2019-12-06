@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
     - `hft.digestion.efficiency` (formerly `Fauna::DIGESTION_EFFICIENCY_HINDGUTS`)
     - `hft.digestion.i_g_1992_ijk` (formerly constants in the function object `Fauna::GetDigestiveLimitIlliusGordon1992`)
     - `simulation.metabolizable_energy` (formerly `Fauna::ME_COEFFICIENT_GRASS`)
+    - `hft.reproduction.logistic.growth_rate` and `.midpoint` (formerly constant parameters in `Fauna::ReprIlliusOConnor2000`).
 - Default HFT groups “ruminants” and “hindguts” (replacing parameter `hft.digestion.type`)
 
 ### Changed
