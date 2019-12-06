@@ -14,11 +14,20 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <memory>
 
 namespace Fauna {
 
 // forward declarations
+class Hft;
 class Parameters;
+
+/// List of pointers to \ref Hft objects.
+/**
+ * Using shared pointers guarantees that the \ref Hft instances don’t get
+ * released while they may still be used.
+ */
+typedef std::vector< std::shared_ptr<const Hft> > HftList;
 
 /// Coefficient and exponent for an allometric relationship.
 /**

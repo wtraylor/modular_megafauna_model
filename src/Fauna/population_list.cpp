@@ -28,10 +28,6 @@ void PopulationList::add(PopulationInterface* new_pop) {
   list.emplace_back(new_pop);
 }
 
-void PopulationList::establish(const HftList& hftlist) {
-  // TODO
-}
-
 bool PopulationList::exists(const Hft& hft) const {
   for (const auto& itr : list)
     if (itr->get_hft() == hft) return true;

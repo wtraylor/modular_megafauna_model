@@ -17,18 +17,18 @@ TEST_CASE("Fauna::GetForageDemands") {
   CHECK_THROWS(GetForageDemands(NULL, Sex::Male));
 
   const Parameters params;
-  Hft hft = create_hfts(1, params)[0];
-  hft.foraging_limits.clear();
-  hft.digestion_limit = DigestiveLimit::None;
+  std::shared_ptr<Hft> hft(std::make_shared<Hft>(*create_hfts(1, params)[0]));
+  hft->foraging_limits.clear();
+  hft->digestion_limit = DigestiveLimit::None;
 
   const int DAY = 0;
   HabitatForage avail;                            // available forage
   const ForageEnergyContent ENERGY_CONTENT(1.0);  // [MJ/kgDM]
-  const double BODYMASS = hft.body_mass_female;   // [kg/ind]
+  const double BODYMASS = hft->body_mass_female;  // [kg/ind]
 
   SECTION("Check some exceptions.") {
     // Create the object.
-    GetForageDemands gfd(&hft, Sex::Female);
+    GetForageDemands gfd(hft, Sex::Female);
 
     // Exception because not initialized.
     CHECK_THROWS(gfd(1.0));
@@ -55,11 +55,11 @@ TEST_CASE("Fauna::GetForageDemands") {
   }
 
   SECTION("Grazer with Fixed Fraction") {
-    hft.foraging_diet_composer = DietComposer::PureGrazer;
-    hft.digestion_limit = DigestiveLimit::FixedFraction;
-    GetForageDemands gfd(&hft, Sex::Female);  // create object
+    hft->foraging_diet_composer = DietComposer::PureGrazer;
+    hft->digestion_limit = DigestiveLimit::FixedFraction;
+    GetForageDemands gfd(hft, Sex::Female);  // create object
     const double DIG_FRAC = 0.03;  // max. intake as fraction of body mass
-    hft.digestion_fixed_fraction = DIG_FRAC;
+    hft->digestion_fixed_fraction = DIG_FRAC;
     avail.grass.set_mass(999999);  // Lots of live grass (but nothing else).
 
     // We prescribe *lots* of hunger so that digestion *must* be the

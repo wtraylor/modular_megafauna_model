@@ -8,18 +8,14 @@
 #define FAUNA_INSFILE_READER_H
 
 #include "cpptoml.h"
-#include "hft_list.h"
 #include "parameters.h"
 
 namespace Fauna {
+// Forward declarations
+class Hft;
 
-/// All global and herbivore parameters in an instruction file.
-struct InsfileContent {
-  /// Herbivore functional types from the instruction file.
-  HftList hftlist;
-  /// Global parameters from the instruction file.
-  Parameters params;
-};
+// Repeat typedef from hft.h
+typedef std::vector<std::shared_ptr<const Hft> > HftList;
 
 /// Exception that an array parameter does not have the correct length.
 class bad_array_size : public std::runtime_error {

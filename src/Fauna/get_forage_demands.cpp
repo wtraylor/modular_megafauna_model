@@ -10,7 +10,8 @@
 #include "hft.h"
 using namespace Fauna;
 
-GetForageDemands::GetForageDemands(const Hft* hft, const Sex sex)
+GetForageDemands::GetForageDemands(std::shared_ptr<const Hft> hft,
+                                   const Sex sex)
     : hft(hft),
       sex(sex),
       today(-1)  // indicate that day has not been initialized.

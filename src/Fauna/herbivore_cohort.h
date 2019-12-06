@@ -42,7 +42,8 @@ class HerbivoreCohort : public HerbivoreBase {
    * Can be 0.0, but must not be negative.
    */
   HerbivoreCohort(const int age_days, const double body_condition,
-                  const Hft* hft, const Sex sex, const double ind_per_km2,
+                  std::shared_ptr<const Hft> hft, const Sex sex,
+                  const double ind_per_km2,
                   const ForageEnergyContent& metabolizable_energy);
 
   /// Birth constructor
@@ -56,7 +57,8 @@ class HerbivoreCohort : public HerbivoreBase {
    * \param ind_per_km2 Initial individual density [ind/km²].
    * Can be 0.0, but must not be negative.
    */
-  HerbivoreCohort(const Hft* hft, const Sex sex, const double ind_per_km2,
+  HerbivoreCohort(std::shared_ptr<const Hft> hft, const Sex sex,
+                  const double ind_per_km2,
                   const ForageEnergyContent& metabolizable_energy);
 
   /// Check if this and the other cohort are of the same age

@@ -23,10 +23,9 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
   const int IND_TOTAL = HFT_COUNT * IND_PER_HFT;  // dummy herbivores total
   const HftList hftlist = create_hfts(HFT_COUNT, Parameters());
   PopulationList pops;
-  for (HftList::const_iterator itr = hftlist.begin(); itr != hftlist.end();
-       itr++) {
+  for (const auto& hft : hftlist) {
     // create new population
-    PopulationInterface* new_pop = new DummyPopulation(&*itr);
+    PopulationInterface* new_pop = new DummyPopulation(hft.get());
     // fill with herbivores
     for (int i = 1; i <= IND_PER_HFT; i++) new_pop->create_offspring(1.0);
     // add newly created dummy population

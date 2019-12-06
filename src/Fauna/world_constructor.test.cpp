@@ -15,26 +15,25 @@
 using namespace Fauna;
 
 TEST_CASE("Fauna::WorldConstructor", "") {
-  Fauna::Parameters params;
-  REQUIRE(params.is_valid());
+  std::shared_ptr<Parameters> params(new Parameters);
+  REQUIRE(params->is_valid());
 
   // prepare HFT list
-  HftList hftlist = create_hfts(3, params);
+  HftList hftlist = create_hfts(3, *params);
 
   WorldConstructor world_cons(params, hftlist);
 
   SECTION("create_populations() for several HFTs") {
     PopulationList* pops = world_cons.create_populations();
     REQUIRE(pops != NULL);
-    for (auto& hft : hftlist) CHECK(pops->exists(hft));
+    for (auto& hft : hftlist) CHECK(pops->exists(*hft));
   }
 
   SECTION("create_populations() for one HFT") {
-    const Hft* phft = &hftlist[0];
-    PopulationList* pops = world_cons.create_populations(phft);
+    const auto hft = hftlist[0];
+    PopulationList* pops = world_cons.create_populations(hft);
     REQUIRE(pops != NULL);
-    CHECK(pops->exists(*phft));
-    CHECK(pops->get(*phft).get_hft() == *phft);
+    CHECK(pops->exists(*hft));
+    CHECK(pops->get(*hft).get_hft() == *hft);
   }
 }
-

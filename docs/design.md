@@ -173,7 +173,8 @@ Assertions are used…:
 
 All user-defined simulation parameters are contained in the two classes \ref Fauna::Hft and \ref Fauna::Parameters.
 All parameters must be constant within one simulation run.
-Since some classes work with pointers to the classes \ref Fauna::Hft, \ref Fauna::HftList, and \ref Fauna::Parameters, all objects of these classes must not be moved in memory.
+Since some classes work with pointers to the classes \ref Fauna::Hft and \ref Fauna::Parameters, all objects of these classes must not be moved in memory.
+For that reason, `std::shared_ptr` is used in \ref Fauna::HftList.
 
 The host program only passes the path to the [TOML](https://github.com/toml-lang/toml) instruction file to the class \ref Fauna::World.
 The parameters are parsed by the megafauna library independently, using [cpptoml](https://github.com/skystrife/cpptoml).
