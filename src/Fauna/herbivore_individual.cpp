@@ -10,8 +10,8 @@
 using namespace Fauna;
 
 HerbivoreIndividual::HerbivoreIndividual(
-    const int age_days, const double body_condition, const Hft* hft,
-    const Sex sex, const double area_km2,
+    const int age_days, const double body_condition,
+    std::shared_ptr<const Hft> hft, const Sex sex, const double area_km2,
     const ForageEnergyContent& metabolizable_energy)
     : HerbivoreBase(age_days, body_condition, hft, sex, metabolizable_energy),
       area_km2(area_km2),
@@ -23,7 +23,7 @@ HerbivoreIndividual::HerbivoreIndividual(
 }
 
 HerbivoreIndividual::HerbivoreIndividual(
-    const Hft* hft, const Sex sex, const double area_km2,
+    std::shared_ptr<const Hft> hft, const Sex sex, const double area_km2,
     const ForageEnergyContent& metabolizable_energy)
     : HerbivoreBase(hft, sex, metabolizable_energy),
       area_km2(area_km2),

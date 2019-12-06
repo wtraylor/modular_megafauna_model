@@ -11,8 +11,8 @@
 using namespace Fauna;
 
 HerbivoreCohort::HerbivoreCohort(
-    const int age_days, const double body_condition, const Hft* hft,
-    const Sex sex, const double ind_per_km2,
+    const int age_days, const double body_condition,
+    std::shared_ptr<const Hft> hft, const Sex sex, const double ind_per_km2,
     const ForageEnergyContent& metabolizable_energy)
     : HerbivoreBase(age_days, body_condition, hft, sex, metabolizable_energy),
       ind_per_km2(ind_per_km2) {
@@ -23,7 +23,7 @@ HerbivoreCohort::HerbivoreCohort(
 }
 
 HerbivoreCohort::HerbivoreCohort(
-    const Hft* hft, const Sex sex, const double ind_per_km2,
+    std::shared_ptr<const Hft> hft, const Sex sex, const double ind_per_km2,
     const ForageEnergyContent& metabolizable_energy)
     : HerbivoreBase(hft, sex, metabolizable_energy), ind_per_km2(ind_per_km2) {
   if (ind_per_km2 < 0.0)

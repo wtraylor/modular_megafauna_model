@@ -14,7 +14,7 @@
 using namespace Fauna;
 
 HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
-                             const Hft* hft, const Sex sex,
+                             std::shared_ptr<const Hft> hft, const Sex sex,
                              const ForageEnergyContent& metabolizable_energy)
     : hft(check_hft_pointer(hft)),  // can be NULL
       sex(sex),                     // always valid
@@ -53,7 +53,7 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
         "body_condition < 0.0");
 }
 
-HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex,
+HerbivoreBase::HerbivoreBase(std::shared_ptr<const Hft> hft, const Sex sex,
                              const ForageEnergyContent& metabolizable_energy)
     : hft(check_hft_pointer(hft)),
       sex(sex),
@@ -185,10 +185,10 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
   nitrogen.ingest(N_kg_per_ind.sum() * get_ind_per_km2());
 }
 
-Hft const* HerbivoreBase::check_hft_pointer(const Hft* _hft) {
+std::shared_ptr<const Hft> HerbivoreBase::check_hft_pointer(std::shared_ptr<const Hft> _hft) {
   // Exception error message is like from a constructor because that’s
   // where this function gets called.
-  if (_hft == NULL)
+  if (_hft.get() == NULL)
     throw std::invalid_argument(
         "Fauna::HerbivoreBase::HerbivoreBase() "
         "Parameter `hft` is NULL.");
