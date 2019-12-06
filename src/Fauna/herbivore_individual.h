@@ -33,6 +33,8 @@ class HerbivoreIndividual : public HerbivoreBase {
    * of physiological maximum [kg/kg].
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
+   * \param metabolizable_energy The (constant) metabolizable energy content
+   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
    * \throw std::invalid_argument if any parameter is invalid
    *
    * \param area_km2 The absolute area of the habitat [km²].
@@ -45,6 +47,8 @@ class HerbivoreIndividual : public HerbivoreBase {
   /**
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
+   * \param metabolizable_energy The (constant) metabolizable energy content
+   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
    * \throw std::invalid_argument if any parameter is invalid
    *
    * \param area_km2 The absolute area of the habitat [km²].
