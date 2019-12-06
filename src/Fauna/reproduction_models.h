@@ -111,8 +111,6 @@ class ReproductionConstMax {
 };
 
 /// Reproduction rate increases linearly with fat reserves up to maximum.
-/**
- */
 class ReproductionLinear {
  public:
   /// Constructor
