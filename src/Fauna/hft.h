@@ -308,10 +308,11 @@ struct Hft {
    * For hindgut fermenters there are various factors in the literature, e.g.:
    * - Johnson et al. (1982) give a value of 0.89 \cite johnson1982intake
    * - Foose (1982) gives a value of 0.84 \cite foose1982trophic
-   * - The model by Illius & Gordon (1992) gives a value of 0.93 \cite
-   * illius1992modelling \see \ref NetEnergyModel::Default \see \ref
-   * get_net_energy_content_default() \see \ref
-   * HerbivoreBase::get_net_energy_content()
+   * - The model by Illius & Gordon (1992) gives a value of 0.93
+   *   \cite illius1992modelling
+   * \see \ref NetEnergyModel::Default
+   * \see \ref get_net_energy_content_default()
+   * \see \ref HerbivoreBase::get_net_energy_content()
    */
   double digestion_efficiency = 1.0;
 
