@@ -109,7 +109,7 @@ struct missing_group : public std::runtime_error {
  * Usually the functions \ref Hft::is_valid() and \ref
  * Parameters::is_valid() are responsible for checking the bounds of a
  * parameter. Use this exception only if the data type of the \ref Hft
- * or \ref Parameter member variable does not allow being assigned the
+ * or \ref Parameters member variable does not allow being assigned the
  * user-specified value.
  */
 struct param_out_of_range : public std::runtime_error {
