@@ -38,9 +38,6 @@ class PopulationList {
    */
   void add(PopulationInterface* new_pop);
 
-  /// Spawn herbivores in empty populations.
-  void establish(const HftList&);
-
   /// Check whether a population for given HFT is already in the list.
   bool exists(const Hft&) const;
 
