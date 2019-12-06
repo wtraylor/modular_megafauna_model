@@ -99,9 +99,6 @@ set (SOURCE_FILES
   src/Fauna/world.cpp
   src/Fauna/world_constructor.cpp
   src/Fauna/world_constructor.h
-
-  src/Fauna/makeshift.h
-  src/Fauna/makeshift.cpp
   )
 
 add_library (ModularMegafaunaModel STATIC ${SOURCE_FILES})
