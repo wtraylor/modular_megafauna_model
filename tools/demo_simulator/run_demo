@@ -1,0 +1,44 @@
+#!/bin/bash
+# Execute the demo simulator and render results in one simple command.
+#
+# Author: Wolfgang Traylor, Senckenberg BiK-Frankfurt, Germany
+# Date: 2019
+# Copyright: ...
+
+set -e # Abort on errors.
+
+echo >&2 'Running demo simulation.'
+
+if ls *.tsv >/dev/null 2>&1; then
+  echo >&2 'Deleting old output files:'
+  find -maxdepth 1 -name '*.tsv' -print -delete
+fi
+
+if [ ! -x megafauna_demo_simulator ]; then
+  echo >&2 'No executable `megafauna_demo_simulator` available.'
+  echo >&2 'Has it been compiled successfully?'
+  exit 1
+fi
+
+echo >&2
+
+./megafauna_demo_simulator "megafauna.toml" "demo_simulation.toml"
+
+echo >&2
+
+if ! command -v Rscript >/dev/null >&1; then
+  echo >&2 'I cannot find the `Rscript` command.'
+  echo >&2 'R does not seem to be installed.'
+  echo >&2 'I cannot plot the results.'
+  exit 1
+fi
+
+Rscript --vanilla \
+  -e "library(knitr);\
+  library(markdown);\
+  knit('demo_results.Rmd', 'demo_results.md');\
+  markdownToHTML('demo_results.md', 'demo_results.html');"
+
+echo >&2 'Open the results in your browser:'
+echo >&2 \"$(readlink -f demo_results.html)\"
+xdg-open "$(readlink -f demo_results.html)"

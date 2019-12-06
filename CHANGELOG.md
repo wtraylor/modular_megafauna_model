@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
     - `simulation.metabolizable_energy` (formerly `Fauna::ME_COEFFICIENT_GRASS`)
     - `hft.reproduction.logistic.growth_rate` and `.midpoint` (formerly constant parameters in `Fauna::ReprIlliusOConnor2000`).
 - Default HFT groups “ruminants” and “hindguts” (replacing parameter `hft.digestion.type`)
+- Simple bash script `run_demo` produced in the build folder to execute demo simulator with results in one command.
 
 ### Changed
 - Replaced `std::map` with `std::array` in `Fauna::ForageValues` to improve speed.

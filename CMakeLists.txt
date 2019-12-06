@@ -240,6 +240,19 @@ if(BUILD_DEMO_SIMULATOR)
     "${CMAKE_CURRENT_BINARY_DIR}/demo_results.Rmd"
     COPYONLY
     )
+  configure_file (
+    "examples/demo_simulation.toml"
+    "${CMAKE_CURRENT_BINARY_DIR}/demo_simulation.toml"
+    COPYONLY
+    )
+  file(
+    COPY "tools/demo_simulator/run_demo"
+    DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
+    FILE_PERMISSIONS
+    WORLD_READ GROUP_READ OWNER_READ
+    WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
+    OWNER_WRITE
+    )
 endif()
 
 ###########################################################################
