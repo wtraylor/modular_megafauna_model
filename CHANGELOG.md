@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ## Unreleased
 ### Changed
 - Use `std::shared_ptr` for `Fauna::Parameters` and `Fauna::Hft`.
+- Renamed HFT group `hindguts` to `hindgut_fermenters`.
 
 ### Removed
 - The class `Fauna::HftList` is not needed anymore and replaced by a `typedef`.

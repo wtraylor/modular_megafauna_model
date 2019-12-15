@@ -29,8 +29,8 @@ namespace Fauna {
  *   gut capacity, introduced by Illius & Gordon (1999)
  *   \cite illius1999scaling
  * - Parameters i, j, and k are derived from regression analysis with 12
- *   mammalian herbivores (0.05--547 kg) and are specific to hindguts and
- *   ruminants (Shipley et al. 1999)\cite shipley1999predicting. They are
+ *   mammalian herbivores (0.05--547 kg) and are specific to hindgut fermenters
+ *   and ruminants (Shipley et al. 1999)\cite shipley1999predicting. They are
  *   specified per HFT in \ref Hft::digestion_i_g_1992_ijk
  *
  * \param bodymass_adult Body mass [kg] at physical maturity.

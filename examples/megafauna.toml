@@ -41,7 +41,7 @@ birth = 0.2
 # itself will be taken from the groups the HFT belongs to.
 
 [[group]]
-name = "hindguts"
+name = "hindgut_fermenters"
 [group.digestion]
 efficiency   = 0.93
 i_g_1992_ijk = [0.108, 3.284, 0.080]

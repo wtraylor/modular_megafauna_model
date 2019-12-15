@@ -329,7 +329,7 @@ struct Hft {
   /**
    * Shipley et al. (1999)\cite shipley1999predicting derived the parameters i,
    * j, and k from regression analysis with 12 mammalian herbivores (0.05--547
-   * kg) and are specific to hindguts and ruminants.
+   * kg) and are specific to hindgut fermenters and ruminants.
    *
    * |     | Hindgut | Ruminant |
    * |-----|---------|----------|
