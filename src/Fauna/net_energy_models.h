@@ -17,8 +17,8 @@ namespace Fauna {
  * corresponding NE content to obtain the amount of metabolizable
  * energy a herbivore can get out of the forage.
  *
- * Formula for ruminants given by Illius & Gordon (1992, p. 148)
- * \cite illius1992modelling
+ * Formula for ruminants given by Illius & Gordon (1991, p. 148)
+ * \cite illius1991prediction
  * citing ARC (1980)
  * \cite agricultural_research_council1980nutrient
  * \f[Net Energy [MJ/kgDM] =  ME * (0.503\frac{MJ}{kgDM} + 0.019 * ME)\f]
