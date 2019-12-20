@@ -60,42 +60,98 @@ same. Moreover, there has been no formal analysis how much a coarser temporal
 resolution affects the model outcome. So it seemed better to air on the side of
 a finer resolution.
 
+Offspring of large herbivores usually shows an even sex ratio.
+Most model processes don’t differentiate between males and females, only body size and age of maturity have sex-specific parameters.
+It seems important to at least set the basis for gender differentiation because some large herbivores do show pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but also in diet and behavior (e.g. elephants: \cite shannon2013diet).
+
 ### Life History {#sec_life_history}
 
 \todo Explain how growth is linear in \ref Fauna::HerbivoreBase::get_bodymass()
 
 ## Energy Household {#sec_energy_household}
 
-![Energy household for a ruminant. Modified after Minson (1990), Fig. 5.1.](images/energy_household.svg)
+![Energy household for a ruminant or hindgut fermenter. Modified after Minson (1990), Fig. 5.1.](images/energy_household.svg)
 
 ### Energy Content of Forage {#sec_energy_content}
 
-The diagram on the energy household shows how energy from the forage is used by
-an herbivore:
-"Gross energy" is the heat that could be produced from complete combustion of
-the feedstuff. From that, the part which is not excreted in faeces is the
-"digestible energy". Some proportion of it is then lost to urine and gas
-production, but the rest is "metabolizable". After deducing now the losses due
-to heat increment, the remaining "net energy" is effectively utilizable for all
-physiological processes.
+Research has focused mainly on the digestion of ruminant livestock, and so the
+megafauna model works primarily with the well-established formulas for
+ruminants. To account for the less efficient digestion of hindgut fermenters, a
+constant factor **η** is applied to the net energy extracted by these species
+\cite illius1992modelling.
 
-The proportional dry-matter **digestibility** of the forage is a central
+The diagram on the energy household shows how energy from the forage is used by
+an herbivore: "Gross energy" (**GE**) is the heat that could be produced from
+complete combustion of the feedstuff. From that, the part which is not excreted
+in faeces is the "digestible energy" (**DE**). Some proportion of it is then lost
+to urine and gas production, but the rest is "metabolizable energy" (**ME**).
+After deducing now the losses due to heat increment, the remaining "net energy"
+(**NE**) is effectively utilizable for all physiological processes.
+
+Gross energy depends only on the physical properties of the forage and measured
+in a combustion chamber. It is therefore independent of the animal.
+McDonald et al. (2010)\cite mcdonald2010animal provide an overview of gross
+energy in different feedstuffs for livestock (p. 259). It typically ranges
+between 18 to 20 MJ/kgDM.
+
+The proportional dry-matter digestibility (**DMD**) of the forage is a central
 variable in the model. It measures the fraction of the gross energy that is
-usable by the animal. The rest is undigestible fiber: protected cellulose and
-hemicellulose, silica, and cutin. Agricultural research has shown that the
-digestibility is closely correlated with metabolizable energy and net energy
-\cite minson1990forage.
+usable by the animal. The rest gets excreted in the feces because it is
+undigestible fiber: protected cellulose and hemicellulose, silica, and cutin.
+Agricultural research has shown that the digestibility is closely correlated
+with metabolizable energy and net energy (Minson, 1990, p. 7
+\cite minson1990forage).
+
+Digestibility is modelled as the one indicator for forage quality, which means
+forage energy density, and must be given by the vegetation model. This neglects
+any other effects on the digestibility, like interactions of different forages
+or effects of the individual animal on the digestibility.
 
 Digestibility is best measured *in vivo* in the rumen of a living ruminant, but
 there exist various indirect methods with reliable conversions. For an overview
 see \cite minson1990forage and \cite mcdonald2010animal. Formulas in the
 megafauna model assume *in vivo* digestibility.
 
-Research has focused mainly on the digestion of ruminant livestock, and so the
-megafauna model works primarily with the well-established formulas for
-ruminants. To account for the less efficient digestion of hindgut fermenters, a
-constant factor is applied to the net energy extracted by these species
-\cite illius1992modelling.
+Ruminants typically lose a relatively constant fraction of about 19% of
+digestible energy in urine and methane (López et al. 2000
+\cite lopez2000prediction, McDonald et al. 2010 \cite mcdonald2010animal,
+p. 258). The values for cattle and sheep are very similar here (McDonald et al.
+2010, p. 260). McDonald et al. (2010, p. 258) specify that 11–13 percent of
+digestible energy is lost as methane. The 19% loss to urine and gases is often
+expressed as the ratio of metabolizable energy to digestible energy,
+ME/DE=0.81. With a gross energy of about 19 MJ/kg, metabolizable energy in the
+digestible fraction of the forage is then about 15–16 MJ/kg. Various herbivore
+models work with these numbers, e.g.
+Givens et al. (1989)\cite givens1989digestibility,
+Illius and Gorden (1991)\cite illius1991prediction,
+Parker et al. (1991)\cite parker1996foraging,
+Illius and Gordon (1999)\cite illius1999scaling,
+Smallegange and Brinsting (2002)\cite smallegange2002food.
+
+A unitless cofficient **k** defines the efficiency of using the metabolizable
+energy for meeting maintenance energy needs, i.e. for converting metabolizable
+energy content to net energy content (**NE**) of the forage. Some livestock
+models differentiate between different k values to reflect different conversion
+efficiencies: for meeting maintenance needs (k<sub>m</sub>), for growth and
+fattening (k<sub>f</sub>), and for lactation (k<sub>l</sub>) (Minson, 1990,
+p. 151).
+
+However, in the Modular Megafauna Model, the energy budget only calculates with
+the “currency” NE. Therefore there is only one value k, which is functionally
+equivalent to k<sub>m</sub> of other models. The energy lost when anabolising
+fat is accounted for by an anabolism conversion coefficient, given in MJ/kg
+fat: net energy needed to build up one kg body fat. For using fat reserves to
+meet current energy needs fat is catabolised with a corresponding coefficient:
+the net energy gained from burning one kg of body fat.
+
+In summary, net energy content, NE in MJ/kgDM, depends on variable dry-matter
+digestibility, DMD, as the key variable. It is calculated for livestock
+ruminants, but can be adjusted with a species-specific, unitless factor, η. The
+metabolizable energy, ME, depends on the gross energy, and digestible energy,
+but for simplicity’s sake the user defines an empirical value, which usually
+lies around 16 MJ/kgDM.
+
+NE = ME * k * η = 16 MJ/kgDM * DMD * k * η
 
 ### Thermoregulation by Conductance {#sec_thermoregulation}
 
@@ -108,18 +164,16 @@ Thermoregulatory costs arise when the ambient temperature drops below the *lower
 The rate of heat loss depends on the *thermal conductance* of the whole animal (energy flow per temperature difference), which in turn depends on the *thermal conductivity* (energy flow per temperature difference and per thickness) of fur and skin and the body surface.
 Conductance is the inverse of resistance or insulation, and conductivity is the inverse of resistivity.
 
-- \f$T_{crit}\f$: Lower critical temperature [°C].
-- \f$T_{core}\f$: Body core temperature [°C].
-- \f$T_{air}\f$: Ambient air temperature [°C].
-- \f$E_{neu}\f$: Thermoneutral metabolic rate [MJ/ind/day]
-- \f$C\f$: Whole-body thermal conductance [W/ind].
-- \f$\Phi\f$: Heat loss [MJ/ind/day]
-\f[
-  T_{crit} = T_{core} - \frac{E_{neu}}{C}
-\f]
-\f[
-  \Phi = C * max(T_{crit} - T_{air}, 0)
-\f]
+- T<sub>crit</sub>: Lower critical temperature [°C].
+- T<sub>core</sub>: Body core temperature [°C].
+- T<sub>air</sub>: Ambient air temperature [°C].
+- E<sub>neu</sub>: Thermoneutral metabolic rate [MJ/ind/day]
+- C: Whole-body thermal conductance [W/ind].
+- Φ: Heat loss [MJ/ind/day]
+
+T<sub>crit</sub> = T<sub>core</sub> - E<sub>neu</sub> / C
+
+Φ = C * max(T<sub>crit</sub> - T<sub>air</sub>, 0)
 
 ![](thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms. – Peters 1983, Fig. 5.6")
 
