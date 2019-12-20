@@ -75,8 +75,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="194.05991"
-     inkscape:cy="161.39769"
+     inkscape:cx="281.59291"
+     inkscape:cy="162.62671"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -448,24 +448,24 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="180.58142"
-       y="189.95232"
+       x="135.98975"
+       y="235.2545"
        id="text5151"><tspan
          sodipodi:role="line"
          id="tspan5149"
-         x="180.58142"
-         y="189.95232"
+         x="135.98975"
+         y="235.2545"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;stroke-width:0.26458332">Anabolism</tspan></text>
     <text
        id="text5155"
-       y="236.0654"
-       x="136.5472"
+       y="188.7587"
+       x="180.87613"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        xml:space="preserve"><tspan
          sodipodi:role="line"
          id="tspan5157"
-         x="136.5472"
-         y="236.0654">Catabolism</tspan></text>
+         x="180.87613"
+         y="188.7587">Catabolism</tspan></text>
     <g
        id="g5175"
        transform="translate(0,-28.575)">
