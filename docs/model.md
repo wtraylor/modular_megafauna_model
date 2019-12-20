@@ -58,11 +58,36 @@ These are the state variables for each herbivore object:
 
 ## Energy Household {#sec_energy_household}
 
-![Energy household for an herbivore.](images/energy_household.svg)
+![Energy household for a ruminant. Modified after Minson (1990), Fig. 5.1.](images/energy_household.svg)
 
 ### Energy Content of Forage {#sec_energy_content}
 
-\todo explain gross, digestible, metabolizable and net energy
+The diagram on the energy household shows how energy from the forage is used by
+an herbivore:
+"Gross energy" is the heat that could be produced from complete combustion of
+the feedstuff. From that, the part which is not excreted in faeces is the
+"digestible energy". Some proportion of it is then lost to urine and gas
+production, but the rest is "metabolizable". After deducing now the losses due
+to heat increment, the remaining "net energy" is effectively utilizable for all
+physiological processes.
+
+The proportional dry-matter **digestibility** of the forage is a central
+variable in the model. It measures the fraction of the gross energy that is
+usable by the animal. The rest is undigestible fiber: protected cellulose and
+hemicellulose, silica, and cutin. Agricultural research has shown that the
+digestibility is closely correlated with metabolizable energy and net energy
+\cite minson1990forage.
+
+Digestibility is best measured *in vivo* in the rumen of a living ruminant, but
+there exist various indirect methods with reliable conversions. For an overview
+see \cite minson1990forage and \cite mcdonald2010animal. Formulas in the
+megafauna model assume *in vivo* digestibility.
+
+Research has focused mainly on the digestion of ruminant livestock, and so the
+megafauna model works primarily with the well-established formulas for
+ruminants. To account for the less efficient digestion of hindgut fermenters, a
+constant factor is applied to the net energy extracted by these species
+\cite illius1992modelling.
 
 ### Thermoregulation by Conductance {#sec_thermoregulation}
 
