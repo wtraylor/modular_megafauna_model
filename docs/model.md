@@ -29,7 +29,6 @@ For LPJ-GUESS you will find those aspects in the megafauna doxygen page of the L
 	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
 - Explain some design choices:
 	+ Why differentiate sexes? ⇒ e.g. Shannon et al. (2013), Guthrie (1990)
-	+ Why daily time steps?
 	+ Why forage types?
 	+ Suggest use cases for individual mode.
 
@@ -51,6 +50,15 @@ These are the state variables for each herbivore object:
 - Fat mass
 
 ![Basic model entities in the Modular Megafauna Model. Aggregation units (disjunct sets of simulation units) are only needed to aggregate output spatially.](images/model_entities.svg)
+
+The simulations run with daily time steps. The predecessor model by Adrian
+Pachzelt \cite pachzelt2013coupling operated on a monthly schedule and was thus
+much faster. However, the Modular Megafauna Model should be applicable on
+different spatial and temporal scales. LPJ-GUESS simulates vegetation in a
+daily schedule, and so naturally the attached herbivores should be treated the
+same. Moreover, there has been no formal analysis how much a coarser temporal
+resolution affects the model outcome. So it seemed better to air on the side of
+a finer resolution.
 
 ### Life History {#sec_life_history}
 
