@@ -58,6 +58,12 @@ These are the state variables for each herbivore object:
 
 ## Energy Household {#sec_energy_household}
 
+![Energy household for an herbivore.](images/energy_household.svg)
+
+### Energy Content of Forage {#sec_energy_content}
+
+\todo explain gross, digestible, metabolizable and net energy
+
 ### Thermoregulation by Conductance {#sec_thermoregulation}
 
 This model of thermoregulation is often called the **Scholander-Irving model** and was published in two seminal papers in 1950: \cite scholander1950adaptation \cite scholander1950heat.
@@ -94,10 +100,6 @@ The conductance can be approximated from the average conductivity and the body s
 Conductivity is the inverse of insulation: it is the heat flow per temperature difference per area.
 
 Body surface in m² scales roughly as \f$0.09*M^{0.66}\f$ ([Hudson & White 1985](\cite hudson1985bioenergetics)).
-
-### Energy Content of Forage {#sec_energy_content}
-
-\todo explain gross, digestible, metabolizable and net energy
 
 ### Foraging {#sec_foraging}
 

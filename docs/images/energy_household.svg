@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="309.95563mm"
+   height="358.37494mm"
+   viewBox="0 0 309.95562 358.37494"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   sodipodi:docname="energy_household.svg">
+  <title
+     id="title895">Herbivore Energy Household</title>
+  <defs
+     id="defs2">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path4583"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4864"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path4862"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path4580"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="537.98293"
+     inkscape:cy="766.44161"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1916"
+     inkscape:window-height="1161"
+     inkscape:window-x="0"
+     inkscape:window-y="18"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Herbivore Energy Household</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by/4.0/" />
+        <dc:date>2019-12-20</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Wolfgang Traylor, Senckenberg BiK-Frankfurt, Germany</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:language>English</dc:language>
+        <dc:description>Inspired by Figure 5.1 in: Minson, Dennis J. 1990. Forage in Ruminant Nutrition. San Diego, California: Academic Press.</dc:description>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(65.481074,36.886909)">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4520"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+       transform="scale(0.26458333)"><flowRegion
+         id="flowRegion4522"><rect
+           id="rect4524"
+           width="344.28571"
+           height="197.14285"
+           x="-20"
+           y="166.8054" /></flowRegion><flowPara
+         id="flowPara4526" /></flowRoot>    <g
+       id="g4571"
+       transform="translate(0,26.281956)">
+      <text
+         id="text4540"
+         y="116.4669"
+         x="60.476185"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           y="116.4669"
+           x="60.476185"
+           id="tspan4542"
+           sodipodi:role="line">Metabolizable Energy</tspan></text>
+      <rect
+         y="103.7198"
+         x="-0.77219737"
+         height="19.654762"
+         width="123.22024"
+         id="rect4550"
+         style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#002406;stroke-width:1.28299999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4566"
+       transform="translate(0,-0.35277229)">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         x="60.476189"
+         y="89.985321"
+         id="text4534"><tspan
+           y="89.985321"
+           x="60.476189"
+           id="tspan4536"
+           sodipodi:role="line">Digestible Energy</tspan></text>
+      <rect
+         style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#002406;stroke-width:1.28299999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect4552"
+         width="123.22024"
+         height="19.654762"
+         x="-0.77219737"
+         y="77.23822" />
+    </g>
+    <g
+       id="g4561"
+       transform="translate(0,-26.987498)">
+      <text
+         id="text4530"
+         y="63.410713"
+         x="60.698395"
+         style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="63.410713"
+           x="60.698395"
+           id="tspan4528"
+           sodipodi:role="line">Gross Energy</tspan></text>
+      <rect
+         y="50.75663"
+         x="-0.77219737"
+         height="19.654762"
+         width="123.22024"
+         id="rect4554"
+         style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#002406;stroke-width:1.28299999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4576"
+       transform="translate(0,52.916669)">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         x="60.476189"
+         y="142.78571"
+         id="text4546"><tspan
+           id="tspan4548"
+           sodipodi:role="line"
+           x="60.476189"
+           y="142.78571">Net Energy</tspan></text>
+      <rect
+         style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#002406;stroke-width:1.28299999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect4556"
+         width="123.22024"
+         height="19.654762"
+         x="-0.77219737"
+         y="130.20139" />
+    </g>
+    <path
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 60.176463,44.436116 v 20.505208 h -4.015774 l 4.677232,9.968899 4.677233,-9.968899 h -3.82664 V 44.436116 Z"
+       id="rect5006"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccc" />
+    <path
+       sodipodi:nodetypes="cccccccc"
+       inkscape:connector-curvature="0"
+       id="path5041"
+       d="M 60.176463,97.35278 V 117.858 h -4.015774 l 4.677232,9.9689 4.677233,-9.9689 h -3.82664 V 97.35278 Z"
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 60.176463,150.26945 v 20.50522 h -4.015774 l 4.677232,9.9689 4.677233,-9.9689 h -3.82664 v -20.50522 z"
+       id="path5043"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccc" />
+    <path
+       sodipodi:nodetypes="cccccccc"
+       inkscape:connector-curvature="0"
+       id="path5045"
+       d="m 61.079703,56.982843 68.130207,-1e-6 v 4.015773 l 9.9689,-4.677231 -9.9689,-4.677233 v 3.82664 H 61.079703 Z"
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="142.35376"
+       y="59.2411"
+       id="text5049"><tspan
+         sodipodi:role="line"
+         id="tspan5047"
+         x="142.35376"
+         y="59.2411"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332">Fecal Energy</tspan></text>
+    <path
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 61.079703,103.02034 68.130207,-1e-5 v 4.01578 l 9.9689,-4.67723 -9.9689,-4.677228 v 3.826628 H 61.079703 Z"
+       id="path5051"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccc" />
+    <text
+       id="text5055"
+       y="105.27858"
+       x="142.35376"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         sodipodi:role="line"
+         id="tspan5057"
+         x="142.35376"
+         y="105.27858">Methane Energy</tspan></text>
+    <path
+       sodipodi:nodetypes="cccccccc"
+       inkscape:connector-curvature="0"
+       id="path5059"
+       d="m 61.079703,116.24953 68.130207,-10e-6 v 4.01578 l 9.9689,-4.67723 -9.9689,-4.67724 v 3.82664 H 61.079703 Z"
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="142.35376"
+       y="118.50778"
+       id="text5063"><tspan
+         sodipodi:role="line"
+         id="tspan5065"
+         x="142.35376"
+         y="118.50778">Urinary Energy</tspan></text>
+    <path
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 61.079703,163.87456 68.130207,-1e-5 v 4.01578 l 9.9689,-4.67723 -9.9689,-4.67724 v 3.82664 H 61.079703 Z"
+       id="path5067"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccc" />
+    <text
+       id="text5071"
+       y="166.13277"
+       x="142.35376"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         sodipodi:role="line"
+         x="142.35376"
+         y="166.13277"
+         id="tspan5073">Heat Increment</tspan></text>
+    <path
+       sodipodi:nodetypes="cccccccc"
+       inkscape:connector-curvature="0"
+       id="path5077"
+       d="m -0.57881301,203.18615 v 10.98022 H -4.5945831 l 4.67723006,9.9689 4.67722994,-9.9689 H 0.93323693 v -10.98022 z"
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="-18.245615"
+       y="232.95892"
+       id="text5081"><tspan
+         sodipodi:role="line"
+         id="tspan5079"
+         x="-18.245615"
+         y="232.95892"
+         style="stroke-width:0.26458332">Maintenance</tspan></text>
+    <text
+       id="text5085"
+       y="247.44452"
+       x="23.76523"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.26458332"
+         y="247.44452"
+         x="23.76523"
+         sodipodi:role="line"
+         id="tspan5089">Thermo-</tspan><tspan
+         style="stroke-width:0.26458332"
+         y="260.67368"
+         x="23.76523"
+         sodipodi:role="line"
+         id="tspan5093">regulation</tspan></text>
+    <path
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 28.475909,203.18615 v 25.26772 h -4.015772 l 4.677229,9.9689 4.677232,-9.9689 h -3.826639 v -25.26772 z"
+       id="path5087"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccc" />
+    <path
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 57.530627,203.18615 v 53.31356 h -4.015772 l 4.677229,9.9689 4.677232,-9.9689 h -3.826639 v -53.31356 z"
+       id="path5095"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="49.126465"
+       y="277.21085"
+       id="text5099"><tspan
+         sodipodi:role="line"
+         id="tspan5097"
+         x="49.126465"
+         y="277.21085"
+         style="stroke-width:0.26458332">Locomotion</tspan></text>
+    <text
+       id="text5109"
+       y="291.69644"
+       x="75.86953"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.26458332"
+         y="291.69644"
+         x="75.86953"
+         id="tspan5107"
+         sodipodi:role="line">Reproduction</tspan></text>
+    <path
+       sodipodi:nodetypes="cccccccc"
+       inkscape:connector-curvature="0"
+       id="path5111"
+       d="m 89.280629,203.18615 v 69.71772 h -4.015772 l 4.677229,9.9689 4.677232,-9.9689 h -3.826639 v -69.71772 z"
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <ellipse
+       style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#002406;stroke-width:0.59723473;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.79170425, 0.59723475;stroke-dashoffset:0;stroke-opacity:1"
+       id="path5113"
+       cx="107.47086"
+       cy="-243.88806"
+       rx="94.976158"
+       ry="50.05751"
+       transform="matrix(0.95058771,0.31045611,0.31045611,-0.95058771,0,0)" />
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       id="text5117"
+       x="58.208332"
+       y="-7.5595236"
+       inkscape:transform-center-x="63.5"
+       inkscape:transform-center-y="28.348214"
+       transform="translate(2.294719,-3.3749238)"><textPath
+         xlink:href="#path5113"
+         startOffset="69.999999%"
+         id="textPath5119"><tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;stroke-width:0.26458332"
+   id="tspan5115">Field Metabolic Rate</tspan></textPath></text>
+    <g
+       id="g5131"
+       transform="translate(4.3221682,17.089514)">
+      <text
+         id="text5124"
+         y="229.72023"
+         x="195.41368"
+         style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="229.72023"
+           x="195.41368"
+           id="tspan5122"
+           sodipodi:role="line">Fat Reserves</tspan></text>
+      <ellipse
+         ry="13.607142"
+         rx="43.845234"
+         cy="225.93752"
+         cx="195.67465"
+         id="path5126"
+         style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#002406;stroke-width:1.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <path
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:2.51338577;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 672.92578,680.53516 v 147.56445 5.71484 h 5.71484 109.62891 v 15.17774 l 37.67774,-17.67774 -37.67774,-17.67773 v 14.46289 H 678.64062 V 680.53516 Z"
+       transform="matrix(0.26458333,0,0,0.26458333,-65.481074,23.127632)"
+       id="path5133"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccc" />
+    <path
+       sodipodi:nodetypes="cccccccccccc"
+       inkscape:connector-curvature="0"
+       id="path5147"
+       d="m 199.74658,228.79544 v -35.86808 l 1e-5,-1.5121 -1.51207,2e-5 -63.40178,-1e-5 -4e-5,-4.01575 -9.96889,4.67721 9.9689,4.67724 1e-5,-3.82663 h 63.40182 v 35.86806 z"
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="180.58142"
+       y="189.95232"
+       id="text5151"><tspan
+         sodipodi:role="line"
+         id="tspan5149"
+         x="180.58142"
+         y="189.95232"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;stroke-width:0.26458332">Anabolism</tspan></text>
+    <text
+       id="text5155"
+       y="236.0654"
+       x="136.5472"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         sodipodi:role="line"
+         id="tspan5157"
+         x="136.5472"
+         y="236.0654">Catabolism</tspan></text>
+    <g
+       id="g5175"
+       transform="translate(0,-28.575)">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         x="60.57695"
+         y="8.6846704"
+         id="text5161"><tspan
+           sodipodi:role="line"
+           id="tspan5167"
+           x="60.57695"
+           y="8.6846704">Forage</tspan></text>
+      <ellipse
+         style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#002406;stroke-width:1.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="ellipse5163"
+         cx="60.814663"
+         cy="5.9277329"
+         rx="43.845234"
+         ry="13.607142" />
+    </g>
+    <path
+       sodipodi:nodetypes="cccccccc"
+       inkscape:connector-curvature="0"
+       id="path5177"
+       d="M 60.176463,-8.4805523 V 12.024654 h -4.015774 l 4.677232,9.968899 4.677233,-9.968899 h -3.82664 V -8.4805523 Z"
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  </g>
+</svg>
