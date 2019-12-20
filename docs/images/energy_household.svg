@@ -74,9 +74,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497475"
-     inkscape:cx="537.98293"
-     inkscape:cy="766.44161"
+     inkscape:zoom="0.9899495"
+     inkscape:cx="380.02749"
+     inkscape:cy="148.45968"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -324,32 +324,37 @@
          id="tspan5079"
          x="-18.245615"
          y="232.95892"
-         style="stroke-width:0.26458332">Maintenance</tspan></text>
+         style="stroke-width:0.26458332">Maintenance</tspan><tspan
+         sodipodi:role="line"
+         x="-18.245615"
+         y="246.1881"
+         style="stroke-width:0.26458332"
+         id="tspan894">&amp; Growth</tspan></text>
     <text
        id="text5085"
-       y="247.44452"
+       y="260.14453"
        x="23.76523"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        xml:space="preserve"><tspan
          style="stroke-width:0.26458332"
-         y="247.44452"
+         y="260.14453"
          x="23.76523"
          sodipodi:role="line"
          id="tspan5089">Thermo-</tspan><tspan
          style="stroke-width:0.26458332"
-         y="260.67368"
+         y="273.37369"
          x="23.76523"
          sodipodi:role="line"
          id="tspan5093">regulation</tspan></text>
     <path
        style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 28.475909,203.18615 v 25.26772 h -4.015772 l 4.677229,9.9689 4.677232,-9.9689 h -3.826639 v -25.26772 z"
+       d="m 28.475909,203.18615 v 35.85105 h -4.015772 l 4.677229,9.9689 4.677232,-9.9689 h -3.826639 v -35.85105 z"
        id="path5087"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccc" />
     <path
        style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 57.530627,203.18615 v 53.31356 h -4.015772 l 4.677229,9.9689 4.677232,-9.9689 h -3.826639 v -53.31356 z"
+       d="m 57.530627,203.18615 v 63.89689 h -4.015772 l 4.677229,9.9689 4.677232,-9.9689 h -3.826639 v -63.89689 z"
        id="path5095"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccc" />
@@ -357,21 +362,21 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="49.126465"
-       y="277.21085"
+       y="289.38168"
        id="text5099"><tspan
          sodipodi:role="line"
          id="tspan5097"
          x="49.126465"
-         y="277.21085"
+         y="289.38168"
          style="stroke-width:0.26458332">Locomotion</tspan></text>
     <text
        id="text5109"
-       y="291.69644"
+       y="303.3381"
        x="75.86953"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        xml:space="preserve"><tspan
          style="stroke-width:0.26458332"
-         y="291.69644"
+         y="303.3381"
          x="75.86953"
          id="tspan5107"
          sodipodi:role="line">Reproduction</tspan></text>
@@ -379,7 +384,7 @@
        sodipodi:nodetypes="cccccccc"
        inkscape:connector-curvature="0"
        id="path5111"
-       d="m 89.280629,203.18615 v 69.71772 h -4.015772 l 4.677229,9.9689 4.677232,-9.9689 h -3.826639 v -69.71772 z"
+       d="m 89.280629,203.18615 v 80.30105 h -4.015772 l 4.677229,9.9689 4.677232,-9.9689 h -3.826639 v -80.30105 z"
        style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#002406;stroke-width:0.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <ellipse
        style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#002406;stroke-width:0.59723473;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.79170425, 0.59723475;stroke-dashoffset:0;stroke-opacity:1"
