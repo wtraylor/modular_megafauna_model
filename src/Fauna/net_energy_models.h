@@ -38,7 +38,7 @@ namespace Fauna {
  * \see \ref Parameters::forage_gross_energy
  * \see \ref Hft::digestion_me_coefficient
  * \see \ref Hft::digestion_ne_coefficient
- * \see \ref Hft::net_energy_model
+ * \see \ref Hft::digestion_net_energy_model
  * \see \ref NetEnergyModel
  */
 inline ForageEnergyContent get_net_energy_from_gross_energy(
