@@ -184,9 +184,12 @@ enum class ForagingLimit {
 };
 
 /// How forage net energy content is calculated.
+/**
+ * \see \ref sec_energy_content
+ */
 enum class NetEnergyModel {
-  /// Use \ref get_net_energy_content_default()
-  Default
+  /// Use \ref get_net_energy_from_gross_energy().
+  GrossEnergyFraction
 };
 
 /// One way how a herbivore can die.
@@ -307,24 +310,6 @@ struct Hft {
   /** The default value is from Peters (1983)\cite peters1983ecological. */
   double digestion_catabolism_coefficient = 39.3;
 
-  /// Factor for reducing forage net energy content for non-ruminants.
-  /**
-   * The default model for net energy content
-   * (\ref get_net_energy_content_default())
-   * is designed for ruminant digestion. A constant factor may be applied to
-   * account for less efficient digestive systems, e.g. hindgut fermentation.
-   *
-   * For hindgut fermenters there are various factors in the literature, e.g.:
-   * - Johnson et al. (1982) give a value of 0.89 \cite johnson1982intake
-   * - Foose (1982) gives a value of 0.84 \cite foose1982trophic
-   * - The model by Illius & Gordon (1992) gives a value of 0.93
-   *   \cite illius1992modelling
-   * \see \ref NetEnergyModel::Default
-   * \see \ref get_net_energy_content_default()
-   * \see \ref HerbivoreBase::get_net_energy_content()
-   */
-  double digestion_efficiency = 1.0;
-
   /// Constants i, j, k for \ref DigestionLimit::IlliusGordon1992 (grass only).
   /**
    * Shipley et al. (1999)\cite shipley1999predicting derived the parameters i,
@@ -349,8 +334,28 @@ struct Hft {
   /// Constraint for maximum daily forage intake.
   DigestiveLimit digestion_limit = DigestiveLimit::FixedFraction;
 
+  /// Metabolizable energy coefficient (ME/DE ratio) [fractional].
+  /**
+   * A number between 0 and 1 defining the fraction of digestible energy (DE)
+   * that can be used by the animal’s own metabolism. The rest is lost to gas
+   * production (methane) and urine.
+   * \see \ref NetEnergyModel::GrossEnergyFraction
+   * \see \ref sec_energy_content
+   */
+  double digestion_me_coefficient = 0.8;
+
+  /// Coefficient (k) for converting metabolizable to net energy (NE) [frac.].
+  /**
+   * A number between 0 and 1 that defines how much of the metabolizable energy
+   * in forage is usable as net energy for meeting the energy needs of the
+   * metabolic rate. The energy loss is known as heat increment.
+   * \see \ref NetEnergyModel::GrossEnergyFraction
+   * \see \ref sec_energy_content
+   */
+  double digestion_ne_coefficient = 0.7;
+
   /// Algorithm for forage energy content.
-  NetEnergyModel digestion_net_energy_model = NetEnergyModel::Default;
+  NetEnergyModel digestion_net_energy_model = NetEnergyModel::GrossEnergyFraction;
   /** @} */
 
   /** @{ \name "establishment": Spawning new herbivores in empty habitats. */

@@ -4,12 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
-### Changed
-- Use `std::shared_ptr` for `Fauna::Parameters` and `Fauna::Hft`.
-- Renamed HFT group `hindguts` to `hindgut_fermenters`.
+### Added
+- Net energy content model: `NetEnergyModel::GrossEnergyFraction`
+    - Parameter `forage.gross_energy`
+    - Parameter `hft.digestion.me_coefficient`
+    - Parameter `hft.digestion.ne_coefficient`
 
 ### Removed
-- The class `Fauna::HftList` is not needed anymore and replaced by a `typedef`.
+- The old “default” net energy model `get_net_energy_content_default()`.
+    - Parameter `hft.digestion.efficiency` (less efficient digestion of hindgut
+      fermenters is now in `hft.digestion.me_coefficient`).
 
 ## 0.2.0 - 2019-12-06
 ### Added

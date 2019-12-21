@@ -188,12 +188,6 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto value =
-        find_hft_parameter<double>(table, "digestion.efficiency", true);
-    assert(value);
-    hft.digestion_efficiency = *value;
-  }
-  {
-    const auto value =
         find_hft_array_parameter<double>(table, "digestion.i_g_1992_ijk", true);
     assert(value);
     if (value->size() != 3)
@@ -266,14 +260,26 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
                            {"PureGrazer"});
   }
   {
+    const auto value =
+        find_hft_parameter<double>(table, "digestion.me_coefficient", true);
+    assert(value);
+    hft.digestion_me_coefficient = *value;
+  }
+  {
+    const auto value =
+        find_hft_parameter<double>(table, "digestion.ne_coefficient", true);
+    assert(value);
+    hft.digestion_ne_coefficient = *value;
+  }
+  {
     const auto value = find_hft_parameter<std::string>(
         table, "digestion.net_energy_model", true);
     assert(value);
-    if (lowercase(*value) == lowercase("Default"))
-      hft.digestion_net_energy_model = NetEnergyModel::Default;
+    if (lowercase(*value) == lowercase("GrossEnergyFraction"))
+      hft.digestion_net_energy_model = NetEnergyModel::GrossEnergyFraction;
     else
       throw invalid_option(hft, "digestion.net_energy_model", *value,
-                           {"Default"});
+                           {"GrossEnergyFraction"});
   }
   {
     const auto array = find_hft_array_parameter<std::string>(
@@ -632,13 +638,12 @@ void InsfileReader::read_table_simulation() {
       throw missing_parameter(key);
   }
   for (const auto& ft : Fauna::FORAGE_TYPES) {
-    const auto key =
-        "simulation.metabolizable_energy." + get_forage_type_name(ft);
+    const auto key = "forage.gross_energy." + get_forage_type_name(ft);
     auto value = ins->get_qualified_as<double>(key);
     if (!value) throw missing_parameter(key);
     if (*value < 0)
       throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
-    params.metabolizable_energy[ft] = *value;
+    params.forage_gross_energy[ft] = *value;
   }
   {
     const auto key = "simulation.one_hft_per_habitat";

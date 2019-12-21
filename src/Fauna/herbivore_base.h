@@ -98,25 +98,26 @@ class HerbivoreBase : public HerbivoreInterface {
    * of physiological maximum [kg/kg].
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
-   * \param metabolizable_energy The (constant) metabolizable energy content
-   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
+   * \param forage_gross_energy The (constant) gross energy content for the
+   * forage types [MJ/kgDM]. See: \ref Parameters::forage_gross_energy
    * \throw std::invalid_argument If `hft==NULL` or
    * `age_days <= 0` or `body_condition` not in [0,1].
    */
-  HerbivoreBase(const int age_days, const double body_condition, std::shared_ptr<const Hft> hft,
-                const Sex sex, const ForageEnergyContent& metabolizable_energy);
+  HerbivoreBase(const int age_days, const double body_condition,
+                std::shared_ptr<const Hft> hft, const Sex sex,
+                const ForageEnergyContent& forage_gross_energy);
 
   /// Birth constructor.
   /**
    * Herbivores are born with \ref Hft::body_fat_birth.
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
-   * \param metabolizable_energy The (constant) metabolizable energy content
-   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
+   * \param forage_gross_energy The (constant) gross energy content
+   * for the forage types [MJ/kgDM]. See: \ref Parameters::forage_gross_energy
    * \throw std::invalid_argument If `hft==NULL`.
    */
   HerbivoreBase(std::shared_ptr<const Hft> hft, const Sex sex,
-                const ForageEnergyContent& metabolizable_energy);
+                const ForageEnergyContent& forage_gross_energy);
 
   /// Virtual destructor, which will be called by derived classes.
   virtual ~HerbivoreBase() = default;
@@ -151,7 +152,7 @@ class HerbivoreBase : public HerbivoreInterface {
   /// Check whether the constant member variables match those of another object.
   bool constant_members_match(const HerbivoreBase& other) const {
     return sex == other.sex && hft.get() == other.hft.get() &&
-           metabolizable_energy == other.metabolizable_energy &&
+           forage_gross_energy == other.forage_gross_energy &&
            breeding_season == other.breeding_season;
   }
 
@@ -205,7 +206,7 @@ class HerbivoreBase : public HerbivoreInterface {
   std::shared_ptr<const Hft> hft;  // pointer to const Hft; initialized first!
   Sex sex;
   BreedingSeason breeding_season;
-  ForageEnergyContent metabolizable_energy;
+  ForageEnergyContent forage_gross_energy;
   /** @} */  // constants
 
   /// @{ \name State Variables

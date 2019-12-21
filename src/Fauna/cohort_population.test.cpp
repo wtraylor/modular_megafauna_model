@@ -76,8 +76,8 @@ TEST_CASE("Fauna::CohortPopulation", "") {
       HerbivoreVector vec = pop.get_list();
       const int old_count = vec.size();
       // call birth constructor with zero density
-      static const ForageEnergyContent ME = Parameters().metabolizable_energy;
-      HerbivoreCohort dead(hft, Sex::Female, 0.0, ME);
+      static const ForageEnergyContent GE = Parameters().forage_gross_energy;
+      HerbivoreCohort dead(hft, Sex::Female, 0.0, GE);
       for (HerbivoreVector::iterator itr = vec.begin(); itr != vec.end();
            itr++) {
         HerbivoreInterface* pint = *itr;

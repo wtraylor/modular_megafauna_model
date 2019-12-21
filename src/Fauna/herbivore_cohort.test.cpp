@@ -17,11 +17,11 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
   std::shared_ptr<Hft> hft(std::make_shared<Hft>(*create_hfts(1, params)[0]));
   REQUIRE(hft->is_valid(params));
 
-  static const auto ME = Parameters().metabolizable_energy;
+  static const auto GE = Parameters().forage_gross_energy;
 
   // exceptions (only specific to HerbivoreCohort)
   // initial density negative
-  CHECK_THROWS(HerbivoreCohort(10, 0.5, hft, Sex::Male, -1.0, ME));
+  CHECK_THROWS(HerbivoreCohort(10, 0.5, hft, Sex::Male, -1.0, GE));
 
   const double BC = 0.5;  // body condition
   const int AGE = 3 * 365;
@@ -29,36 +29,36 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
 
   // constructor (only test what is specific to HerbivoreCohort)
   REQUIRE(
-      HerbivoreCohort(AGE, BC, hft, Sex::Male, DENS, ME).get_ind_per_km2() ==
+      HerbivoreCohort(AGE, BC, hft, Sex::Male, DENS, GE).get_ind_per_km2() ==
       Approx(DENS));
 
   SECTION("is_same_age()") {
     REQUIRE(AGE % 365 == 0);
-    const HerbivoreCohort cohort1(AGE, BC, hft, Sex::Male, DENS, ME);
+    const HerbivoreCohort cohort1(AGE, BC, hft, Sex::Male, DENS, GE);
     // very similar cohort
     CHECK(cohort1.is_same_age(
-        HerbivoreCohort(AGE, BC, hft, Sex::Male, DENS, ME)));
+        HerbivoreCohort(AGE, BC, hft, Sex::Male, DENS, GE)));
     // in the same year
     CHECK(cohort1.is_same_age(
-        HerbivoreCohort(AGE + 364, BC, hft, Sex::Male, DENS, ME)));
+        HerbivoreCohort(AGE + 364, BC, hft, Sex::Male, DENS, GE)));
     // the other is younger
     CHECK(!cohort1.is_same_age(
-        HerbivoreCohort(AGE - 364, BC, hft, Sex::Male, DENS, ME)));
+        HerbivoreCohort(AGE - 364, BC, hft, Sex::Male, DENS, GE)));
     // the other is much older
     CHECK(!cohort1.is_same_age(
-        HerbivoreCohort(AGE + 366, BC, hft, Sex::Male, DENS, ME)));
+        HerbivoreCohort(AGE + 366, BC, hft, Sex::Male, DENS, GE)));
   }
 
   SECTION("merge") {
-    HerbivoreCohort cohort(AGE, BC, hft, Sex::Male, DENS, ME);
+    HerbivoreCohort cohort(AGE, BC, hft, Sex::Male, DENS, GE);
 
     SECTION("exceptions") {
       SECTION("wrong age") {  // wrong age
-        HerbivoreCohort other(AGE + 365, BC, hft, Sex::Male, DENS, ME);
+        HerbivoreCohort other(AGE + 365, BC, hft, Sex::Male, DENS, GE);
         CHECK_THROWS(cohort.merge(other));
       }
       SECTION("wrong sex") {  // wrong sex
-        HerbivoreCohort other(AGE, BC, hft, Sex::Female, DENS, ME);
+        HerbivoreCohort other(AGE, BC, hft, Sex::Female, DENS, GE);
         CHECK_THROWS(cohort.merge(other));
       }
       SECTION("wrong HFT") {  // wrong HFT
@@ -66,7 +66,7 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
             std::make_shared<Hft>(*create_hfts(2, params)[1]));
         REQUIRE(hft2.get() != hft.get());
         REQUIRE(*hft2 != *hft);
-        HerbivoreCohort other(AGE, BC, hft2, Sex::Male, DENS, ME);
+        HerbivoreCohort other(AGE, BC, hft2, Sex::Male, DENS, GE);
         CHECK_THROWS(cohort.merge(other));
       }
     }
@@ -75,7 +75,7 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
       const double old_bodymass = cohort.get_bodymass();
       const double BC2 = BC + 0.1;  // more fat in the other cohort
       const double DENS2 = DENS * 1.5;
-      HerbivoreCohort other(AGE, BC2, hft, Sex::Male, DENS2, ME);
+      HerbivoreCohort other(AGE, BC2, hft, Sex::Male, DENS2, GE);
       cohort.merge(other);
       // The other cohort is gone
       CHECK(other.get_kg_per_km2() == 0.0);

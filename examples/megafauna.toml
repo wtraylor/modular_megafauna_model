@@ -7,13 +7,14 @@
 ###############################################################################
 
 [simulation]
-
 establishment_interval = 3650 # every 10 years
 forage_distribution    = "Equally"
 habitat_area_km2       = 1.0  # km² per habitat
 herbivore_type         = "Cohort"
-metabolizable_energy   = { grass = 15.0 } # MJ/kgDM
 one_hft_per_habitat    = true
+
+[forage]
+gross_energy = { grass = 19.0 } # MJ/kgDM
 
 [output]
 format = "TextTables"
@@ -43,13 +44,13 @@ birth = 0.2
 [[group]]
 name = "hindgut_fermenters"
 [group.digestion]
-efficiency   = 0.93
+me_coefficient = 0.7
 i_g_1992_ijk = [0.108, 3.284, 0.080]
 
 [[group]]
 name = "ruminants"
 [group.digestion]
-efficiency   = 1.0
+me_coefficient = 0.8
 i_g_1992_ijk = [0.034, 3.565, 0.077]
 
 ###############################################################################
@@ -80,7 +81,8 @@ anabolism_coefficient  = 54.6 # MJ/kg
 catabolism_coefficient = 39.3 # MJ/kg
 fixed_fraction         = 0.05 # kgDM per kg body mass
 limit                  = "FixedFraction"
-net_energy_model       = "Default"
+ne_coefficient         = 0.7
+net_energy_model       = "GrossEnergyFraction"
 
 [hft.establishment]
 age_range = { first = 1, last = 15 } # years

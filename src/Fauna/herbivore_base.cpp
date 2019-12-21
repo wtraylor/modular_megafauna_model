@@ -15,12 +15,12 @@ using namespace Fauna;
 
 HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
                              std::shared_ptr<const Hft> hft, const Sex sex,
-                             const ForageEnergyContent& metabolizable_energy)
+                             const ForageEnergyContent& forage_gross_energy)
     : hft(check_hft_pointer(hft)),  // can be NULL
       sex(sex),                     // always valid
       age_days(age_days),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
-      metabolizable_energy(metabolizable_energy),
+      forage_gross_energy(forage_gross_energy),
       energy_budget(body_condition * get_max_fatmass(),  // initial fat mass
                     get_max_fatmass(),                   // maximum fat mass
                     hft->digestion_anabolism_coefficient,
@@ -54,11 +54,11 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
 }
 
 HerbivoreBase::HerbivoreBase(std::shared_ptr<const Hft> hft, const Sex sex,
-                             const ForageEnergyContent& metabolizable_energy)
+                             const ForageEnergyContent& forage_gross_energy)
     : hft(check_hft_pointer(hft)),
       sex(sex),
       age_days(0),
-      metabolizable_energy(metabolizable_energy),
+      forage_gross_energy(forage_gross_energy),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
       energy_budget(get_hft().body_fat_birth * get_hft().body_mass_birth,
                     get_max_fatmass(), hft->digestion_anabolism_coefficient,
@@ -185,7 +185,8 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
   nitrogen.ingest(N_kg_per_ind.sum() * get_ind_per_km2());
 }
 
-std::shared_ptr<const Hft> HerbivoreBase::check_hft_pointer(std::shared_ptr<const Hft> _hft) {
+std::shared_ptr<const Hft> HerbivoreBase::check_hft_pointer(
+    std::shared_ptr<const Hft> _hft) {
   // Exception error message is like from a constructor because that’s
   // where this function gets called.
   if (_hft.get() == NULL)
@@ -275,10 +276,11 @@ double HerbivoreBase::get_max_fatmass() const {
 ForageEnergyContent HerbivoreBase::get_net_energy_content(
     const Digestibility digestibility) const {
   switch (get_hft().digestion_net_energy_model) {
-    case (NetEnergyModel::Default):
-      return get_net_energy_content_default(digestibility,
-                                            metabolizable_energy) *
-             get_hft().digestion_efficiency;
+    case (NetEnergyModel::GrossEnergyFraction):
+      return get_net_energy_from_gross_energy(
+          forage_gross_energy, digestibility,
+          get_hft().digestion_me_coefficient,
+          get_hft().digestion_ne_coefficient);
       // ADD NEW NET ENERGY MODELS HERE
       // in new case statements
     default:

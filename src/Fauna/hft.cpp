@@ -114,11 +114,17 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       // the HFT is still valid (e.g. for testing purpose)
     }
 
-    if (digestion_net_energy_model == NetEnergyModel::Default &&
-        (digestion_efficiency <= 0.0 || digestion_efficiency > 1.0)) {
-      stream << "digestion.efficiency must be in the interval (0,1]."
-             << std::endl;
-      is_valid = false;
+    if (digestion_net_energy_model == NetEnergyModel::GrossEnergyFraction) {
+      if (digestion_me_coefficient <= 0.0 || digestion_me_coefficient >= 1.0) {
+        stream << "digestion.me_coefficient is not between 0 and 1"
+               << " (current value: " << digestion_me_coefficient << ")"
+               << std::endl;
+      }
+      if (digestion_ne_coefficient <= 0.0 || digestion_ne_coefficient >= 1.0) {
+        stream << "digestion.ne_coefficient is not between 0 and 1"
+               << " (current value: " << digestion_ne_coefficient << ")"
+               << std::endl;
+      }
     }
 
     if (establishment_age_range.first < 0 ||
