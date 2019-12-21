@@ -60,9 +60,12 @@ same. Moreover, there has been no formal analysis how much a coarser temporal
 resolution affects the model outcome. So it seemed better to air on the side of
 a finer resolution.
 
-Offspring of large herbivores usually shows an even sex ratio.
-Most model processes don’t differentiate between males and females, only body size and age of maturity have sex-specific parameters.
-It seems important to at least set the basis for gender differentiation because some large herbivores do show pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but also in diet and behavior (e.g. elephants: \cite shannon2013diet).
+Offspring of large herbivores usually shows an even sex ratio. Most model
+processes don’t differentiate between males and females, only body size and age
+of maturity have sex-specific parameters. It seems important to at least set
+the basis for gender differentiation because some large herbivores do show
+pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but
+also in diet and behavior (e.g. elephants: \cite shannon2013diet).
 
 ### Life History {#sec_life_history}
 
@@ -74,19 +77,13 @@ It seems important to at least set the basis for gender differentiation because 
 
 ### Energy Content of Forage {#sec_energy_content}
 
-Research has focused mainly on the digestion of ruminant livestock, and so the
-megafauna model works primarily with the well-established formulas for
-ruminants. To account for the less efficient digestion of hindgut fermenters, a
-constant factor **η** is applied to the net energy extracted by these species
-\cite illius1992modelling.
-
 The diagram on the energy household shows how energy from the forage is used by
-an herbivore: "Gross energy" (**GE**) is the heat that could be produced from
+an herbivore: **Gross energy** (GE) is the heat that could be produced from
 complete combustion of the feedstuff. From that, the part which is not excreted
-in faeces is the "digestible energy" (**DE**). Some proportion of it is then lost
-to urine and gas production, but the rest is "metabolizable energy" (**ME**).
-After deducing now the losses due to heat increment, the remaining "net energy"
-(**NE**) is effectively utilizable for all physiological processes.
+in faeces is the **digestible energy** (DE). Some proportion of it is then lost
+to urine and gas production, but the rest is **metabolizable energy** (ME).
+After deducing now the losses due to heat increment, the remaining **net
+energy** (NE) is effectively utilizable for all physiological processes.
 
 Gross energy depends only on the physical properties of the forage and measured
 in a combustion chamber. It is therefore independent of the animal.
@@ -94,7 +91,7 @@ McDonald et al. (2010)\cite mcdonald2010animal provide an overview of gross
 energy in different feedstuffs for livestock (p. 259). It typically ranges
 between 18 to 20 MJ/kgDM.
 
-The proportional dry-matter digestibility (**DMD**) of the forage is a central
+The proportional **dry-matter digestibility** (DMD) of the forage is a central
 variable in the model. It measures the fraction of the gross energy that is
 usable by the animal. The rest gets excreted in the feces because it is
 undigestible fiber: protected cellulose and hemicellulose, silica, and cutin.
@@ -119,50 +116,84 @@ p. 258). The values for cattle and sheep are very similar here (McDonald et al.
 2010, p. 260). McDonald et al. (2010, p. 258) specify that 11–13 percent of
 digestible energy is lost as methane. The 19% loss to urine and gases is often
 expressed as the ratio of metabolizable energy to digestible energy,
-ME/DE=0.81. With a gross energy of about 19 MJ/kg, metabolizable energy in the
-digestible fraction of the forage is then about 15–16 MJ/kg. Various herbivore
-models work with these numbers, e.g.
+ME/DE=0.81. This ratio is also known as the **metabolizable energy
+coefficient** (e.g. in Robbins, 1983\cite robbins1983wildlife).With a gross
+energy of about 19 MJ/kg, metabolizable energy in the digestible fraction of
+the forage is then about 15–16 MJ/kg. Various herbivore models work with these
+numbers,for instance:
 Givens et al. (1989)\cite givens1989digestibility,
 Illius and Gorden (1991)\cite illius1991prediction,
 Parker et al. (1991)\cite parker1996foraging,
 Illius and Gordon (1999)\cite illius1999scaling,
 Smallegange and Brinsting (2002)\cite smallegange2002food.
 
-A unitless cofficient **k** defines the efficiency of using the metabolizable
-energy for meeting maintenance energy needs, i.e. for converting metabolizable
-energy content to net energy content (**NE**) of the forage. Some livestock
+\warning Some publication, like Minson (1990)\cite minson1990forage, use the
+term “metabolizability of energy” or “metabolizable energy coefficient” to
+refer to the ME/GE ratio: the metabolizable fraction of the gross energy. This
+includes fecal losses and has the dry-matter digestibility already calculated
+in. However, the modular megafauna model works with explicit digestibility
+values and the ME/DE ratio. You could divide the ME/GE ratio by the fractional
+digestibility to get ME/DE.
+
+Research has focused mainly on the digestion of ruminant livestock, and so the
+megafauna model works primarily with the well-established formulas for
+ruminants. To account for the less efficient digestion of hindgut fermenters,
+the ME/DE ratio can be adjusted. This will have the same effect as applying a
+coefficient to the net energy as e.g. done by Illius & Gordon (1992)
+\cite illius1992modelling.
+
+A unitless **net energy cofficient** (k) defines the efficiency of using the
+metabolizable energy for meeting maintenance energy needs, i.e. for converting
+metabolizable energy content to **net energy** content (NE) of the forage. (In
+Robbins (1983)\cite robbins1983wildlife it is called *NEC*.)  Some livestock
 models differentiate between different k values to reflect different conversion
 efficiencies: for meeting maintenance needs (k<sub>m</sub>), for growth and
 fattening (k<sub>f</sub>), and for lactation (k<sub>l</sub>) (Minson, 1990,
 p. 151).
 
 However, in the Modular Megafauna Model, the energy budget only calculates with
-the “currency” NE. Therefore there is only one value k, which is functionally
+the “currency” net energy: the energy available to meet basal or field
+metabolic rates. Therefore there is only one value k, which is functionally
 equivalent to k<sub>m</sub> of other models. The energy lost when anabolising
 fat is accounted for by an anabolism conversion coefficient, given in MJ/kg
 fat: net energy needed to build up one kg body fat. For using fat reserves to
 meet current energy needs fat is catabolised with a corresponding coefficient:
 the net energy gained from burning one kg of body fat.
 
-In summary, net energy content, NE in MJ/kgDM, depends on variable dry-matter
-digestibility, DMD, as the key variable. It is calculated for livestock
-ruminants, but can be adjusted with a species-specific, unitless factor, η. The
-metabolizable energy, ME, depends on the gross energy, and digestible energy,
-but for simplicity’s sake the user defines an empirical value, which usually
-lies around 16 MJ/kgDM.
+Feeding trials have shown that the net energy coefficient can linearly depend
+on the metabolizable energy content of the forage (Robbins, 1983, p. 296f;
+Minson, 1990, p. 93, 155). However, this effect seems to be mostly related to
+very high levels of feeding and by pelleting the feed. In this model, the net
+energy coefficient is assumed to be constant.
 
-NE = ME * k * η = 16 MJ/kgDM * DMD * k * η
+In summary: Net energy content, NE in MJ/kgDM, depends on variable dry-matter
+digestibility, DMD, as the key variable. Gross energy, GE, is user-specified
+for each forage type. Only the digestible fraction of the gross energy is
+counted as digestible energy, DE. How much metabolizable energy can be
+extracted from the digested forage parts is species-specific and defined by the
+user as the metabolizable energy coefficient or ME/DE ratio. Finally, a
+user-defined factor, k, defines how efficient the metabolizable energy is used
+to meet net energy needs for maintenance and other activities.
+
+NE = ME * k = DE * ME/DE * k = GE * DMD * ME/DE * k
 
 ### Thermoregulation by Conductance {#sec_thermoregulation}
 
-This model of thermoregulation is often called the **Scholander-Irving model** and was published in two seminal papers in 1950: \cite scholander1950adaptation \cite scholander1950heat.
-The more detailed implementation is taken from Peters (1983)\cite peters1983ecological.
+This model of thermoregulation is often called the **Scholander-Irving model**
+and was published in two seminal papers in 1950:
+\cite scholander1950adaptation \cite scholander1950heat. The more detailed
+implementation is taken from Peters (1983) \cite peters1983ecological.
 
-Homeothermic animals have extra energy costs to maintain their body core temperature.
-Through basal metabolism and other ways of energy burning, heat is already passively created.
-Thermoregulatory costs arise when the ambient temperature drops below the *lower critical temperature*: the passive heat from thermoneutral metabolism is not counterbalance heat loss to the environment.
-The rate of heat loss depends on the *thermal conductance* of the whole animal (energy flow per temperature difference), which in turn depends on the *thermal conductivity* (energy flow per temperature difference and per thickness) of fur and skin and the body surface.
-Conductance is the inverse of resistance or insulation, and conductivity is the inverse of resistivity.
+Homeothermic animals have extra energy costs to maintain their body core
+temperature. Through basal metabolism and other ways of energy burning, heat is
+already passively created. Thermoregulatory costs arise when the ambient
+temperature drops below the *lower critical temperature*: the passive heat from
+thermoneutral metabolism is not counterbalance heat loss to the environment.
+The rate of heat loss depends on the *thermal conductance* of the whole animal
+(energy flow per temperature difference), which in turn depends on the *thermal
+conductivity* (energy flow per temperature difference and per thickness) of fur
+and skin and the body surface. Conductance is the inverse of resistance or
+insulation, and conductivity is the inverse of resistivity.
 
 - T<sub>crit</sub>: Lower critical temperature [°C].
 - T<sub>core</sub>: Body core temperature [°C].
