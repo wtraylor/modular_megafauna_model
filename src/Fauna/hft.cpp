@@ -105,7 +105,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
         mortality_minimum_density_threshold >= 1.0) {
       stream << "mortality.minimum_density_threshold not between 0 and 1"
              << " (current value: " << mortality_minimum_density_threshold
-             << ")";
+             << ")" << std::endl;
       is_valid = false;
     }
 
