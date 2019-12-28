@@ -181,6 +181,8 @@ Execute the helper script `./tools/cppclean.sh` in the Bash.
 
 ### Doxygen Documentation
 
+The documentation is completely in English, preferably with American spelling.
+
 #### BibTeX Bibliography
 [BibTeX](www.bibtex.org) is used for bibliographic references: [docs/bibliography.bib](docs/bibliography.bib).
 The Doxygen command `\cite` is used for that.
