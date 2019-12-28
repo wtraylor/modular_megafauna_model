@@ -107,7 +107,7 @@ Blaxter (1989)\cite blaxter1989energy, p. 242f:
 The diagram on the energy household shows how energy from the forage is used by
 an herbivore: **Gross energy** (GE) is the heat that could be produced from
 complete combustion of the feedstuff. From that, the part which is not excreted
-in faeces is the **digestible energy** (DE). Some proportion of it is then lost
+in feces is the **digestible energy** (DE). Some proportion of it is then lost
 to urine and gas production, but the rest is **metabolizable energy** (ME).
 After deducing now the losses due to heat increment, the remaining **net
 energy** (NE) is effectively utilizable for all physiological processes.
@@ -126,7 +126,7 @@ Agricultural research has shown that the digestibility is closely correlated
 with metabolizable energy and net energy (Minson, 1990, p. 7
 \cite minson1990forage).
 
-Digestibility is modelled as the one indicator for forage quality, which means
+Digestibility is modeled as the one indicator for forage quality, which means
 forage energy density, and must be given by the vegetation model. This neglects
 any other effects on the digestibility, like interactions of different forages
 or effects of the individual animal on the digestibility.
@@ -184,7 +184,7 @@ metabolic rates. Therefore there is only one value k, which is functionally
 equivalent to k<sub>m</sub> of other models. The energy lost when anabolising
 fat is accounted for by an anabolism conversion coefficient, given in MJ/kg
 fat: net energy needed to build up one kg body fat. For using fat reserves to
-meet current energy needs fat is catabolised with a corresponding coefficient:
+meet current energy needs fat is catabolized with a corresponding coefficient:
 the net energy gained from burning one kg of body fat.
 
 Feeding trials have shown that the net energy coefficient can linearly depend
