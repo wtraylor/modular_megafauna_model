@@ -67,9 +67,36 @@ the basis for gender differentiation because some large herbivores do show
 pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but
 also in diet and behavior (e.g. elephants: \cite shannon2013diet).
 
+### Body Composition
+Blaxter (1989)\cite blaxter1989energy, p. 51:
+
+> Schematically the body can be regarded as consisting of two components – fat
+> and non-fat. […] The non-fat material consists of water, the minerals of bone
+> and soft tissue, carbohydrate, nitrogen-containing compounds, and, in the
+> living animal, the contents of the digestive tract. The non-fat component of
+> the body is usually referred to as the *lean body mass* or *fat-free mass.*
+> Many studies, commencing with those of Murray (1922) and embracing a wide
+> range of adult species, have shown that the chemical composition of the
+> fat-free body is approximately constant. The wide range of composition of
+> animals is largely, but not entirely, due to variation in the proportion of
+> fat.
+
 ### Life History {#sec_life_history}
 
 \todo Explain how growth is linear in \ref Fauna::HerbivoreBase::get_bodymass()
+
+Blaxter (1989)\cite blaxter1989energy, p. 242f:
+
+> Growth in weight is characteristically sigmoid; it accelerates during a short
+> initial period and then declines until, as maturity approaches, it approaches
+> zero. A large number of different functions have been used to describe this
+> relationship between weight and time. Virtually all of them state that dW/dt,
+> the rate of change in weight with time (or *rate of growth*) is a function of
+> weight at the time that dW/dt is measured. Such functions include the
+> logistic equation, the Gompertz function and the Bertalanffy function. These
+> are derived algebraically in most textbooks of biomathematics (see Causto
+> 1977). They were generalised by F.J. Richards (1959) and have been reviewed
+> and critically analysed by Parts (1982).
 
 ## Energy Household {#sec_energy_household}
 
