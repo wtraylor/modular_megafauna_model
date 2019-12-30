@@ -105,10 +105,10 @@ Blaxter (1989)\cite blaxter1989energy, p. 242f:
 ### Energy Content of Forage {#sec_energy_content}
 
 The model for energy content in herbivore forage presented here is based on the
-partitioning of metabolizable energy. This framework has been employed at least
-since the 1960s. Its conceptual shortcomings and difficulties in practical
-methodology are summarized by Birkett & de Lange (2001)
-\cite birkett2001limitations.
+partitioning of metabolizable energy. A historical overview of the model
+framework is given by Ferrell & Oltjen (2008) \cite ferrell2008asas. Its
+conceptual shortcomings and difficulties in practical methodology are
+summarized by Birkett & de Lange (2001) \cite birkett2001limitations.
 
 The diagram on the energy household shows how energy from the forage is used by
 an herbivore: **Gross energy** (GE) is the heat that could be produced from
