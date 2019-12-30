@@ -113,10 +113,10 @@ After deducing now the losses due to heat increment, the remaining **net
 energy** (NE) is effectively utilizable for all physiological processes.
 
 Gross energy depends only on the physical properties of the forage and measured
-in a combustion chamber. It is therefore independent of the animal.
-McDonald et al. (2010)\cite mcdonald2010animal provide an overview of gross
-energy in different feedstuffs for livestock (p. 259). It typically ranges
-between 18 to 20 MJ/kgDM.
+in a combustion chamber. It is therefore independent of the animal. McDonald et
+al. (2010, p. 259)\cite mcdonald2010animal provide an overview of gross energy
+in different feedstuffs for livestock. It typically ranges between 18 to 20
+MJ/kgDM.
 
 The proportional **dry-matter digestibility** (DMD) of the forage is a central
 variable in the model. It measures the fraction of the gross energy that is
@@ -124,85 +124,104 @@ usable by the animal. The rest gets excreted in the feces because it is
 undigestible fiber: protected cellulose and hemicellulose, silica, and cutin.
 Agricultural research has shown that the digestibility is closely correlated
 with metabolizable energy and net energy (Minson, 1990, p. 7
-\cite minson1990forage).
-
-Digestibility is modeled as the one indicator for forage quality, which means
-forage energy density, and must be given by the vegetation model. This neglects
-any other effects on the digestibility, like interactions of different forages
-or effects of the individual animal on the digestibility.
-
-Digestibility is best measured *in vivo* in the rumen of a living ruminant, but
-there exist various indirect methods with reliable conversions. For an overview
-see \cite minson1990forage and \cite mcdonald2010animal. Formulas in the
-megafauna model assume *in vivo* digestibility.
+\cite minson1990forage). Therefore digestibility is modeled as the *one*
+indicator for forage quality, i.e. forage energy density, and must be given by
+the vegetation model. This neglects any other effects on the digestibility,
+like interactions of different forages or effects of the individual animal on
+the digestibility. Digestibility is best measured *in vivo* in the rumen of a
+living ruminant, but there exist various indirect methods with reliable
+conversions. For an overview see Minson (1990) \cite minson1990forage and
+McDonald (2010) \cite mcdonald2010animal. Formulas in the megafauna model
+assume *in vivo* digestibility.
 
 Ruminants typically lose a relatively constant fraction of about 19% of
 digestible energy in urine and methane (López et al. 2000
 \cite lopez2000prediction, McDonald et al. 2010 \cite mcdonald2010animal,
-p. 258). The values for cattle and sheep are very similar here (McDonald et al.
-2010, p. 260). McDonald et al. (2010, p. 258) specify that 11–13 percent of
-digestible energy is lost as methane. The 19% loss to urine and gases is often
-expressed as the ratio of metabolizable energy to digestible energy,
+p. 258). The difference between cattle and sheep is very small here (McDonald
+et al. 2010, p. 260). McDonald et al. (2010, p. 258) specify that 11–13 percent
+of digestible energy is lost as methane. The 19% loss to urine and gases is
+often expressed as the ratio of metabolizable energy to digestible energy,
 ME/DE=0.81. This ratio is also known as the **metabolizable energy
 coefficient** (e.g. in Robbins, 1983\cite robbins1983wildlife).With a gross
 energy of about 19 MJ/kg, metabolizable energy in the digestible fraction of
 the forage is then about 15–16 MJ/kg. Various herbivore models work with these
-numbers,for instance:
-Givens et al. (1989)\cite givens1989digestibility,
-Illius and Gorden (1991)\cite illius1991prediction,
-Parker et al. (1991)\cite parker1996foraging,
-Illius and Gordon (1999)\cite illius1999scaling,
+numbers, for instance: Givens et al. (1989)\cite givens1989digestibility,
+Illius and Gorden (1991)\cite illius1991prediction, Parker et al. (1991)
+\cite parker1996foraging, Illius and Gordon (1999)\cite illius1999scaling,
 Smallegange and Brinsting (2002)\cite smallegange2002food.
 
 \warning Some publication, like Minson (1990)\cite minson1990forage, use the
 term “metabolizability of energy” or “metabolizable energy coefficient” to
-refer to the ME/GE ratio: the metabolizable fraction of the gross energy. This
-includes fecal losses and has the dry-matter digestibility already calculated
-in. However, the modular megafauna model works with explicit digestibility
-values and the ME/DE ratio. You could divide the ME/GE ratio by the fractional
-digestibility to get ME/DE.
+refer to the ME/GE ratio: the metabolizable fraction of the *gross* energy.
+This includes fecal losses and has the dry-matter digestibility already
+calculated in. However, the modular megafauna model works with explicit
+digestibility values and the ME/DE ratio. You could divide the ME/GE ratio by
+the fractional digestibility to get ME/DE.
 
 Research has focused mainly on the digestion of ruminant livestock, and so the
 megafauna model works primarily with the well-established formulas for
 ruminants. To account for the less efficient digestion of hindgut fermenters,
 the ME/DE ratio can be adjusted. This will have the same effect as applying a
 coefficient to the net energy as e.g. done by Illius & Gordon (1992)
-\cite illius1992modelling.
+\cite illius1992modelling and Pachzelt et al. (2015)
+\cite pachzelt2015potential.
 
-A unitless **net energy cofficient** (k) defines the efficiency of using the
+A unitless **net energy coefficient** (k) defines the efficiency of using the
 metabolizable energy for meeting maintenance energy needs, i.e. for converting
 metabolizable energy content to **net energy** content (NE) of the forage. (In
-Robbins (1983)\cite robbins1983wildlife it is called *NEC*.)  Some livestock
+Robbins (1983)\cite robbins1983wildlife it is called *NEC*.) Many livestock
 models differentiate between different k values to reflect different conversion
 efficiencies: for meeting maintenance needs (k<sub>m</sub>), for growth and
-fattening (k<sub>f</sub>), and for lactation (k<sub>l</sub>) (Minson, 1990,
-p. 151).
+fattening (k<sub>f</sub>), and for lactation (k<sub>l</sub>) (Blaxter 1989,
+p. 254ff\cite blaxter1989energy; Minson 1990\cite minson1990forage, p. 151).
 
-However, in the Modular Megafauna Model, the energy budget only calculates with
-the “currency” net energy: the energy available to meet basal or field
-metabolic rates. Therefore there is only one value k, which is functionally
-equivalent to k<sub>m</sub> of other models. The energy lost when anabolising
-fat is accounted for by an anabolism conversion coefficient, given in MJ/kg
-fat: net energy needed to build up one kg body fat. For using fat reserves to
-meet current energy needs fat is catabolized with a corresponding coefficient:
-the net energy gained from burning one kg of body fat.
+In the Modular Megafauna Model, the energy budget calculates with the
+“currency” net energy. Basal and field metabolic rate and other energy
+expenditures are directly “paid” with net energy. Therefore the efficiency
+factor k<sub>m</sub> is used to convert from metabolizable energy to net
+energy. Body fat is anabolized from metabolizable forage energy with the
+efficiency factor k<sub>f</sub>.
+
+Catabolized fat reserves are directly available as net energy to balance any
+energy “debts” on a daily basis. Like in Illius & O’Connor (2000)
+\cite illius2000resource, the combustion (gross) energy of fat tissue is used
+to convert from mass to energy. That is, we assume 100% conversion efficiency
+from body fat to net energy.
+
+![Model of energy retention in an herbivore. km and kf denote the slope of the line, i.e. the efficiency of utilizing metabolizable energy. When fed maintenance requirements, the animal will neither gain nor lose weight. Below that point it will starve (i.e. catabolize reserves) and above it will build reserves (i.e. anabolize fat). After McDonald et al. (2010), Fig. 11.5.](images/retention_over_intake.svg)
 
 Feeding trials have shown that the net energy coefficient can linearly depend
 on the metabolizable energy content of the forage (Robbins, 1983, p. 296f;
 Minson, 1990, p. 93, 155). However, this effect seems to be mostly related to
-very high levels of feeding and by pelleting the feed. In this model, the net
-energy coefficient is assumed to be constant.
+very high levels of feeding and by pelleting the feed. In this model, the
+energy coefficients k<sub>m</sub> and k<sub>f</sub> are assumed to be constant.
+
+\remark
+Internally the model converts first from metabolizable energy to net energy to
+pay energy expenditures. If there is excess net energy, this gets converted
+*afterwards* to body fat. The amount of net energy required to build up one
+kilogram of body fat is given by the product of fat gross energy content,
+k<sub>m</sub> and k<sub>f</sub>⁻¹. Note that Illius & O’Connor (2000)
+\cite illius2000resource probably took the same approach when they specify an
+anabolism coefficient of 54.6 MJ/kg, citing Blaxter (1989)
+\cite blaxter1989energy. Namely, 54.6 MJ/kg is the product of 39 MJ/kg,
+k<sub>m</sub>=0.70, and the inverse of k<sub>f</sub>=0.50; probably Illius &
+O’Connor (2000) took the latter two figures from Table 12.1 on page 259 in
+Blaxter (1989) for oxen on an “average diet.”
 
 In summary: Net energy content, NE in MJ/kgDM, depends on variable dry-matter
-digestibility, DMD, as the key variable. Gross energy, GE, is user-specified
-for each forage type. Only the digestible fraction of the gross energy is
-counted as digestible energy, DE. How much metabolizable energy can be
-extracted from the digested forage parts is species-specific and defined by the
-user as the metabolizable energy coefficient or ME/DE ratio. Finally, a
-user-defined factor, k, defines how efficient the metabolizable energy is used
-to meet net energy needs for maintenance and other activities.
+digestibility, DMD, as the key variable. Gross energy content, GE, is
+user-specified for each forage type. Only the digestible fraction of the gross
+energy in dry matter is counted as digestible energy, DE. How much
+metabolizable energy can be extracted from the digested part of the forage is
+species-specific and defined by the user as the metabolizable energy
+coefficient or ME/DE ratio. A user-defined factor, k<sub>m</sub>, defines how
+efficient the metabolizable energy is used to meet net energy needs for
+maintenance and other activities. The factor k<sub>f</sub> denotes the
+efficiency for converting from ME to body fat (anabolism), but burning of fat
+reserves happens without energy loss. The net energy content is given by:
 
-NE = ME * k = DE * ME/DE * k = GE * DMD * ME/DE * k
+NE = ME * k<sub>m</sub> = DE * ME/DE * k<sub>m</sub> = GE * DMD * ME/DE * k<sub>m</sub>
 
 ### Thermoregulation by Conductance {#sec_thermoregulation}
 
