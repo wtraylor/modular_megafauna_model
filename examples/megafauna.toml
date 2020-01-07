@@ -63,6 +63,7 @@ groups = [ "ruminants", "all_hfts" ] # first overrides last group
 [hft.body_fat]
 birth              = 0.2   # kg/kg
 deviation          = 0.125 # body condition
+gross_energy       = 39.3  # MJ/kg
 maximum            = 0.3   # kg/kg
 maximum_daily_gain = 0.05  # kg/kg/day
 
@@ -78,7 +79,6 @@ start  = 121 # Julian day
 [hft.digestion]
 allometric             = { coefficient = 0.050, exponent = 0.76 }
 anabolism_coefficient  = 54.6 # MJ/kg
-catabolism_coefficient = 39.3 # MJ/kg
 fixed_fraction         = 0.05 # kgDM per kg body mass
 limit                  = "FixedFraction"
 ne_coefficient         = 0.7

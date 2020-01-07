@@ -271,6 +271,15 @@ struct Hft {
    */
   double body_fat_deviation = 0.125;
 
+  /// Conversion factor from fat mass to net energy [MJ/kg].
+  /**
+   * The default value is from Blaxter (1989, p. 52)
+   * \cite blaxter1989energy:
+   * > For example, in sheep the enthalpy of combustion of the ether
+   * > extracted (crude) fat is 39.1 kJ/g.
+   */
+  double body_fat_gross_energy = 39.1;
+
   /// Maximum proportional fat mass [kg/kg].
   double body_fat_maximum = 0.3;
 
@@ -305,10 +314,6 @@ struct Hft {
   /// Conversion factor from net forage energy to fat mass [MJ/kg].
   /** The default value is from Peters (1983)\cite peters1983ecological. */
   double digestion_anabolism_coefficient = 54.6;
-
-  /// Conversion factor from fat mass to net energy [MJ/kg].
-  /** The default value is from Peters (1983)\cite peters1983ecological. */
-  double digestion_catabolism_coefficient = 39.3;
 
   /// Constants i, j, k for \ref DigestionLimit::IlliusGordon1992 (grass only).
   /**

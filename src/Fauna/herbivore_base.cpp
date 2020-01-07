@@ -24,7 +24,7 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
       energy_budget(body_condition * get_max_fatmass(),  // initial fat mass
                     get_max_fatmass(),                   // maximum fat mass
                     hft->digestion_anabolism_coefficient,
-                    hft->digestion_catabolism_coefficient),
+                    hft->body_fat_gross_energy),
       get_forage_demands_per_ind(hft, sex),
       today(-1),  // not initialized yet; call simulate_day() first
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {
@@ -62,7 +62,7 @@ HerbivoreBase::HerbivoreBase(std::shared_ptr<const Hft> hft, const Sex sex,
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
       energy_budget(get_hft().body_fat_birth * get_hft().body_mass_birth,
                     get_max_fatmass(), hft->digestion_anabolism_coefficient,
-                    hft->digestion_catabolism_coefficient),
+                    hft->body_fat_gross_energy),
       get_forage_demands_per_ind(hft, sex),
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {}
 

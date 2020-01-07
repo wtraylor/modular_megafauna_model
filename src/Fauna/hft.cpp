@@ -48,6 +48,13 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       is_valid = false;
     }
 
+    if (body_fat_gross_energy <= 0.0) {
+      stream << "`body_fat.gross_energy` must be a positive number."
+             << " (current value: " << body_fat_gross_energy << ")"
+             << std::endl;
+      is_valid = false;
+    }
+
     if (body_fat_maximum <= 0.0 || body_fat_maximum >= 1.0) {
       stream << "body_fat.maximum must be between 0.0 and 1.0"
              << body_fat_maximum << ")" << std::endl;
@@ -229,13 +236,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
     if (digestion_anabolism_coefficient <= 0.0) {
       stream << "`digestion.anabolism_coefficient` must be a positive number."
              << " (current value: " << digestion_anabolism_coefficient << ")"
-             << std::endl;
-      is_valid = false;
-    }
-
-    if (digestion_catabolism_coefficient <= 0.0) {
-      stream << "`digestion.catabolism_coefficient` must be a positive number."
-             << " (current value: " << digestion_catabolism_coefficient << ")"
              << std::endl;
       is_valid = false;
     }
