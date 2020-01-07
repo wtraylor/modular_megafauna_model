@@ -17,7 +17,7 @@ namespace Fauna {
  * model.
  *
  * \[f
- * NE = ME * k = DE * ME/DE * k = GE * DMD * ME/DE * k
+ * NE = ME * k_m = DE * ME/DE * k_m = GE * DMD * ME/DE * k_m
  * \]f
  *
  * \param ge_content Gross energy (GE), also called combustion energy, in dry
@@ -25,7 +25,7 @@ namespace Fauna {
  * \param digestibility Proportional dry-matter digestibility (DMD).
  * \param me_coefficient Metabolizable energy coefficient, i.e. the ratio of
  * metabolizable energy to digestible energy, ME/DE. [fractional]
- * \param k_maintenance Net energy coefficient (k) for maintenance, i.e. the
+ * \param k_maintenance Net energy coefficient (k_m) for maintenance, i.e. the
  * proportion of metabolizable remaining energy after heat increment.
  * [fractional]
  *
