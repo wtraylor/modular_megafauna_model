@@ -280,7 +280,7 @@ ForageEnergyContent HerbivoreBase::get_net_energy_content(
       return get_net_energy_from_gross_energy(
           forage_gross_energy, digestibility,
           get_hft().digestion_me_coefficient,
-          get_hft().digestion_ne_coefficient);
+          get_hft().digestion_k_maintenance);
       // ADD NEW NET ENERGY MODELS HERE
       // in new case statements
     default:

@@ -122,14 +122,14 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
     }
 
     if (digestion_net_energy_model == NetEnergyModel::GrossEnergyFraction) {
+      if (digestion_k_maintenance <= 0.0 || digestion_k_maintenance >= 1.0) {
+        stream << "digestion.k_maintenance is not between 0 and 1"
+               << " (current value: " << digestion_k_maintenance << ")"
+               << std::endl;
+      }
       if (digestion_me_coefficient <= 0.0 || digestion_me_coefficient >= 1.0) {
         stream << "digestion.me_coefficient is not between 0 and 1"
                << " (current value: " << digestion_me_coefficient << ")"
-               << std::endl;
-      }
-      if (digestion_ne_coefficient <= 0.0 || digestion_ne_coefficient >= 1.0) {
-        stream << "digestion.ne_coefficient is not between 0 and 1"
-               << " (current value: " << digestion_ne_coefficient << ")"
                << std::endl;
       }
     }

@@ -80,8 +80,9 @@ start  = 121 # Julian day
 allometric             = { coefficient = 0.050, exponent = 0.76 }
 anabolism_coefficient  = 54.6 # MJ/kg
 fixed_fraction         = 0.05 # kgDM per kg body mass
+k_maintenance          = 0.7
 limit                  = "FixedFraction"
-ne_coefficient         = 0.7
+ne_coefficient_fat     = 0.5
 net_energy_model       = "GrossEnergyFraction"
 
 [hft.establishment]

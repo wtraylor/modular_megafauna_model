@@ -261,15 +261,15 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto value =
-        find_hft_parameter<double>(table, "digestion.me_coefficient", true);
+        find_hft_parameter<double>(table, "digestion.k_maintenance", true);
     assert(value);
-    hft.digestion_me_coefficient = *value;
+    hft.digestion_k_maintenance = *value;
   }
   {
     const auto value =
-        find_hft_parameter<double>(table, "digestion.ne_coefficient", true);
+        find_hft_parameter<double>(table, "digestion.me_coefficient", true);
     assert(value);
-    hft.digestion_ne_coefficient = *value;
+    hft.digestion_me_coefficient = *value;
   }
   {
     const auto value = find_hft_parameter<std::string>(

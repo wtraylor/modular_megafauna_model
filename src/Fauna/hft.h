@@ -349,7 +349,7 @@ struct Hft {
    */
   double digestion_me_coefficient = 0.8;
 
-  /// Coefficient (k) for converting metabolizable to net energy (NE) [frac.].
+  /// Coefficient (k_m) for converting metabolizable to net energy (NE) [frac.].
   /**
    * A number between 0 and 1 that defines how much of the metabolizable energy
    * in forage is usable as net energy for meeting the energy needs of the
@@ -357,7 +357,7 @@ struct Hft {
    * \see \ref NetEnergyModel::GrossEnergyFraction
    * \see \ref sec_energy_content
    */
-  double digestion_ne_coefficient = 0.7;
+  double digestion_k_maintenance = 0.7;
 
   /// Algorithm for forage energy content.
   NetEnergyModel digestion_net_energy_model = NetEnergyModel::GrossEnergyFraction;

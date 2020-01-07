@@ -15,7 +15,7 @@ TEST_CASE("Fauna::get_net_energy_from_gross_energy()", "") {
   static const Digestibility DMD(0.5);
   static const ForageEnergyContent GE = Parameters().forage_gross_energy;
   static const double ME_COEFF = Hft().digestion_me_coefficient;
-  static const double NE_COEFF = Hft().digestion_ne_coefficient;
+  static const double NE_COEFF = Hft().digestion_k_maintenance;
 
   REQUIRE_NOTHROW(
       get_net_energy_from_gross_energy(GE, DMD, ME_COEFF, NE_COEFF));

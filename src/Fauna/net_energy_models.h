@@ -25,19 +25,19 @@ namespace Fauna {
  * \param digestibility Proportional dry-matter digestibility (DMD).
  * \param me_coefficient Metabolizable energy coefficient, i.e. the ratio of
  * metabolizable energy to digestible energy, ME/DE. [fractional]
- * \param ne_coefficient Net energy coefficient (k) for maintenance, i.e. the
+ * \param k_maintenance Net energy coefficient (k) for maintenance, i.e. the
  * proportion of metabolizable remaining energy after heat increment.
  * [fractional]
  *
  * \return Net energy content [MJ/kgDM].
  *
- * \throw std::invalid_argument If either `me_coefficient` or `ne_coefficient`
+ * \throw std::invalid_argument If either `me_coefficient` or `k_maintenance`
  * not in interval (0,1).
  *
  * \see \ref sec_energy_content
  * \see \ref Parameters::forage_gross_energy
  * \see \ref Hft::digestion_me_coefficient
- * \see \ref Hft::digestion_ne_coefficient
+ * \see \ref Hft::digestion_k_maintenance
  * \see \ref Hft::digestion_net_energy_model
  * \see \ref NetEnergyModel
  */
@@ -45,14 +45,14 @@ inline ForageEnergyContent get_net_energy_from_gross_energy(
     const ForageEnergyContent& ge_content,
     const Digestibility& digestibility,
     const double me_coefficient,
-    const double ne_coefficient){
+    const double k_maintenance){
   if (me_coefficient <= 0.0 || me_coefficient >= 1.0)
     throw std::invalid_argument("Fauna::get_net_energy_from_gross_energy(): "
         "Parameter `me_coefficient` is not in interval (0,1).");
-  if (ne_coefficient <= 0.0 || ne_coefficient >= 1.0)
+  if (k_maintenance <= 0.0 || k_maintenance >= 1.0)
     throw std::invalid_argument("Fauna::get_net_energy_from_gross_energy(): "
-        "Parameter `ne_coefficient` is not in interval (0,1).");
-  return ge_content * digestibility * (me_coefficient * ne_coefficient);
+        "Parameter `k_maintenance` is not in interval (0,1).");
+  return ge_content * digestibility * (me_coefficient * k_maintenance);
 }
 }  // namespace Fauna
 
