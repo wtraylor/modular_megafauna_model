@@ -121,8 +121,10 @@ energy** (NE) is effectively utilizable for all physiological processes.
 Gross energy depends only on the physical properties of the forage and measured
 in a combustion chamber. It is therefore independent of the animal. McDonald et
 al. (2010, p. 259)\cite mcdonald2010animal provide an overview of gross energy
-in different feedstuffs for livestock. It typically ranges between 18 to 20
-MJ/kgDM.
+in different feedstuffs for livestock: It typically ranges between 18 to 20
+MJ/kgDM. The measurements by Golley (1961) \cite golley1961energy suggest that
+there is some seasonal variation in gross energy of leaves. However, the model
+assumes a constant value.
 
 The proportional **dry-matter digestibility** (DMD) of the forage is a central
 variable in the model. It measures the fraction of the gross energy that is
