@@ -122,6 +122,10 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
     }
 
     if (digestion_net_energy_model == NetEnergyModel::GrossEnergyFraction) {
+      if (digestion_k_fat <= 0.0 || digestion_k_fat >= 1.0) {
+        stream << "digestion.k_fat is not between 0 and 1"
+               << " (current value: " << digestion_k_fat << ")" << std::endl;
+      }
       if (digestion_k_maintenance <= 0.0 || digestion_k_maintenance >= 1.0) {
         stream << "digestion.k_maintenance is not between 0 and 1"
                << " (current value: " << digestion_k_maintenance << ")"
@@ -229,13 +233,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
     if (reproduction_gestation_length <= 0) {
       stream << "`reproduction.gestation_length` must be a positive number."
              << " (current value: " << reproduction_gestation_length << ")"
-             << std::endl;
-      is_valid = false;
-    }
-
-    if (digestion_anabolism_coefficient <= 0.0) {
-      stream << "`digestion.anabolism_coefficient` must be a positive number."
-             << " (current value: " << digestion_anabolism_coefficient << ")"
              << std::endl;
       is_valid = false;
     }

@@ -261,6 +261,12 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto value =
+        find_hft_parameter<double>(table, "digestion.k_fat", true);
+    assert(value);
+    hft.digestion_k_fat = *value;
+  }
+  {
+    const auto value =
         find_hft_parameter<double>(table, "digestion.k_maintenance", true);
     assert(value);
     hft.digestion_k_maintenance = *value;

@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 - Net energy content model: `NetEnergyModel::GrossEnergyFraction`
     - Parameter `forage.gross_energy`
+    - Parameter `hft.digestion.k_fat`
     - Parameter `hft.digestion.k_maintenance`
     - Parameter `hft.digestion.me_coefficient`
 

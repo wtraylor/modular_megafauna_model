@@ -23,9 +23,11 @@ class FatmassEnergyBudget {
    * \param initial_fatmass Initial fat mass [kg/ind]
    * \param maximum_fatmass Maximum fat mass [kg/ind]
    * \param anabolism_coefficient Conversion factor from net forage energy to
-   * fat mass [MJ/kg].
+   * fat mass [MJ/kg]. See Section \ref sec_energy_content for how this value
+   * can be derived.
    * \param catabolism_coefficient Conversion factor from fat mass to net
-   * energy [MJ/kg].
+   * energy [MJ/kg]. This is basically gross (combustion) energy of fat mass
+   * multiplied by conversion efficiency.
    * \throw std::invalid_argument If one parameter is <=0.0
    * \throw std::logic_error `initial_fatmass > maximum_fatmass`
    * \throw std::logic_error `catabolism_coefficient >= anabolism_coefficient`

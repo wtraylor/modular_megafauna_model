@@ -9,12 +9,12 @@
 
 #include <array>
 #include <cmath>
+#include <memory>
 #include <set>
 #include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
-#include <memory>
 
 namespace Fauna {
 
@@ -27,7 +27,7 @@ class Parameters;
  * Using shared pointers guarantees that the \ref Hft instances don’t get
  * released while they may still be used.
  */
-typedef std::vector< std::shared_ptr<const Hft> > HftList;
+typedef std::vector<std::shared_ptr<const Hft> > HftList;
 
 /// Coefficient and exponent for an allometric relationship.
 /**
@@ -311,10 +311,6 @@ struct Hft {
   /// Parameters for \ref DigestiveLimit::Allometric
   AllometryParameters digestion_allometric = {0.05, 0.76};
 
-  /// Conversion factor from net forage energy to fat mass [MJ/kg].
-  /** The default value is from Peters (1983)\cite peters1983ecological. */
-  double digestion_anabolism_coefficient = 54.6;
-
   /// Constants i, j, k for \ref DigestionLimit::IlliusGordon1992 (grass only).
   /**
    * Shipley et al. (1999)\cite shipley1999predicting derived the parameters i,
@@ -349,6 +345,20 @@ struct Hft {
    */
   double digestion_me_coefficient = 0.8;
 
+  /// Coefficient (k_f) for converting metabolizable energy to fat mass [frac.].
+  /**
+   * A number between 0 and 1 that defines how much of the metabolizable energy
+   * in forage gets converted to gross energy in body fat reserves. The energy
+   * loss is heat increment.
+   *
+   * The default value is from Blaxter (1989, p. 259 \cite blaxter1989energy)
+   * for ox.
+   * \see \ref body_fat_gross_energy
+   * \see \ref NetEnergyModel::GrossEnergyFraction
+   * \see \ref sec_energy_content
+   */
+  double digestion_k_fat = 0.5;
+
   /// Coefficient (k_m) for converting metabolizable to net energy (NE) [frac.].
   /**
    * A number between 0 and 1 that defines how much of the metabolizable energy
@@ -360,7 +370,8 @@ struct Hft {
   double digestion_k_maintenance = 0.7;
 
   /// Algorithm for forage energy content.
-  NetEnergyModel digestion_net_energy_model = NetEnergyModel::GrossEnergyFraction;
+  NetEnergyModel digestion_net_energy_model =
+      NetEnergyModel::GrossEnergyFraction;
   /** @} */
 
   /** @{ \name "establishment": Spawning new herbivores in empty habitats. */
