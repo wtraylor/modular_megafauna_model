@@ -192,6 +192,13 @@ In general you should not need to put any references to scientific publications 
 Better you explain everything in a narrative form in the Doxygen *documentation* and use the `\cite` command for that.
 If you do cite in source code comments, make sure that the reference is uniquely identifiable in `bibliography.bib`.
 
+Write the in-text citation in the doxygen documentation (either in a C++ file or in a Markdown document) in the [APA format](https://www.mendeley.com/guides/apa-citation-guide#2_In_Text) followed by the `\cite` reference:
+```plain
+Illius & O’Connor (2000) \cite illius2000resource states that ...
+Blaxter (1989, p. 123) \cite blaxter1989energy states that ...
+(McDonald et al. 2010, p. 123 \cite mcdonald2010animal)
+```
+
 Use [bibsort](http://ftp.math.utah.edu/pub/bibsort/) to sort the
 bibliography entries by label.
 Or you can do it manually, too.
