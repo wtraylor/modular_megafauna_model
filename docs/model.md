@@ -140,6 +140,15 @@ conversions. For an overview see Minson (1990) \cite minson1990forage and
 McDonald (2010) \cite mcdonald2010animal. Formulas in the megafauna model
 assume *in vivo* digestibility.
 
+Research has focused mainly on the digestion of ruminant livestock, and so the
+megafauna model works primarily with the well-established formulas for
+ruminants. Digestibility is also defined for ruminants. To account for the less
+efficient digestion of hindgut fermenters, the user can define a
+**digestibility multiplier** to convert ruminant digestibility to hindgut
+digestibility. This approach is taken from by  and Pachzelt et al. (2015)
+\cite pachzelt2015potential, who cite Illius & Gordon (1992)
+\cite illius1992modelling
+
 Ruminants typically lose a relatively constant fraction of about 19% of
 digestible energy in urine and methane (López et al. 2000
 \cite lopez2000prediction, McDonald et al. 2010 \cite mcdonald2010animal,
@@ -163,14 +172,6 @@ This includes fecal losses and has the dry-matter digestibility already
 calculated in. However, the modular megafauna model works with explicit
 digestibility values and the ME/DE ratio. You could divide the ME/GE ratio by
 the fractional digestibility to get ME/DE.
-
-Research has focused mainly on the digestion of ruminant livestock, and so the
-megafauna model works primarily with the well-established formulas for
-ruminants. To account for the less efficient digestion of hindgut fermenters,
-the ME/DE ratio can be adjusted. This will have the same effect as applying a
-coefficient to the net energy as e.g. done by Illius & Gordon (1992)
-\cite illius1992modelling and Pachzelt et al. (2015)
-\cite pachzelt2015potential.
 
 A unitless **net energy coefficient** (k) defines the efficiency of using the
 metabolizable energy for meeting maintenance energy needs, i.e. for converting

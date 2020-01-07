@@ -116,6 +116,15 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       is_valid = false;
     }
 
+    if (digestion_digestibility_multiplier <= 0.0 ||
+        digestion_digestibility_multiplier > 1.0) {
+      stream
+          << "digestion.digestibility_multiplier must be in the interval (0,1]."
+          << " (current value: " << digestion_digestibility_multiplier << ")"
+          << std::endl;
+      is_valid = false;
+    }
+
     if (digestion_limit == DigestiveLimit::None) {
       stream << "No digestive limit defined." << std::endl;
       // the HFT is still valid (e.g. for testing purpose)

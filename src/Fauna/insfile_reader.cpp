@@ -260,6 +260,11 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
                            {"PureGrazer"});
   }
   {
+    const auto value = find_hft_parameter<double>(
+        table, "digestion.digestibility_multiplier", false);
+    if (value) hft.digestion_digestibility_multiplier = *value;
+  }
+  {
     const auto value =
         find_hft_parameter<double>(table, "digestion.k_fat", true);
     assert(value);

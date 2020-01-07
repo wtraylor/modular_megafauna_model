@@ -277,7 +277,10 @@ double HerbivoreBase::get_max_fatmass() const {
 }
 
 ForageEnergyContent HerbivoreBase::get_net_energy_content(
-    const Digestibility digestibility) const {
+    Digestibility digestibility) const {
+  // Adjust ruminant digestibility for non-ruminants.
+  digestibility *= hft->digestion_digestibility_multiplier;
+
   switch (get_hft().digestion_net_energy_model) {
     case (NetEnergyModel::GrossEnergyFraction):
       return get_net_energy_from_gross_energy(

@@ -44,8 +44,9 @@ birth = 0.2
 [[group]]
 name = "hindgut_fermenters"
 [group.digestion]
-me_coefficient = 0.7
-i_g_1992_ijk   = [0.108, 3.284, 0.080]
+digestibility_multiplier = 0.9
+me_coefficient           = 0.7
+i_g_1992_ijk             = [0.108, 3.284, 0.080]
 
 [[group]]
 name = "ruminants"

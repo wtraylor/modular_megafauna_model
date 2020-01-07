@@ -311,6 +311,15 @@ struct Hft {
   /// Parameters for \ref DigestiveLimit::Allometric
   AllometryParameters digestion_allometric = {0.05, 0.76};
 
+  /// Factor to change ruminant digestibility for other digestion types.
+  /**
+   * The digestibility values in the megafauna model are assumed to be for
+   * ruminants. Other herbivores, e.g. hindgut fermenters, retain a lower
+   * fraction of the forage dry matter. The ruminant digestibility will be
+   * simply multiplied with the given factor.
+   */
+  double digestion_digestibility_multiplier = 1.0;
+
   /// Constants i, j, k for \ref DigestionLimit::IlliusGordon1992 (grass only).
   /**
    * Shipley et al. (1999)\cite shipley1999predicting derived the parameters i,
