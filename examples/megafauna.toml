@@ -45,13 +45,13 @@ birth = 0.2
 name = "hindgut_fermenters"
 [group.digestion]
 me_coefficient = 0.7
-i_g_1992_ijk = [0.108, 3.284, 0.080]
+i_g_1992_ijk   = [0.108, 3.284, 0.080]
 
 [[group]]
 name = "ruminants"
 [group.digestion]
 me_coefficient = 0.8
-i_g_1992_ijk = [0.034, 3.565, 0.077]
+i_g_1992_ijk   = [0.034, 3.565, 0.077]
 
 ###############################################################################
 
@@ -77,12 +77,12 @@ length = 30  # days
 start  = 121 # Julian day
 
 [hft.digestion]
-allometric             = { coefficient = 0.050, exponent = 0.76 }
-fixed_fraction         = 0.05 # kgDM per kg body mass
-k_fat                  = 0.5
-k_maintenance          = 0.7
-limit                  = "FixedFraction"
-net_energy_model       = "GrossEnergyFraction"
+allometric       = { coefficient                = 0.050, exponent = 0.76 }
+fixed_fraction   = 0.05 # kgDM per kg body mass
+k_fat            = 0.5
+k_maintenance    = 0.7
+limit            = "FixedFraction"
+net_energy_model = "GrossEnergyFraction"
 
 [hft.establishment]
 age_range = { first = 1, last = 15 } # years
