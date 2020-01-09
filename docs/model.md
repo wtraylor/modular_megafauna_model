@@ -67,6 +67,20 @@ the basis for gender differentiation because some large herbivores do show
 pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but
 also in diet and behavior (e.g. elephants: \cite shannon2013diet).
 
+### Body Mass
+Calder (1996, p. 14) \cite calder1996function:
+
+> Should the total body mass used in allometry include gut contents, a major
+> source of variability (but representing mass that the animal must be designed
+> to support and carry), or should gut contents be subtracted from live mass?
+> Disallowing gut contents is not practical in studies wherein the animals are
+> not, or should not be sacrificed.
+
+In this line of argument, the gut contents are always included the body mass
+values given in the megafauna model. It is designed for large herbivores, in
+particular extinct ones, and their body mass is most commonly given as a total
+live weight.
+
 ### Body Composition
 Blaxter (1989)\cite blaxter1989energy, p. 51:
 
