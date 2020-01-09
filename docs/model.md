@@ -100,9 +100,10 @@ composed of fat and fat-free mass:
 So the user-defined live body mass of simulated herbivores is the sum of blood,
 gut contents (ingesta), structural (fat-free) mass and deposited body fat. It
 is very important to realize that the body fat that the model works with is
-pure lipids. This lipid content of animal tissue is also known as *ether
-extract, free lipid content,* or *crude fat.* This is different from the mass
-of suet and organ fat because the fat tissue also contains water.
+pure lipids. This total lipid content of animal tissue is also known as ether
+extract, free lipid content, or crude fat (Hyvönen, 1996
+\cite hyvonen1996approach). This is different from the mass of suet and organ
+fat because the fat tissue also contains water.
 
 When defining the fractional body fat parameter for an herbivore, you should
 not rely on measurements of weight loss of starving or fattening animals. In
