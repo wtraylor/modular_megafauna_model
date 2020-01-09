@@ -107,7 +107,8 @@ and organ fat because the fat tissue also contains water.
 When defining the fractional body fat parameter for an herbivore, you should
 not rely on measurements of weight loss of starving or fattening animals. In
 such data it is difficult to disentangle the contributions of changing fat
-mass, gut contents, water content, and fat-free mass.
+mass, gut contents, water content, and fat-free mass (e.g. Reimers et al., 1982
+\cite reimers1982body).
 
 ### Life History {#sec_life_history}
 
