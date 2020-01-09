@@ -67,7 +67,7 @@ the basis for gender differentiation because some large herbivores do show
 pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but
 also in diet and behavior (e.g. elephants: \cite shannon2013diet).
 
-### Body Mass
+### Body Mass and Composition
 Calder (1996, p. 14) \cite calder1996function:
 
 > Should the total body mass used in allometry include gut contents, a major
@@ -81,8 +81,10 @@ values given in the megafauna model. It is designed for large herbivores, in
 particular extinct ones, and their body mass is most commonly given as a total
 live weight.
 
-### Body Composition
-Blaxter (1989)\cite blaxter1989energy, p. 51:
+The variable amount of body fat, which serves as energy reserves, is a critical
+component of the herbivore simulations. As Blaxter (1989, p. 51)
+\cite blaxter1989energy explains, the ingesta-free animal body can be viewed as
+composed of fat and fat-free mass:
 
 > Schematically the body can be regarded as consisting of two components – fat
 > and non-fat. […] The non-fat material consists of water, the minerals of bone
@@ -94,6 +96,18 @@ Blaxter (1989)\cite blaxter1989energy, p. 51:
 > fat-free body is approximately constant. The wide range of composition of
 > animals is largely, but not entirely, due to variation in the proportion of
 > fat.
+
+So the user-defined live body mass of simulated herbivores is the sum of gut
+contents (ingesta), structural (fat-free) mass and deposited body fat. It is
+very important to realize that the body fat that the model works with is pure
+lipids. This lipid content of animal tissue is also known as *ether extract,
+free lipid content,* or *crude fat.* This is different from the mass of suet
+and organ fat because the fat tissue also contains water.
+
+When defining the fractional body fat parameter for an herbivore, you should
+not rely on measurements of weight loss of starving or fattening animals. In
+such data it is difficult to disentangle the contributions of changing fat
+mass, gut contents, water content, and fat-free mass.
 
 ### Life History {#sec_life_history}
 
