@@ -255,6 +255,7 @@ struct Hft {
 
   /** @{ \name "body_fat": Body fat parameters. */
   /// Proportional fat mass at birth [kg/kg].
+  /** \see \ref sec_body_mass_and_composition */
   double body_fat_birth = 0.2;
 
   /// Standard deviation in body condition for
@@ -268,6 +269,8 @@ struct Hft {
    * \note For juveniles (1st year of life), body fat variation is
    * always zero in order to avoid artificially high death rates if
    * body fat is low at birth.
+   *
+   * \see \ref sec_body_mass_and_composition
    */
   double body_fat_deviation = 0.125;
 
@@ -281,6 +284,7 @@ struct Hft {
   double body_fat_gross_energy = 39.1;
 
   /// Maximum proportional fat mass [kg/kg].
+  /** \see \ref sec_body_mass_and_composition */
   double body_fat_maximum = 0.3;
 
   /// Maximum rate of fat mass gain in kg fat per kg body mass per day.
@@ -290,12 +294,15 @@ struct Hft {
 
   /** @{ \name "body_mass": Body mass parameters. */
   /// Body mass [kg] at birth for both sexes.
+  /** \see \ref sec_body_mass_and_composition */
   int body_mass_birth = 5;
 
   /// Body mass [kg] of an adult female individual (with full fat reserves).
+  /** \see \ref sec_body_mass_and_composition */
   int body_mass_female = 50;
 
   /// Body mass [kg] of an adult male individual (with full fat reserves).
+  /** \see \ref sec_body_mass_and_composition */
   int body_mass_male = 70;
   /** @} */
 

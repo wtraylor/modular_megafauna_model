@@ -67,7 +67,7 @@ the basis for gender differentiation because some large herbivores do show
 pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but
 also in diet and behavior (e.g. elephants: \cite shannon2013diet).
 
-### Body Mass and Composition
+### Body Mass and Composition {#sec_body_mass_and_composition}
 Calder (1996, p. 14) \cite calder1996function:
 
 > Should the total body mass used in allometry include gut contents, a major
