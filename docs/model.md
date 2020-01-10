@@ -111,6 +111,22 @@ such data it is difficult to disentangle the contributions of changing fat
 mass, gut contents, water content, and fat-free mass (e.g. Reimers et al., 1982
 \cite reimers1982body).
 
+\todo
+- What fraction is the structural body mass of live weight?
+    - @reimers1982body observe in starved (i.e. ± fat-free) reindeer carcasses
+      that the structural body mass (no fat, no ingesta, no blood, no antlers)
+      is around 80% of live weight (Tab. 2). On average the gut contents were
+      21.7 ± 4.6% of total body weight, which is higher than in roe deer
+      (12.7%) and white-tailed deer (9.7%) (p. 1818).
+- Why do we not consider protein as an energy reserve?
+    - Reimers et al. (1982, pp. 1813, 1819) observe that about 31% of the body
+      protein was lost during winter.
+    - Parker et al. (1993) observed that Sitka black-tailed deer lost 10–15% of
+      their protein reserves during winter.
+- What does the growth curve look like?
+    - Compare @price1985growth [pp. 187-190] and @blaxter1989energy
+      [p. 242-244].
+
 ### Life History {#sec_life_history}
 
 \todo Explain how growth is linear in \ref Fauna::HerbivoreBase::get_bodymass()
