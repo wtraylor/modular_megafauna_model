@@ -68,6 +68,7 @@ pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but
 also in diet and behavior (e.g. elephants: \cite shannon2013diet).
 
 ### Body Mass and Composition {#sec_body_mass_and_composition}
+
 The user-defined **live body mass** of simulated herbivores is the sum of
 blood, gut contents (ingesta), structural (fat-free) mass and deposited body
 fat. It is very important to realize that the **body fat** that the model works
@@ -76,8 +77,10 @@ live body mass minus blood, ingesta, hair, and antlers/horns. The body fat is
 total lipid content, which is also known as ether extract, free lipid content,
 or crude fat (Hyvönen, 1996 \cite hyvonen1996approach). This is different from
 the mass of suet and organ fat because the fat tissue also contains water. The
-term **lean body mass** is live body mass minus all fat mass. Note that lean
-body mass includes digesta, hair, antlers, and blood.
+term **lean body mass** is live body mass minus all fat mass (compare quote
+from Blaxter, 1989 \cite blaxter1989energy in Section
+\ref sec_fat_as_energy_storage). Note that lean body mass includes digesta,
+hair, antlers, and blood.
 
 Calder (1996, p. 14) \cite calder1996function discusses the question of
 variable ingesta load:
@@ -97,6 +100,8 @@ based on it.
 Technically, the empty body mass is different from the “ingesta-free mass” in
 the literature because ingesta-free mass usually includes hair. For less furry
 animals the two can be considered approximately equal, though.
+
+### Fat as Energy Storage {#sec_fat_as_energy_storage}
 
 The variable amount of body fat, which serves as energy reserves, is a critical
 component of the herbivore simulations. As Blaxter (1989, p. 51)
@@ -120,17 +125,37 @@ such data it is difficult to disentangle the contributions of changing fat
 mass, gut contents, water content, and fat-free mass (e.g. Reimers et al., 1982
 \cite reimers1982body).
 
+The model ignores the contribution of catabolizing protein altogether. This is
+a simplification as several studies have shown that the contribution of
+mobilized protein can play a considerable role in meeting energy requirements.
+Reimers et al. (1982, pp. 1813, 1819) \cite reimers1982body observe that
+reindeer lost about 31% of their body protein during winter. Torbit et al.
+(1988) \cite torbit1988calibration calculate and discuss the energetic value of
+catabolizing protein. Parker et al. (1993) \cite parker1993seasonal note that
+Sitka black-tailed deer lost 10–15% of their protein reserves during winter.
+Nontheless fat is unquestionably by far the most important energy reserve.
+Fluctuating body fat is convenient to model as an energy pool that can be
+filled to a maximum and emptied to zero. The interactions for protein synthesis
+and depletion are far more complex and less studied.
+
+Any forage energy that is ingested beyond maintenance needs is converted to
+body fat. Section \ref sec_energy_content details the efficiency of fat
+anabolism. When forage intake is not enough to meet energy needs, fat reserves
+are catabolized, and the energy is directly available as net energy to balance
+any energy “debts” on a daily basis.
+Illius & O’Connor (2000) \cite illius2000resource assumed an efficiency of 100%
+to mobilize fat reserves in cattle when they directly converted the combustion
+(gross) energy of fat tissue to net energy.
+Armstrong & Robertson (2000) \cite armstrong2000energetics use a factor of 80%
+in their sheep model, citing a 1990 publication by the Australian Standing
+Committee on Agriculture (SCA) \cite corbett1990feeding.
+
+### Ontogenetic Growth
+
 \todo
-- Why do we not consider protein as an energy reserve?
-    - Reimers et al. (1982, pp. 1813, 1819) observe that about 31% of the body
-      protein was lost during winter.
-    - Parker et al. (1993) observed that Sitka black-tailed deer lost 10–15% of
-      their protein reserves during winter.
 - What does the growth curve look like?
     - Compare @price1985growth [pp. 187-190] and @blaxter1989energy
       [p. 242-244].
-
-### Life History {#sec_life_history}
 
 \todo Explain how growth is linear in \ref Fauna::HerbivoreBase::get_bodymass()
 
@@ -240,12 +265,6 @@ factor k<sub>m</sub> is used to convert from metabolizable energy to net
 energy. Body fat is anabolized from metabolizable forage energy with the
 efficiency factor k<sub>f</sub>.
 
-Catabolized fat reserves are directly available as net energy to balance any
-energy “debts” on a daily basis. Like in Illius & O’Connor (2000)
-\cite illius2000resource, the combustion (gross) energy of fat tissue is used
-to convert from mass to energy. That is, we assume 100% conversion efficiency
-from body fat to net energy.
-
 ![Model of energy retention in an herbivore. km and kf denote the slope of the line, i.e. the efficiency of utilizing metabolizable energy. When fed maintenance requirements, the animal will neither gain nor lose weight. Below that point it will starve (i.e. catabolize reserves) and above it will build reserves (i.e. anabolize fat). After McDonald et al. (2010), Fig. 11.5.](images/retention_over_intake.svg)
 
 Feeding trials have shown that the net energy coefficient can linearly depend
@@ -281,7 +300,9 @@ reserves happens without energy loss. The net energy content is given by:
 
 NE = ME * k<sub>m</sub> = DE * ME/DE * k<sub>m</sub> = GE * DMD * ME/DE * k<sub>m</sub>
 
-### Starvation
+### Maximum Daily Forage Intake {#sec_daily_forage_intake}
+
+### Death of Starvation
 
 In the process of starvation, different fat depots are mobilized in a typical
 sequence: rump fat, subcutaneous fat, visceral fat, and, finally, marrow fat
