@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
     - Parameter `hft.digestion.k_maintenance`
     - Parameter `hft.digestion.me_coefficient`
 - Model description of forage energy and digestion.
+- Parameter `hft.body_mass.empty`
 
 ### Removed
 - The old “default” net energy model `get_net_energy_content_default()`.

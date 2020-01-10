@@ -90,6 +90,12 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       is_valid = false;
     }
 
+    if (body_mass_empty <= 0.0 || body_mass_empty >= 1.0) {
+      stream << "body_mass.empty must be a number between 0 and 1. "
+             << "Current value: " << body_mass_empty << std::endl;
+      is_valid = false;
+    }
+
     if (body_mass_female < 1) {
       stream << "body_mass.female must be >=1 (" << body_mass_female << ")"
              << std::endl;
