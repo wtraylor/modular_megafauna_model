@@ -278,6 +278,18 @@ reserves happens without energy loss. The net energy content is given by:
 
 NE = ME * k<sub>m</sub> = DE * ME/DE * k<sub>m</sub> = GE * DMD * ME/DE * k<sub>m</sub>
 
+### Starvation
+
+In the process of starvation, different fat depots are mobilized in a typical
+sequence: rump fat, subcutaneous fat, visceral fat, and, finally, marrow fat
+(Hanks, 2004/1981 \cite hanks2004characterization). When the energy reserves of
+an animal are exhausted, it will die of starvation. Body fat, i.e. lipid in the
+ingesta-free body, is then zero. Different studies have found that the
+carcasses of large herbivores that have starved to death contain virtually no
+body fat anymore (Reimers et al., 1982 \cite reimers1982body; Depperschmidt et
+al., 1987 \cite depperschmidt1987body), but chemical analysis of fat content in
+carcass samples can be imprecise (Depperschmidt et al., 1987).
+
 ### Thermoregulation by Conductance {#sec_thermoregulation}
 
 This model of thermoregulation is often called the **Scholander-Irving model**
