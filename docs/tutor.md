@@ -95,7 +95,7 @@ Whether you want to have herbivores die by for instance disease, drought, or pre
 
 - Adjust the implementation of \ref Fauna::Habitat::get_available_forage() and \ref Fauna::Habitat::remove_eaten_forage() in your vegetation model.
 
-- Extend \ref Fauna::get_net_energy_content_default(), and possibly other energy content models (\ref net_energy_models.h).
+- For \ref Fauna::NetEnergyModel::GrossEnergyFraction you will need to define a value for the parameter `forage.gross_energy.new_forage_type` in the TOML file.
 
 - Herbivores
 	+ Check all foraging and digestion limits (\ref foraging_limits.h) whether they need to be expanded.

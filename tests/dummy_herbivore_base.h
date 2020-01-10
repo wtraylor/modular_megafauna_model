@@ -21,12 +21,12 @@ class HerbivoreBaseDummy : public HerbivoreBase {
   HerbivoreBaseDummy(const int age_days, const double body_condition,
                      std::shared_ptr<const Hft> hft, const Sex sex)
       : HerbivoreBase(age_days, body_condition, hft, sex,
-                      Parameters().metabolizable_energy),
+                      Parameters().forage_gross_energy),
         ind_per_km2(1.0) {}
 
   /// Birth Constructor
   HerbivoreBaseDummy(std::shared_ptr<const Hft> hft, const Sex sex)
-      : HerbivoreBase(hft, sex, Parameters().metabolizable_energy),
+      : HerbivoreBase(hft, sex, Parameters().forage_gross_energy),
         ind_per_km2(1.0) {}
 
   HerbivoreBaseDummy(const HerbivoreBaseDummy& other)

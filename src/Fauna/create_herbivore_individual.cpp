@@ -25,10 +25,10 @@ HerbivoreIndividual CreateHerbivoreIndividual::operator()(const int age_days,
   if (age_days == 0)
     // Call birth constructor
     return HerbivoreIndividual(hft, sex, get_area_km2(),
-                               get_params().metabolizable_energy);
+                               get_params().forage_gross_energy);
   else
     // Call establishment constructor
     return HerbivoreIndividual(age_days, get_body_condition(age_days), hft, sex,
                                get_area_km2(),
-                               get_params().metabolizable_energy);
+                               get_params().forage_gross_energy);
 }

@@ -26,9 +26,9 @@ HerbivoreCohort CreateHerbivoreCohort::operator()(const double ind_per_km2,
   if (age_days == 0)
     // Call birth constructor
     return HerbivoreCohort(hft, sex, ind_per_km2,
-                           get_params().metabolizable_energy);
+                           get_params().forage_gross_energy);
   else
     // Call establishment constructor
     return HerbivoreCohort(age_days, get_body_condition(age_days), hft, sex,
-                           ind_per_km2, get_params().metabolizable_energy);
+                           ind_per_km2, get_params().forage_gross_energy);
 }

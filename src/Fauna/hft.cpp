@@ -48,6 +48,13 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       is_valid = false;
     }
 
+    if (body_fat_gross_energy <= 0.0) {
+      stream << "`body_fat.gross_energy` must be a positive number."
+             << " (current value: " << body_fat_gross_energy << ")"
+             << std::endl;
+      is_valid = false;
+    }
+
     if (body_fat_maximum <= 0.0 || body_fat_maximum >= 1.0) {
       stream << "body_fat.maximum must be between 0.0 and 1.0"
              << body_fat_maximum << ")" << std::endl;
@@ -105,7 +112,16 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
         mortality_minimum_density_threshold >= 1.0) {
       stream << "mortality.minimum_density_threshold not between 0 and 1"
              << " (current value: " << mortality_minimum_density_threshold
-             << ")";
+             << ")" << std::endl;
+      is_valid = false;
+    }
+
+    if (digestion_digestibility_multiplier <= 0.0 ||
+        digestion_digestibility_multiplier > 1.0) {
+      stream
+          << "digestion.digestibility_multiplier must be in the interval (0,1]."
+          << " (current value: " << digestion_digestibility_multiplier << ")"
+          << std::endl;
       is_valid = false;
     }
 
@@ -114,11 +130,24 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       // the HFT is still valid (e.g. for testing purpose)
     }
 
-    if (digestion_net_energy_model == NetEnergyModel::Default &&
-        (digestion_efficiency <= 0.0 || digestion_efficiency > 1.0)) {
-      stream << "digestion.efficiency must be in the interval (0,1]."
-             << std::endl;
-      is_valid = false;
+    if (digestion_net_energy_model == NetEnergyModel::GrossEnergyFraction) {
+      if (digestion_k_fat <= 0.0 || digestion_k_fat >= 1.0) {
+        stream << "digestion.k_fat is not between 0 and 1"
+               << " (current value: " << digestion_k_fat << ")" << std::endl;
+        is_valid = false;
+      }
+      if (digestion_k_maintenance <= 0.0 || digestion_k_maintenance >= 1.0) {
+        stream << "digestion.k_maintenance is not between 0 and 1"
+               << " (current value: " << digestion_k_maintenance << ")"
+               << std::endl;
+        is_valid = false;
+      }
+      if (digestion_me_coefficient <= 0.0 || digestion_me_coefficient >= 1.0) {
+        stream << "digestion.me_coefficient is not between 0 and 1"
+               << " (current value: " << digestion_me_coefficient << ")"
+               << std::endl;
+        is_valid = false;
+      }
     }
 
     if (establishment_age_range.first < 0 ||
@@ -216,20 +245,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
     if (reproduction_gestation_length <= 0) {
       stream << "`reproduction.gestation_length` must be a positive number."
              << " (current value: " << reproduction_gestation_length << ")"
-             << std::endl;
-      is_valid = false;
-    }
-
-    if (digestion_anabolism_coefficient <= 0.0) {
-      stream << "`digestion.anabolism_coefficient` must be a positive number."
-             << " (current value: " << digestion_anabolism_coefficient << ")"
-             << std::endl;
-      is_valid = false;
-    }
-
-    if (digestion_catabolism_coefficient <= 0.0) {
-      stream << "`digestion.catabolism_coefficient` must be a positive number."
-             << " (current value: " << digestion_catabolism_coefficient << ")"
              << std::endl;
       is_valid = false;
     }

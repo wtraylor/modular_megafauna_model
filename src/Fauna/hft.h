@@ -9,12 +9,12 @@
 
 #include <array>
 #include <cmath>
+#include <memory>
 #include <set>
 #include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
-#include <memory>
 
 namespace Fauna {
 
@@ -27,7 +27,7 @@ class Parameters;
  * Using shared pointers guarantees that the \ref Hft instances don’t get
  * released while they may still be used.
  */
-typedef std::vector< std::shared_ptr<const Hft> > HftList;
+typedef std::vector<std::shared_ptr<const Hft> > HftList;
 
 /// Coefficient and exponent for an allometric relationship.
 /**
@@ -184,9 +184,12 @@ enum class ForagingLimit {
 };
 
 /// How forage net energy content is calculated.
+/**
+ * \see \ref sec_energy_content
+ */
 enum class NetEnergyModel {
-  /// Use \ref get_net_energy_content_default()
-  Default
+  /// Use \ref get_net_energy_from_gross_energy().
+  GrossEnergyFraction
 };
 
 /// One way how a herbivore can die.
@@ -268,6 +271,15 @@ struct Hft {
    */
   double body_fat_deviation = 0.125;
 
+  /// Conversion factor from fat mass to net energy [MJ/kg].
+  /**
+   * The default value is from Blaxter (1989, p. 52)
+   * \cite blaxter1989energy:
+   * > For example, in sheep the enthalpy of combustion of the ether
+   * > extracted (crude) fat is 39.1 kJ/g.
+   */
+  double body_fat_gross_energy = 39.1;
+
   /// Maximum proportional fat mass [kg/kg].
   double body_fat_maximum = 0.3;
 
@@ -299,31 +311,14 @@ struct Hft {
   /// Parameters for \ref DigestiveLimit::Allometric
   AllometryParameters digestion_allometric = {0.05, 0.76};
 
-  /// Conversion factor from net forage energy to fat mass [MJ/kg].
-  /** The default value is from Peters (1983)\cite peters1983ecological. */
-  double digestion_anabolism_coefficient = 54.6;
-
-  /// Conversion factor from fat mass to net energy [MJ/kg].
-  /** The default value is from Peters (1983)\cite peters1983ecological. */
-  double digestion_catabolism_coefficient = 39.3;
-
-  /// Factor for reducing forage net energy content for non-ruminants.
+  /// Factor to change ruminant digestibility for other digestion types.
   /**
-   * The default model for net energy content
-   * (\ref get_net_energy_content_default())
-   * is designed for ruminant digestion. A constant factor may be applied to
-   * account for less efficient digestive systems, e.g. hindgut fermentation.
-   *
-   * For hindgut fermenters there are various factors in the literature, e.g.:
-   * - Johnson et al. (1982) give a value of 0.89 \cite johnson1982intake
-   * - Foose (1982) gives a value of 0.84 \cite foose1982trophic
-   * - The model by Illius & Gordon (1992) gives a value of 0.93
-   *   \cite illius1992modelling
-   * \see \ref NetEnergyModel::Default
-   * \see \ref get_net_energy_content_default()
-   * \see \ref HerbivoreBase::get_net_energy_content()
+   * The digestibility values in the megafauna model are assumed to be for
+   * ruminants. Other herbivores, e.g. hindgut fermenters, retain a lower
+   * fraction of the forage dry matter. The ruminant digestibility will be
+   * simply multiplied with the given factor.
    */
-  double digestion_efficiency = 1.0;
+  double digestion_digestibility_multiplier = 1.0;
 
   /// Constants i, j, k for \ref DigestionLimit::IlliusGordon1992 (grass only).
   /**
@@ -349,8 +344,43 @@ struct Hft {
   /// Constraint for maximum daily forage intake.
   DigestiveLimit digestion_limit = DigestiveLimit::FixedFraction;
 
+  /// Metabolizable energy coefficient (ME/DE ratio) [fractional].
+  /**
+   * A number between 0 and 1 defining the fraction of digestible energy (DE)
+   * that can be used by the animal’s own metabolism. The rest is lost to gas
+   * production (methane) and urine.
+   * \see \ref NetEnergyModel::GrossEnergyFraction
+   * \see \ref sec_energy_content
+   */
+  double digestion_me_coefficient = 0.8;
+
+  /// Coefficient (k_f) for converting metabolizable energy to fat mass [frac.].
+  /**
+   * A number between 0 and 1 that defines how much of the metabolizable energy
+   * in forage gets converted to gross energy in body fat reserves. The energy
+   * loss is heat increment.
+   *
+   * The default value is from Blaxter (1989, p. 259 \cite blaxter1989energy)
+   * for ox.
+   * \see \ref body_fat_gross_energy
+   * \see \ref NetEnergyModel::GrossEnergyFraction
+   * \see \ref sec_energy_content
+   */
+  double digestion_k_fat = 0.5;
+
+  /// Coefficient (k_m) for converting metabolizable to net energy (NE) [frac.].
+  /**
+   * A number between 0 and 1 that defines how much of the metabolizable energy
+   * in forage is usable as net energy for meeting the energy needs of the
+   * metabolic rate. The energy loss is known as heat increment.
+   * \see \ref NetEnergyModel::GrossEnergyFraction
+   * \see \ref sec_energy_content
+   */
+  double digestion_k_maintenance = 0.7;
+
   /// Algorithm for forage energy content.
-  NetEnergyModel digestion_net_energy_model = NetEnergyModel::Default;
+  NetEnergyModel digestion_net_energy_model =
+      NetEnergyModel::GrossEnergyFraction;
   /** @} */
 
   /** @{ \name "establishment": Spawning new herbivores in empty habitats. */
