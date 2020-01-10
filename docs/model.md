@@ -68,7 +68,19 @@ pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but
 also in diet and behavior (e.g. elephants: \cite shannon2013diet).
 
 ### Body Mass and Composition {#sec_body_mass_and_composition}
-Calder (1996, p. 14) \cite calder1996function:
+The user-defined **live body mass** of simulated herbivores is the sum of
+blood, gut contents (ingesta), structural (fat-free) mass and deposited body
+fat. It is very important to realize that the **body fat** that the model works
+with is the fraction of fat in the empty body. The **empty body mass** is the
+live body mass minus blood, ingesta, hair, and antlers/horns. The body fat is
+total lipid content, which is also known as ether extract, free lipid content,
+or crude fat (Hyvönen, 1996 \cite hyvonen1996approach). This is different from
+the mass of suet and organ fat because the fat tissue also contains water. The
+term **lean body mass** is live body mass minus all fat mass. Note that lean
+body mass includes digesta, hair, antlers, and blood.
+
+Calder (1996, p. 14) \cite calder1996function discusses the question of
+variable ingesta load:
 
 > Should the total body mass used in allometry include gut contents, a major
 > source of variability (but representing mass that the animal must be designed
@@ -79,7 +91,12 @@ Calder (1996, p. 14) \cite calder1996function:
 In this line of argument, the gut contents are always included the body mass
 values given in the megafauna model. It is designed for large herbivores, in
 particular extinct ones, and their body mass is most commonly given as a total
-live weight.
+live weight. Live body mass is easy to measure. Most allometric regressions are
+based on it.
+
+Technically, the empty body mass is different from the “ingesta-free mass” in
+the literature because ingesta-free mass usually includes hair. For less furry
+animals the two can be considered approximately equal, though.
 
 The variable amount of body fat, which serves as energy reserves, is a critical
 component of the herbivore simulations. As Blaxter (1989, p. 51)
@@ -97,14 +114,6 @@ composed of fat and fat-free mass:
 > animals is largely, but not entirely, due to variation in the proportion of
 > fat.
 
-So the user-defined live body mass of simulated herbivores is the sum of blood,
-gut contents (ingesta), structural (fat-free) mass and deposited body fat. It
-is very important to realize that the body fat that the model works with is
-pure lipids. This total lipid content of animal tissue is also known as ether
-extract, free lipid content, or crude fat (Hyvönen, 1996
-\cite hyvonen1996approach). This is different from the mass of suet and organ
-fat because the fat tissue also contains water.
-
 When defining the fractional body fat parameter for an herbivore, you should
 not rely on measurements of weight loss of starving or fattening animals. In
 such data it is difficult to disentangle the contributions of changing fat
@@ -112,12 +121,6 @@ mass, gut contents, water content, and fat-free mass (e.g. Reimers et al., 1982
 \cite reimers1982body).
 
 \todo
-- What fraction is the structural body mass of live weight?
-    - @reimers1982body observe in starved (i.e. ± fat-free) reindeer carcasses
-      that the structural body mass (no fat, no ingesta, no blood, no antlers)
-      is around 80% of live weight (Tab. 2). On average the gut contents were
-      21.7 ± 4.6% of total body weight, which is higher than in roe deer
-      (12.7%) and white-tailed deer (9.7%) (p. 1818).
 - Why do we not consider protein as an energy reserve?
     - Reimers et al. (1982, pp. 1813, 1819) observe that about 31% of the body
       protein was lost during winter.
