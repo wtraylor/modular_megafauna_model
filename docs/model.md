@@ -106,6 +106,8 @@ from Blaxter, 1989 \cite blaxter1989energy in Section
 \ref sec_fat_as_energy_storage). Note that lean body mass includes digesta,
 hair, antlers, and blood.
 
+![Body composition in the Modular Megafauna Model.](images/body_composition.svg)
+
 Calder (1996, p. 14) \cite calder1996function discusses the question of
 variable ingesta load:
 
