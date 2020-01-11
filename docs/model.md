@@ -175,6 +175,9 @@ to mobilize fat reserves in cattle when they directly converted the combustion
 Armstrong & Robertson (2000) \cite armstrong2000energetics use a factor of 80%
 in their sheep model, citing a 1990 publication by the Australian Standing
 Committee on Agriculture (SCA) \cite corbett1990feeding.
+The megafauna model allows the catabolism efficiency to be specified by the
+user. This efficiency factor is multiplied with the fat gross energy to derive
+the net energy gain (MJ) from burning one kg of body fat.
 
 ### Ontogenetic Growth
 
