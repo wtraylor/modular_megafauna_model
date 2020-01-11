@@ -61,8 +61,9 @@ HerbivoreBase::HerbivoreBase(std::shared_ptr<const Hft> hft, const Sex sex,
       age_days(0),
       forage_gross_energy(forage_gross_energy),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
-      energy_budget(get_hft().body_fat_birth * get_hft().body_mass_birth,
-                    get_max_fatmass(),
+      energy_budget(get_hft().body_mass_birth * get_hft().body_mass_empty *
+                        get_hft().body_fat_birth,  // fat mass at birth
+                    get_max_fatmass(),             // maximum fat mass
                     hft->body_fat_gross_energy * hft->digestion_k_maintenance /
                         hft->digestion_k_fat,
                     hft->body_fat_gross_energy),
@@ -200,11 +201,11 @@ std::shared_ptr<const Hft> HerbivoreBase::check_hft_pointer(
 }
 
 double HerbivoreBase::get_bodyfat() const {
-  return get_energy_budget().get_fatmass() / get_bodymass();
+  return get_fatmass() / (get_structural_mass() + get_fatmass());
 }
 
 double HerbivoreBase::get_bodymass() const {
-  return get_energy_budget().get_fatmass() + get_lean_bodymass();
+  return (get_structural_mass() + get_fatmass()) / get_hft().body_mass_empty;
 }
 
 double HerbivoreBase::get_bodymass_adult() const {
@@ -231,10 +232,6 @@ double HerbivoreBase::get_conductance() const {
 
 double HerbivoreBase::get_fatmass() const {
   return get_energy_budget().get_fatmass();
-}
-
-double HerbivoreBase::get_lean_bodymass() const {
-  return get_potential_bodymass() * (1.0 - get_hft().body_fat_maximum);
 }
 
 ForageMass HerbivoreBase::get_forage_demands(
@@ -273,7 +270,8 @@ double HerbivoreBase::get_kg_per_km2() const {
 }
 
 double HerbivoreBase::get_max_fatmass() const {
-  return get_potential_bodymass() * get_hft().body_fat_maximum;
+  const double bf_max = get_hft().body_fat_maximum;
+  return (get_structural_mass() * bf_max) / (1.0 - bf_max);
 }
 
 ForageEnergyContent HerbivoreBase::get_net_energy_content(
@@ -296,36 +294,34 @@ ForageEnergyContent HerbivoreBase::get_net_energy_content(
   }
 }
 
-double HerbivoreBase::get_potential_bodymass() const {
-  // age of physical maturity in years
+double HerbivoreBase::get_structural_mass() const {
+  // Age of physical maturity in years.
   double maturity_age;
   if (get_sex() == Sex::Male)
     maturity_age = get_hft().life_history_physical_maturity_male;
   else
     maturity_age = get_hft().life_history_physical_maturity_female;
 
-  if (get_age_years() >= maturity_age)
-    return get_bodymass_adult();
-  else {
-    // CALCULATE BODY MASS FOR PRE-ADULTS
+  // Adult structural mass [kg/ind].
+  const double struct_adult = get_bodymass_adult() * get_hft().body_mass_empty *
+                              (1.0 - get_hft().body_fat_maximum / 2.0);
 
-    // lean weight at birth
-    const double birth_leanmass =
-        get_hft().body_mass_birth * (1.0 - get_hft().body_fat_birth);
+  if (get_age_years() >= maturity_age) {
+    return struct_adult;
+  } else {
+    // Neonate structural mass [kg/ind].
+    const double struct_birth = get_hft().body_mass_birth *
+                                get_hft().body_mass_empty *
+                                (1 - get_hft().body_fat_birth);
 
-    // potential full mass at birth
-    assert(1.0 - get_hft().body_fat_maximum > 0.0);
-    const double birth_potmass =
-        birth_leanmass / (1.0 - get_hft().body_fat_maximum);
-
-    // age fraction from birth to physical maturity
-    assert(maturity_age > 0.0);
+    // Age fraction from birth to physical maturity.
     const double fraction = (double)get_age_days() / (maturity_age * 365.0);
 
-    // difference from birth to adult
-    const double difference = get_bodymass_adult() - birth_potmass;
+    // Difference between neonate and adult [kg/ind].
+    const double difference = struct_adult - struct_birth;
 
-    return birth_potmass + fraction * difference;
+    // Interpolate linearly until we implement a proper growth curve.
+    return struct_birth + fraction * difference;
   }
 }
 

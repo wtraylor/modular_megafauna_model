@@ -254,7 +254,13 @@ struct Hft {
   std::string name = "example";
 
   /** @{ \name "body_fat": Body fat parameters. */
-  /// Proportional fat mass at birth [kg/kg].
+  /// Proportional fat mass at birth [kg lipids/kg empty body].
+  /**
+   * This must not be greater than \ref body_fat_maximum.
+   * \see \ref body_mass_empty
+   * \see \ref sec_body_mass_and_composition
+   */
+  /** \see \ref sec_body_mass_and_composition */
   double body_fat_birth = 0.2;
 
   /// Standard deviation in body condition for
@@ -268,6 +274,8 @@ struct Hft {
    * \note For juveniles (1st year of life), body fat variation is
    * always zero in order to avoid artificially high death rates if
    * body fat is low at birth.
+   *
+   * \see \ref sec_body_mass_and_composition
    */
   double body_fat_deviation = 0.125;
 
@@ -280,8 +288,18 @@ struct Hft {
    */
   double body_fat_gross_energy = 39.1;
 
-  /// Maximum proportional fat mass [kg/kg].
-  double body_fat_maximum = 0.3;
+  /// Maximum proportional fat mass [kg lipids/kg empty body].
+  /**
+   * This value is a fraction of empty body mass (\ref body_mass_empty) because
+   * field data from chemical analysis of lipid content usually refer to
+   * ingesta-free carcass mass and not live weight.
+   * \see \ref sec_body_mass_and_composition
+   *
+   * The default value is an estimate for a wild ungulate. Compare for instance
+   * Weiner (1973) \cite weiner1973dressing and
+   * Reimers et al. (1982) \cite reimers1982body.
+   */
+  double body_fat_maximum = 0.25;
 
   /// Maximum rate of fat mass gain in kg fat per kg body mass per day.
   /** A value of zero indicates no limit. */
@@ -289,13 +307,45 @@ struct Hft {
   /** @} */
 
   /** @{ \name "body_mass": Body mass parameters. */
-  /// Body mass [kg] at birth for both sexes.
+  /// Live body weight [kg] at birth for both sexes.
+  /**
+   * The birth body mass includes the body fat specified in
+   * \ref body_fat_birth.
+   *
+   * For simplicity’s sake, the live weight of the neonate has the same empty
+   * body fraction (\ref body_mass_empty) as adults, even though the guts are
+   * probably not full.
+   * \see \ref sec_body_mass_and_composition
+   */
   int body_mass_birth = 5;
 
-  /// Body mass [kg] of an adult female individual (with full fat reserves).
+  /// Fraction of live weight minus ingesta, blood, hair, and antlers/horns.
+  /**
+   * This is the fraction of the body that the body fat fraction refers to.
+   * \see \ref body_fat_birth, \ref body_fat_maximum
+   *
+   * The default value is derived from average live body mass, M=60 kg, with
+   * the formula for ingesta weight in herbivores from Parra (1978) as cited by
+   * Clauss et al. (2005):
+   *
+   * \f[
+   * 0.0936 * M^{1.0768}
+   * \f]
+   */
+  double body_mass_empty = 0.87;
+
+  /// Live body mass [kg] of an adult female individual (with average reserves).
+  /**
+   * This is the live weight of an average adult animal individual as it would
+   * be weight on a scale. It is not a particular fat nor a particular skinny
+   * individual, so the model assumes that the fat reserves are at the half of
+   * their maximum (\ref body_fat_maximum).
+   * \see \ref sec_body_mass_and_composition
+   */
   int body_mass_female = 50;
 
-  /// Body mass [kg] of an adult male individual (with full fat reserves).
+  /// Live body mass [kg] of an adult male individual (with average reserves).
+  /** \copydetails body_mass_female */
   int body_mass_male = 70;
   /** @} */
 

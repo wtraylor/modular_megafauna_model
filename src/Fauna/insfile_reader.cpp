@@ -177,6 +177,12 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     hft.body_fat_maximum_daily_gain = *value;
   }
   {
+    const auto value =
+        find_hft_parameter<double>(table, "body_mass.empty", true);
+    assert(value);
+    hft.body_mass_empty = *value;
+  }
+  {
     const auto value = find_hft_parameter<int>(table, "body_mass.female", true);
     assert(value);
     hft.body_mass_female = *value;

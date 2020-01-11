@@ -69,9 +69,10 @@ maximum            = 0.3   # kg/kg
 maximum_daily_gain = 0.05  # kg/kg/day
 
 [hft.body_mass]
-birth  = 5  # kg/ind
-female = 50 # kg/ind
-male   = 70 # kg/ind
+birth  = 5    # kg/ind
+empty  = 0.87 # fraction
+female = 50   # kg/ind
+male   = 70   # kg/ind
 
 [hft.breeding_season]
 length = 30  # days
