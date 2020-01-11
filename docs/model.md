@@ -20,6 +20,30 @@ The last section covers some lessons learned from emerging model behavior.
 Some aspects of the model can only be evaluated in the context of the connected vegetation model.
 For LPJ-GUESS you will find those aspects in the megafauna doxygen page of the LPJ-GUESS repository.
 
+## Symbols and Abbreviations
+
+- bf  = Current body fat as fraction of lipids per empty body [frac.]
+- BM  = Live body mass [kg/ind]
+- DM  = Dry matter
+- DMD = Dry-matter digestibility [frac.]
+- eb  = Empty body fraction [frac.]
+- FM  = Fat mass of an individual [kg/ind]
+- GE  = Gross energy, also known as heat of combustion or calorific value [MJ/kgDM]
+- k   = Net energy coefficient, efficiency of converting ME to usable energy
+    - Subscript f = conversion to fat gross energy
+    - Subscript m = conversion to NE, to meet needs of maintenance and field metabolic rate
+    - Subscript p = conversion to protein gross energy
+- ME  = Metabolizable energy content in forage [MJ/kgDM]
+- MRT = Mean retention time [hours]
+- NE  = Net energy content in forage, usable for meeting energy requirements [MJ/kgDM]
+- SM  = Structural mass [kg/ind]
+- General subscripts:
+    - ad    = Adult
+    - birth = At birth/for neonates
+    - max   = Maximum (body fat, fat mass, reproduction rate, …)
+
+Note that “mass” and “weight” are used interchangeably.
+
 ## Basic Model Concepts {#sec_basic_model_concepts}
 
 \todo
@@ -354,7 +378,7 @@ The critical parameter for thermoregulatory expenditure is the (whole-body) cond
 The conductance can be approximated from the average conductivity and the body surface.
 Conductivity is the inverse of insulation: it is the heat flow per temperature difference per area.
 
-Body surface in m² scales roughly as \f$0.09*M^{0.66}\f$ ([Hudson & White 1985](\cite hudson1985bioenergetics)).
+Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ ([Hudson & White 1985](\cite hudson1985bioenergetics)).
 
 ### Foraging {#sec_foraging}
 
@@ -391,14 +415,14 @@ Upon death, this amount of nitrogen is also returned to the vegetation model.
 The nitrogen of ingesta in stomach and intestines depends on the mean retention time (\f$MRT\f$, hours) and the day’s intake of nitrogen (\f$I_N\f$, kgN/ind/day).
 
 \f[
-  N_{bound} = N_{guts} + N_{body} = I_N * MRT * P + 0.03 * M * P
+  N_{bound} = N_{guts} + N_{body} = I_N * MRT * P + 0.03 * BM * P
 \f]
 
-\f$P\f$ is the population density (ind/km²) and \f$M\f$ is the body mass (kg/ind).
+\f$P\f$ is the population density (ind/km²) and \f$BM\f$ is the body mass (kg/ind).
 Mean retention time in hours is calculated according to Clauss et al. (2007)\cite clauss2007case, Fig. 2:
 
 \f[
-  MRT = 32.8 * M^{0.07}
+  MRT = 32.8 * BM^{0.07}
 \f]
 
 ## Population Dynamics {#sec_population_dynamics}
