@@ -42,6 +42,14 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       is_valid = false;
     }
 
+    if (body_fat_catabolism_efficiency <= 0.0 ||
+        body_fat_catabolism_efficiency > 1.0) {
+      stream << "body_fat.catabolism_efficiency is out of bound."
+             << " (Current value: " << body_fat_catabolism_efficiency << ")"
+             << std::endl;
+      is_valid = false;
+    }
+
     if (body_fat_deviation < 0.0 || body_fat_deviation > 1.0) {
       stream << "body_fat.deviation is out of bounds. (Current value: "
              << body_fat_deviation << ")" << std::endl;

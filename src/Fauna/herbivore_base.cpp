@@ -21,11 +21,12 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
       age_days(age_days),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
       forage_gross_energy(forage_gross_energy),
-      energy_budget(body_condition * get_max_fatmass(),  // initial fat mass
-                    get_max_fatmass(),                   // maximum fat mass
-                    hft->body_fat_gross_energy * hft->digestion_k_maintenance /
-                        hft->digestion_k_fat,
-                    hft->body_fat_gross_energy),
+      energy_budget(
+          body_condition * get_max_fatmass(),  // initial fat mass
+          get_max_fatmass(),                   // maximum fat mass
+          hft->body_fat_gross_energy * hft->digestion_k_maintenance /
+              hft->digestion_k_fat,
+          hft->body_fat_gross_energy * hft->body_fat_catabolism_efficiency),
       get_forage_demands_per_ind(hft, sex),
       today(-1),  // not initialized yet; call simulate_day() first
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {
@@ -61,12 +62,13 @@ HerbivoreBase::HerbivoreBase(std::shared_ptr<const Hft> hft, const Sex sex,
       age_days(0),
       forage_gross_energy(forage_gross_energy),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
-      energy_budget(get_hft().body_mass_birth * get_hft().body_mass_empty *
-                        get_hft().body_fat_birth,  // fat mass at birth
-                    get_max_fatmass(),             // maximum fat mass
-                    hft->body_fat_gross_energy * hft->digestion_k_maintenance /
-                        hft->digestion_k_fat,
-                    hft->body_fat_gross_energy),
+      energy_budget(
+          get_hft().body_mass_birth * get_hft().body_mass_empty *
+              get_hft().body_fat_birth,  // fat mass at birth
+          get_max_fatmass(),             // maximum fat mass
+          hft->body_fat_gross_energy * hft->digestion_k_maintenance /
+              hft->digestion_k_fat,
+          hft->body_fat_gross_energy * hft->body_fat_catabolism_efficiency),
       get_forage_demands_per_ind(hft, sex),
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {}
 

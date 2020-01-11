@@ -263,6 +263,14 @@ struct Hft {
   /** \see \ref sec_body_mass_and_composition */
   double body_fat_birth = 0.2;
 
+  /// Efficiency for converting body fat gross energy to net energy [frac.]
+  /**
+   * The default value is taken from Corbett et al. (1990)
+   * \cite corbett1990feeding.
+   * \see \ref sec_fat_as_energy_storage
+   */
+  double body_fat_catabolism_efficiency = 0.8;
+
   /// Standard deviation in body condition for
   /// \ref GetStarvationIlliusOConnor2000.
   /**

@@ -62,11 +62,12 @@ name   = "example"
 groups = [ "ruminants", "all_hfts" ] # first overrides last group
 
 [hft.body_fat]
-birth              = 0.2   # kg/kg
-deviation          = 0.125 # body condition
-gross_energy       = 39.3  # MJ/kg
-maximum            = 0.3   # kg/kg
-maximum_daily_gain = 0.05  # kg/kg/day
+birth                 = 0.2   # kg/kg
+catabolism_efficiency = 0.8   # fraction
+deviation             = 0.125 # body condition
+gross_energy          = 39.3  # MJ/kg
+maximum               = 0.3   # kg/kg
+maximum_daily_gain    = 0.05  # kg/kg/day
 
 [hft.body_mass]
 birth  = 5    # kg/ind
