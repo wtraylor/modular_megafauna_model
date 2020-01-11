@@ -58,6 +58,9 @@ class TextTableWriter : public WriterInterface {
    * a whitespace or \ref FIELD_SEPARATOR.
    *
    * \throw std::logic_error If the \ref OutputInterval is not implemented.
+   *
+   * \throw std::runtime_error If `datapoint.data.hft_data` is missing an HFT
+   * or has too many (checked by comparing \ref Fauna::Hft::name).
    */
   virtual void write_datapoint(const Datapoint& datapoint);
 
@@ -90,6 +93,14 @@ class TextTableWriter : public WriterInterface {
 
   /// List of pointers to the user-selected and active file streams.
   std::vector<std::ofstream*> file_streams;
+
+  /// List of Hft names (\ref Fauna::Hft::name) in constant order.
+  /**
+   * They get initialized on first write in \ref write_captions().
+   * Note that the order of elements in \ref CombinedData::hft_data is not
+   * predictable because pointers are used as keys.
+   */
+  std::set<std::string> hft_names;
 
   /// User-selected utput interval.
   const OutputInterval interval;

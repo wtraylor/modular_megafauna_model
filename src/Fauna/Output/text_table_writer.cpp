@@ -5,6 +5,7 @@
  * \date 2019
  */
 #include "text_table_writer.h"
+#include <sstream>
 #include "datapoint.h"
 #include "fileystem.h"
 
@@ -85,6 +86,22 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
     captions_written = true;
   }
 
+  if (data.hft_data.size() != hft_names.size()) {
+    std::ostringstream my_names;
+    for (const auto& n : hft_names) my_names << n << ", ";
+    std::ostringstream found_names;
+    for (const auto& d : data.hft_data) found_names << d.first->name << ", ";
+    throw std::runtime_error(
+        "Fauna::Output::TextTableWriter::write_datapoint(): "
+        "Number of HFTs in given datapoint differs from number of stored "
+        "HFT names.\n"
+        "HFT names stored: " +
+        my_names.str() +
+        "\n"
+        "HFT names received: " +
+        found_names.str());
+  }
+
   // Write common information for all output tables.
   for (auto& f : file_streams) {
     switch (interval) {
@@ -129,15 +146,37 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
       else
         digestibility << FIELD_SEPARATOR << NA_VALUE;
     }
+    // Add more tables here.
   }
-  digestibility << std::endl;
+  if (digestibility.is_open()) digestibility << std::endl;
+  // Add more tables here.
 
   // Per-HFT Tables
-  for (const auto i : datapoint.data.hft_data) {
-    if (mass_density_per_hft.is_open())
-      mass_density_per_hft << FIELD_SEPARATOR << i.second.massdens;
+  // Iterate over predefined order of HFTs.
+  for (const auto& hft_name : hft_names) {
+    // Search for this HFT name in the `hft_data` map.
+    bool hft_found = false;
+    for (const auto& i : datapoint.data.hft_data) {
+      if (i.first->name == hft_name) {
+        // Add this HFT name as a column caption.
+        if (mass_density_per_hft.is_open())
+          mass_density_per_hft << FIELD_SEPARATOR << i.second.massdens;
+        // Add more tables here.
+
+        hft_found = true;
+        break;  // Leave the inner for loop in order to go to the next HFT.
+      }
+    }
+    if (!hft_found)
+      throw std::runtime_error(
+          "Fauna::Output::TextTableWriter::write_datapoint(): "
+          "There is no record for HFT \"" +
+          hft_name +
+          "\" "
+          "in given herbivore data.");
   }
-  mass_density_per_hft << std::endl;
+  if (mass_density_per_hft.is_open()) mass_density_per_hft << std::endl;
+  // Add more tables here.
 }
 
 void TextTableWriter::write_captions(const Datapoint& datapoint) {
@@ -158,7 +197,8 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
         break;
       default:
         std::logic_error(
-            "Fauna::TextTableWriter::write_datapoint() Output time interval is "
+            "Fauna::TextTableWriter::write_datapoint() Output time interval "
+            "is "
             "not implemented.");
     }
     *f << "agg_unit";
@@ -171,9 +211,13 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
   }
 
   // Per-HFT Tables
-  for (const auto i : datapoint.data.hft_data) {
+  // First create the list of of HFT names.
+  for (const auto& i : datapoint.data.hft_data) {
     const std::string& hft_name = i.first->name;
-
+    hft_names.insert(hft_name);
+  }
+  // Now write the HFT names in the distinct and never-changing order.
+  for (const auto& hft_name : hft_names) {
     if (hft_name.find(' ') != std::string::npos)
       throw std::invalid_argument(
           "Fauna::TextTableWriter::write_captions()"
@@ -190,6 +234,9 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << hft_name;
   }
+  // This assertion will fail if there are several HFTs with the same name (but
+  // different pointers) in the `hft_data` map.
+  assert(hft_names.size() == datapoint.data.hft_data.size());
 
   for (auto& f : file_streams) *f << std::endl;
 }

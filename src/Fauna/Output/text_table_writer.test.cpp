@@ -59,7 +59,15 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
   static const int YEAR = 4;
   static const std::string AGG_UNIT = "unit1";
-  static const HftList HFTS = create_hfts(3, Parameters());
+
+  // We create 4 HFTs, but use only 3. The extra one is to check that an
+  // exception gets thrown if the numbers don’t match up.
+  static const HftList HFTS = create_hfts(4, Parameters());
+
+  // Since TextTableWriter sorts the HFT columns by name, we need to make sure
+  // that also our test list is sorted the same way.
+  for (int i = 1; i < HFTS.size(); i++)
+    REQUIRE(HFTS[i - 1]->name < HFTS[i]->name);
 
   Datapoint datapoint;
   datapoint.aggregation_unit = AGG_UNIT;
@@ -156,6 +164,19 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
       CHECK(hft1 == Approx(datapoint.data.hft_data[HFTS[0].get()].massdens));
       CHECK(hft2 == Approx(datapoint.data.hft_data[HFTS[1].get()].massdens));
       CHECK(hft3 == Approx(datapoint.data.hft_data[HFTS[2].get()].massdens));
+    }
+
+    SECTION("Error on missing HFT"){
+      // Try to write a second line with a datapoint where an HFT is missing.
+      datapoint.data.hft_data.erase(datapoint.data.hft_data.begin());
+      CHECK_THROWS(writer.write_datapoint(datapoint));
+    }
+
+    SECTION("Error on extra HFT"){
+      // Try to write a second line with a datapoint where a new HFT suddenly
+      // appeared.
+      datapoint.data.hft_data[HFTS[3].get()].massdens = 12.0;
+      CHECK_THROWS(writer.write_datapoint(datapoint));
     }
 
     SECTION("Error on illegal aggregation unit name") {

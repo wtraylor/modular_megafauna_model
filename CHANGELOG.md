@@ -19,6 +19,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Fractional body fat now refers to the empty body (i.e. without ingesta,
   blood, etc.)  and not the live body mass.
 
+### Fixed
+- Order of HFT names in text table output is now guaranteed.
+
 ### Removed
 - The old “default” net energy model `get_net_energy_content_default()`.
 - Parameter `hft.digestion.efficiency` (less efficient digestion of hindgut
