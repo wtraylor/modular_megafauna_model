@@ -165,6 +165,12 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
 
   // ======= MANDATORY PARAMETERS =======
   {
+    const auto value = find_hft_parameter<double>(
+        table, "body_fat.catabolism_efficiency", true);
+    assert(value);
+    hft.body_fat_catabolism_efficiency = *value;
+  }
+  {
     const auto value =
         find_hft_parameter<double>(table, "body_fat.maximum", true);
     assert(value);
