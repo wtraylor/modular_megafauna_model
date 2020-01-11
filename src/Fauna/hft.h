@@ -307,8 +307,16 @@ struct Hft {
   /** @} */
 
   /** @{ \name "body_mass": Body mass parameters. */
-  /// Body mass [kg] at birth for both sexes.
-  /** \see \ref sec_body_mass_and_composition */
+  /// Live body weight [kg] at birth for both sexes.
+  /**
+   * The birth body mass includes the body fat specified in
+   * \ref body_fat_birth.
+   *
+   * For simplicity’s sake, the live weight of the neonate has the same empty
+   * body fraction (\ref body_mass_empty) as adults, even though the guts are
+   * probably not full.
+   * \see \ref sec_body_mass_and_composition
+   */
   int body_mass_birth = 5;
 
   /// Fraction of live weight minus ingesta, blood, hair, and antlers/horns.
@@ -326,12 +334,18 @@ struct Hft {
    */
   double body_mass_empty = 0.87;
 
-  /// Live body mass [kg] of an adult female individual (with full body fat).
-  /** \see \ref sec_body_mass_and_composition */
+  /// Live body mass [kg] of an adult female individual (with average reserves).
+  /**
+   * This is the live weight of an average adult animal individual as it would
+   * be weight on a scale. It is not a particular fat nor a particular skinny
+   * individual, so the model assumes that the fat reserves are at the half of
+   * their maximum (\ref body_fat_maximum).
+   * \see \ref sec_body_mass_and_composition
+   */
   int body_mass_female = 50;
 
-  /// Live body mass [kg] of an adult male individual (with full fat reserves).
-  /** \see \ref sec_body_mass_and_composition */
+  /// Live body mass [kg] of an adult male individual (with average reserves).
+  /** \copydetails body_mass_female */
   int body_mass_male = 70;
   /** @} */
 
