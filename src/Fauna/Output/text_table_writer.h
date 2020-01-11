@@ -85,9 +85,16 @@ class TextTableWriter : public WriterInterface {
    */
   void write_captions(const Datapoint& datapoint);
 
+  /// Whether column captions have already been written to file.
   bool captions_written = false;
-  std::vector<std::ofstream*> file_streams;  // only selected ones
+
+  /// List of pointers to the user-selected and active file streams.
+  std::vector<std::ofstream*> file_streams;
+
+  /// User-selected utput interval.
   const OutputInterval interval;
+
+  /// User options from the instruction file.
   const TextTableWriterOptions options;
 
   /** @{ \name File Streams */
