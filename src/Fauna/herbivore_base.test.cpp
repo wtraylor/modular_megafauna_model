@@ -40,18 +40,26 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
       REQUIRE(birth.get_age_days() == 0);
       REQUIRE(birth.get_age_years() == 0);
 
-      const double lean_bodymass_birth =
-          hft->body_mass_birth * (1.0 - hft->body_fat_birth);
-      const double pot_bodymass_birth =
-          lean_bodymass_birth / (1.0 - hft->body_fat_maximum);
+      INFO("hft->body_mass_birth = " << hft->body_mass_birth);
+      INFO("hft->body_fat_birth = " << hft->body_fat_birth);
+      INFO("hft->body_mass_empty = " << hft->body_mass_empty);
+      INFO("hft->body_fat_maximum = " << hft->body_fat_maximum);
+
+      const double fatmass_birth =
+          hft->body_mass_birth * hft->body_mass_empty * hft->body_fat_birth;
+      const double lean_bodymass_birth = hft->body_mass_birth - fatmass_birth;
+      INFO("fatmass_birth = " << fatmass_birth);
+      INFO("lean_bodymass_birth = " << lean_bodymass_birth);
+
+      REQUIRE(hft->body_mass_birth ==
+              Approx(lean_bodymass_birth + fatmass_birth));
+
       // body mass
       CHECK(birth.get_bodymass() == Approx(hft->body_mass_birth));
-      CHECK(birth.get_potential_bodymass() == Approx(pot_bodymass_birth));
-      CHECK(birth.get_lean_bodymass() == Approx(lean_bodymass_birth));
+
       // fat mass
+      CHECK(birth.get_fatmass() == Approx(fatmass_birth));
       CHECK(birth.get_bodyfat() == Approx(hft->body_fat_birth));
-      CHECK(birth.get_max_fatmass() ==
-            Approx(pot_bodymass_birth * hft->body_fat_maximum));
     }
 
     SECTION("Pre-adult") {
@@ -96,13 +104,10 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
         REQUIRE(male_adult.get_age_days() == AGE_DAYS);
         REQUIRE(male_adult.get_age_years() == AGE_YEARS);
         // BODY MASS
-        CHECK(male_adult.get_bodymass() == Approx(hft->body_mass_male));
-        CHECK(male_adult.get_potential_bodymass() == male_adult.get_bodymass());
-        CHECK(male_adult.get_lean_bodymass() ==
-              Approx(hft->body_mass_male * (1.0 - hft->body_fat_maximum)));
+        // Since the HFT parameter for adult body mass is with 1/2 the max. fat
+        // reserves, the body mass with full fat reserves must be higher.
+        CHECK(male_adult.get_bodymass() >= Approx(hft->body_mass_male));
         // FAT MASS
-        CHECK(male_adult.get_max_fatmass() ==
-              Approx(hft->body_fat_maximum * hft->body_mass_male));
         CHECK(male_adult.get_bodyfat() == Approx(hft->body_fat_maximum));
         CHECK(male_adult.get_fatmass() / male_adult.get_max_fatmass() ==
               Approx(BODY_COND));
@@ -116,14 +121,8 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
         REQUIRE(female_adult.get_age_days() == AGE_DAYS);
         REQUIRE(female_adult.get_age_years() == AGE_YEARS);
         // BODY MASS
-        CHECK(female_adult.get_bodymass() == Approx(hft->body_mass_female));
-        CHECK(female_adult.get_potential_bodymass() ==
-              female_adult.get_bodymass());
-        CHECK(female_adult.get_lean_bodymass() ==
-              Approx(hft->body_mass_female * (1.0 - hft->body_fat_maximum)));
+        CHECK(female_adult.get_bodymass() >= Approx(hft->body_mass_female));
         // FAT MASS
-        CHECK(female_adult.get_max_fatmass() ==
-              Approx(hft->body_fat_maximum * hft->body_mass_female));
         CHECK(female_adult.get_bodyfat() == Approx(hft->body_fat_maximum));
         CHECK(female_adult.get_fatmass() / female_adult.get_max_fatmass() ==
               Approx(BODY_COND));
@@ -137,14 +136,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
         const HerbivoreBaseDummy male_adult(
             hft->life_history_physical_maturity_male * 365, BODY_COND, hft,
             Sex::Male);
-        // BODY MASS
-        CHECK(male_adult.get_potential_bodymass() ==
-              Approx(hft->body_mass_male));
-        CHECK(male_adult.get_lean_bodymass() + male_adult.get_max_fatmass() ==
-              Approx(male_adult.get_potential_bodymass()));
         // FAT MASS
-        CHECK(male_adult.get_max_fatmass() ==
-              Approx(hft->body_fat_maximum * hft->body_mass_male));
         CHECK(male_adult.get_fatmass() / male_adult.get_max_fatmass() ==
               Approx(BODY_COND));
       }
@@ -153,15 +145,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
         const HerbivoreBaseDummy female_adult(
             hft->life_history_physical_maturity_male * 365, BODY_COND, hft,
             Sex::Female);
-        // BODY MASS
-        CHECK(female_adult.get_potential_bodymass() ==
-              Approx(hft->body_mass_female));
-        CHECK(female_adult.get_lean_bodymass() +
-                  female_adult.get_max_fatmass() ==
-              Approx(female_adult.get_potential_bodymass()));
         // FAT MASS
-        CHECK(female_adult.get_max_fatmass() ==
-              Approx(hft->body_fat_maximum * hft->body_mass_female));
         CHECK(female_adult.get_fatmass() / female_adult.get_max_fatmass() ==
               Approx(BODY_COND));
       }

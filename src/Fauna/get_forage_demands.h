@@ -65,7 +65,7 @@ class GetForageDemands {
    * \param energy_content Net energy content of the available forage
    * [MJ/kgDM].
    * \throw std::invalid_argument If `day` not in [0,364] or if
-   * `bodymass<=0` or if `bodymass` greater than adult body mass.
+   * `bodymass<=0`.
    */
   void init_today(const int day, const HabitatForage& available_forage,
                   const ForageEnergyContent& energy_content,

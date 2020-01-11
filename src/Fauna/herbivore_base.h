@@ -31,7 +31,6 @@ class HerbivoreBase : public HerbivoreInterface {
   virtual void eat(const ForageMass& kg_per_km2,
                    const Digestibility& digestibility,
                    const ForageMass& N_kg_per_km2);
-  virtual double get_bodymass() const;
   virtual ForageMass get_forage_demands(const HabitatForage& available_forage);
   virtual const Hft& get_hft() const {
     assert(hft != NULL);
@@ -53,34 +52,103 @@ class HerbivoreBase : public HerbivoreInterface {
   /// Current age in years.
   double get_age_years() const { return age_days / 365.0; }
 
-  /// Proportional body fat (fat mass/total body mass).
+  /// Proportional body fat in empty body (fat mass/empty body mass).
+  /**
+   * The current body fraction, \f$bf\f$ is given by the current fat mass,
+   * \f$FM\f$, and the structural mass, \f$SM\f$. Structural mass and fat mass
+   * together constitute the empty body.
+   * \f[
+   * bf = \frac{FM}{SM + FM}
+   * \f]
+   * \see \ref sec_body_mass_and_composition
+   */
   double get_bodyfat() const;
 
+  /// Current live weight, including fat, ingesta, blood, etc. [kg/ind].
+  /**
+   * Current body mass, \f$BM\f$, is the sum of the empty body and the non-body
+   * parts, like ingesta, blood, etc. The empty body is given by \f$BM * eb\f$,
+   * where \f$eb\f$ is the proportion of empty body mass given by
+   * \ref Hft::body_mass_empty.
+   *
+   * Since the empty body consists of fat mass, \f$FM\f$, and  structural mass,
+   * \f$SM\f$, we can write
+   * \f[
+   * BM = SM + FM + BM * (1 - eb)
+   * \f]
+   * and simplify that to:
+   * \f[
+   * BM = \frac{SM + FM}{eb}
+   * \f]
+   * \see \ref sec_body_mass_and_composition
+   */
+  virtual double get_bodymass() const;
+
   /// Body mass at physical maturity [kg/ind].
+  /**
+   * \ref Hft::body_mass_female for females and \ref Hft::body_mass_male for
+   * males.
+   */
   double get_bodymass_adult() const;
 
   /// Get full-body conductance [W/°C/ind].
-  /** \see \ref Hft::thermoregulation_conductance
-   * \throw std::logic_error If \ref ConductanceModel not implemented. */
+  /**
+   * \see \ref Hft::thermoregulation_conductance
+   * \throw std::logic_error If \ref ConductanceModel not implemented.
+   */
   double get_conductance() const;
 
-  /// Current fat mass [kg/ind].
+  /// Current fat mass (pure lipids) [kg/ind].
+  /**
+   * \see \ref sec_body_mass_and_composition
+   */
   double get_fatmass() const;
 
-  /// Get fat-free body mass [kg/ind].
-  /**
-   * Use \ref Hft::body_mass_male or \ref Hft::body_mass_female
-   * if older than \ref Hft::life_history_physical_maturity_male or
-   * \ref Hft::life_history_physical_maturity_female, respectively.
-   * Otherwise interpolate linearly from \ref Hft::body_mass_birth.
-   */
-  virtual double get_lean_bodymass() const;
-
   /// Physiological maximum of fat mass [kg/ind].
+  /**
+   * The maximum fat mass, \f$FM_{max}\f$ is given by applying the fraction
+   * \ref Hft::body_fat_maximum, \f$bf_{max}\f$, to the empty body. The empty
+   * body mass is the sum of structural mass, \f$SM\f$, and current fat mass,
+   * which is in here the maximum \f$FM_{max}\f$.
+   *
+   * \f{eqnarray*}{
+   * bf_{max}                       &=& \frac{FM_{max}}{SM + FM_{max}} \\
+   * FM_{max}                       &=& SM * bf_{max} + FM_{max} * bf_{max} \\
+   * FM_{max} - FM_{max} * bf_{max} &=& SM * bf_{max} \\
+   * FM_{max} * (1 - bf_{max})      &=& SM * bf_{max} \\
+   * FM_{max}                       &=& \frac{SM * bf_{max}}{1 - bf_{max}}
+   * \f}
+   * \see \ref sec_body_mass_and_composition
+   */
   double get_max_fatmass() const;
 
-  /// The potential (maximum) body mass [kg/ind] with full fat reserves.
-  double get_potential_bodymass() const;
+  /// Current mass of body tissue without fat, ingesta, blood, etc. [kg/ind]
+  /**
+   * This is the body component that an ontogenetic growth curve applies to.
+   * The growth curve interpolates between the neonate structural mass and the
+   * adult structural mass.
+   *
+   * The neonate structural mass, \f$SM_{birth}\f$, is derived from the birth
+   * weight, \f$BM_{birth}\f$ (\ref Hft::body_mass_birth), the body fat at
+   * birth, \f$bf_{birth}\f$ (\ref Hft::body_fat_birth), and the empty body
+   * fraction, \f$eb\f$ (\ref Hft::body_mass_empty). The structural mass is the
+   * empty body, which is \f$BM_{birth}*eb\f$, minus the fractional body fat
+   * \f$bf_{birth}\f$:
+   * \f[
+   * SM_{birth} = BM_{birth} * eb * (1 - bf_{birth})
+   * \f]
+   *
+   * The adult structural mass, \f$SM_{ad}\f$, is calculated in a similar way,
+   * only that the body fat fraction for the adult live weight parameter
+   * \f$BM_{ad}\f$ (\ref Hft::body_mass_female, \ref Hft::body_mass_male) is
+   * assumed to be half of the maximum \f$bf_{max}\f$
+   * (\ref Hft::body_fat_maximum):
+   * \f[
+   * SM_{ad} = BM_{ad} * eb * (1 - \frac{bf_{max}}{2})
+   * \f]
+   * \see \ref sec_body_mass_and_composition
+   */
+  double get_structural_mass() const;
 
   /// Current day of the year, as set in \ref simulate_day().
   /** \throw std::logic_error If current day not yet set by an

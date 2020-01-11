@@ -229,10 +229,6 @@ void GetForageDemands::init_today(const int day,
                                   const HabitatForage& _available_forage,
                                   const ForageEnergyContent& _energy_content,
                                   const double _bodymass) {
-  if (_bodymass > get_bodymass_adult())
-    throw std::invalid_argument(
-        "Fauna::GetForageDemands::init_today() "
-        "Parameter \"bodymass\" is greater than HFT adult body mass.");
   if (_bodymass <= 0.0)
     throw std::invalid_argument(
         "Fauna::GetForageDemands::init_today() "
