@@ -288,10 +288,11 @@ fattening (k<sub>f</sub>), and for lactation (k<sub>l</sub>) (Blaxter 1989,
 p. 254ff\cite blaxter1989energy; Minson 1990\cite minson1990forage, p. 151).
 
 In the Modular Megafauna Model, the energy budget calculates with the
-“currency” net energy. Basal and field metabolic rate and other energy
-expenditures are directly “paid” with net energy. Therefore the efficiency
-factor k<sub>m</sub> is used to convert from metabolizable energy to net
-energy. Body fat is anabolized from metabolizable forage energy with the
+“currency” net energy, which broadly represents the available oxidizable
+metabolic fuels—glucose and fatty acid. Basal and field metabolic rate and
+other energy expenditures are directly “paid” with net energy. Therefore the
+efficiency factor k<sub>m</sub> is used to convert from metabolizable energy to
+net energy. Body fat is anabolized from metabolizable forage energy with the
 efficiency factor k<sub>f</sub>.
 
 ![Model of energy retention in an herbivore. km and kf denote the slope of the line, i.e. the efficiency of utilizing metabolizable energy. When fed maintenance requirements, the animal will neither gain nor lose weight. Below that point it will starve (i.e. catabolize reserves) and above it will build reserves (i.e. anabolize fat). After McDonald et al. (2010), Fig. 11.5.](images/retention_over_intake.svg)
