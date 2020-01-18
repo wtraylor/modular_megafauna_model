@@ -466,7 +466,7 @@ at which 50% of females are pregnant. Parameter *b* is called **growth rate**
 and defines the slope of the curve—the softness of the threshold, one could
 say.
 
-![](images/reproduction_illius2000resource.png)
+![Logistic model of correlating number of offspring in the breeding season with body condition of females in the mating season.](images/reproduction_illius2000resource.png)
 
 ## Mortality {#sec_mortality}
 
