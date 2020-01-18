@@ -468,6 +468,24 @@ threshold, one could say.
 
 ![Logistic model of correlating number of offspring in the breeding season with body condition of females in the mating season.](images/reproduction_illius2000resource.png)
 
+Parametrizing the logistic reproduction model based on field data is difficult
+for the following reasons:
+
+1. Field studies correlating body fat in the mating season with breeding
+   success are rare.
+1. The regressions don’t always have good predictive value (e.g.
+   Garrott et al., 2003 \cite garrott2003climateinduced;
+   Tollefson et al., 2010 \cite tollefson2010influence).
+1. The absolute or relative body fat values from field studies are difficult to
+   translate to the “body condition” of
+   Illius & O’Connor (2000) \cite illius2000resource, i.e. fraction of maximum
+   fat mass. Not only is total body fat hard to measure in the first place (and
+   only indirectly), but also the maximum body fat needs to be defined as well.
+1. Each large herbivore species has a unique response to body fat during mating
+   season, depending on their reproductive strategy (Adamczewski et al.,
+   1998 \cite adamczewski1998influence). It might not be possible
+   to transfer results from one species to another.
+
 ## Mortality {#sec_mortality}
 
 ## Effects on Environment {#sec_effects_on_environment}
