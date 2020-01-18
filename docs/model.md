@@ -462,9 +462,9 @@ y = \frac{1}{1 + e^{-b(FM/FM_{max} - c)}}
 
 The exponent makes the parameters b and c explicit. Parameter *c* is called the
 **midpoint** value of a generalized logistic function. It is the body condition
-at which 50% of females are pregnant. Parameter *b* is called **growth rate**
-and defines the slope of the curve—the softness of the threshold, one could
-say.
+at which 50% of the maximum annual growth rate is reached. Parameter *b* is
+called **growth rate** and defines the slope of the curve—the softness of the
+threshold, one could say.
 
 ![Logistic model of correlating number of offspring in the breeding season with body condition of females in the mating season.](images/reproduction_illius2000resource.png)
 
