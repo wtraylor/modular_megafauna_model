@@ -20,6 +20,7 @@ This document is only about *syntax* only.
     - [Unit Tests](#unit-tests)
     - [Code Checkers](#code-checkers)
     - [Doxygen Documentation](#doxygen-documentation)
+        - [Markdown](#markdown)
         - [BibTeX Bibliography](#bibtex-bibliography)
 
 ## Version Control
@@ -181,7 +182,12 @@ Execute the helper script `./tools/cppclean.sh` in the Bash.
 
 ### Doxygen Documentation
 
-The documentation is completely in English, preferably with American spelling.
+- The documentation is completely in English, preferably with American spelling.
+- Images are placed in `docs/images/`. If the figure was plotted with a script, save the script in the same folder and with the same file name as the image.
+
+#### Markdown
+- Overview pages are written in [Markdown](http://www.doxygen.nl/manual/markdown.html) in `*.md`-files in the `docs/` folder.
+- Make a new line after each sentence (and perhaps after logical sentence structures): [Inner Sentence Rule](https://cirosantilli.com/markdown-style-guide#option-wrap-inner-sentence).
 
 #### BibTeX Bibliography
 [BibTeX](www.bibtex.org) is used for bibliographic references: [docs/bibliography.bib](docs/bibliography.bib).
