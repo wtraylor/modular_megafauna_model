@@ -406,39 +406,26 @@ Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ ([Hudson & White 1985
 
 ## Reproduction {#sec_reproduction}
 
-New herbivore offspring is created in the model every year in the **breeding
-season.** This term refers to the time of parturition, not the time of mating.
+New herbivore offspring is created in the model every year in the **breeding season.**
+This term refers to the time of parturition, not the time of mating.
 The onset and the length of the breeding season is defined with constant
-parameters by the user. A flexible breeding season depending on the primary
-production like in Pachzelt et al. (2013) \cite pachzelt2013coupling is
-currently not implemented.
+parameters by the user.
+A flexible breeding season depending on the primary production like in Pachzelt et al. (2013) \cite pachzelt2013coupling is currently not implemented.
 
-The user-selected **reproduction model** defines how many young a female will
-produce on average per year, i.e. the probability of producing one newborn per
-year. The **logistic** reproduction model correlates this probability with the
-body fat at the time of conception.
+The user-selected **reproduction model** defines how many young a female will produce on average per year, i.e. the probability of producing one newborn per year.
+The **logistic** reproduction model correlates this probability with the body fat at the time of conception.
 
-\remark The *lipostatic model of fertility* states that the estrus is
-suppressed below a critical body fat level. It was originally formulated for
-humans by Frisch & McArthur (1974) \cite frisch1974menstrual. The hypothesis
-was heavily criticized by Bronson & Manning (1991) \cite bronson1991energetic
-and Wade & Schneider (1992) \cite wade1992metabolic. Even though they concede
-that there are *correlations,* they argue that there is *no causal connection*
-between body fat and ovulation and that the momentary energy supply in form of
-metabolic fuels is directly or indirectly (e.g. through insulin) regulating
-ovulation. This is the *metabolic hypothesis.* The discovery of the hormone
-leptin in 1994, which is produced by adipose cells, made it again conceivable
-that there might potentially be a direct link between body fat and reproductive
-functions. However, the hormonal interactions are too complex to decipher the
-underlying mechanisms leading to suppression of ovulation or altered sexual
-behavior (for reviews see Friggens et al. (2010) \cite friggens2010nutritional
-and Schneider et al. (2012) \cite schneider2012sense). Therefore the herbivore
-model works with correlations only.
+\remark
+The *lipostatic model of fertility* states that the estrus is suppressed below a critical body fat level.
+It was originally formulated for humans by Frisch & McArthur (1974) \cite frisch1974menstrual.
+The hypothesis was heavily criticized by Bronson & Manning (1991) \cite bronson1991energetic and Wade & Schneider (1992) \cite wade1992metabolic.
+Even though they concede that there are *correlations,* they argue that there is *no causal connection* between body fat and ovulation and that the momentary energy supply in form of metabolic fuels is directly or indirectly (e.g. through insulin) regulating ovulation.
+This is the *metabolic hypothesis.*
+The discovery of the hormone leptin in 1994, which is produced by adipose cells, made it again conceivable that there might potentially be a direct link between body fat and reproductive functions.
+However, the hormonal interactions are too complex to decipher the underlying mechanisms leading to suppression of ovulation or altered sexual behavior (for reviews see Friggens et al. (2010) \cite friggens2010nutritional and Schneider et al. (2012) \cite schneider2012sense).
+Therefore the herbivore model works with correlations only.
 
-In some publications, e.g. Cook et al. (2004) \cite cook2004effects or
-Tollefson et al. (2010) \cite tollefson2010influence, the probability of
-pregnancy, as a dependent of percentage of total body fat, is expressed in a
-logistic function of this form:
+In some publications, e.g. Cook et al. (2004) \cite cook2004effects or Tollefson et al. (2010) \cite tollefson2010influence, the probability of pregnancy, as a dependent of percentage of total body fat, is expressed in a logistic function of this form:
 
 \f[
 y = \frac{e^{a+b*x}}{x + e^{a+b*x}}
@@ -450,41 +437,27 @@ This can be simplified to:
 y = \frac{x}{x + e^{-(a+b*x)}}
 \f]
 
-Illius & O’Connor (2000) \cite illius2000resource show their breeding rate
-model in Formula (2). It has more variables, but comes down to the same formula
-as above. Instead of total body fat percentage they use **body condition,**
-which is defined as the ratio of current fat mass, FM, to the maximum fat mass,
-$FM_{max}$:
+Illius & O’Connor (2000) \cite illius2000resource show their breeding rate model in Formula (2).
+It has more variables, but comes down to the same formula as above.
+Instead of total body fat percentage they use **body condition,** which is defined as the ratio of current fat mass, FM, to the maximum fat mass, $FM_{max}$:
 
 \f[
 y = \frac{1}{1 + e^{-b(FM/FM_{max} - c)}}
 \f]
 
-The exponent makes the parameters b and c explicit. Parameter *c* is called the
-**midpoint** value of a generalized logistic function. It is the body condition
-at which 50% of the maximum annual growth rate is reached. Parameter *b* is
-called **growth rate** and defines the slope of the curve—the softness of the
-threshold, one could say.
+The exponent makes the parameters b and c explicit.
+Parameter *c* is called the **midpoint** value of a generalized logistic function.
+It is the body condition at which 50% of the maximum annual growth rate is reached.
+Parameter *b* is called **growth rate** and defines the slope of the curve—the softness of the threshold, one could say.
 
 ![Logistic model of correlating number of offspring in the breeding season with body condition of females in the mating season.](images/reproduction_illius2000resource.png)
 
-Parametrizing the logistic reproduction model based on field data is difficult
-for the following reasons:
+Parametrizing the logistic reproduction model based on field data is difficult for the following reasons:
 
-1. Field studies correlating body fat in the mating season with breeding
-   success are rare.
-1. The regressions don’t always have good predictive value (e.g.
-   Garrott et al., 2003 \cite garrott2003climateinduced;
-   Tollefson et al., 2010 \cite tollefson2010influence).
-1. The absolute or relative body fat values from field studies are difficult to
-   translate to the “body condition” of
-   Illius & O’Connor (2000) \cite illius2000resource, i.e. fraction of maximum
-   fat mass. Not only is total body fat hard to measure in the first place (and
-   only indirectly), but also the maximum body fat needs to be defined as well.
-1. Each large herbivore species has a unique response to body fat during mating
-   season, depending on their reproductive strategy (Adamczewski et al.,
-   1998 \cite adamczewski1998influence). It might not be possible
-   to transfer results from one species to another.
+1. Field studies correlating body fat in the mating season with breeding success are rare.
+1. The regressions don’t always have good predictive value (e.g. Garrott et al., 2003 \cite garrott2003climateinduced; Tollefson et al., 2010 \cite tollefson2010influence).
+1. The absolute or relative body fat values from field studies are difficult to translate to the “body condition” of Illius & O’Connor (2000) \cite illius2000resource, i.e. fraction of maximum fat mass. Not only is total body fat hard to measure in the first place (and only indirectly), but also the maximum body fat needs to be defined as well.
+1. Each large herbivore species has a unique response to body fat during mating season, depending on their reproductive strategy (Adamczewski et al., 1998 \cite adamczewski1998influence). It might not be possible to transfer results from one species to another.
 
 ## Mortality {#sec_mortality}
 
