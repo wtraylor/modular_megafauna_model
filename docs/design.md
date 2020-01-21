@@ -15,6 +15,17 @@ The following UML diagram shows through which interfaces the megafauna model int
 	!include diagrams.iuml!basic_components
 @enduml
 
+The Modular Megafauna Model was originally within the code base of the LPJ-GUESS ecosystem model.
+In 2019 it was separated into its own library for the following reasons:
+
+- Model is **reusable** with other vegetation models.
+- Model can be better **tested** in isolation and with continuous integration (CI).
+- More **freedom** to structure the repository and its documentation.
+- The model can be **licensed** and **distributed** independently from LPJ-GUESS.
+- **Memory leaks** can be found more easily since they are not mingled with LPJ-GUESS.
+
+### Simulation Design
+
 The basic simulation design is simple:
 
 - **Herbivores** (\ref Fauna::HerbivoreInterface) are independent entities that interact with their environment.
