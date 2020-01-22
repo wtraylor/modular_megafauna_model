@@ -11,7 +11,7 @@ The following four sections describe the four distinct, but interlinked conceptu
 The last section covers some lessons learned from emerging model behavior.
 
 - Basic Model Concepts
-- Energy Household
+- Energy Budget
 - Reproduction
 - Mortality
 - Effects on Environment
@@ -201,9 +201,9 @@ Blaxter (1989)\cite blaxter1989energy, p. 242f:
 > 1977). They were generalised by F.J. Richards (1959) and have been reviewed
 > and critically analysed by Parts (1982).
 
-## Energy Household {#sec_energy_household}
+## Energy Budget
 
-![Energy household for a ruminant or hindgut fermenter. Modified after Minson (1990), Fig. 5.1.](images/energy_household.svg)
+![Model of energy budget for a ruminant or hindgut fermenter. Modified after Minson (1990), Fig. 5.1.](images/energy_budget.svg)
 
 ### Energy Content of Forage {#sec_energy_content}
 
@@ -213,7 +213,7 @@ framework is given by Ferrell & Oltjen (2008) \cite ferrell2008asas. Its
 conceptual shortcomings and difficulties in practical methodology are
 summarized by Birkett & de Lange (2001) \cite birkett2001limitations.
 
-The diagram on the energy household shows how energy from the forage is used by
+The diagram on the energy budget shows how energy from the forage is used by
 an herbivore: **Gross energy** (GE) is the heat that could be produced from
 complete combustion of the feedstuff. From that, the part which is not excreted
 in feces is the **digestible energy** (DE). Some proportion of it is then lost

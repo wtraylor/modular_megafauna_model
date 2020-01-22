@@ -16,9 +16,9 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
-   sodipodi:docname="energy_household.svg">
+   sodipodi:docname="energy_budget.svg">
   <title
-     id="title895">Herbivore Energy Household</title>
+     id="title895">Herbivore Energy Budget</title>
   <defs
      id="defs2">
     <marker
@@ -99,7 +99,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title>Herbivore Energy Household</dc:title>
+        <dc:title>Herbivore Energy Budget</dc:title>
         <cc:license
            rdf:resource="http://creativecommons.org/licenses/by/4.0/" />
         <dc:date>2019-12-20</dc:date>
