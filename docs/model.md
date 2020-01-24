@@ -203,7 +203,17 @@ Blaxter (1989)\cite blaxter1989energy, p. 242f:
 
 ## Energy Budget
 
-![Model of energy budget for a ruminant or hindgut fermenter. Modified after Minson (1990), Fig. 5.1.](images/energy_budget.svg)
+![Model of energy budget for a ruminant or hindgut fermenter. Modified after Minson (1990), Fig. 5.1.](images/energy_household.svg)
+
+### Energy Expenditure
+
+The allometric scaling of metabolic rate in the megafauna model does not differentiate between inter- and intraspecific scaling.
+This model assumption might need to be re-evaluated in the future.
+As Makarieva et al. \cite makarieva2009comment point out:
+
+> However, it has repeatedly been observed that young animals have elevated metabolic rates compared with what is predicted for their body mass from interspecific scaling (5–8).
+
+Compare also Glazier (2005) \cite glazier2005beyond for a discussion on intraspecific metabolic scaling.
 
 ### Energy Content of Forage {#sec_energy_content}
 
