@@ -418,9 +418,11 @@ Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ ([Hudson & White 1985
 
 New herbivore offspring is created in the model every year in the **breeding season.**
 This term refers to the time of parturition, not the time of mating.
-The onset and the length of the breeding season is defined with constant
-parameters by the user.
+The onset and the length of the breeding season is defined with constant parameters by the user.
 A flexible breeding season depending on the primary production like in Pachzelt et al. (2013) \cite pachzelt2013coupling is currently not implemented.
+
+The **gestation length** is a user-defined parameter.
+It must be noted that, in reality, gestation length is not invariable, but can potentially be adjusted to environmental circumstances (Berger 1992 \cite berger1992facilitation; Hogg et al. 2017 \cite hogg2017capital).
 
 The user-selected **reproduction model** defines how many young a female will produce on average per year, i.e. the probability of producing one newborn per year.
 The **logistic** reproduction model correlates this probability with the body fat at the time of conception.
