@@ -49,6 +49,7 @@ Note that “mass” and “weight” are used interchangeably.
 
 \todo
 - Give a general introduction for what use case this model was originally developed. -> scientific motivation
+- Describe the context within which we intend the model to operate.
 - Limitations of the model design:
 	+ habitats equal size
 	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
