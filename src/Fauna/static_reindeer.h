@@ -42,8 +42,7 @@ class StaticReindeer : public HerbivoreInterface {
   }
 
   virtual const Output::HerbivoreData& get_todays_output() const {
-    static const Output::HerbivoreData output_dummy;
-    return output_dummy;
+    return todays_output;
   };
 
   virtual bool is_dead() const { return false; }
@@ -56,10 +55,15 @@ class StaticReindeer : public HerbivoreInterface {
   virtual void simulate_day(const int day,
                             const HabitatEnvironment& environment,
                             double& offspring) {
-    // Nothing to do here yet.
+    // Nothing to do here, but set the output.
+    todays_output.inddens = get_ind_per_km2();
+    todays_output.massdens = get_kg_per_km2();
   }
 
   virtual double take_nitrogen_excreta() { return 0; }
+
+ private:
+  Output::HerbivoreData todays_output;
 };
 
 class StaticReindeerPopulation : public PopulationInterface {
@@ -70,9 +74,10 @@ class StaticReindeerPopulation : public PopulationInterface {
 
   static const Hft reindeer_dummy;
   virtual ConstHerbivoreVector get_list() const;
-  virtual HerbivoreVector get_list() {return list;}
+  virtual HerbivoreVector get_list() { return list; }
 
   virtual void purge_of_dead() {}
+
  private:
   HerbivoreVector list = {new StaticReindeer};
 };
