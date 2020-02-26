@@ -49,6 +49,9 @@ Note that “mass” and “weight” are used interchangeably.
 
 \todo
 - Give a general introduction for what use case this model was originally developed. -> scientific motivation
+    - Explain bottom-up approach.
+    - No density dependence prescribed, but that should emerge from the model.
+    - Explain what output uncertainty means: how can we measure it, what are the trade-offs in adding new processes.
 - Describe the context within which we intend the model to operate.
 - Limitations of the model design:
 	+ habitats equal size
