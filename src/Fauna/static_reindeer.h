@@ -10,30 +10,30 @@
 #include "herbivore_data.h"
 #include "herbivore_interface.h"
 #include "hft.h"
+#include "population_interface.h"
 
 namespace Fauna {
+
+class StaticReindeerPopulation;
 
 class StaticReindeer : public HerbivoreInterface {
  public:
   virtual void eat(const ForageMass& kg_per_km2,
                    const Digestibility& digestibility,
-                   const ForageMass& N_kg_per_km2 = ForageMass(0)){
+                   const ForageMass& N_kg_per_km2 = ForageMass(0)) {
     // Nothing is happening here, forage just disappears.
   }
 
   virtual double get_bodymass() const { return 75; }
 
-  virtual ForageMass get_forage_demands(const HabitatForage& available_forage){
+  virtual ForageMass get_forage_demands(const HabitatForage& available_forage) {
     ForageMass demand;
     // 4 km dry matter per day and animal
     demand[ForageType::Grass] = get_ind_per_km2() * 4.0;
     return demand;
   }
 
-  virtual const Hft& get_hft() const {
-    static const Hft reindeer_dummy;
-    return reindeer_dummy;
-  }
+  virtual const Hft& get_hft() const;
 
   virtual double get_ind_per_km2() const { return 2.5; }
 
@@ -55,11 +55,26 @@ class StaticReindeer : public HerbivoreInterface {
 
   virtual void simulate_day(const int day,
                             const HabitatEnvironment& environment,
-                            double& offspring){
+                            double& offspring) {
     // Nothing to do here yet.
   }
 
   virtual double take_nitrogen_excreta() { return 0; }
+};
+
+class StaticReindeerPopulation : public PopulationInterface {
+ public:
+  virtual void create_offspring(const double ind_per_km2) {}
+  virtual void establish() {}
+  virtual const Hft& get_hft() const { return reindeer_dummy; }
+
+  static const Hft reindeer_dummy;
+  virtual ConstHerbivoreVector get_list() const;
+  virtual HerbivoreVector get_list() {return list;}
+
+  virtual void purge_of_dead() {}
+ private:
+  HerbivoreVector list = {new StaticReindeer};
 };
 
 }  // namespace Fauna

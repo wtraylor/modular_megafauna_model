@@ -26,7 +26,9 @@ enum class HerbivoreType {
   /// Use class \ref HerbivoreCohort
   Cohort,
   /// Use class \ref HerbivoreIndividual
-  Individual
+  Individual,
+  /// Use class \ref StaticReindeer
+  StaticReindeer
 };
 
 /// Time interval for aggregating output.

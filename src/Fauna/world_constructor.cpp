@@ -10,6 +10,7 @@
 #include "hft.h"
 #include "individual_population.h"
 #include "parameters.h"
+#include "static_reindeer.h"
 
 using namespace Fauna;
 
@@ -41,6 +42,8 @@ PopulationList* WorldConstructor::create_populations() const {
     for (const auto& hft_ptr : get_hftlist())
       plist->emplace_back(
           new IndividualPopulation(CreateHerbivoreIndividual(hft_ptr, params)));
+  } else if (get_params().herbivore_type == HerbivoreType::StaticReindeer) {
+    return new StaticReindeerPopulation();
   } else
     throw std::logic_error(
         "WorldConstructor::create_population(): unknown herbivore type");
