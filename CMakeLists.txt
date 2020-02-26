@@ -93,6 +93,8 @@ set (SOURCE_FILES
   src/Fauna/simulate_day.h
   src/Fauna/simulation_unit.cpp
   src/Fauna/simulation_unit.h
+  src/Fauna/static_reindeer.cpp
+  src/Fauna/static_reindeer.h
   src/Fauna/world.cpp
   src/Fauna/world_constructor.cpp
   src/Fauna/world_constructor.h
