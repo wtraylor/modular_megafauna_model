@@ -771,8 +771,11 @@ void InsfileReader::read_table_simulation() {
         params.herbivore_type = HerbivoreType::Cohort;
       else if (lowercase(*value) == lowercase("Individual"))
         params.herbivore_type = HerbivoreType::Individual;
+      else if (lowercase(*value) == lowercase("StaticReindeer"))
+        params.herbivore_type = HerbivoreType::StaticReindeer;
       else
-        throw invalid_option(key, *value, {"Cohort", "Individual"});
+        throw invalid_option(key, *value,
+                             {"Cohort", "Individual", "StaticReindeer"});
       remove_qualified_key(ins, key);
     } else
       throw missing_parameter(key);
