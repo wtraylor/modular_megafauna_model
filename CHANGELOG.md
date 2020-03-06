@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased]
 ### Added
 - Net energy content model: `NetEnergyModel::GrossEnergyFraction`
     - Parameter `forage.gross_energy`
@@ -28,7 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Parameter `hft.digestion.efficiency` (less efficient digestion of hindgut
   fermenters is now in `hft.digestion.digestibility_multiplier`).
 
-## 0.2.0 - 2019-12-06
+## [0.2.0] - 2019-12-06
 ### Added
 - New instruction file parameters, which were constants before:
     - `hft.digestion.anabolism_coefficient` (formerly `Fauna::FatMassEnergyBudget::FACTOR_ANABOLISM`)
@@ -54,7 +54,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Removed
 - Instruction file parameter `hft.digestion.type` and the corresponding `Fauna::DigestionType` and `Fauna::Hft::digestion_type`.
 
-## 0.1.0 - 2019-11-07
+## [0.1.0] - 2019-11-07
 ### Added
 - Herbivores in cohort and individual mode.
     - Energy expenditure components:
@@ -79,3 +79,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Output in tab-separated text tables.
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
+
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.2.0...develop
+[0.2.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.1.0...0.2.0
+[0.1.0]: https://github.com/wtraylor/modular_megafauna_model/releases/tag/0.1.0
