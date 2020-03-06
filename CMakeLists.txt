@@ -116,11 +116,6 @@ target_include_directories (ModularMegafaunaModel
   src/Fauna/Output/
   )
 
-target_compile_options (ModularMegafaunaModel
-  PRIVATE
-  -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
-  )
-
 ###########################################################################
 ##########################  UNIT TESTS  ###################################
 ###########################################################################
@@ -190,10 +185,6 @@ if (BUILD_TESTING)
     src/Fauna/
     src/Fauna/Output/
     tests/
-    )
-  target_compile_options (megafauna_unit_tests
-    PRIVATE
-    -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
     )
   # We need to check that the example TOML file is read correctly.
   configure_file (
