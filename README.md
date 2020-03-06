@@ -88,7 +88,9 @@ If you discover a bug, please use the issue tracker to report it, or fork this r
 Authors
 -------
 
-- Wolfgang Traylor (wolfgang.traylor@senckenberg.de) <!--TODO: Add ORCID-->
+- Wolfgang Traylor (wolfgang.traylor@senckenberg.de) ![ORCID][orcid-logo] <https://orcid.org/0000-0002-4813-1072>
+
+[orcid-logo]: https://orcid.org/sites/default/files/images/orcid_16x16.gif
 
 Similar Projects
 ----------------
