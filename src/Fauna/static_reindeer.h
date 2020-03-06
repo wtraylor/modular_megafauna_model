@@ -68,11 +68,14 @@ class StaticReindeer : public HerbivoreInterface {
 
 class StaticReindeerPopulation : public PopulationInterface {
  public:
+   StaticReindeerPopulation(){
+     reindeer_dummy.name = "Reindeer";
+   }
   virtual void create_offspring(const double ind_per_km2) {}
   virtual void establish() {}
   virtual const Hft& get_hft() const { return reindeer_dummy; }
 
-  static const Hft reindeer_dummy;
+  static Hft reindeer_dummy;
   virtual ConstHerbivoreVector get_list() const;
   virtual HerbivoreVector get_list() { return list; }
 

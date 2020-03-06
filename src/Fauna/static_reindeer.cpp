@@ -2,7 +2,7 @@
 
 using namespace Fauna;
 
-const Hft StaticReindeerPopulation::reindeer_dummy;
+Hft StaticReindeerPopulation::reindeer_dummy;
 
 const Hft& StaticReindeer::get_hft() const {
   return StaticReindeerPopulation::reindeer_dummy;
