@@ -14,7 +14,7 @@
 
 namespace Fauna {
 // Forward Declarations
-class HabitatEnvironment;
+struct HabitatEnvironment;
 
 /// Abstract class of a homogenous spatial unit populated by herbivores
 /**

@@ -16,7 +16,7 @@ namespace Fauna {
 class Date;
 class Habitat;
 class Hft;
-class Parameters;
+struct Parameters;
 class SimulationUnit;
 class WorldConstructor;
 
