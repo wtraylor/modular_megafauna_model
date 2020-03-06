@@ -21,7 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Fixed
 - Order of HFT names in text table output is now guaranteed.
-- Compiler flags specific to GCC are removed. [#1](https://github.com/wtraylor/modular_megafauna_model/issues/1)
+- Compiler flags specific to GCC are removed. [#1]
 
 ### Removed
 - The old “default” net energy model `get_net_energy_content_default()`.
@@ -83,3 +83,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.2.0...develop
 [0.2.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/wtraylor/modular_megafauna_model/releases/tag/0.1.0
+
+[#1]: https://github.com/wtraylor/modular_megafauna_model/issues/1
