@@ -154,6 +154,10 @@ InsfileReader::find_hft_array_parameter(
 }
 
 Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
+  if (!table)
+    throw std::invalid_argument(
+        "Fauna::InsfileReader::read_hft() "
+        "Parameter 'table' is NULL.");
   Hft hft;
   {
     const auto key = "name";

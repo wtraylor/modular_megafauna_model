@@ -212,6 +212,9 @@ class InsfileReader {
   void read_table_simulation();
 
   /// Construct HFT object from an entry in the array of tables.
+  /**
+   * \throw std::invalid_argument If `table` is NULL.
+   */
   Hft read_hft(const std::shared_ptr<cpptoml::table>& table);
 
   /// The root table of the instruction file from `cpptoml::parse_file()`.
