@@ -199,6 +199,9 @@ class InsfileReader {
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
       const bool mandatory) const;
 
+  /// Read the TOML table `forage`.
+  void read_table_forage();
+
   /// Read the TOML table `output`.
   void read_table_output();
 

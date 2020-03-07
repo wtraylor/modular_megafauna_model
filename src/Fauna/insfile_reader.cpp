@@ -47,6 +47,7 @@ std::string invalid_option::construct_message(
 InsfileReader::InsfileReader(const std::string filename)
     : ins(cpptoml::parse_file(filename)) {
   // Read global parameters
+  read_table_forage();
   read_table_output();
   if (params.output_format == OutputFormat::TextTables)
     read_table_output_text_tables();
@@ -553,6 +554,21 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
 
   return hft;
+}
+
+void InsfileReader::read_table_forage() {
+  for (const auto& ft : Fauna::FORAGE_TYPES) {
+    const auto key = "forage.gross_energy." + get_forage_type_name(ft);
+    auto value = ins->get_qualified_as<double>(key);
+    if (!value) throw missing_parameter(key);
+    if (*value < 0)
+      throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
+    params.forage_gross_energy[ft] = *value;
+    ins->erase(key);
+  }
+  // Remove the table "forage" in order to indicate that it’s been parsed.
+  auto table = ins->get_table("forage");
+  if (table && table->empty()) ins->erase("forage");
 }
 
 void InsfileReader::read_table_output() {
