@@ -126,6 +126,27 @@ struct param_out_of_range : public std::runtime_error {
                            allowed_interval + "."){};
 };
 
+/// Exception that parameters couldn’t be parsed in the TOML file.
+struct unknown_parameters : public std::runtime_error {
+  /// Constructor
+  /**
+   * \param elements A list of unknown elements. Each should contain the fully
+   * qualified TOML key, and may give more helpful details to the user. Each
+   * element is printed as one line.
+   */
+  unknown_parameters(const std::vector<std::string> elements)
+      : runtime_error("Unknown parameters encountered:\n" +
+                      concatenate_elements(elements)){};
+
+  /// Concatenate list of strings with line breaks.
+  static std::string concatenate_elements(
+      const std::vector<std::string> elements) {
+    std::ostringstream str;
+    for (const auto& i : elements) str << i << "\n";
+    return str.str();
+  }
+};
+
 /// Class to read parameters and HFTs from given instruction file.
 class InsfileReader {
  public:
