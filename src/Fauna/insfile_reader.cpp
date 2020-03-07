@@ -557,6 +557,7 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
 }
 
 void InsfileReader::read_table_forage() {
+  auto table = ins->get_table("forage");
   for (const auto& ft : Fauna::FORAGE_TYPES) {
     const auto key = "forage.gross_energy." + get_forage_type_name(ft);
     auto value = ins->get_qualified_as<double>(key);
@@ -564,14 +565,15 @@ void InsfileReader::read_table_forage() {
     if (*value < 0)
       throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
     params.forage_gross_energy[ft] = *value;
-    ins->erase(key);
+    if (table && table->get_table("gross_energy"))
+      table->get_table("gross_energy")->erase(get_forage_type_name(ft));
   }
   // Remove the table "forage" in order to indicate that it’s been parsed.
-  auto table = ins->get_table("forage");
   if (table && table->empty()) ins->erase("forage");
 }
 
 void InsfileReader::read_table_output() {
+  auto table = ins->get_table("output");
   {
     const auto key = "output.format";
     auto value = ins->get_qualified_as<std::string>(key);
@@ -583,6 +585,7 @@ void InsfileReader::read_table_output() {
         throw invalid_option(key, *value, {"TextTables"});
     } else
       throw missing_parameter(key);
+    if (table) table->erase("format");
   }
   {
     const auto key = "output.interval";
@@ -601,10 +604,14 @@ void InsfileReader::read_table_output() {
                              {"Daily", "Monthly", "Decadal", "Annual"});
     } else
       throw missing_parameter(key);
+    if (table) table->erase("interval");
   }
+  // Remove the table "output" in order to indicate that it’s been parsed.
+  if (table && table->empty()) ins->erase("output");
 }
 
 void InsfileReader::read_table_output_text_tables() {
+  auto table = ins->get_table_qualified("output.text_tables");
   {
     const auto key = "output.text_tables.directory";
     auto value = ins->get_qualified_as<std::string>(key);
@@ -612,6 +619,7 @@ void InsfileReader::read_table_output_text_tables() {
       params.output_text_tables.directory = *value;
     } else
       throw missing_parameter(key);
+    if (table) table->erase("directory");
   }
   {
     const auto key = "output.text_tables.precision";
@@ -619,6 +627,7 @@ void InsfileReader::read_table_output_text_tables() {
     if (value) {
       params.output_text_tables.precision = *value;
     }
+    if (table) table->erase("precision");
   }
   {
     const auto key = "output.text_tables.tables";
@@ -634,10 +643,14 @@ void InsfileReader::read_table_output_text_tables() {
           throw invalid_option(key, s,
                                {"digestibility", "mass_density_per_hft"});
     }
+    if (table) table->erase("tables");
   }
+  // Remove the table "output" in order to indicate that it’s been parsed.
+  if (table && table->empty()) ins->erase("output");
 }
 
 void InsfileReader::read_table_simulation() {
+  auto table = ins->get_table("simulation");
   {
     const auto key = "simulation.forage_distribution";
     auto value = ins->get_qualified_as<std::string>(key);
@@ -647,6 +660,7 @@ void InsfileReader::read_table_simulation() {
       // -> Add new forage distribution algorithm here.
       else
         throw invalid_option(key, *value, {"Equally"});
+      if (table) table->erase("forage_distribution");
     }
   }
   {
@@ -654,6 +668,7 @@ void InsfileReader::read_table_simulation() {
     auto value = ins->get_qualified_as<double>(key);
     if (value) {
       params.habitat_area_km2 = *value;
+      if (table) table->erase("habitat_area_km2");
     }
   }
   {
@@ -661,6 +676,7 @@ void InsfileReader::read_table_simulation() {
     auto value = ins->get_qualified_as<int>(key);
     if (value) {
       params.herbivore_establish_interval = *value;
+      if (table) table->erase("establishment_interval");
     }
   }
   {
@@ -673,22 +689,18 @@ void InsfileReader::read_table_simulation() {
         params.herbivore_type = HerbivoreType::Individual;
       else
         throw invalid_option(key, *value, {"Cohort", "Individual"});
+      if (table) table->erase("herbivore_type");
     } else
       throw missing_parameter(key);
-  }
-  for (const auto& ft : Fauna::FORAGE_TYPES) {
-    const auto key = "forage.gross_energy." + get_forage_type_name(ft);
-    auto value = ins->get_qualified_as<double>(key);
-    if (!value) throw missing_parameter(key);
-    if (*value < 0)
-      throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
-    params.forage_gross_energy[ft] = *value;
   }
   {
     const auto key = "simulation.one_hft_per_habitat";
     auto value = ins->get_qualified_as<bool>(key);
     if (value) {
       params.one_hft_per_habitat = *value;
+      if (table) table->erase("one_hft_per_habitat");
     }
   }
+  // Remove the table "simulation" in order to indicate that it’s been parsed.
+  if (table && table->empty()) ins->erase("simulation");
 }
