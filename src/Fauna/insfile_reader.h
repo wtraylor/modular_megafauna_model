@@ -7,6 +7,7 @@
 #ifndef FAUNA_INSFILE_READER_H
 #define FAUNA_INSFILE_READER_H
 
+#include <list>
 #include "cpptoml.h"
 #include "parameters.h"
 
@@ -134,13 +135,13 @@ struct unknown_parameters : public std::runtime_error {
    * qualified TOML key, and may give more helpful details to the user. Each
    * element is printed as one line.
    */
-  unknown_parameters(const std::vector<std::string> elements)
+  unknown_parameters(const std::list<std::string> elements)
       : runtime_error("Unknown parameters encountered:\n" +
                       concatenate_elements(elements)){};
 
   /// Concatenate list of strings with line breaks.
   static std::string concatenate_elements(
-      const std::vector<std::string> elements) {
+      const std::list<std::string> elements) {
     std::ostringstream str;
     for (const auto& i : elements) str << i << "\n";
     return str.str();
@@ -199,6 +200,13 @@ class InsfileReader {
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
       const bool mandatory) const;
 
+  /// Iterate through TOML tree and list all "leaves".
+  /**
+   * \param table A TOML tree or subtree.
+   * \return A list of fully qualified TOML keys.
+   */
+  std::list<std::string> get_all_keys(std::shared_ptr<cpptoml::table> table);
+
   /// Read the TOML table `forage`.
   void read_table_forage();
 
@@ -210,6 +218,16 @@ class InsfileReader {
 
   /// Read the TOML table `simulation`.
   void read_table_simulation();
+
+  /// Remove TOML element (in order to indicate it’s been parsed).
+  /**
+   * \param table A TOML (sub)tree.
+   * \param key A fully qualified TOML key that should exist in `table`.
+   * \throw std::invalid_argument If `table` is NULL.
+   * \throw std::out_of_range If `key` couldn’t be found.
+   */
+  void remove_qualified_key(std::shared_ptr<cpptoml::table> table,
+                            const std::string key) const;
 
   /// Construct HFT object from an entry in the array of tables.
   /**

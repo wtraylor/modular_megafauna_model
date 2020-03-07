@@ -76,6 +76,12 @@ InsfileReader::InsfileReader(const std::string filename)
       }
       hfts.push_back(new_hft);
     }
+
+  // Whenever a parameter was parsed, it got deleted from the TOML table `ins`.
+  // Now that all known parameters have been parsed, `ins` should be empty. For
+  // any remaining parameter, an exception will be thrown.
+  auto unknown_elements = get_all_keys(ins);
+  if (!unknown_elements.empty()) throw unknown_parameters(unknown_elements);
 }
 
 std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
@@ -97,20 +103,10 @@ cpptoml::option<T> InsfileReader::find_hft_parameter(
   assert(hft_table->get_as<std::string>("name"));  // Name must be defined.
   const std::string name = *hft_table->get_as<std::string>("name");
 
-  // Get the parent TOML table of the parameter. For instance "body_fat.max"
-  // has the parent_key "body_fat" and the leaf_key "max".
-  auto const pos = key.find_last_of('.');
-  const std::string parent_key = key.substr(0, pos);
-  const std::string leaf_key = key.substr(pos + 1);
-
   {
     const auto value = hft_table->get_qualified_as<T>(key);
     if (value) {
-      // Remove the key from this HFT table in order to indicate that it has
-      // been parsed.
-      auto parent = hft_table->get_table_qualified(parent_key);
-      assert(parent);
-      parent->erase(leaf_key);
+      remove_qualified_key(hft_table, key);
       return value;
     }
   }
@@ -143,7 +139,10 @@ InsfileReader::find_hft_array_parameter(
 
   {
     const auto value = hft_table->get_qualified_array_of<T>(key);
-    if (value) return value;
+    if (value) {
+      remove_qualified_key(hft_table, key);
+      return value;
+    }
   }
 
   const auto groups = hft_table->get_array_of<std::string>("groups");
@@ -164,6 +163,27 @@ InsfileReader::find_hft_array_parameter(
     typename cpptoml::array_of_trait<T>::return_type empty;  // empty pointer
     return empty;
   }
+}
+
+std::list<std::string> InsfileReader::get_all_keys(
+    std::shared_ptr<cpptoml::table> table) {
+  std::list<std::string> l;
+  if (!table) return l;
+  for (const auto i : *table) {
+    const std::string key = i.first;
+    if (i.second->is_value() || i.second->is_array())
+      l.push_back(key);
+    else if (i.second->is_table()) {
+      // Add all elements from subtree by prefixing it with the name of the
+      // table.
+      for (auto j : get_all_keys(i.second->as_table()))
+        l.push_back(i.first + '.' + j);
+    } else if (i.second->is_table_array()) {
+      for (auto t : *i.second->as_table_array())
+        for (auto j : get_all_keys(t)) l.push_back(i.first + '.' + j);
+    }
+  }
+  return l;
 }
 
 Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
@@ -278,6 +298,8 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         throw invalid_option(
             hft, "expenditure.components", i,
             {"Allometric", "Taylor1981", "Thermoregulation", "Zhu2018"});
+    if (table->get_table("expenditure"))
+      table->get_table("expenditure")->erase("components");
   }
   {
     const auto value =
@@ -590,7 +612,6 @@ void InsfileReader::read_table_forage() {
 }
 
 void InsfileReader::read_table_output() {
-  auto table = ins->get_table("output");
   {
     const auto key = "output.format";
     auto value = ins->get_qualified_as<std::string>(key);
@@ -602,7 +623,7 @@ void InsfileReader::read_table_output() {
         throw invalid_option(key, *value, {"TextTables"});
     } else
       throw missing_parameter(key);
-    if (table) table->erase("format");
+    remove_qualified_key(ins, key);
   }
   {
     const auto key = "output.interval";
@@ -621,14 +642,14 @@ void InsfileReader::read_table_output() {
                              {"Daily", "Monthly", "Decadal", "Annual"});
     } else
       throw missing_parameter(key);
-    if (table) table->erase("interval");
+    remove_qualified_key(ins, key);
   }
   // Remove the table "output" in order to indicate that it’s been parsed.
+  auto table = ins->get_table("output");
   if (table && table->empty()) ins->erase("output");
 }
 
 void InsfileReader::read_table_output_text_tables() {
-  auto table = ins->get_table_qualified("output.text_tables");
   {
     const auto key = "output.text_tables.directory";
     auto value = ins->get_qualified_as<std::string>(key);
@@ -636,7 +657,7 @@ void InsfileReader::read_table_output_text_tables() {
       params.output_text_tables.directory = *value;
     } else
       throw missing_parameter(key);
-    if (table) table->erase("directory");
+    remove_qualified_key(ins, key);
   }
   {
     const auto key = "output.text_tables.precision";
@@ -644,7 +665,7 @@ void InsfileReader::read_table_output_text_tables() {
     if (value) {
       params.output_text_tables.precision = *value;
     }
-    if (table) table->erase("precision");
+    remove_qualified_key(ins, key);
   }
   {
     const auto key = "output.text_tables.tables";
@@ -660,14 +681,14 @@ void InsfileReader::read_table_output_text_tables() {
           throw invalid_option(key, s,
                                {"digestibility", "mass_density_per_hft"});
     }
-    if (table) table->erase("tables");
+    remove_qualified_key(ins, key);
   }
   // Remove the table "output" in order to indicate that it’s been parsed.
+  auto table = ins->get_table_qualified("output.text_tables");
   if (table && table->empty()) ins->erase("output");
 }
 
 void InsfileReader::read_table_simulation() {
-  auto table = ins->get_table("simulation");
   {
     const auto key = "simulation.forage_distribution";
     auto value = ins->get_qualified_as<std::string>(key);
@@ -677,7 +698,7 @@ void InsfileReader::read_table_simulation() {
       // -> Add new forage distribution algorithm here.
       else
         throw invalid_option(key, *value, {"Equally"});
-      if (table) table->erase("forage_distribution");
+      remove_qualified_key(ins, key);
     }
   }
   {
@@ -685,7 +706,7 @@ void InsfileReader::read_table_simulation() {
     auto value = ins->get_qualified_as<double>(key);
     if (value) {
       params.habitat_area_km2 = *value;
-      if (table) table->erase("habitat_area_km2");
+      remove_qualified_key(ins, key);
     }
   }
   {
@@ -693,7 +714,7 @@ void InsfileReader::read_table_simulation() {
     auto value = ins->get_qualified_as<int>(key);
     if (value) {
       params.herbivore_establish_interval = *value;
-      if (table) table->erase("establishment_interval");
+      remove_qualified_key(ins, key);
     }
   }
   {
@@ -706,7 +727,7 @@ void InsfileReader::read_table_simulation() {
         params.herbivore_type = HerbivoreType::Individual;
       else
         throw invalid_option(key, *value, {"Cohort", "Individual"});
-      if (table) table->erase("herbivore_type");
+      remove_qualified_key(ins, key);
     } else
       throw missing_parameter(key);
   }
@@ -715,9 +736,33 @@ void InsfileReader::read_table_simulation() {
     auto value = ins->get_qualified_as<bool>(key);
     if (value) {
       params.one_hft_per_habitat = *value;
-      if (table) table->erase("one_hft_per_habitat");
+      remove_qualified_key(ins, key);
     }
   }
   // Remove the table "simulation" in order to indicate that it’s been parsed.
+  auto table = ins->get_table("simulation");
   if (table && table->empty()) ins->erase("simulation");
+}
+
+void InsfileReader::remove_qualified_key(std::shared_ptr<cpptoml::table> table,
+                                         const std::string key) const {
+  if (!table)
+    throw std::invalid_argument(
+        "Fauna::InsfileReader::remove_qualified_key() "
+        "Parameter 'table' is NULL.");
+
+  // Get the parent TOML table of the parameter. For instance "body_fat.max"
+  // has the parent_key "body_fat" and the leaf_key "max".
+  auto const pos = key.find_last_of('.');
+  const std::string parent_key = key.substr(0, pos);
+  const std::string leaf_key = key.substr(pos + 1);
+
+  // Remove the key from this HFT table in order to indicate that it has
+  // been parsed.
+  auto parent = table->get_table_qualified(parent_key);
+  assert(parent);
+  if (!parent->get(leaf_key))
+    throw std::out_of_range("Fauna::InsfileReader::remove_qualified_key() "
+        "TOML key '" + key + "' could not be found.");
+  parent->erase(leaf_key);
 }
