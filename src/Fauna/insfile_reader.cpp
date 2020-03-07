@@ -97,9 +97,22 @@ cpptoml::option<T> InsfileReader::find_hft_parameter(
   assert(hft_table->get_as<std::string>("name"));  // Name must be defined.
   const std::string name = *hft_table->get_as<std::string>("name");
 
+  // Get the parent TOML table of the parameter. For instance "body_fat.max"
+  // has the parent_key "body_fat" and the leaf_key "max".
+  auto const pos = key.find_last_of('.');
+  const std::string parent_key = key.substr(0, pos);
+  const std::string leaf_key = key.substr(pos + 1);
+
   {
     const auto value = hft_table->get_qualified_as<T>(key);
-    if (value) return value;
+    if (value) {
+      // Remove the key from this HFT table in order to indicate that it has
+      // been parsed.
+      auto parent = hft_table->get_table_qualified(parent_key);
+      assert(parent);
+      parent->erase(leaf_key);
+      return value;
+    }
   }
 
   const auto groups = hft_table->get_array_of<std::string>("groups");
