@@ -29,7 +29,7 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
     // fill with herbivores
     for (int i = 1; i <= IND_PER_HFT; i++) new_pop->create_offspring(1.0);
     // add newly created dummy population
-    pops.add(new_pop);
+    pops.emplace_back(new_pop);
   }
 
   // CREATE DEMAND MAP
@@ -37,11 +37,12 @@ TEST_CASE("Fauna::DistributeForageEqually", "") {
   // loop through all herbivores and fill the distribution
   // object with pointer to herbivore and zero demands (to be
   // filled later)
-  for (auto& h : pops.get_all_herbivores()) {
-    // create with zero demands
-    static const ForageMass ZERO_DEMAND;
-    demands.emplace_back(h, ZERO_DEMAND);
-  }
+  for (auto& p : pops)
+    for (auto& h : p->get_list()) {
+      // create with zero demands
+      static const ForageMass ZERO_DEMAND;
+      demands.emplace_back(h, ZERO_DEMAND);
+    }
 
   // PREPARE AVAILABLE FORAGE
   HabitatForage available;

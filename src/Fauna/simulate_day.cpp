@@ -26,16 +26,14 @@ SimulateDay::SimulateDay(const int day_of_year, SimulationUnit& simulation_unit,
       feed_herbivores(feed_herbivores),
       forage_before_feeding(
           get_corrected_forage(simulation_unit.get_habitat())),
-      herbivores(simulation_unit.get_populations().get_all_herbivores()),
+      herbivores(get_herbivores(simulation_unit.get_populations())),
       simulation_unit(simulation_unit) {}
 
 void SimulateDay::create_offspring() {
-  for (std::map<const Hft*, double>::iterator itr = total_offspring.begin();
-       itr != total_offspring.end(); itr++) {
-    const Hft* hft = itr->first;
-    const double offspring = itr->second;
-    if (offspring > 0.0)
-      simulation_unit.get_populations().get(*hft).create_offspring(offspring);
+  for (const auto& itr : total_offspring) {
+    PopulationInterface* pop = itr.first;
+    const double offspring = itr.second;
+    if (offspring > 0.0) pop->create_offspring(offspring);
   }
 }
 
@@ -52,6 +50,16 @@ HabitatForage SimulateDay::get_corrected_forage(const Habitat& habitat) {
   return available_forage;
 }
 
+std::map<PopulationInterface*, HerbivoreVector> SimulateDay::get_herbivores(
+    const PopulationList& pop_list) {
+  std::map<PopulationInterface*, HerbivoreVector> result;
+  for (auto& pop : pop_list) {
+    assert(pop);
+    result[pop.get()] = pop->get_list();
+  }
+  return result;
+}
+
 void SimulateDay::operator()(const bool do_herbivores) {
   if (day_of_year < 0 || day_of_year >= 365)
     throw std::invalid_argument(
@@ -66,13 +74,25 @@ void SimulateDay::operator()(const bool do_herbivores) {
     // so that simulate_herbivores() can take the nitrogen back before
     // the herbivore objects are removed from memory in purge_of_dead()
     // below.
-    simulation_unit.get_populations().kill_nonviable();
+    for (auto& pop : simulation_unit.get_populations()) pop->kill_nonviable();
 
     simulate_herbivores();
 
+    // Construct list of *all* herbivores.
+    // FeedHerbivores expects a list of herbivore pointers, so we concatenate
+    // the population-separated lists here. This is an unelegant and wasteful
+    // solution...
+    int total_count = 0;
+    for (auto itr : herbivores) total_count += itr.second.size();
+    HerbivoreVector all_herbivores;
+    all_herbivores.reserve(total_count);
+    for (auto itr : herbivores)
+      all_herbivores.insert(all_herbivores.end(), itr.second.begin(),
+                            itr.second.end());
+
     // FEEDING
     HabitatForage available_forage = forage_before_feeding;
-    feed_herbivores(available_forage, herbivores);
+    feed_herbivores(available_forage, all_herbivores);
     // remove the eaten forage
     simulation_unit.get_habitat().remove_eaten_forage(
         forage_before_feeding.get_mass() - available_forage.get_mass());
@@ -87,37 +107,37 @@ void SimulateDay::operator()(const bool do_herbivores) {
 
   create_offspring();
 
-  simulation_unit.get_populations().purge_of_dead();
+  for (auto& pop : simulation_unit.get_populations()) pop->purge_of_dead();
 }
 
 void SimulateDay::simulate_herbivores() {
   // loop through all herbivores: simulate
-  for (HerbivoreVector::iterator itr_h = herbivores.begin();
-       itr_h != herbivores.end(); itr_h++) {
-    HerbivoreInterface& herbivore = **itr_h;
+  for (auto& itr : herbivores) {
+    PopulationInterface* pop = itr.first;
+    for (auto& herbivore : itr.second) {
+      // If this herbivore is dead, just take all of its nitrogen and
+      // skip it. The Population object will take care of releasing its
+      // memory.
+      if (herbivore->is_dead()) {
+        excreted_nitrogen += herbivore->take_nitrogen_excreta();
+        continue;
+      }
 
-    // If this herbivore is dead, just take all of its nitrogen and
-    // skip it. The Population object will take care of releasing its
-    // memory.
-    if (herbivore.is_dead()) {
-      excreted_nitrogen += herbivore.take_nitrogen_excreta();
-      continue;
+      // ---------------------------------------------------------
+      // HERBIVORE SIMULATION
+
+      // Offspring by this one herbivore today
+      // [ind/km²]
+      double offspring = 0.0;
+
+      // Let the herbivores do their simulation.
+      herbivore->simulate_day(day_of_year, environment, offspring);
+
+      // Gather the offspring.
+      total_offspring[pop] += offspring;
+
+      // Gather nitrogen excreta.
+      excreted_nitrogen += herbivore->take_nitrogen_excreta();
     }
-
-    // ---------------------------------------------------------
-    // HERBIVORE SIMULATION
-
-    // Offspring by this one herbivore today
-    // [ind/km²]
-    double offspring = 0.0;
-
-    // Let the herbivores do their simulation.
-    herbivore.simulate_day(day_of_year, environment, offspring);
-
-    // Gather the offspring.
-    total_offspring[&herbivore.get_hft()] += offspring;
-
-    // Gather nitrogen excreta.
-    excreted_nitrogen += herbivore.take_nitrogen_excreta();
   }
 }

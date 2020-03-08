@@ -10,13 +10,13 @@
 #include <cassert>
 #include <memory>
 #include <vector>
+#include "population_list.h"
 
 namespace Fauna {
 // Forward declarations
 class Parameters;
 class Hft;
 class PopulationInterface;
-class PopulationList;
 class DistributeForage;
 
 // Repeat typedef from hft.h

@@ -73,6 +73,16 @@ struct PopulationInterface {
   /// Mark all herbivores as dead (see \ref HerbivoreInterface::kill()).
   virtual void kill_all();
 
+  /// Mark those herbivores as dead that are not viable.
+  /**
+   * The first step is to mark non-viable herbivores as dead (see
+   * \ref HerbivoreInterface::kill()). In the second step, dead herbivores are
+   * removed. It is necessary to split this up so that the simulation framework
+   * can do something with dead herbivores before they are deleted in \ref
+   * purge_of_dead(). For example this may be returning nitrogen.
+   */
+  virtual void kill_nonviable() = 0;
+
   /// Delete all dead herbivores.
   /** \see \ref HerbivoreInterface::is_dead() */
   virtual void purge_of_dead() = 0;

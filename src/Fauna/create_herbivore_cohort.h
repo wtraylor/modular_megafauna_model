@@ -8,9 +8,9 @@
 #define CREATE_HERBIVORE_COHORT
 
 #include "create_herbivore_common.h"
+#include "herbivore_cohort.h"
 
 namespace Fauna {
-class HerbivoreCohort;
 
 /// Function class constructing \ref HerbivoreCohort objects.
 class CreateHerbivoreCohort : public CreateHerbivoreCommon {

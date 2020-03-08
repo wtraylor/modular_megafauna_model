@@ -35,11 +35,13 @@ PopulationList* WorldConstructor::create_populations() const {
   if (get_params().herbivore_type == HerbivoreType::Cohort) {
     // Create one population per HFT.
     for (const auto& hft_ptr : get_hftlist())
-      plist->add(new CohortPopulation(CreateHerbivoreCohort(hft_ptr, params)));
+      plist->emplace_back(
+          new CohortPopulation(CreateHerbivoreCohort(hft_ptr, params)));
   } else if (get_params().herbivore_type == HerbivoreType::Individual) {
     // Create one population per HFT.
     for (const auto& hft_ptr : get_hftlist())
-      plist->add(new CohortPopulation(CreateHerbivoreCohort(hft_ptr, params)));
+      plist->emplace_back(
+          new IndividualPopulation(CreateHerbivoreIndividual(hft_ptr, params)));
   } else
     throw std::logic_error(
         "WorldConstructor::create_population(): unknown herbivore type");
