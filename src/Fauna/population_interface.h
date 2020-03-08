@@ -10,14 +10,13 @@
 #include "herbivore_vector.h"
 
 namespace Fauna{
-  // Forward Declarations
-  class Hft;
-
 /// A container of herbivore objects.
 /**
- * Manages a set of \ref HerbivoreInterface instances, which
- * have all the same \ref Hft.
- * It also instantiates all new objects of herbivore classes
+ * Manages a set of \ref HerbivoreInterface instances. What makes a
+ * "population" may be defined by the derived class. For instance, herbivore
+ * cohorts have one population per HFT in each simulation unit.
+ *
+ * A population also instantiates all new objects of herbivore classes
  * (derived from \ref HerbivoreInterface) in a simulation.
  * \note This is strictly speaking no “interface” anymore since not all
  * of its functions are pure abstract. It is just unnecessary effort to
@@ -37,19 +36,8 @@ struct PopulationInterface {
   virtual void create_offspring(const double ind_per_km2) = 0;
 
   /// Create a set of new herbivores to establish a population.
-  /**
-   * \throw std::logic_error If this population is not empty.
-   *
-   * - The age of new herbivores is evenly distributed in the range
-   *   \ref Hft::establishment_age_range.
-   * - The sex ratio is even.
-   * - Total density matches \ref Hft::establishment_density as closely
-   *   as possible.
-   */
+  /** \throw std::logic_error If this population is not empty. */
   virtual void establish() = 0;
-
-  /// The herbivore functional type of this population
-  virtual const Hft& get_hft() const = 0;
 
   /// Get individual density of all herbivores together [ind/km²].
   virtual const double get_ind_per_km2() const;
