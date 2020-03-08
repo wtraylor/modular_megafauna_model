@@ -404,192 +404,188 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
 
   // ======== DEPENDENT PARAMETERS =======
+  //
+  // A local variable `mandatory` determines whether the parameter is required.
+  // The function find_hft_parameter() is called regardless in order to ensure
+  // that the TOML element gets erased from the instruction file in any case.
+  // Erasing the element marks it as parsed. If it isn’t erased, an exception
+  // for an unknown parameter will be thrown.
 
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value =
-        find_hft_parameter<double>(table, "body_fat.birth", true);
-    assert(value);
-    hft.body_fat_birth = *value;
+        find_hft_parameter<double>(table, "body_fat.birth", mandatory);
+    if (value) hft.body_fat_birth = *value;
   }
-
-  if (hft.mortality_factors.count(
-          MortalityFactor::StarvationIlliusOConnor2000)) {
+  {
+    const bool mandatory = (hft.mortality_factors.count(
+        MortalityFactor::StarvationIlliusOConnor2000));
     const auto value =
-        find_hft_parameter<double>(table, "body_fat.deviation", true);
-    assert(value);
-    hft.body_fat_deviation = *value;
+        find_hft_parameter<double>(table, "body_fat.deviation", mandatory);
+    if (value) hft.body_fat_deviation = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
-    const auto value = find_hft_parameter<int>(table, "body_mass.birth", true);
-    assert(value);
-    hft.body_mass_birth = *value;
-  }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value =
-        find_hft_parameter<int>(table, "breeding_season.length", true);
-    assert(value);
-    hft.breeding_season_length = *value;
+        find_hft_parameter<int>(table, "body_mass.birth", mandatory);
+    if (value) hft.body_mass_birth = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value =
-        find_hft_parameter<int>(table, "breeding_season.start", true);
-    assert(value);
-    hft.breeding_season_start = *value;
+        find_hft_parameter<int>(table, "breeding_season.length", mandatory);
+    if (value) hft.breeding_season_length = *value;
   }
-
-  if (hft.digestion_limit == DigestiveLimit::FixedFraction) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value =
-        find_hft_parameter<double>(table, "digestion.fixed_fraction", true);
-    assert(value);
-    hft.digestion_fixed_fraction = *value;
+        find_hft_parameter<int>(table, "breeding_season.start", mandatory);
+    if (value) hft.breeding_season_start = *value;
   }
-
-  if (hft.digestion_limit == DigestiveLimit::Allometric) {
+  {
+    const bool mandatory =
+        (hft.digestion_limit == DigestiveLimit::FixedFraction);
     const auto value = find_hft_parameter<double>(
-        table, "digestion.allometric.coefficient", true);
-    assert(value);
-    hft.digestion_allometric.coefficient = *value;
+        table, "digestion.fixed_fraction", mandatory);
+    if (value) hft.digestion_fixed_fraction = *value;
   }
-
-  if (hft.digestion_limit == DigestiveLimit::Allometric) {
+  {
+    const bool mandatory = hft.digestion_limit == DigestiveLimit::Allometric;
     const auto value = find_hft_parameter<double>(
-        table, "digestion.allometric.exponent", true);
-    assert(value);
-    hft.digestion_allometric.exponent = *value;
+        table, "digestion.allometric.coefficient", mandatory);
+    if (value) hft.digestion_allometric.coefficient = *value;
   }
-
-  if (hft.expenditure_components.count(ExpenditureComponent::Allometric)) {
+  {
+    const bool mandatory = (hft.digestion_limit == DigestiveLimit::Allometric);
     const auto value = find_hft_parameter<double>(
-        table, "expenditure.allometric.coefficient", true);
-    assert(value);
-    hft.expenditure_allometric.coefficient = *value;
+        table, "digestion.allometric.exponent", mandatory);
+    if (value) hft.digestion_allometric.exponent = *value;
   }
-
-  if (hft.expenditure_components.count(ExpenditureComponent::Allometric)) {
+  {
+    const bool mandatory =
+        (hft.expenditure_components.count(ExpenditureComponent::Allometric));
     const auto value = find_hft_parameter<double>(
-        table, "expenditure.allometric.exponent", true);
-    assert(value);
-    hft.expenditure_allometric.exponent = *value;
+        table, "expenditure.allometric.coefficient", mandatory);
+    if (value) hft.expenditure_allometric.coefficient = *value;
   }
-
-  if (hft.foraging_limits.count(ForagingLimit::GeneralFunctionalResponse) ||
-      hft.foraging_limits.count(ForagingLimit::IlliusOConnor2000)) {
+  {
+    const bool mandatory =
+        (hft.expenditure_components.count(ExpenditureComponent::Allometric));
     const auto value = find_hft_parameter<double>(
-        table, "foraging.half_max_intake_density", true);
-    assert(value);
-    hft.foraging_half_max_intake_density = *value;
+        table, "expenditure.allometric.exponent", mandatory);
+    if (value) hft.expenditure_allometric.exponent = *value;
   }
-
-  if (hft.mortality_factors.count(MortalityFactor::Lifespan)) {
+  {
+    const bool mandatory =
+        (hft.foraging_limits.count(ForagingLimit::GeneralFunctionalResponse) ||
+         hft.foraging_limits.count(ForagingLimit::IlliusOConnor2000));
+    const auto value = find_hft_parameter<double>(
+        table, "foraging.half_max_intake_density", mandatory);
+    if (value) hft.foraging_half_max_intake_density = *value;
+  }
+  {
+    const bool mandatory =
+        (hft.mortality_factors.count(MortalityFactor::Lifespan));
     const auto value =
-        find_hft_parameter<int>(table, "life_history.lifespan", true);
-    assert(value);
-    hft.life_history_lifespan = *value;
+        find_hft_parameter<int>(table, "life_history.lifespan", mandatory);
+    if (value) hft.life_history_lifespan = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value = find_hft_parameter<int>(
-        table, "life_history.physical_maturity_female", true);
-    assert(value);
-    hft.life_history_physical_maturity_female = *value;
+        table, "life_history.physical_maturity_female", mandatory);
+    if (value) hft.life_history_physical_maturity_female = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value = find_hft_parameter<int>(
-        table, "life_history.physical_maturity_male", true);
-    assert(value);
-    hft.life_history_physical_maturity_male = *value;
+        table, "life_history.physical_maturity_male", mandatory);
+    if (value) hft.life_history_physical_maturity_male = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
+    const auto value = find_hft_parameter<int>(
+        table, "life_history.sexual_maturity", mandatory);
+    if (value) hft.life_history_sexual_maturity = *value;
+  }
+  {
+    const bool mandatory =
+        (hft.mortality_factors.count(MortalityFactor::Background));
     const auto value =
-        find_hft_parameter<int>(table, "life_history.sexual_maturity", true);
-    assert(value);
-    hft.life_history_sexual_maturity = *value;
+        find_hft_parameter<double>(table, "mortality.adult_rate", mandatory);
+    if (value) hft.mortality_adult_rate = *value;
   }
-
-  if (hft.mortality_factors.count(MortalityFactor::Background)) {
+  {
+    const bool mandatory =
+        (hft.mortality_factors.count(MortalityFactor::Background));
     const auto value =
-        find_hft_parameter<double>(table, "mortality.adult_rate", true);
-    assert(value);
-    hft.mortality_adult_rate = *value;
+        find_hft_parameter<double>(table, "mortality.juvenile_rate", mandatory);
+    if (value) hft.mortality_juvenile_rate = *value;
   }
-
-  if (hft.mortality_factors.count(MortalityFactor::Background)) {
-    const auto value =
-        find_hft_parameter<double>(table, "mortality.juvenile_rate", true);
-    assert(value);
-    hft.mortality_juvenile_rate = *value;
-  }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value = find_hft_parameter<double>(
-        table, "mortality.minimum_density_threshold", true);
-    assert(value);
-    hft.mortality_minimum_density_threshold = *value;
+        table, "mortality.minimum_density_threshold", mandatory);
+    if (value) hft.mortality_minimum_density_threshold = *value;
   }
-
-  if (hft.mortality_factors.count(MortalityFactor::StarvationThreshold) ||
-      hft.mortality_factors.count(
-          MortalityFactor::StarvationIlliusOConnor2000)) {
+  {
+    const bool mandatory =
+        (hft.mortality_factors.count(MortalityFactor::StarvationThreshold) ||
+         hft.mortality_factors.count(
+             MortalityFactor::StarvationIlliusOConnor2000));
     const auto value = find_hft_parameter<bool>(
-        table, "mortality.shift_body_condition_for_starvation", true);
-    assert(value);
-    hft.mortality_shift_body_condition_for_starvation = *value;
+        table, "mortality.shift_body_condition_for_starvation", mandatory);
+    if (value) hft.mortality_shift_body_condition_for_starvation = *value;
   }
-
-  if (hft.reproduction_model == ReproductionModel::ConstantMaximum ||
-      hft.reproduction_model == ReproductionModel::Logistic ||
-      hft.reproduction_model == ReproductionModel::Linear) {
-    const auto value =
-        find_hft_parameter<double>(table, "reproduction.annual_maximum", true);
-    assert(value);
-    hft.reproduction_annual_maximum = *value;
+  {
+    const bool mandatory =
+        (hft.reproduction_model == ReproductionModel::ConstantMaximum ||
+         hft.reproduction_model == ReproductionModel::Logistic ||
+         hft.reproduction_model == ReproductionModel::Linear);
+    const auto value = find_hft_parameter<double>(
+        table, "reproduction.annual_maximum", mandatory);
+    if (value) hft.reproduction_annual_maximum = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
-    const auto value =
-        find_hft_parameter<int>(table, "reproduction.gestation_length", true);
-    assert(value);
-    hft.reproduction_gestation_length = *value;
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
+    const auto value = find_hft_parameter<int>(
+        table, "reproduction.gestation_length", mandatory);
+    if (value) hft.reproduction_gestation_length = *value;
   }
-
-  if (hft.reproduction_model == ReproductionModel::Logistic) {
+  {
+    const bool mandatory =
+        (hft.reproduction_model == ReproductionModel::Logistic);
     // growth_rate
     const auto growth_rate = find_hft_parameter<double>(
-        table, "reproduction.logistic.growth_rate", true);
-    assert(growth_rate);
-    hft.reproduction_logistic[0] = *growth_rate;
+        table, "reproduction.logistic.growth_rate", mandatory);
+    if (growth_rate) hft.reproduction_logistic[0] = *growth_rate;
     // midpoint
     const auto midpoint = find_hft_parameter<double>(
-        table, "reproduction.logistic.midpoint", true);
-    assert(midpoint);
-    hft.reproduction_logistic[1] = *midpoint;
+        table, "reproduction.logistic.midpoint", mandatory);
+    if (midpoint) hft.reproduction_logistic[1] = *midpoint;
   }
-
-  if (hft.expenditure_components.count(
-          ExpenditureComponent::Thermoregulation)) {
+  {
+    const bool mandatory = (hft.expenditure_components.count(
+        ExpenditureComponent::Thermoregulation));
     const auto value = find_hft_parameter<std::string>(
-        table, "thermoregulation.conductance", true);
-    assert(value);
-    if (lowercase(*value) == lowercase("BradleyDeavers1980"))
-      hft.thermoregulation_conductance = ConductanceModel::BradleyDeavers1980;
-    else if (lowercase(*value) == lowercase("CuylerOeritsland2004"))
-      hft.thermoregulation_conductance = ConductanceModel::CuylerOeritsland2004;
-    else
-      throw invalid_option(hft, "thermoregulation.conductance", *value,
-                           {"BradleyDeavers1980", "CuylerOeritsland2004"});
+        table, "thermoregulation.conductance", mandatory);
+    if (value) {
+      if (lowercase(*value) == lowercase("BradleyDeavers1980"))
+        hft.thermoregulation_conductance = ConductanceModel::BradleyDeavers1980;
+      else if (lowercase(*value) == lowercase("CuylerOeritsland2004"))
+        hft.thermoregulation_conductance =
+            ConductanceModel::CuylerOeritsland2004;
+      else
+        throw invalid_option(hft, "thermoregulation.conductance", *value,
+                             {"BradleyDeavers1980", "CuylerOeritsland2004"});
+    }
   }
-
-  if (hft.expenditure_components.count(
-          ExpenditureComponent::Thermoregulation)) {
+  {
+    const bool mandatory = (hft.expenditure_components.count(
+        ExpenditureComponent::Thermoregulation));
     const auto value = find_hft_parameter<double>(
-        table, "thermoregulation.core_temperature", true);
-    assert(value);
-    hft.thermoregulation_core_temperature = *value;
+        table, "thermoregulation.core_temperature", mandatory);
+    if (value) hft.thermoregulation_core_temperature = *value;
   }
 
   return hft;
@@ -762,7 +758,9 @@ void InsfileReader::remove_qualified_key(std::shared_ptr<cpptoml::table> table,
   auto parent = table->get_table_qualified(parent_key);
   assert(parent);
   if (!parent->get(leaf_key))
-    throw std::out_of_range("Fauna::InsfileReader::remove_qualified_key() "
-        "TOML key '" + key + "' could not be found.");
+    throw std::out_of_range(
+        "Fauna::InsfileReader::remove_qualified_key() "
+        "TOML key '" +
+        key + "' could not be found.");
   parent->erase(leaf_key);
 }
