@@ -60,7 +60,7 @@ InsfileReader::InsfileReader(const std::string filename)
   }
 
   auto hft_table_array = ins->get_table_array("hft");
-  if (hft_table_array)
+  if (hft_table_array) {
     for (const auto& hft_table : *hft_table_array) {
       std::shared_ptr<const Hft> new_hft(new Hft(read_hft(hft_table)));
       std::string err_msg;
@@ -76,6 +76,20 @@ InsfileReader::InsfileReader(const std::string filename)
       }
       hfts.push_back(new_hft);
     }
+  } else
+    // If there are no HFTs, then the groups are just ignored and not checked
+    // for invalid keys.
+    ins->erase("group");
+
+  // Erase all valid HFT keys in the groups so that only invalid/unknown keys
+  // remain.
+  auto group_table_array = ins->get_table_array("group");
+  if (group_table_array)
+    for (auto group_table : *group_table_array)
+      for (const std::string& key : hft_keys_parsed) {
+        if (group_table->contains_qualified(key))
+          remove_qualified_key(group_table, key);
+      }
 
   // Whenever a parameter was parsed, it got deleted from the TOML table `ins`.
   // Now that all known parameters have been parsed, `ins` should be empty. For
@@ -99,9 +113,12 @@ std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
 template <class T>
 cpptoml::option<T> InsfileReader::find_hft_parameter(
     const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
-    const bool mandatory) const {
+    const bool mandatory) {
   assert(hft_table->get_as<std::string>("name"));  // Name must be defined.
   const std::string name = *hft_table->get_as<std::string>("name");
+
+  // Mark this key as a valid key.
+  hft_keys_parsed.insert(key);
 
   {
     const auto value = hft_table->get_qualified_as<T>(key);
@@ -133,9 +150,12 @@ template <class T>
 typename cpptoml::array_of_trait<T>::return_type
 InsfileReader::find_hft_array_parameter(
     const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
-    const bool mandatory) const {
+    const bool mandatory) {
   assert(hft_table->get_as<std::string>("name"));  // Name must be defined.
   const std::string name = *hft_table->get_as<std::string>("name");
+
+  // Mark this key as a valid key.
+  hft_keys_parsed.insert(key);
 
   {
     const auto value = hft_table->get_qualified_array_of<T>(key);
