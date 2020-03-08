@@ -51,13 +51,8 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
     throw std::invalid_argument(
         "World::create_simulation_unit(): Pointer to habitat is NULL.");
 
-  PopulationList* populations = new PopulationList();
-
-  // Fill the object with one population per HFT.
-  for (const auto& hft : get_hfts()) {
-    populations->add(world_constructor->create_population(hft));
-  }
-  assert(populations != NULL);
+  PopulationList* populations = world_constructor->create_populations();
+  assert(populations);
 
   // Use emplace_back() instead of push_back() to directly construct the new
   // SimulationUnit object without copy.
@@ -120,15 +115,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     days_since_last_establishment++;
 
     // Establish each HFT if it got extinct.
-    if (establish_if_needed)
-      for (const auto& hft : get_hfts()) {
-        PopulationList& pops = sim_unit.get_populations();
-        if (!pops.exists(*hft))
-          pops.add(world_constructor->create_population(hft));
-
-        PopulationInterface& p = pops.get(*hft);
-        if (p.get_list().empty()) pops.get(*hft).establish();
-      }
+    if (establish_if_needed) sim_unit.get_populations().reestablish();
 
     // Create function object to delegate all simulations for this day to.
     // TODO: Create function object only once per day and for all simulation

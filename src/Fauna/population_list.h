@@ -73,6 +73,9 @@ class PopulationList {
    * \ref PopulationInterface::purge_of_dead(). */
   void purge_of_dead();
 
+  /// Create new herbivores if they got extinct.
+  void reestablish();
+
  private:
   std::list<std::unique_ptr<PopulationInterface>> list;
 };

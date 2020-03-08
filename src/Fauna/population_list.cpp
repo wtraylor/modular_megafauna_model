@@ -85,3 +85,8 @@ void PopulationList::kill_nonviable() {
 void PopulationList::purge_of_dead() {
   for (auto& itr : list) itr->purge_of_dead();
 }
+
+void PopulationList::reestablish() {
+  for (auto& itr : list)
+    if (itr->get_list().empty()) itr->establish();
+}

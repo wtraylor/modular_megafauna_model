@@ -31,7 +31,7 @@ TEST_CASE("Fauna::WorldConstructor", "") {
 
   SECTION("create_populations() for one HFT") {
     const auto hft = hftlist[0];
-    PopulationList* pops = world_cons.create_populations(hft);
+    PopulationList* pops = world_cons.create_populations();
     REQUIRE(pops != NULL);
     CHECK(pops->exists(*hft));
     CHECK(pops->get(*hft).get_hft() == *hft);
