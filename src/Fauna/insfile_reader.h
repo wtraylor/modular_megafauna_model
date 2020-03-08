@@ -189,7 +189,7 @@ class InsfileReader {
   template <class T>
   cpptoml::option<T> find_hft_parameter(
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
-      const bool mandatory) const;
+      const bool mandatory);
 
   /// Like \ref find_hft_parameter(), but for an array of values.
   /**
@@ -198,7 +198,7 @@ class InsfileReader {
   template <class T>
   typename cpptoml::array_of_trait<T>::return_type find_hft_array_parameter(
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
-      const bool mandatory) const;
+      const bool mandatory);
 
   /// Iterate through TOML tree and list all "leaves".
   /**
@@ -237,6 +237,17 @@ class InsfileReader {
 
   /// The root table of the instruction file from `cpptoml::parse_file()`.
   std::shared_ptr<cpptoml::table> ins;
+
+  /// All TOML keys in HFTs and HFT groups that have been parsed.
+  /**
+   * In general, TOML elements are erased from \ref ins as soon as they have
+   * been parsed. Any remaining keys/elements are unknown and issue an error.
+   * However, parameters in HFT groups may be read several times. Therefore
+   * they need to be erased after all HFTs have been read. This variable keeps
+   * track of all valid keys so that they can be removed from the HFT groups in
+   * the end.
+   */
+  std::set<std::string> hft_keys_parsed;
 
   Parameters params;
   HftList hfts;

@@ -219,6 +219,8 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
       hft.name = *value;
     else
       throw missing_parameter("hft.name");
+    // Don’t erase "name" from TOML table yet because we need it for potential
+    // error messages.
   }
 
   // ======= MANDATORY PARAMETERS =======
@@ -607,6 +609,13 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         table, "thermoregulation.core_temperature", mandatory);
     if (value) hft.thermoregulation_core_temperature = *value;
   }
+
+  // The "name" TOML element is erased last because it is used before for
+  // potential error messages.
+  table->erase("name");
+  hft_keys_parsed.insert("name");
+  // Now the "groups" TOML element can be erased because it is no longer needed.
+  table->erase("groups");
 
   return hft;
 }
