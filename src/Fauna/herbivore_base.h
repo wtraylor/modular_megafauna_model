@@ -32,10 +32,7 @@ class HerbivoreBase : public HerbivoreInterface {
                    const Digestibility& digestibility,
                    const ForageMass& N_kg_per_km2);
   virtual ForageMass get_forage_demands(const HabitatForage& available_forage);
-  virtual const Hft& get_hft() const {
-    assert(hft != NULL);
-    return *hft;
-  }
+  virtual std::string get_output_group() const;
   virtual double get_kg_per_km2() const;
   virtual const Output::HerbivoreData& get_todays_output() const {
     return current_output;
@@ -103,6 +100,12 @@ class HerbivoreBase : public HerbivoreInterface {
    * \see \ref sec_body_mass_and_composition
    */
   double get_fatmass() const;
+
+  /// The herbivore functional type (HFT).
+  const Hft& get_hft() const {
+    assert(hft);
+    return *hft;
+  }
 
   /// Physiological maximum of fat mass [kg/ind].
   /**

@@ -74,9 +74,9 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
   // Fill data with some arbitrary numbers.
   // -> Set more variables for tests for new output tables.
-  datapoint.data.hft_data[HFTS[0].get()].massdens = 10.0;
-  datapoint.data.hft_data[HFTS[1].get()].massdens = 16.0;
-  datapoint.data.hft_data[HFTS[2].get()].massdens = 29.0;
+  datapoint.data.hft_data[HFTS[0].get()->name].massdens = 10.0;
+  datapoint.data.hft_data[HFTS[1].get()->name].massdens = 16.0;
+  datapoint.data.hft_data[HFTS[2].get()->name].massdens = 29.0;
   datapoint.data.datapoint_count = 1;
 
   SECTION("Annual") {
@@ -161,21 +161,24 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
       CHECK(year == YEAR);
       CHECK(agg_unit == AGG_UNIT);
-      CHECK(hft1 == Approx(datapoint.data.hft_data[HFTS[0].get()].massdens));
-      CHECK(hft2 == Approx(datapoint.data.hft_data[HFTS[1].get()].massdens));
-      CHECK(hft3 == Approx(datapoint.data.hft_data[HFTS[2].get()].massdens));
+      CHECK(hft1 ==
+            Approx(datapoint.data.hft_data[HFTS[0].get()->name].massdens));
+      CHECK(hft2 ==
+            Approx(datapoint.data.hft_data[HFTS[1].get()->name].massdens));
+      CHECK(hft3 ==
+            Approx(datapoint.data.hft_data[HFTS[2].get()->name].massdens));
     }
 
-    SECTION("Error on missing HFT"){
+    SECTION("Error on missing HFT") {
       // Try to write a second line with a datapoint where an HFT is missing.
       datapoint.data.hft_data.erase(datapoint.data.hft_data.begin());
       CHECK_THROWS(writer.write_datapoint(datapoint));
     }
 
-    SECTION("Error on extra HFT"){
+    SECTION("Error on extra HFT") {
       // Try to write a second line with a datapoint where a new HFT suddenly
       // appeared.
-      datapoint.data.hft_data[HFTS[3].get()].massdens = 12.0;
+      datapoint.data.hft_data[HFTS[3].get()->name].massdens = 12.0;
       CHECK_THROWS(writer.write_datapoint(datapoint));
     }
 

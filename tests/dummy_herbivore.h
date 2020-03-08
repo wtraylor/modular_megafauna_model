@@ -7,8 +7,8 @@
 #ifndef TESTS_DUMMY_HERBIVORE_H
 #define TESTS_DUMMY_HERBIVORE_H
 
-#include "herbivore_interface.h"
 #include "herbivore_data.h"
+#include "herbivore_interface.h"
 
 namespace Fauna {
 /// A dummy herbivore that does nothing
@@ -34,6 +34,7 @@ class DummyHerbivore : public HerbivoreInterface {
     return actual_demand;
   }
 
+  virtual std::string get_output_group() const { return hft->name; }
   virtual const Hft& get_hft() const { return *hft; }
 
   virtual double get_ind_per_km2() const { return ind_per_km2; }
