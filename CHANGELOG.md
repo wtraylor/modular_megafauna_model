@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Order of HFT names in text table output is now guaranteed.
 - Compiler flags specific to GCC are removed. [#1]
 - Unknown TOML parameters/keys now issue an error. [#2]
+- Parse TOML parameter `hft.body_fat.gross_energy`.
 
 ### Removed
 - The old “default” net energy model `get_net_energy_content_default()`.

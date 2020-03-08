@@ -232,6 +232,12 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
   {
     const auto value =
+        find_hft_parameter<double>(table, "body_fat.gross_energy", true);
+    assert(value);
+    hft.body_fat_gross_energy = *value;
+  }
+  {
+    const auto value =
         find_hft_parameter<double>(table, "body_fat.maximum", true);
     assert(value);
     hft.body_fat_maximum = *value;
