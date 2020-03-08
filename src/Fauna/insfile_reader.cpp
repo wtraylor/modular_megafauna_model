@@ -746,6 +746,11 @@ void InsfileReader::remove_qualified_key(std::shared_ptr<cpptoml::table> table,
     throw std::invalid_argument(
         "Fauna::InsfileReader::remove_qualified_key() "
         "Parameter 'table' is NULL.");
+  if (!table->contains_qualified(key))
+    throw std::out_of_range(
+        "Fauna::InsfileReader::remove_qualified_key() "
+        "TOML key '" +
+        key + "' could not be found.");
 
   // Get the parent TOML table of the parameter. For instance "body_fat.max"
   // has the parent_key "body_fat" and the leaf_key "max".
@@ -757,10 +762,5 @@ void InsfileReader::remove_qualified_key(std::shared_ptr<cpptoml::table> table,
   // been parsed.
   auto parent = table->get_table_qualified(parent_key);
   assert(parent);
-  if (!parent->get(leaf_key))
-    throw std::out_of_range(
-        "Fauna::InsfileReader::remove_qualified_key() "
-        "TOML key '" +
-        key + "' could not be found.");
   parent->erase(leaf_key);
 }
