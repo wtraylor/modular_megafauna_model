@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Changed
 - Fractional body fat now refers to the empty body (i.e. without ingesta, blood, etc.)  and not the live body mass.
-- HFT is made optional. New implementations of `HerbivoreInterface` don’t require an HFT.
+- HFT is made optional. New implementations of `HerbivoreInterface` don’t require an HFT. [#5]
 
 ### Fixed
 - Order of HFT names in text table output is now guaranteed.
@@ -88,3 +88,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 [#1]: https://github.com/wtraylor/modular_megafauna_model/issues/1
 [#2]: https://github.com/wtraylor/modular_megafauna_model/issues/2
+[#5]: https://github.com/wtraylor/modular_megafauna_model/issues/5
