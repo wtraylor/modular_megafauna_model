@@ -7,6 +7,7 @@
 #ifndef FAUNA_INSFILE_READER_H
 #define FAUNA_INSFILE_READER_H
 
+#include <list>
 #include "cpptoml.h"
 #include "parameters.h"
 
@@ -126,6 +127,27 @@ struct param_out_of_range : public std::runtime_error {
                            allowed_interval + "."){};
 };
 
+/// Exception that parameters couldn’t be parsed in the TOML file.
+struct unknown_parameters : public std::runtime_error {
+  /// Constructor
+  /**
+   * \param elements A list of unknown elements. Each should contain the fully
+   * qualified TOML key, and may give more helpful details to the user. Each
+   * element is printed as one line.
+   */
+  unknown_parameters(const std::list<std::string> elements)
+      : runtime_error("Unknown parameters encountered:\n" +
+                      concatenate_elements(elements)){};
+
+  /// Concatenate list of strings with line breaks.
+  static std::string concatenate_elements(
+      const std::list<std::string> elements) {
+    std::ostringstream str;
+    for (const auto& i : elements) str << i << "\n";
+    return str.str();
+  }
+};
+
 /// Class to read parameters and HFTs from given instruction file.
 class InsfileReader {
  public:
@@ -167,7 +189,7 @@ class InsfileReader {
   template <class T>
   cpptoml::option<T> find_hft_parameter(
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
-      const bool mandatory) const;
+      const bool mandatory);
 
   /// Like \ref find_hft_parameter(), but for an array of values.
   /**
@@ -176,7 +198,17 @@ class InsfileReader {
   template <class T>
   typename cpptoml::array_of_trait<T>::return_type find_hft_array_parameter(
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
-      const bool mandatory) const;
+      const bool mandatory);
+
+  /// Iterate through TOML tree and list all "leaves".
+  /**
+   * \param table A TOML tree or subtree.
+   * \return A list of fully qualified TOML keys.
+   */
+  std::list<std::string> get_all_keys(std::shared_ptr<cpptoml::table> table);
+
+  /// Read the TOML table `forage`.
+  void read_table_forage();
 
   /// Read the TOML table `output`.
   void read_table_output();
@@ -187,11 +219,35 @@ class InsfileReader {
   /// Read the TOML table `simulation`.
   void read_table_simulation();
 
+  /// Remove TOML element (in order to indicate it’s been parsed).
+  /**
+   * \param table A TOML (sub)tree.
+   * \param key A fully qualified TOML key that should exist in `table`.
+   * \throw std::invalid_argument If `table` is NULL.
+   * \throw std::out_of_range If `key` couldn’t be found.
+   */
+  void remove_qualified_key(std::shared_ptr<cpptoml::table> table,
+                            const std::string key) const;
+
   /// Construct HFT object from an entry in the array of tables.
+  /**
+   * \throw std::invalid_argument If `table` is NULL.
+   */
   Hft read_hft(const std::shared_ptr<cpptoml::table>& table);
 
   /// The root table of the instruction file from `cpptoml::parse_file()`.
   std::shared_ptr<cpptoml::table> ins;
+
+  /// All TOML keys in HFTs and HFT groups that have been parsed.
+  /**
+   * In general, TOML elements are erased from \ref ins as soon as they have
+   * been parsed. Any remaining keys/elements are unknown and issue an error.
+   * However, parameters in HFT groups may be read several times. Therefore
+   * they need to be erased after all HFTs have been read. This variable keeps
+   * track of all valid keys so that they can be removed from the HFT groups in
+   * the end.
+   */
+  std::set<std::string> hft_keys_parsed;
 
   Parameters params;
   HftList hfts;
