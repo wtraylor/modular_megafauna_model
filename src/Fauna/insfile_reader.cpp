@@ -775,12 +775,24 @@ void InsfileReader::remove_qualified_key(std::shared_ptr<cpptoml::table> table,
   // Get the parent TOML table of the parameter. For instance "body_fat.max"
   // has the parent_key "body_fat" and the leaf_key "max".
   auto const pos = key.find_last_of('.');
-  const std::string parent_key = key.substr(0, pos);
-  const std::string leaf_key = key.substr(pos + 1);
 
-  // Remove the key from this HFT table in order to indicate that it has
-  // been parsed.
-  auto parent = table->get_table_qualified(parent_key);
-  assert(parent);
-  parent->erase(leaf_key);
+  if (pos != key.npos) {
+    // There is a parent and child element.
+    const std::string parent_key = key.substr(0, pos);
+    const std::string leaf_key = key.substr(pos + 1);
+    assert(leaf_key != "");
+    assert(parent_key != "");
+
+    // Remove the key from this HFT table in order to indicate that it has
+    // been parsed.
+    auto parent = table->get_table_qualified(parent_key);
+    if (!parent)
+      throw std::out_of_range(
+          "Fauna::InsfileReader::remove_qualified_key() "
+          "Parent element '" +
+          parent_key + "' could not be found in table." + " (key = '" + key +
+          "')");
+    parent->erase(leaf_key);
+  } else
+    table->erase(key);
 }
