@@ -16,9 +16,9 @@ The following UML diagram shows through which interfaces the megafauna model int
 @enduml
 
 The basic simulation design is simple:
-- Each **herbivore** is of one **Herbivore Functional Type** ([HFT](\ref Fauna::Hft)).
-  In LPJ-GUESS this would correspond to each `Individual` being of one `Pft` (Plant Functional Type).
-- Each herbivore lives in a **habitat** (\ref Fauna::Habitat), grouped by HFT in **populations** (\ref Fauna::PopulationInterface).
+
+- **Herbivores** (\ref Fauna::HerbivoreInterface) are independent entities that interact with their environment.
+- Each herbivore lives in a **habitat** (\ref Fauna::Habitat), grouped in **populations** (\ref Fauna::PopulationInterface).
   In LPJ-GUESS this would correspond to a plant `Individual` growing in a `Patch`.
 - **Fauna::World** is the framework class running the simulation.
 
@@ -88,6 +88,7 @@ That is done by the parameter \ref Fauna::Parameters::habitat_area_km2.
 ### HerbivoreBase {#sec_herbivorebase}
 The herbivore class itself can be seen as a mere framework (compare \ref sec_inversion_of_control) that integrates various components:
 
+- Each herbivore is of one **Herbivore Functional Type (HFT):** \ref Fauna::Hft
 - The herbivore’s own **energy budget**: \ref Fauna::FatmassEnergyBudget.
 - Its **energy needs**, defined by \ref Fauna::Hft::expenditure_components.
 The herbivore object is self-responsible to call the implementation of the given expenditure models.
