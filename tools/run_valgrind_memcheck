@@ -66,3 +66,9 @@ valgrind \
 
 echo >&2 "Memory check complete!"
 echo >&2 "Output lies in '$LOG_FILE'."
+
+if grep --silent '0 errors from 0 contexts' "$LOG_FILE"; then
+  echo >&2 "Congratulations! It looks like there were no errors."
+else
+  echo >&2 "Perhaps there are errors. Please check the log file manually."
+fi
