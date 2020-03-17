@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Compiler flags specific to GCC are removed. [#1]
 - Unknown TOML parameters/keys now issue an error. [#2]
 - Parse TOML parameter `hft.body_fat.gross_energy`.
+- Run directory is now created in script `tools/run_valgrind_memcheck`.
 
 ### Removed
 - The old “default” net energy model `get_net_energy_content_default()`.

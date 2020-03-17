@@ -29,12 +29,13 @@ readonly ROOT_DIR=$(git rev-parse --show-toplevel)
 
 # Build in current subdirectory.
 readonly BUILD_DIR=${ROOT_DIR}/build
+mkdir --verbose --parents "$BUILD_DIR"
 
 # Run in subdirectory of build dir.
 readonly RUN_DIR=${BUILD_DIR}/valgrind_memcheck
+mkdir --verbose --parents "$RUN_DIR"
 
 echo >&2 "Compiling..."
-mkdir --verbose --parents "$BUILD_DIR"
 (cd "$BUILD_DIR" &&
   cmake -DCMAKE_BUILD_TYPE=debug "$ROOT_DIR" &&
   make --jobs=8 megafauna_demo_simulator)
@@ -53,7 +54,6 @@ rm --force "$RUN_DIR/*.tsv"
 
 echo >&2 "Running valgrind..."
 readonly LOG_FILE=$(readlink -f "valgrind_memcheck.log")
-mkdir --verbose --parents "$RUN_DIR"
 rm --force "$RUN_DIR"/*.tsv
 cd "$RUN_DIR"
 valgrind \
