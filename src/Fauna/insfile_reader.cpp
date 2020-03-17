@@ -59,37 +59,44 @@ InsfileReader::InsfileReader(const std::string filename)
       throw std::runtime_error("Parameters are not valid:\n" + err_msg);
   }
 
-  auto hft_table_array = ins->get_table_array("hft");
-  if (hft_table_array) {
-    for (const auto& hft_table : *hft_table_array) {
-      std::shared_ptr<const Hft> new_hft(new Hft(read_hft(hft_table)));
-      std::string err_msg;
-      if (!new_hft->is_valid(params, err_msg))
-        throw std::runtime_error("HFT \"" + new_hft->name +
-                                 "\" is not valid:\n" + err_msg);
-      // Add HFT to list, but check if HFT with that name already exists.
-      for (const auto& hft : hfts) {
-        assert(hft.get());
-        if (hft->name == new_hft->name)
-          throw std::runtime_error("HFT with name \"" + hft->name +
-                                   "\" is defined twice.");
+  if (params.herbivore_type == HerbivoreType::Cohort ||
+      params.herbivore_type == HerbivoreType::Individual) {
+    auto hft_table_array = ins->get_table_array("hft");
+    if (hft_table_array) {
+      for (const auto& hft_table : *hft_table_array) {
+        std::shared_ptr<const Hft> new_hft(new Hft(read_hft(hft_table)));
+        std::string err_msg;
+        if (!new_hft->is_valid(params, err_msg))
+          throw std::runtime_error("HFT \"" + new_hft->name +
+                                   "\" is not valid:\n" + err_msg);
+        // Add HFT to list, but check if HFT with that name already exists.
+        for (const auto& hft : hfts) {
+          assert(hft.get());
+          if (hft->name == new_hft->name)
+            throw std::runtime_error("HFT with name \"" + hft->name +
+                                     "\" is defined twice.");
+        }
+        hfts.push_back(new_hft);
       }
-      hfts.push_back(new_hft);
-    }
-  } else
-    // If there are no HFTs, then the groups are just ignored and not checked
-    // for invalid keys.
-    ins->erase("group");
+    } else
+      // If there are no HFTs, then the groups are just ignored and not checked
+      // for invalid keys.
+      ins->erase("group");
 
-  // Erase all valid HFT keys in the groups so that only invalid/unknown keys
-  // remain.
-  auto group_table_array = ins->get_table_array("group");
-  if (group_table_array)
-    for (auto group_table : *group_table_array)
-      for (const std::string& key : hft_keys_parsed) {
-        if (group_table->contains_qualified(key))
-          remove_qualified_key(group_table, key);
-      }
+    // Erase all valid HFT keys in the groups so that only invalid/unknown keys
+    // remain.
+    auto group_table_array = ins->get_table_array("group");
+    if (group_table_array)
+      for (auto group_table : *group_table_array)
+        for (const std::string& key : hft_keys_parsed) {
+          if (group_table->contains_qualified(key))
+            remove_qualified_key(group_table, key);
+        }
+  } else {
+    // Don’t parse HFTs and HFT groups.
+    ins->erase("hft");
+    ins->erase("group");
+  }
 
   // Whenever a parameter was parsed, it got deleted from the TOML table `ins`.
   // Now that all known parameters have been parsed, `ins` should be empty. For

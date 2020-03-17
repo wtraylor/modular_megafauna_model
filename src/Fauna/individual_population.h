@@ -28,6 +28,7 @@ class IndividualPopulation : public PopulationInterface {
   virtual const Hft& get_hft() const { return create_individual.get_hft(); }
   virtual ConstHerbivoreVector get_list() const;
   virtual HerbivoreVector get_list();
+  virtual void kill_nonviable();
   virtual void purge_of_dead();
 
  public:

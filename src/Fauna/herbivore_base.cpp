@@ -296,6 +296,8 @@ ForageEnergyContent HerbivoreBase::get_net_energy_content(
   }
 }
 
+std::string HerbivoreBase::get_output_group() const { return get_hft().name; }
+
 double HerbivoreBase::get_structural_mass() const {
   // Age of physical maturity in years.
   double maturity_age;

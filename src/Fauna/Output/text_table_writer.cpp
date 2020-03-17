@@ -90,7 +90,7 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
     std::ostringstream my_names;
     for (const auto& n : hft_names) my_names << n << ", ";
     std::ostringstream found_names;
-    for (const auto& d : data.hft_data) found_names << d.first->name << ", ";
+    for (const auto& d : data.hft_data) found_names << d.first << ", ";
     throw std::runtime_error(
         "Fauna::Output::TextTableWriter::write_datapoint(): "
         "Number of HFTs in given datapoint differs from number of stored "
@@ -157,7 +157,7 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
     // Search for this HFT name in the `hft_data` map.
     bool hft_found = false;
     for (const auto& i : datapoint.data.hft_data) {
-      if (i.first->name == hft_name) {
+      if (i.first == hft_name) {
         // Add this HFT name as a column caption.
         if (mass_density_per_hft.is_open())
           mass_density_per_hft << FIELD_SEPARATOR << i.second.massdens;
@@ -213,7 +213,7 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
   // Per-HFT Tables
   // First create the list of of HFT names.
   for (const auto& i : datapoint.data.hft_data) {
-    const std::string& hft_name = i.first->name;
+    const std::string& hft_name = i.first;
     hft_names.insert(hft_name);
   }
   // Now write the HFT names in the distinct and never-changing order.

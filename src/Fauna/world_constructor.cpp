@@ -10,7 +10,6 @@
 #include "hft.h"
 #include "individual_population.h"
 #include "parameters.h"
-#include "population_list.h"
 
 using namespace Fauna;
 
@@ -29,35 +28,23 @@ DistributeForage* WorldConstructor::create_distribute_forage() const {
   };
 }
 
-PopulationInterface* WorldConstructor::create_population(
-    std::shared_ptr<const Hft> hft) const {
-  // Create population instance according to selected herbivore type.
-  if (get_params().herbivore_type == HerbivoreType::Cohort) {
-    return new CohortPopulation(CreateHerbivoreCohort(hft, params));
-  } else if (get_params().herbivore_type == HerbivoreType::Individual) {
-    return new IndividualPopulation(CreateHerbivoreIndividual(hft, params));
-  } else
-    throw std::logic_error(
-        "WorldConstructor::create_population(): unknown herbivore type");
-}
-
 PopulationList* WorldConstructor::create_populations() const {
   PopulationList* plist = new PopulationList();
 
-  // Fill the object with one population per HFT
-  for (const auto& hft_ptr : get_hftlist()) {
-    plist->add(create_population(hft_ptr));
-  }
-  assert(plist != NULL);
-  return plist;
-}
+  if (get_params().herbivore_type == HerbivoreType::Cohort) {
+    // Create one population per HFT.
+    for (const auto& hft_ptr : get_hftlist())
+      plist->emplace_back(
+          new CohortPopulation(CreateHerbivoreCohort(hft_ptr, params)));
+  } else if (get_params().herbivore_type == HerbivoreType::Individual) {
+    // Create one population per HFT.
+    for (const auto& hft_ptr : get_hftlist())
+      plist->emplace_back(
+          new IndividualPopulation(CreateHerbivoreIndividual(hft_ptr, params)));
+  } else
+    throw std::logic_error(
+        "WorldConstructor::create_population(): unknown herbivore type");
 
-PopulationList* WorldConstructor::create_populations(
-    std::shared_ptr<const Hft> hft) const {
-  PopulationList* plist = new PopulationList();
-
-  // Fill the object with one population of one HFT
-  plist->add(create_population(hft));
   assert(plist != NULL);
   return plist;
 }

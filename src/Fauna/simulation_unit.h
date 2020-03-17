@@ -8,11 +8,11 @@
 #define FAUNA_SIMULATION_UNIT_H
 
 #include <memory>
+#include "population_list.h"
 
 namespace Fauna {
 // forward declaration
 class Habitat;
-class PopulationList;
 
 namespace Output {
 class CombinedData;

@@ -5,7 +5,6 @@
  * \date 2019
  */
 #include "create_herbivore_cohort.h"
-#include "herbivore_cohort.h"
 #include "parameters.h"
 
 using namespace Fauna;

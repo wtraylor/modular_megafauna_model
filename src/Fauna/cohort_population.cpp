@@ -105,6 +105,14 @@ HerbivoreVector CohortPopulation::get_list() {
   return result;
 }
 
+void CohortPopulation::kill_nonviable() {
+  // If the population’s density is below minimum, mark all
+  // herbivores as dead.
+  const double min_ind_per_km2 = get_hft().mortality_minimum_density_threshold *
+                                 get_hft().establishment_density;
+  if (get_ind_per_km2() < min_ind_per_km2) kill_all();
+}
+
 void CohortPopulation::purge_of_dead() {
   List::iterator itr = list.begin();
   while (itr != list.end()) {

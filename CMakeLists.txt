@@ -86,7 +86,6 @@ set (SOURCE_FILES
   src/Fauna/parameters.cpp
   src/Fauna/population_interface.cpp
   src/Fauna/population_interface.h
-  src/Fauna/population_list.cpp
   src/Fauna/population_list.h
   src/Fauna/reproduction_models.cpp
   src/Fauna/reproduction_models.h
@@ -156,7 +155,6 @@ if (BUILD_TESTING)
     src/Fauna/net_energy_models.test.cpp
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
-    src/Fauna/population_list.test.cpp
     src/Fauna/reproduction_models.test.cpp
     src/Fauna/world_constructor.test.cpp
     tests/catch.hpp

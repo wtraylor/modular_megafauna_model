@@ -8,9 +8,9 @@
 #define FAUNA_CREATE_HERBIVORE_INDIVIDUAL_H
 
 #include "create_herbivore_common.h"
+#include "herbivore_individual.h"
 
 namespace Fauna {
-class HerbivoreIndividual;
 
 /// Function class constructing \ref HerbivoreIndividual objects.
 class CreateHerbivoreIndividual : public CreateHerbivoreCommon {

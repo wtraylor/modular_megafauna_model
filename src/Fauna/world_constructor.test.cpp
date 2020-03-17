@@ -5,6 +5,7 @@
  * \date 2019
  */
 #include "catch.hpp"
+#include "cohort_population.h"
 #include "dummy_habitat.h"
 #include "dummy_hft.h"
 #include "parameters.h"
@@ -24,16 +25,29 @@ TEST_CASE("Fauna::WorldConstructor", "") {
   WorldConstructor world_cons(params, hftlist);
 
   SECTION("create_populations() for several HFTs") {
+    REQUIRE(params->herbivore_type == HerbivoreType::Cohort);
     PopulationList* pops = world_cons.create_populations();
     REQUIRE(pops != NULL);
-    for (auto& hft : hftlist) CHECK(pops->exists(*hft));
+    // Check that there is one population per HFT.
+    for (auto& hft : hftlist) {
+      bool hft_found = false;
+      for (auto& pop : *pops) {
+        REQUIRE(pop);
+        if (&((CohortPopulation*)pop.get())->get_hft() == hft.get()) {
+          REQUIRE(!hft_found);  // An HFT shouldn’t be found twice.
+          hft_found = true;
+        }
+      }
+      CHECK(hft_found);
+    }
   }
 
   SECTION("create_populations() for one HFT") {
+    REQUIRE(params->herbivore_type == HerbivoreType::Cohort);
     const auto hft = hftlist[0];
-    PopulationList* pops = world_cons.create_populations(hft);
+    PopulationList* pops = world_cons.create_populations();
     REQUIRE(pops != NULL);
-    CHECK(pops->exists(*hft));
-    CHECK(pops->get(*hft).get_hft() == *hft);
+    // Check that the CohortPopulation is of the given HFT.
+    CHECK(&((CohortPopulation*)pops->begin()->get())->get_hft() == hft.get());
   }
 }

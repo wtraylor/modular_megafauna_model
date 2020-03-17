@@ -21,15 +21,23 @@ class CohortPopulation : public PopulationInterface {
  public:  // ------ PopulationInterface -------
   /** \copydoc PopulationInterface::create_offspring() */
   virtual void create_offspring(const double ind_per_km2);
+
   /** \copydoc PopulationInterface::establish()
    *
    * Establish with even sex ratio and *at least* as many
    * individuals as given by \ref Hft::establishment_density.
+   *
+   * - The age of new herbivores is evenly distributed in the range
+   *   \ref Hft::establishment_age_range.
+   * - The sex ratio is even.
+   * - Total density matches \ref Hft::establishment_density.
    */
   virtual void establish();
+
   virtual const Hft& get_hft() const { return create_cohort.get_hft(); }
   virtual ConstHerbivoreVector get_list() const;
   virtual HerbivoreVector get_list();
+  virtual void kill_nonviable();
   virtual void purge_of_dead();
 
  public:

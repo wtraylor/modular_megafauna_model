@@ -43,10 +43,10 @@ TEST_CASE("Fauna::Output::CombinedData") {
 
   // put the herbivore data into CombinedData
 
-  c1.hft_data[hfts[0].get()] = h1;
+  c1.hft_data[hfts[0].get()->name] = h1;
   // note: c2 has no entry for HFT 1
-  c1.hft_data[hfts[1].get()] = h3;
-  c2.hft_data[hfts[0].get()] = h2;
+  c1.hft_data[hfts[1].get()->name] = h3;
+  c2.hft_data[hfts[0].get()->name] = h2;
 
   SECTION("merge() with zero datapoint count") {
     c1.datapoint_count = 0;
@@ -73,16 +73,16 @@ TEST_CASE("Fauna::Output::CombinedData") {
     // c1 now has data for both HFTs
     REQUIRE(c1.hft_data.size() == 2);
     // in HFT 0, two datapoints are merged
-    CHECK(c1.hft_data[hfts[0].get()].inddens ==
+    CHECK(c1.hft_data[hfts[0].get()->name].inddens ==
           Approx((1.0 + 2.0) / 2.0));  // normal average
     CHECK(
-        c1.hft_data[hfts[0].get()].expenditure ==
+        c1.hft_data[hfts[0].get()->name].expenditure ==
         Approx((1.0 * 1.0 + 2.0 * 2.0) / (1.0 + 2.0)));  // weighted by inddens
 
     // in HFT 1, one datapoint is merged with zero values
-    CHECK(c1.hft_data[hfts[1].get()].inddens ==
+    CHECK(c1.hft_data[hfts[1].get()->name].inddens ==
           Approx((0.0 + 3.0) / 2.0));  // normal average
-    CHECK(c1.hft_data[hfts[1].get()].expenditure ==
+    CHECK(c1.hft_data[hfts[1].get()->name].expenditure ==
           Approx(3.0));  // weighted by inddens, but only one data point
   }
 
@@ -100,22 +100,22 @@ TEST_CASE("Fauna::Output::CombinedData") {
     REQUIRE(c1.hft_data.size() == 2);
 
     // in HFT 0, two datapoints are merged
-    CHECK(c1.hft_data[hfts[0].get()].inddens ==
+    CHECK(c1.hft_data[hfts[0].get()->name].inddens ==
           Approx((1.0 + 2.0 * 2.0) / 3.0));  // weighted by datapoint_count
 
     // weighted by inddens*datapoint_count:
-    CHECK(c1.hft_data[hfts[0].get()].expenditure ==
+    CHECK(c1.hft_data[hfts[0].get()->name].expenditure ==
           Approx((1.0 + 2.0 * 2.0 * 2.0) / (1.0 + 2.0 * 2.0)));
 
     // in HFT 1, one datapoint is merged with zero values
-    CHECK(c1.hft_data[hfts[1].get()].inddens ==
+    CHECK(c1.hft_data[hfts[1].get()->name].inddens ==
           Approx((1.0 * 3.0 + 2.0 * 0.0) /
                  (1.0 + 2.0)));  // weighted by datapoint_count
 
     // weighted by inddens*datapoint_count, but since c2 has no data for
     // HFT 1, and since expenditure is individual based, c2 is simply not
     // included in the average.
-    CHECK(c1.hft_data[hfts[1].get()].expenditure == h3.expenditure);
+    CHECK(c1.hft_data[hfts[1].get()->name].expenditure == h3.expenditure);
   }
 
   SECTION("reset()") {

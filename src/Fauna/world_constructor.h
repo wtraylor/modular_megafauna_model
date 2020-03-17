@@ -10,13 +10,12 @@
 #include <cassert>
 #include <memory>
 #include <vector>
+#include "population_list.h"
 
 namespace Fauna {
 // Forward declarations
 class Parameters;
 class Hft;
-class PopulationInterface;
-class PopulationList;
 class DistributeForage;
 
 // Repeat typedef from hft.h
@@ -35,15 +34,6 @@ class WorldConstructor {
   WorldConstructor(const std::shared_ptr<const Parameters> params,
                    const HftList& hftlist);
 
-  /// Create one (empty) herbivore population for one HFT.
-  /**
-   * \param hft Pointer to the Hft.
-   * \throw std::logic_error if \ref Parameters::herbivore_type is not
-   * implemented
-   * \return Pointer to new object.
-   */
-  PopulationInterface* create_population(std::shared_ptr<const Hft> hft) const;
-
   /// Instantiate populations for all HFTs in one \ref Habitat.
   /**
    * \throw std::logic_error if \ref Parameters::herbivore_type is not
@@ -51,15 +41,6 @@ class WorldConstructor {
    * \return Pointer to new object
    */
   PopulationList* create_populations() const;
-
-  /// Instantiate a population of only one \ref Hft for one \ref Habitat.
-  /**
-   * \param hft Pointer to the one \ref Hft.
-   * \throw std::logic_error if \ref Parameters::herbivore_type is not
-   * implemented.
-   * \return Pointer to new object.
-   */
-  PopulationList* create_populations(std::shared_ptr<const Hft> hft) const;
 
   /// Create new \ref DistributeForage object according to parameters.
   DistributeForage* create_distribute_forage() const;

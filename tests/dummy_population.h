@@ -45,6 +45,7 @@ class DummyPopulation : public PopulationInterface {
     return res;
   }
 
+  void kill_nonviable() {}
   void purge_of_dead() { has_been_purged = true; }
   bool has_been_purged;
 };
