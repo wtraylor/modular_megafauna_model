@@ -7,6 +7,7 @@
 #ifndef FAUNA_GET_FORAGE_DEMANDS_H
 #define FAUNA_GET_FORAGE_DEMANDS_H
 
+#include <memory>
 #include "forage_values.h"
 #include "habitat_forage.h"
 
@@ -27,7 +28,7 @@ class GetForageDemands {
    * \param sex The sex of the herbivore individual/cohort.
    * \throw std::invalid_argument If `hft==NULL`.
    */
-  GetForageDemands(const Hft* hft, const Sex sex);
+  GetForageDemands(std::shared_ptr<const Hft> hft, const Sex sex);
 
   /// Register ingested forage so that less forage will be demanded.
   /**
@@ -64,7 +65,7 @@ class GetForageDemands {
    * \param energy_content Net energy content of the available forage
    * [MJ/kgDM].
    * \throw std::invalid_argument If `day` not in [0,364] or if
-   * `bodymass<=0` or if `bodymass` greater than adult body mass.
+   * `bodymass<=0`.
    */
   void init_today(const int day, const HabitatForage& available_forage,
                   const ForageEnergyContent& energy_content,
@@ -168,7 +169,7 @@ class GetForageDemands {
   int get_today() const;
 
   /// @{ \name Constants
-  Hft const* hft;
+  std::shared_ptr<const Hft> hft;
   Sex sex;
   /** @} */  // constants
 

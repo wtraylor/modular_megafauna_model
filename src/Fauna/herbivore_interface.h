@@ -16,10 +16,9 @@ namespace Output {
 class HerbivoreData;
 }
 class HabitatForage;
-class Hft;
 class HabitatEnvironment;
 
-/// Interface of a herbivore of a specific \ref Hft.
+/// Interface for any herbivore implementation in the model.
 /**
  * Derived classes will define the model mechanics.
  * Each herbivore class has a corresponding implementation of
@@ -64,8 +63,14 @@ struct HerbivoreInterface {
   virtual ForageMass get_forage_demands(
       const HabitatForage& available_forage) = 0;
 
-  /// Get the herbivore functional type
-  virtual const Hft& get_hft() const = 0;
+  /// The name of the HFT for aggregating output.
+  /**
+   * Technically, this can be a generic identifier to aggregate output of
+   * herbivores. However, herbivores used to be aggregated only by HFT, and so
+   * this is assumed to be the HFT name until the output framework is made more
+   * flexible.
+   */
+  virtual std::string get_output_group() const = 0;
 
   /// Individuals per km²
   virtual double get_ind_per_km2() const = 0;

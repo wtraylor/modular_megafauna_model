@@ -8,16 +8,14 @@
 #include "cohort_population.h"
 #include "forage_distribution_algorithms.h"
 #include "hft.h"
-#include "hft_list.h"
 #include "individual_population.h"
 #include "parameters.h"
-#include "population_list.h"
 
 using namespace Fauna;
 
-WorldConstructor::WorldConstructor(const Parameters& params,
-                                   const HftList& hftlist)
-    : params(params), hftlist(hftlist) {}
+WorldConstructor::WorldConstructor(
+    const std::shared_ptr<const Parameters> params, const HftList& hftlist)
+    : params(std::move(params)), hftlist(hftlist) {}
 
 DistributeForage* WorldConstructor::create_distribute_forage() const {
   switch (get_params().forage_distribution) {
@@ -30,42 +28,23 @@ DistributeForage* WorldConstructor::create_distribute_forage() const {
   };
 }
 
-PopulationInterface* WorldConstructor::create_population(
-    const Hft* phft) const {
-  // Create population instance according to selected herbivore type.
-  if (get_params().herbivore_type == HerbivoreType::Cohort) {
-    return new CohortPopulation(CreateHerbivoreCohort(phft, &get_params()));
-  } else if (get_params().herbivore_type == HerbivoreType::Individual) {
-    const double AREA = 1.0;  // TODO THis is only a test
-    return new IndividualPopulation(
-        CreateHerbivoreIndividual(phft, &get_params()));
-    // TODO Where does the area size come from??
-    // -> from Habitat (then merge() doesn’t work anymore)
-    // -> from Parameters (then CreateHerbivoreIndividual
-    //    can read it directly + new validity checks)
-    // -> calculated by framework() ?
-  } else
-    throw std::logic_error(
-        "WorldConstructor::create_population(): unknown herbivore type");
-}
-
 PopulationList* WorldConstructor::create_populations() const {
   PopulationList* plist = new PopulationList();
 
-  // Fill the object with one population per HFT
-  for (int i = 0; i < get_hftlist().size(); i++) {
-    const Hft* phft = &get_hftlist()[i];
-    plist->add(create_population(phft));
-  }
-  assert(plist != NULL);
-  return plist;
-}
+  if (get_params().herbivore_type == HerbivoreType::Cohort) {
+    // Create one population per HFT.
+    for (const auto& hft_ptr : get_hftlist())
+      plist->emplace_back(
+          new CohortPopulation(CreateHerbivoreCohort(hft_ptr, params)));
+  } else if (get_params().herbivore_type == HerbivoreType::Individual) {
+    // Create one population per HFT.
+    for (const auto& hft_ptr : get_hftlist())
+      plist->emplace_back(
+          new IndividualPopulation(CreateHerbivoreIndividual(hft_ptr, params)));
+  } else
+    throw std::logic_error(
+        "WorldConstructor::create_population(): unknown herbivore type");
 
-PopulationList* WorldConstructor::create_populations(const Hft* phft) const {
-  PopulationList* plist = new PopulationList();
-
-  // Fill the object with one population of one HFT
-  plist->add(create_population(phft));
   assert(plist != NULL);
   return plist;
 }

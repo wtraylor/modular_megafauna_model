@@ -9,7 +9,6 @@
 #include "habitat.h"
 #include "herbivore_interface.h"
 #include "population_interface.h"
-#include "population_list.h"
 
 using namespace Fauna;
 
@@ -57,17 +56,16 @@ Output::CombinedData SimulationUnit::get_output() const {
   Output::CombinedData result;
 
   // HERBIVORES
-  std::map<const Hft*, std::vector<Output::HerbivoreData> > hft_output;
+  std::map<const std::string, std::vector<Output::HerbivoreData> > hft_output;
 
-  for (const auto& herbivore : get_populations().get_all_herbivores()) {
-    const Hft* hft = &herbivore->get_hft();
-    hft_output[hft].push_back(herbivore->get_todays_output());
-  }
+  for (auto& pop : get_populations())
+    for (auto& herbivore : pop->get_list()) {
+      hft_output[herbivore->get_output_group()].push_back(herbivore->get_todays_output());
+    }
 
   for (auto& itr : hft_output) {
-    const Hft* hft = itr.first;
     const std::vector<Output::HerbivoreData>& vector = itr.second;
-    result.hft_data[hft] = Output::HerbivoreData::create_datapoint(vector);
+    result.hft_data[itr.first] = Output::HerbivoreData::create_datapoint(vector);
   }
 
   // HABITAT

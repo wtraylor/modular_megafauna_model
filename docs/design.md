@@ -15,10 +15,21 @@ The following UML diagram shows through which interfaces the megafauna model int
 	!include diagrams.iuml!basic_components
 @enduml
 
+The Modular Megafauna Model was originally within the code base of the LPJ-GUESS ecosystem model.
+In 2019 it was separated into its own library for the following reasons:
+
+- Model is **reusable** with other vegetation models.
+- Model can be better **tested** in isolation and with continuous integration (CI).
+- More **freedom** to structure the repository and its documentation.
+- The model can be **licensed** and **distributed** independently from LPJ-GUESS.
+- **Memory leaks** can be found more easily since they are not mingled with LPJ-GUESS.
+
+### Simulation Design
+
 The basic simulation design is simple:
-- Each **herbivore** is of one **Herbivore Functional Type** ([HFT](\ref Fauna::Hft)).
-  In LPJ-GUESS this would correspond to each `Individual` being of one `Pft` (Plant Functional Type).
-- Each herbivore lives in a **habitat** (\ref Fauna::Habitat), grouped by HFT in **populations** (\ref Fauna::PopulationInterface).
+
+- **Herbivores** (\ref Fauna::HerbivoreInterface) are independent entities that interact with their environment.
+- Each herbivore lives in a **habitat** (\ref Fauna::Habitat), grouped in **populations** (\ref Fauna::PopulationInterface).
   In LPJ-GUESS this would correspond to a plant `Individual` growing in a `Patch`.
 - **Fauna::World** is the framework class running the simulation.
 
@@ -88,6 +99,7 @@ That is done by the parameter \ref Fauna::Parameters::habitat_area_km2.
 ### HerbivoreBase {#sec_herbivorebase}
 The herbivore class itself can be seen as a mere framework (compare \ref sec_inversion_of_control) that integrates various components:
 
+- Each herbivore is of one **Herbivore Functional Type (HFT):** \ref Fauna::Hft
 - The herbivore’s own **energy budget**: \ref Fauna::FatmassEnergyBudget.
 - Its **energy needs**, defined by \ref Fauna::Hft::expenditure_components.
 The herbivore object is self-responsible to call the implementation of the given expenditure models.
@@ -173,7 +185,8 @@ Assertions are used…:
 
 All user-defined simulation parameters are contained in the two classes \ref Fauna::Hft and \ref Fauna::Parameters.
 All parameters must be constant within one simulation run.
-Since some classes work with pointers to the classes \ref Fauna::Hft, \ref Fauna::HftList, and \ref Fauna::Parameters, all objects of these classes must not be moved in memory.
+Since some classes work with pointers to the classes \ref Fauna::Hft and \ref Fauna::Parameters, all objects of these classes must not be moved in memory.
+For that reason, `std::shared_ptr` is used in \ref Fauna::HftList.
 
 The host program only passes the path to the [TOML](https://github.com/toml-lang/toml) instruction file to the class \ref Fauna::World.
 The parameters are parsed by the megafauna library independently, using [cpptoml](https://github.com/skystrife/cpptoml).

@@ -9,24 +9,23 @@
 
 #include <sstream>
 #include "hft.h"
-#include "hft_list.h"
 
 namespace Fauna {
 /// Create a simple, valid HftList
 inline HftList create_hfts(const int count, const Parameters& params) {
   HftList hftlist;
   for (int i = 0; i < count; i++) {
-    Hft hft;
+    std::shared_ptr<Hft> hft(new Hft());
     // construct name for HFT
     std::ostringstream stream;
     stream << "hft" << i;
-    hft.name = stream.str();
+    hft->name = stream.str();
 
     std::string msg;
-    if (!hft.is_valid(params, msg))
+    if (!hft->is_valid(params, msg))
       FAIL("create_hfts(): HFT is not valid:\n" << msg);
 
-    hftlist.insert(hft);
+    hftlist.push_back(hft);
   }
   REQUIRE(hftlist.size() == count);
   return hftlist;

@@ -19,14 +19,14 @@ class HerbivoreBaseDummy : public HerbivoreBase {
   virtual void kill() {}
   /// Establishment Constructor
   HerbivoreBaseDummy(const int age_days, const double body_condition,
-                     const Hft* hft, const Sex sex)
+                     std::shared_ptr<const Hft> hft, const Sex sex)
       : HerbivoreBase(age_days, body_condition, hft, sex,
-                      Parameters().metabolizable_energy),
+                      Parameters().forage_gross_energy),
         ind_per_km2(1.0) {}
 
   /// Birth Constructor
-  HerbivoreBaseDummy(const Hft* hft, const Sex sex)
-      : HerbivoreBase(hft, sex, Parameters().metabolizable_energy),
+  HerbivoreBaseDummy(std::shared_ptr<const Hft> hft, const Sex sex)
+      : HerbivoreBase(hft, sex, Parameters().forage_gross_energy),
         ind_per_km2(1.0) {}
 
   HerbivoreBaseDummy(const HerbivoreBaseDummy& other)

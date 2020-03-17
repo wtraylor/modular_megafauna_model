@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
 project ("Modular Megafauna Model"
-  VERSION 0.1.0
+  VERSION 0.3.0
   DESCRIPTION "A physiological, dynamic herbivore simulator in C++."
   LANGUAGES CXX
   )
@@ -73,8 +73,6 @@ set (SOURCE_FILES
   src/Fauna/herbivore_vector.h
   src/Fauna/hft.cpp
   src/Fauna/hft.h
-  src/Fauna/hft_list.cpp
-  src/Fauna/hft_list.h
   src/Fauna/individual_population.cpp
   src/Fauna/individual_population.h
   src/Fauna/insfile_reader.cpp
@@ -88,7 +86,6 @@ set (SOURCE_FILES
   src/Fauna/parameters.cpp
   src/Fauna/population_interface.cpp
   src/Fauna/population_interface.h
-  src/Fauna/population_list.cpp
   src/Fauna/population_list.h
   src/Fauna/reproduction_models.cpp
   src/Fauna/reproduction_models.h
@@ -99,9 +96,6 @@ set (SOURCE_FILES
   src/Fauna/world.cpp
   src/Fauna/world_constructor.cpp
   src/Fauna/world_constructor.h
-
-  src/Fauna/makeshift.h
-  src/Fauna/makeshift.cpp
   )
 
 add_library (ModularMegafaunaModel STATIC ${SOURCE_FILES})
@@ -119,11 +113,6 @@ target_include_directories (ModularMegafaunaModel
   include/Fauna/Output/
   src/Fauna/
   src/Fauna/Output/
-  )
-
-target_compile_options (ModularMegafaunaModel
-  PRIVATE
-  -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
   )
 
 ###########################################################################
@@ -160,14 +149,12 @@ if (BUILD_TESTING)
     src/Fauna/herbivore_cohort.test.cpp
     src/Fauna/herbivore_individual.test.cpp
     src/Fauna/hft.test.cpp
-    src/Fauna/hft_list.test.cpp
     src/Fauna/individual_population.test.cpp
     src/Fauna/insfile_reader.test.cpp
     src/Fauna/mortality_factors.test.cpp
     src/Fauna/net_energy_models.test.cpp
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
-    src/Fauna/population_list.test.cpp
     src/Fauna/reproduction_models.test.cpp
     src/Fauna/world_constructor.test.cpp
     tests/catch.hpp
@@ -196,10 +183,6 @@ if (BUILD_TESTING)
     src/Fauna/
     src/Fauna/Output/
     tests/
-    )
-  target_compile_options (megafauna_unit_tests
-    PRIVATE
-    -Wno-deprecated  # Suppress warnings about deprecated std::auto_ptr.
     )
   # We need to check that the example TOML file is read correctly.
   configure_file (

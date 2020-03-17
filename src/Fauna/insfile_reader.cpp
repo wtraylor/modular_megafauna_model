@@ -47,6 +47,7 @@ std::string invalid_option::construct_message(
 InsfileReader::InsfileReader(const std::string filename)
     : ins(cpptoml::parse_file(filename)) {
   // Read global parameters
+  read_table_forage();
   read_table_output();
   if (params.output_format == OutputFormat::TextTables)
     read_table_output_text_tables();
@@ -58,16 +59,50 @@ InsfileReader::InsfileReader(const std::string filename)
       throw std::runtime_error("Parameters are not valid:\n" + err_msg);
   }
 
-  auto hft_table_array = ins->get_table_array("hft");
-  if (hft_table_array)
-    for (const auto& hft_table : *hft_table_array) {
-      const Hft hft = read_hft(hft_table);
-      std::string err_msg;
-      if (!hft.is_valid(params, err_msg))
-        throw std::runtime_error("HFT \"" + hft.name + "\" is not valid:\n" +
-                                 err_msg);
-      hfts.insert(std::move(hft));
-    }
+  if (params.herbivore_type == HerbivoreType::Cohort ||
+      params.herbivore_type == HerbivoreType::Individual) {
+    auto hft_table_array = ins->get_table_array("hft");
+    if (hft_table_array) {
+      for (const auto& hft_table : *hft_table_array) {
+        std::shared_ptr<const Hft> new_hft(new Hft(read_hft(hft_table)));
+        std::string err_msg;
+        if (!new_hft->is_valid(params, err_msg))
+          throw std::runtime_error("HFT \"" + new_hft->name +
+                                   "\" is not valid:\n" + err_msg);
+        // Add HFT to list, but check if HFT with that name already exists.
+        for (const auto& hft : hfts) {
+          assert(hft.get());
+          if (hft->name == new_hft->name)
+            throw std::runtime_error("HFT with name \"" + hft->name +
+                                     "\" is defined twice.");
+        }
+        hfts.push_back(new_hft);
+      }
+    } else
+      // If there are no HFTs, then the groups are just ignored and not checked
+      // for invalid keys.
+      ins->erase("group");
+
+    // Erase all valid HFT keys in the groups so that only invalid/unknown keys
+    // remain.
+    auto group_table_array = ins->get_table_array("group");
+    if (group_table_array)
+      for (auto group_table : *group_table_array)
+        for (const std::string& key : hft_keys_parsed) {
+          if (group_table->contains_qualified(key))
+            remove_qualified_key(group_table, key);
+        }
+  } else {
+    // Don’t parse HFTs and HFT groups.
+    ins->erase("hft");
+    ins->erase("group");
+  }
+
+  // Whenever a parameter was parsed, it got deleted from the TOML table `ins`.
+  // Now that all known parameters have been parsed, `ins` should be empty. For
+  // any remaining parameter, an exception will be thrown.
+  auto unknown_elements = get_all_keys(ins);
+  if (!unknown_elements.empty()) throw unknown_parameters(unknown_elements);
 }
 
 std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
@@ -85,13 +120,19 @@ std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
 template <class T>
 cpptoml::option<T> InsfileReader::find_hft_parameter(
     const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
-    const bool mandatory) const {
+    const bool mandatory) {
   assert(hft_table->get_as<std::string>("name"));  // Name must be defined.
   const std::string name = *hft_table->get_as<std::string>("name");
 
+  // Mark this key as a valid key.
+  hft_keys_parsed.insert(key);
+
   {
     const auto value = hft_table->get_qualified_as<T>(key);
-    if (value) return value;
+    if (value) {
+      remove_qualified_key(hft_table, key);
+      return value;
+    }
   }
 
   const auto groups = hft_table->get_array_of<std::string>("groups");
@@ -116,13 +157,19 @@ template <class T>
 typename cpptoml::array_of_trait<T>::return_type
 InsfileReader::find_hft_array_parameter(
     const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
-    const bool mandatory) const {
+    const bool mandatory) {
   assert(hft_table->get_as<std::string>("name"));  // Name must be defined.
   const std::string name = *hft_table->get_as<std::string>("name");
 
+  // Mark this key as a valid key.
+  hft_keys_parsed.insert(key);
+
   {
     const auto value = hft_table->get_qualified_array_of<T>(key);
-    if (value) return value;
+    if (value) {
+      remove_qualified_key(hft_table, key);
+      return value;
+    }
   }
 
   const auto groups = hft_table->get_array_of<std::string>("groups");
@@ -145,7 +192,32 @@ InsfileReader::find_hft_array_parameter(
   }
 }
 
+std::list<std::string> InsfileReader::get_all_keys(
+    std::shared_ptr<cpptoml::table> table) {
+  std::list<std::string> l;
+  if (!table) return l;
+  for (const auto i : *table) {
+    const std::string key = i.first;
+    if (i.second->is_value() || i.second->is_array())
+      l.push_back(key);
+    else if (i.second->is_table()) {
+      // Add all elements from subtree by prefixing it with the name of the
+      // table.
+      for (auto j : get_all_keys(i.second->as_table()))
+        l.push_back(i.first + '.' + j);
+    } else if (i.second->is_table_array()) {
+      for (auto t : *i.second->as_table_array())
+        for (auto j : get_all_keys(t)) l.push_back(i.first + '.' + j);
+    }
+  }
+  return l;
+}
+
 Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
+  if (!table)
+    throw std::invalid_argument(
+        "Fauna::InsfileReader::read_hft() "
+        "Parameter 'table' is NULL.");
   Hft hft;
   {
     const auto key = "name";
@@ -154,9 +226,23 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
       hft.name = *value;
     else
       throw missing_parameter("hft.name");
+    // Don’t erase "name" from TOML table yet because we need it for potential
+    // error messages.
   }
 
   // ======= MANDATORY PARAMETERS =======
+  {
+    const auto value = find_hft_parameter<double>(
+        table, "body_fat.catabolism_efficiency", true);
+    assert(value);
+    hft.body_fat_catabolism_efficiency = *value;
+  }
+  {
+    const auto value =
+        find_hft_parameter<double>(table, "body_fat.gross_energy", true);
+    assert(value);
+    hft.body_fat_gross_energy = *value;
+  }
   {
     const auto value =
         find_hft_parameter<double>(table, "body_fat.maximum", true);
@@ -170,6 +256,12 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     hft.body_fat_maximum_daily_gain = *value;
   }
   {
+    const auto value =
+        find_hft_parameter<double>(table, "body_mass.empty", true);
+    assert(value);
+    hft.body_mass_empty = *value;
+  }
+  {
     const auto value = find_hft_parameter<int>(table, "body_mass.female", true);
     assert(value);
     hft.body_mass_female = *value;
@@ -178,12 +270,6 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     const auto value = find_hft_parameter<int>(table, "body_mass.male", true);
     assert(value);
     hft.body_mass_male = *value;
-  }
-  {
-    const auto value =
-        find_hft_parameter<double>(table, "digestion.efficiency", true);
-    assert(value);
-    hft.digestion_efficiency = *value;
   }
   {
     const auto value =
@@ -247,6 +333,8 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         throw invalid_option(
             hft, "expenditure.components", i,
             {"Allometric", "Taylor1981", "Thermoregulation", "Zhu2018"});
+    if (table->get_table("expenditure"))
+      table->get_table("expenditure")->erase("components");
   }
   {
     const auto value =
@@ -259,14 +347,37 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
                            {"PureGrazer"});
   }
   {
+    const auto value = find_hft_parameter<double>(
+        table, "digestion.digestibility_multiplier", false);
+    if (value) hft.digestion_digestibility_multiplier = *value;
+  }
+  {
+    const auto value =
+        find_hft_parameter<double>(table, "digestion.k_fat", true);
+    assert(value);
+    hft.digestion_k_fat = *value;
+  }
+  {
+    const auto value =
+        find_hft_parameter<double>(table, "digestion.k_maintenance", true);
+    assert(value);
+    hft.digestion_k_maintenance = *value;
+  }
+  {
+    const auto value =
+        find_hft_parameter<double>(table, "digestion.me_coefficient", true);
+    assert(value);
+    hft.digestion_me_coefficient = *value;
+  }
+  {
     const auto value = find_hft_parameter<std::string>(
         table, "digestion.net_energy_model", true);
     assert(value);
-    if (lowercase(*value) == lowercase("Default"))
-      hft.digestion_net_energy_model = NetEnergyModel::Default;
+    if (lowercase(*value) == lowercase("GrossEnergyFraction"))
+      hft.digestion_net_energy_model = NetEnergyModel::GrossEnergyFraction;
     else
       throw invalid_option(hft, "digestion.net_energy_model", *value,
-                           {"Default"});
+                           {"GrossEnergyFraction"});
   }
   {
     const auto array = find_hft_array_parameter<std::string>(
@@ -305,9 +416,8 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     else if (lowercase(*value) == lowercase("Linear"))
       hft.reproduction_model = ReproductionModel::Linear;
     else
-      throw invalid_option(
-          hft, "reproduction.model", *value,
-          {"None", "ConstantMaximum", "Logistic", "Linear"});
+      throw invalid_option(hft, "reproduction.model", *value,
+                           {"None", "ConstantMaximum", "Logistic", "Linear"});
   }
 
   // ======== NON-MANDATORY PARAMETERS =======
@@ -329,195 +439,214 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   }
 
   // ======== DEPENDENT PARAMETERS =======
+  //
+  // A local variable `mandatory` determines whether the parameter is required.
+  // The function find_hft_parameter() is called regardless in order to ensure
+  // that the TOML element gets erased from the instruction file in any case.
+  // Erasing the element marks it as parsed. If it isn’t erased, an exception
+  // for an unknown parameter will be thrown.
 
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value =
-        find_hft_parameter<double>(table, "body_fat.birth", true);
-    assert(value);
-    hft.body_fat_birth = *value;
+        find_hft_parameter<double>(table, "body_fat.birth", mandatory);
+    if (value) hft.body_fat_birth = *value;
   }
-
-  if (hft.mortality_factors.count(
-          MortalityFactor::StarvationIlliusOConnor2000)) {
+  {
+    const bool mandatory = (hft.mortality_factors.count(
+        MortalityFactor::StarvationIlliusOConnor2000));
     const auto value =
-        find_hft_parameter<double>(table, "body_fat.deviation", true);
-    assert(value);
-    hft.body_fat_deviation = *value;
+        find_hft_parameter<double>(table, "body_fat.deviation", mandatory);
+    if (value) hft.body_fat_deviation = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
-    const auto value = find_hft_parameter<int>(table, "body_mass.birth", true);
-    assert(value);
-    hft.body_mass_birth = *value;
-  }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value =
-        find_hft_parameter<int>(table, "breeding_season.length", true);
-    assert(value);
-    hft.breeding_season_length = *value;
+        find_hft_parameter<int>(table, "body_mass.birth", mandatory);
+    if (value) hft.body_mass_birth = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value =
-        find_hft_parameter<int>(table, "breeding_season.start", true);
-    assert(value);
-    hft.breeding_season_start = *value;
+        find_hft_parameter<int>(table, "breeding_season.length", mandatory);
+    if (value) hft.breeding_season_length = *value;
   }
-
-  if (hft.digestion_limit == DigestiveLimit::FixedFraction) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value =
-        find_hft_parameter<double>(table, "digestion.fixed_fraction", true);
-    assert(value);
-    hft.digestion_fixed_fraction = *value;
+        find_hft_parameter<int>(table, "breeding_season.start", mandatory);
+    if (value) hft.breeding_season_start = *value;
   }
-
-  if (hft.digestion_limit == DigestiveLimit::Allometric) {
+  {
+    const bool mandatory =
+        (hft.digestion_limit == DigestiveLimit::FixedFraction);
     const auto value = find_hft_parameter<double>(
-        table, "digestion.allometric.coefficient", true);
-    assert(value);
-    hft.digestion_allometric.coefficient = *value;
+        table, "digestion.fixed_fraction", mandatory);
+    if (value) hft.digestion_fixed_fraction = *value;
   }
-
-  if (hft.digestion_limit == DigestiveLimit::Allometric) {
+  {
+    const bool mandatory = hft.digestion_limit == DigestiveLimit::Allometric;
     const auto value = find_hft_parameter<double>(
-        table, "digestion.allometric.exponent", true);
-    assert(value);
-    hft.digestion_allometric.exponent = *value;
+        table, "digestion.allometric.coefficient", mandatory);
+    if (value) hft.digestion_allometric.coefficient = *value;
   }
-
-  if (hft.expenditure_components.count(ExpenditureComponent::Allometric)) {
+  {
+    const bool mandatory = (hft.digestion_limit == DigestiveLimit::Allometric);
     const auto value = find_hft_parameter<double>(
-        table, "expenditure.allometric.coefficient", true);
-    assert(value);
-    hft.expenditure_allometric.coefficient = *value;
+        table, "digestion.allometric.exponent", mandatory);
+    if (value) hft.digestion_allometric.exponent = *value;
   }
-
-  if (hft.expenditure_components.count(ExpenditureComponent::Allometric)) {
+  {
+    const bool mandatory =
+        (hft.expenditure_components.count(ExpenditureComponent::Allometric));
     const auto value = find_hft_parameter<double>(
-        table, "expenditure.allometric.exponent", true);
-    assert(value);
-    hft.expenditure_allometric.exponent = *value;
+        table, "expenditure.allometric.coefficient", mandatory);
+    if (value) hft.expenditure_allometric.coefficient = *value;
   }
-
-  if (hft.foraging_limits.count(ForagingLimit::GeneralFunctionalResponse) ||
-      hft.foraging_limits.count(ForagingLimit::IlliusOConnor2000)) {
+  {
+    const bool mandatory =
+        (hft.expenditure_components.count(ExpenditureComponent::Allometric));
     const auto value = find_hft_parameter<double>(
-        table, "foraging.half_max_intake_density", true);
-    assert(value);
-    hft.foraging_half_max_intake_density = *value;
+        table, "expenditure.allometric.exponent", mandatory);
+    if (value) hft.expenditure_allometric.exponent = *value;
   }
-
-  if (hft.mortality_factors.count(MortalityFactor::Lifespan)) {
+  {
+    const bool mandatory =
+        (hft.foraging_limits.count(ForagingLimit::GeneralFunctionalResponse) ||
+         hft.foraging_limits.count(ForagingLimit::IlliusOConnor2000));
+    const auto value = find_hft_parameter<double>(
+        table, "foraging.half_max_intake_density", mandatory);
+    if (value) hft.foraging_half_max_intake_density = *value;
+  }
+  {
+    const bool mandatory =
+        (hft.mortality_factors.count(MortalityFactor::Lifespan));
     const auto value =
-        find_hft_parameter<int>(table, "life_history.lifespan", true);
-    assert(value);
-    hft.life_history_lifespan = *value;
+        find_hft_parameter<int>(table, "life_history.lifespan", mandatory);
+    if (value) hft.life_history_lifespan = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value = find_hft_parameter<int>(
-        table, "life_history.physical_maturity_female", true);
-    assert(value);
-    hft.life_history_physical_maturity_female = *value;
+        table, "life_history.physical_maturity_female", mandatory);
+    if (value) hft.life_history_physical_maturity_female = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value = find_hft_parameter<int>(
-        table, "life_history.physical_maturity_male", true);
-    assert(value);
-    hft.life_history_physical_maturity_male = *value;
+        table, "life_history.physical_maturity_male", mandatory);
+    if (value) hft.life_history_physical_maturity_male = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
+    const auto value = find_hft_parameter<int>(
+        table, "life_history.sexual_maturity", mandatory);
+    if (value) hft.life_history_sexual_maturity = *value;
+  }
+  {
+    const bool mandatory =
+        (hft.mortality_factors.count(MortalityFactor::Background));
     const auto value =
-        find_hft_parameter<int>(table, "life_history.sexual_maturity", true);
-    assert(value);
-    hft.life_history_sexual_maturity = *value;
+        find_hft_parameter<double>(table, "mortality.adult_rate", mandatory);
+    if (value) hft.mortality_adult_rate = *value;
   }
-
-  if (hft.mortality_factors.count(MortalityFactor::Background)) {
+  {
+    const bool mandatory =
+        (hft.mortality_factors.count(MortalityFactor::Background));
     const auto value =
-        find_hft_parameter<double>(table, "mortality.adult_rate", true);
-    assert(value);
-    hft.mortality_adult_rate = *value;
+        find_hft_parameter<double>(table, "mortality.juvenile_rate", mandatory);
+    if (value) hft.mortality_juvenile_rate = *value;
   }
-
-  if (hft.mortality_factors.count(MortalityFactor::Background)) {
-    const auto value =
-        find_hft_parameter<double>(table, "mortality.juvenile_rate", true);
-    assert(value);
-    hft.mortality_juvenile_rate = *value;
-  }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
     const auto value = find_hft_parameter<double>(
-        table, "mortality.minimum_density_threshold", true);
-    assert(value);
-    hft.mortality_minimum_density_threshold = *value;
+        table, "mortality.minimum_density_threshold", mandatory);
+    if (value) hft.mortality_minimum_density_threshold = *value;
   }
-
-  if (hft.mortality_factors.count(MortalityFactor::StarvationThreshold) ||
-      hft.mortality_factors.count(
-          MortalityFactor::StarvationIlliusOConnor2000)) {
+  {
+    const bool mandatory =
+        (hft.mortality_factors.count(MortalityFactor::StarvationThreshold) ||
+         hft.mortality_factors.count(
+             MortalityFactor::StarvationIlliusOConnor2000));
     const auto value = find_hft_parameter<bool>(
-        table, "mortality.shift_body_condition_for_starvation", true);
-    assert(value);
-    hft.mortality_shift_body_condition_for_starvation = *value;
+        table, "mortality.shift_body_condition_for_starvation", mandatory);
+    if (value) hft.mortality_shift_body_condition_for_starvation = *value;
   }
-
-  if (hft.reproduction_model == ReproductionModel::ConstantMaximum ||
-      hft.reproduction_model == ReproductionModel::Logistic ||
-      hft.reproduction_model == ReproductionModel::Linear) {
-    const auto value =
-        find_hft_parameter<double>(table, "reproduction.annual_maximum", true);
-    assert(value);
-    hft.reproduction_annual_maximum = *value;
+  {
+    const bool mandatory =
+        (hft.reproduction_model == ReproductionModel::ConstantMaximum ||
+         hft.reproduction_model == ReproductionModel::Logistic ||
+         hft.reproduction_model == ReproductionModel::Linear);
+    const auto value = find_hft_parameter<double>(
+        table, "reproduction.annual_maximum", mandatory);
+    if (value) hft.reproduction_annual_maximum = *value;
   }
-
-  if (hft.reproduction_model != ReproductionModel::None) {
-    const auto value =
-        find_hft_parameter<int>(table, "reproduction.gestation_length", true);
-    assert(value);
-    hft.reproduction_gestation_length = *value;
+  {
+    const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
+    const auto value = find_hft_parameter<int>(
+        table, "reproduction.gestation_length", mandatory);
+    if (value) hft.reproduction_gestation_length = *value;
   }
-
-  if (hft.reproduction_model == ReproductionModel::Logistic) {
+  {
+    const bool mandatory =
+        (hft.reproduction_model == ReproductionModel::Logistic);
     // growth_rate
     const auto growth_rate = find_hft_parameter<double>(
-        table, "reproduction.logistic.growth_rate", true);
-    assert(growth_rate);
-    hft.reproduction_logistic[0] = *growth_rate;
+        table, "reproduction.logistic.growth_rate", mandatory);
+    if (growth_rate) hft.reproduction_logistic[0] = *growth_rate;
     // midpoint
     const auto midpoint = find_hft_parameter<double>(
-        table, "reproduction.logistic.midpoint", true);
-    assert(midpoint);
-    hft.reproduction_logistic[1] = *midpoint;
+        table, "reproduction.logistic.midpoint", mandatory);
+    if (midpoint) hft.reproduction_logistic[1] = *midpoint;
   }
-
-  if (hft.expenditure_components.count(
-          ExpenditureComponent::Thermoregulation)) {
+  {
+    const bool mandatory = (hft.expenditure_components.count(
+        ExpenditureComponent::Thermoregulation));
     const auto value = find_hft_parameter<std::string>(
-        table, "thermoregulation.conductance", true);
-    assert(value);
-    if (lowercase(*value) == lowercase("BradleyDeavers1980"))
-      hft.thermoregulation_conductance = ConductanceModel::BradleyDeavers1980;
-    else if (lowercase(*value) == lowercase("CuylerOeritsland2004"))
-      hft.thermoregulation_conductance = ConductanceModel::CuylerOeritsland2004;
-    else
-      throw invalid_option(hft, "thermoregulation.conductance", *value,
-                           {"BradleyDeavers1980", "CuylerOeritsland2004"});
+        table, "thermoregulation.conductance", mandatory);
+    if (value) {
+      if (lowercase(*value) == lowercase("BradleyDeavers1980"))
+        hft.thermoregulation_conductance = ConductanceModel::BradleyDeavers1980;
+      else if (lowercase(*value) == lowercase("CuylerOeritsland2004"))
+        hft.thermoregulation_conductance =
+            ConductanceModel::CuylerOeritsland2004;
+      else
+        throw invalid_option(hft, "thermoregulation.conductance", *value,
+                             {"BradleyDeavers1980", "CuylerOeritsland2004"});
+    }
+  }
+  {
+    const bool mandatory = (hft.expenditure_components.count(
+        ExpenditureComponent::Thermoregulation));
+    const auto value = find_hft_parameter<double>(
+        table, "thermoregulation.core_temperature", mandatory);
+    if (value) hft.thermoregulation_core_temperature = *value;
   }
 
-  if (hft.expenditure_components.count(
-          ExpenditureComponent::Thermoregulation)) {
-    const auto value = find_hft_parameter<double>(
-        table, "thermoregulation.core_temperature", true);
-    assert(value);
-    hft.thermoregulation_core_temperature = *value;
-  }
+  // The "name" TOML element is erased last because it is used before for
+  // potential error messages.
+  table->erase("name");
+  hft_keys_parsed.insert("name");
+  // Now the "groups" TOML element can be erased because it is no longer needed.
+  table->erase("groups");
 
   return hft;
+}
+
+void InsfileReader::read_table_forage() {
+  auto table = ins->get_table("forage");
+  for (const auto& ft : Fauna::FORAGE_TYPES) {
+    const auto key = "forage.gross_energy." + get_forage_type_name(ft);
+    auto value = ins->get_qualified_as<double>(key);
+    if (!value) throw missing_parameter(key);
+    if (*value < 0)
+      throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
+    params.forage_gross_energy[ft] = *value;
+    if (table && table->get_table("gross_energy"))
+      table->get_table("gross_energy")->erase(get_forage_type_name(ft));
+  }
+  // Remove the table "forage" in order to indicate that it’s been parsed.
+  if (table && table->empty()) ins->erase("forage");
 }
 
 void InsfileReader::read_table_output() {
@@ -532,6 +661,7 @@ void InsfileReader::read_table_output() {
         throw invalid_option(key, *value, {"TextTables"});
     } else
       throw missing_parameter(key);
+    remove_qualified_key(ins, key);
   }
   {
     const auto key = "output.interval";
@@ -550,7 +680,11 @@ void InsfileReader::read_table_output() {
                              {"Daily", "Monthly", "Decadal", "Annual"});
     } else
       throw missing_parameter(key);
+    remove_qualified_key(ins, key);
   }
+  // Remove the table "output" in order to indicate that it’s been parsed.
+  auto table = ins->get_table("output");
+  if (table && table->empty()) ins->erase("output");
 }
 
 void InsfileReader::read_table_output_text_tables() {
@@ -561,6 +695,7 @@ void InsfileReader::read_table_output_text_tables() {
       params.output_text_tables.directory = *value;
     } else
       throw missing_parameter(key);
+    remove_qualified_key(ins, key);
   }
   {
     const auto key = "output.text_tables.precision";
@@ -568,6 +703,7 @@ void InsfileReader::read_table_output_text_tables() {
     if (value) {
       params.output_text_tables.precision = *value;
     }
+    remove_qualified_key(ins, key);
   }
   {
     const auto key = "output.text_tables.tables";
@@ -583,7 +719,11 @@ void InsfileReader::read_table_output_text_tables() {
           throw invalid_option(key, s,
                                {"digestibility", "mass_density_per_hft"});
     }
+    remove_qualified_key(ins, key);
   }
+  // Remove the table "output" in order to indicate that it’s been parsed.
+  auto table = ins->get_table_qualified("output.text_tables");
+  if (table && table->empty()) ins->erase("output");
 }
 
 void InsfileReader::read_table_simulation() {
@@ -596,6 +736,7 @@ void InsfileReader::read_table_simulation() {
       // -> Add new forage distribution algorithm here.
       else
         throw invalid_option(key, *value, {"Equally"});
+      remove_qualified_key(ins, key);
     }
   }
   {
@@ -603,6 +744,7 @@ void InsfileReader::read_table_simulation() {
     auto value = ins->get_qualified_as<double>(key);
     if (value) {
       params.habitat_area_km2 = *value;
+      remove_qualified_key(ins, key);
     }
   }
   {
@@ -610,6 +752,7 @@ void InsfileReader::read_table_simulation() {
     auto value = ins->get_qualified_as<int>(key);
     if (value) {
       params.herbivore_establish_interval = *value;
+      remove_qualified_key(ins, key);
     }
   }
   {
@@ -622,23 +765,56 @@ void InsfileReader::read_table_simulation() {
         params.herbivore_type = HerbivoreType::Individual;
       else
         throw invalid_option(key, *value, {"Cohort", "Individual"});
+      remove_qualified_key(ins, key);
     } else
       throw missing_parameter(key);
-  }
-  for (const auto& ft : Fauna::FORAGE_TYPES) {
-    const auto key =
-        "simulation.metabolizable_energy." + get_forage_type_name(ft);
-    auto value = ins->get_qualified_as<double>(key);
-    if (!value) throw missing_parameter(key);
-    if (*value < 0)
-      throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
-    params.metabolizable_energy[ft] = *value;
   }
   {
     const auto key = "simulation.one_hft_per_habitat";
     auto value = ins->get_qualified_as<bool>(key);
     if (value) {
       params.one_hft_per_habitat = *value;
+      remove_qualified_key(ins, key);
     }
   }
+  // Remove the table "simulation" in order to indicate that it’s been parsed.
+  auto table = ins->get_table("simulation");
+  if (table && table->empty()) ins->erase("simulation");
+}
+
+void InsfileReader::remove_qualified_key(std::shared_ptr<cpptoml::table> table,
+                                         const std::string key) const {
+  if (!table)
+    throw std::invalid_argument(
+        "Fauna::InsfileReader::remove_qualified_key() "
+        "Parameter 'table' is NULL.");
+  if (!table->contains_qualified(key))
+    throw std::out_of_range(
+        "Fauna::InsfileReader::remove_qualified_key() "
+        "TOML key '" +
+        key + "' could not be found.");
+
+  // Get the parent TOML table of the parameter. For instance "body_fat.max"
+  // has the parent_key "body_fat" and the leaf_key "max".
+  auto const pos = key.find_last_of('.');
+
+  if (pos != key.npos) {
+    // There is a parent and child element.
+    const std::string parent_key = key.substr(0, pos);
+    const std::string leaf_key = key.substr(pos + 1);
+    assert(leaf_key != "");
+    assert(parent_key != "");
+
+    // Remove the key from this HFT table in order to indicate that it has
+    // been parsed.
+    auto parent = table->get_table_qualified(parent_key);
+    if (!parent)
+      throw std::out_of_range(
+          "Fauna::InsfileReader::remove_qualified_key() "
+          "Parent element '" +
+          parent_key + "' could not be found in table." + " (key = '" + key +
+          "')");
+    parent->erase(leaf_key);
+  } else
+    table->erase(key);
 }

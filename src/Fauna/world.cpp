@@ -23,23 +23,10 @@
 
 using namespace Fauna;
 
-namespace {
-/// Helper function to initialize Fauna::InsfileContent object.
-InsfileContent* read_instruction_file(const std::string& filename) {
-  try {
-    InsfileReader reader(filename);
-    return new InsfileContent({reader.get_hfts(), reader.get_params()});
-  } catch (std::runtime_error& err) {
-    throw std::runtime_error("Error reading instruction file \"" + filename +
-                             "\":\n" + err.what());
-  }
-}
-}  // namespace
-
 World::World(const std::string instruction_filename)
-    : insfile_content(read_instruction_file(instruction_filename)),
+    : insfile(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
-      world_constructor(new WorldConstructor(get_params(), get_hfts())),
+      world_constructor(new WorldConstructor(insfile.params, get_hfts())),
       output_aggregator(new Output::Aggregator()) {
   // Create Output::WriterInterface implementation according to selected
   // setting.
@@ -64,14 +51,8 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
     throw std::invalid_argument(
         "World::create_simulation_unit(): Pointer to habitat is NULL.");
 
-  PopulationList* populations = new PopulationList();
-
-  // Fill the object with one population per HFT.
-  for (int i = 0; i < get_hfts().size(); i++) {
-    const Hft* phft = &get_hfts()[i];
-    populations->add(world_constructor->create_population(phft));
-  }
-  assert(populations != NULL);
+  PopulationList* populations = world_constructor->create_populations();
+  assert(populations);
 
   // Use emplace_back() instead of push_back() to directly construct the new
   // SimulationUnit object without copy.
@@ -79,17 +60,26 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
 }
 
 const HftList& World::get_hfts() {
-  if (insfile_content.get() == NULL)
-    throw std::logic_error(
-        "World::get_hfts(): The member insfile_content is not set.");
-  return insfile_content->hftlist;
+  assert(insfile.hftlist.get());
+  return *(insfile.hftlist);
 }
 
 const Parameters& World::get_params() const {
-  if (insfile_content.get() == NULL)
-    throw std::logic_error(
-        "World::get_params(): The member insfile_content is not set.");
-  return insfile_content->params;
+  assert(insfile.params.get());
+  return *(insfile.params);
+}
+
+World::InsfileContent World::read_instruction_file(
+    const std::string& filename) {
+  try {
+    InsfileReader reader(filename);
+    return World::InsfileContent(
+        {std::make_shared<const HftList>(reader.get_hfts()),
+         std::make_shared<const Parameters>(reader.get_params())});
+  } catch (std::runtime_error& err) {
+    throw std::runtime_error("Error reading instruction file \"" + filename +
+                             "\":\n" + err.what());
+  }
 }
 
 void World::simulate_day(const Date& date, const bool do_herbivores) {
@@ -126,14 +116,8 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
 
     // Establish each HFT if it got extinct.
     if (establish_if_needed)
-      for (const auto& hft : get_hfts()) {
-        PopulationList& pops = sim_unit.get_populations();
-        if (!pops.exists(hft))
-          pops.add(world_constructor->create_population(&hft));
-
-        PopulationInterface& p = pops.get(hft);
-        if (p.get_list().empty()) pops.get(hft).establish();
-      }
+      for (auto& pop : sim_unit.get_populations())
+        if (pop->get_list().empty()) pop->establish();
 
     // Create function object to delegate all simulations for this day to.
     // TODO: Create function object only once per day and for all simulation

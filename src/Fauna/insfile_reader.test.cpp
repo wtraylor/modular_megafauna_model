@@ -6,6 +6,7 @@
  */
 #include "catch.hpp"
 #include "fileystem.h"
+#include "hft.h"
 #include "insfile_reader.h"
 using namespace Fauna;
 
@@ -31,9 +32,10 @@ TEST_CASE("Fauna::InsfileReader") {
     }
     SECTION("Check Hft.is_valid()") {
       std::string msg;
+      REQUIRE(reader.get_hfts().size() == 1);  // one HFT
       for (const auto& hft : reader.get_hfts()) {
-        INFO("HFT name: " + hft.name);
-        REQUIRE(hft.is_valid(reader.get_params(), msg));
+        INFO("HFT name: " + hft->name);
+        REQUIRE(hft->is_valid(reader.get_params(), msg));
         INFO("Message from is_valid():\n" + msg);
         CHECK(msg.empty());  // There should also be no warnings.
       }

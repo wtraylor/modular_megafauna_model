@@ -33,28 +33,30 @@ class HerbivoreIndividual : public HerbivoreBase {
    * of physiological maximum [kg/kg].
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
-   * \param metabolizable_energy The (constant) metabolizable energy content
-   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
+   * \param forage_gross_energy The (constant) gross energy content for the
+   * forage types [MJ/kgDM]. See: \ref Parameters::forage_gross_energy
    * \throw std::invalid_argument if any parameter is invalid
    *
    * \param area_km2 The absolute area of the habitat [km²].
    */
   HerbivoreIndividual(const int age_days, const double body_condition,
-                      const Hft* hft, const Sex sex, const double area_km2,
-                      const ForageEnergyContent& metabolizable_energy);
+                      std::shared_ptr<const Hft> hft, const Sex sex,
+                      const double area_km2,
+                      const ForageEnergyContent& forage_gross_energy);
 
   /// Birth constructor
   /**
    * \param hft Herbivore functional type.
    * \param sex The sex of the herbivore.
-   * \param metabolizable_energy The (constant) metabolizable energy content
-   * for the forage types [MJ/kgDM]. See: \ref Parameters::metabolizable_energy
+   * \param forage_gross_energy The (constant) gross energy content for the
+   * forage types [MJ/kgDM]. See: \ref Parameters::forage_gross_energy
    * \throw std::invalid_argument if any parameter is invalid
    *
    * \param area_km2 The absolute area of the habitat [km²].
    */
-  HerbivoreIndividual(const Hft* hft, const Sex sex, const double area_km2,
-                      const ForageEnergyContent& metabolizable_energy);
+  HerbivoreIndividual(std::shared_ptr<const Hft> hft, const Sex sex,
+                      const double area_km2,
+                      const ForageEnergyContent& forage_gross_energy);
 
   /// Habitat area [km²]
   double get_area_km2() const { return area_km2; }

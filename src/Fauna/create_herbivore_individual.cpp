@@ -5,7 +5,6 @@
  * \date 2019
  */
 #include "create_herbivore_individual.h"
-#include "herbivore_individual.h"
 #include "parameters.h"
 
 using namespace Fauna;
@@ -24,11 +23,11 @@ HerbivoreIndividual CreateHerbivoreIndividual::operator()(const int age_days,
   assert(get_area_km2() > 0.0);
   if (age_days == 0)
     // Call birth constructor
-    return HerbivoreIndividual(&get_hft(), sex, get_area_km2(),
-                               get_params().metabolizable_energy);
+    return HerbivoreIndividual(hft, sex, get_area_km2(),
+                               get_params().forage_gross_energy);
   else
     // Call establishment constructor
-    return HerbivoreIndividual(age_days, get_body_condition(age_days),
-                               &get_hft(), sex, get_area_km2(),
-                               get_params().metabolizable_energy);
+    return HerbivoreIndividual(age_days, get_body_condition(age_days), hft, sex,
+                               get_area_km2(),
+                               get_params().forage_gross_energy);
 }

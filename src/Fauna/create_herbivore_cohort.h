@@ -8,16 +8,17 @@
 #define CREATE_HERBIVORE_COHORT
 
 #include "create_herbivore_common.h"
+#include "herbivore_cohort.h"
 
 namespace Fauna {
-class HerbivoreCohort;
 
 /// Function class constructing \ref HerbivoreCohort objects.
 class CreateHerbivoreCohort : public CreateHerbivoreCommon {
  public:
   /// Constructor
   /** \copydoc CreateHerbivoreCommon::CreateHerbivoreCommon() */
-  CreateHerbivoreCohort(const Hft* hft, const Parameters* parameters)
+  CreateHerbivoreCohort(const std::shared_ptr<const Hft> hft,
+                        const std::shared_ptr<const Parameters> parameters)
       : CreateHerbivoreCommon(hft, parameters) {}
 
   /// Create a new object instance

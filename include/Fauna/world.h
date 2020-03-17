@@ -9,16 +9,19 @@
 
 #include <list>
 #include <memory>
+#include <vector>
 
 namespace Fauna {
 // Forward declarations
 class Date;
 class Habitat;
-class HftList;
-class InsfileContent;
-class Parameters;
+class Hft;
+struct Parameters;
 class SimulationUnit;
 class WorldConstructor;
+
+// Repeat typedef from hft.h
+typedef std::vector< std::shared_ptr<const Hft> > HftList;
 
 namespace Output {
 class Aggregator;
@@ -86,17 +89,21 @@ class World {
   /// Get the immutable list of herbivore functional types.
   const HftList& get_hfts();
 
-  /// The herbivore functional types as read from the instruction file.
+  /// All simulation instructions from the TOML instruction file.
   /**
    * There should be only one immutable list of HFTs and one set of parameters
-   * in the whole simulation. We use `unique_pointer` here so that we don’t need
-   * to include \ref hft.h here in the library interface. We implement it as a
-   * `struct` so both `hftlist` and `params` can be set at once in the
-   * constructor member initialization.
+   * in the whole simulation. We implement it as a `struct` so both
+   * `hftlist` and `params` can be set at once in the constructor member
+   * initialization.
    *
    * Use \ref get_params() and \ref get_hfts() to access content.
    */
-  const std::unique_ptr<InsfileContent> insfile_content;  // Init this first!
+  struct InsfileContent {
+    /// Global, immutable list of herbivore functional types.
+    const std::shared_ptr<const HftList> hftlist;
+    /// Global, immutable set of simulation parameters.
+    const std::shared_ptr<const Parameters> params;
+  } insfile;
 
   /// Number of days since extinct populations were re-established.
   int days_since_last_establishment;
@@ -106,6 +113,9 @@ class World {
 
   /// Output writer as selected by \ref Parameters::output_format.
   std::unique_ptr<Output::WriterInterface> output_writer;
+
+  /// Helper function to initialize World::InsfileContent object.
+  static InsfileContent read_instruction_file(const std::string& filename);
 
   /// List of all the simulation units in the world.
   /**

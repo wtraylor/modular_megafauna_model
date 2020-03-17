@@ -29,5 +29,3 @@ TEST_CASE("DummyHerbivore") {
   d.eat(EATEN, Digestibility(.5));
   CHECK(d.get_eaten() == EATEN);
 }
-
-

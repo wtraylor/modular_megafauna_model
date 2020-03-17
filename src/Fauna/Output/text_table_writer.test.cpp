@@ -53,23 +53,30 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
   opt.mass_density_per_hft = true;
   opt.directory = generate_output_dir();
 
-
   REQUIRE(!directory_exists(opt.directory));
 
   INFO((std::string) "Random output directory: " + opt.directory);
 
   static const int YEAR = 4;
   static const std::string AGG_UNIT = "unit1";
-  static const HftList HFTS = create_hfts(3, Parameters());
+
+  // We create 4 HFTs, but use only 3. The extra one is to check that an
+  // exception gets thrown if the numbers don’t match up.
+  static const HftList HFTS = create_hfts(4, Parameters());
+
+  // Since TextTableWriter sorts the HFT columns by name, we need to make sure
+  // that also our test list is sorted the same way.
+  for (int i = 1; i < HFTS.size(); i++)
+    REQUIRE(HFTS[i - 1]->name < HFTS[i]->name);
 
   Datapoint datapoint;
   datapoint.aggregation_unit = AGG_UNIT;
 
   // Fill data with some arbitrary numbers.
   // -> Set more variables for tests for new output tables.
-  datapoint.data.hft_data[&HFTS[0]].massdens = 10.0;
-  datapoint.data.hft_data[&HFTS[1]].massdens = 16.0;
-  datapoint.data.hft_data[&HFTS[2]].massdens = 29.0;
+  datapoint.data.hft_data[HFTS[0].get()->name].massdens = 10.0;
+  datapoint.data.hft_data[HFTS[1].get()->name].massdens = 16.0;
+  datapoint.data.hft_data[HFTS[2].get()->name].massdens = 29.0;
   datapoint.data.datapoint_count = 1;
 
   SECTION("Annual") {
@@ -125,9 +132,9 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
       CHECK(fields[0] == "year");
       CHECK(fields[1] == "agg_unit");
-      CHECK(fields[2] == HFTS[0].name);
-      CHECK(fields[3] == HFTS[1].name);
-      CHECK(fields[4] == HFTS[2].name);
+      CHECK(fields[2] == HFTS[0]->name);
+      CHECK(fields[3] == HFTS[1]->name);
+      CHECK(fields[4] == HFTS[2]->name);
     }
 
     // Check tuple
@@ -154,9 +161,25 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
 
       CHECK(year == YEAR);
       CHECK(agg_unit == AGG_UNIT);
-      CHECK(hft1 == Approx(datapoint.data.hft_data[&HFTS[0]].massdens));
-      CHECK(hft2 == Approx(datapoint.data.hft_data[&HFTS[1]].massdens));
-      CHECK(hft3 == Approx(datapoint.data.hft_data[&HFTS[2]].massdens));
+      CHECK(hft1 ==
+            Approx(datapoint.data.hft_data[HFTS[0].get()->name].massdens));
+      CHECK(hft2 ==
+            Approx(datapoint.data.hft_data[HFTS[1].get()->name].massdens));
+      CHECK(hft3 ==
+            Approx(datapoint.data.hft_data[HFTS[2].get()->name].massdens));
+    }
+
+    SECTION("Error on missing HFT") {
+      // Try to write a second line with a datapoint where an HFT is missing.
+      datapoint.data.hft_data.erase(datapoint.data.hft_data.begin());
+      CHECK_THROWS(writer.write_datapoint(datapoint));
+    }
+
+    SECTION("Error on extra HFT") {
+      // Try to write a second line with a datapoint where a new HFT suddenly
+      // appeared.
+      datapoint.data.hft_data[HFTS[3].get()->name].massdens = 12.0;
+      CHECK_THROWS(writer.write_datapoint(datapoint));
     }
 
     SECTION("Error on illegal aggregation unit name") {
@@ -178,6 +201,5 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
   // output schemes are very similarly implemented.
 
   // Delete directory recursively.
-  if (directory_exists(opt.directory))
-      remove_directory(opt.directory);
+  if (directory_exists(opt.directory)) remove_directory(opt.directory);
 }

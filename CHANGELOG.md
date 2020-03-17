@@ -3,7 +3,35 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.2.0 - 2019-12-06
+## [0.3.0] - 2020-03-17
+### Added
+- Net energy content model: `NetEnergyModel::GrossEnergyFraction`
+    - Parameter `forage.gross_energy`
+    - Parameter `hft.digestion.digestibility_multiplier`
+    - Parameter `hft.digestion.k_fat`
+    - Parameter `hft.digestion.k_maintenance`
+    - Parameter `hft.digestion.me_coefficient`
+- Model description of forage energy and digestion.
+- Parameter `hft.body_mass.empty`.
+- Parameter `hft.body_fat.catabolism_efficiency`.
+
+### Changed
+- Fractional body fat now refers to the empty body (i.e. without ingesta, blood, etc.)  and not the live body mass.
+- HFT is made optional. New implementations of `HerbivoreInterface` don’t require an HFT. [#5]
+
+### Fixed
+- Order of HFT names in text table output is now guaranteed.
+- Compiler flags specific to GCC are removed. [#1]
+- Unknown TOML parameters/keys now issue an error. [#2]
+- Parse TOML parameter `hft.body_fat.gross_energy`.
+- Run directory is now created in script `tools/run_valgrind_memcheck`.
+
+### Removed
+- The old “default” net energy model `get_net_energy_content_default()`.
+- Parameter `hft.digestion.efficiency` (less efficient digestion of hindgut
+  fermenters is now in `hft.digestion.digestibility_multiplier`).
+
+## [0.2.0] - 2019-12-06
 ### Added
 - New instruction file parameters, which were constants before:
     - `hft.digestion.anabolism_coefficient` (formerly `Fauna::FatMassEnergyBudget::FACTOR_ANABOLISM`)
@@ -29,7 +57,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Removed
 - Instruction file parameter `hft.digestion.type` and the corresponding `Fauna::DigestionType` and `Fauna::Hft::digestion_type`.
 
-## 0.1.0 - 2019-11-07
+## [0.1.0] - 2019-11-07
 ### Added
 - Herbivores in cohort and individual mode.
     - Energy expenditure components:
@@ -54,3 +82,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Output in tab-separated text tables.
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
+
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.2.0...develop
+[0.3.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.2.0...0.3.0
+[0.2.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.1.0...0.2.0
+[0.1.0]: https://github.com/wtraylor/modular_megafauna_model/releases/tag/0.1.0
+
+[#1]: https://github.com/wtraylor/modular_megafauna_model/issues/1
+[#2]: https://github.com/wtraylor/modular_megafauna_model/issues/2
+[#5]: https://github.com/wtraylor/modular_megafauna_model/issues/5

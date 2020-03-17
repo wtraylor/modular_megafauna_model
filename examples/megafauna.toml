@@ -7,13 +7,14 @@
 ###############################################################################
 
 [simulation]
-
 establishment_interval = 3650 # every 10 years
 forage_distribution    = "Equally"
 habitat_area_km2       = 1.0  # km² per habitat
 herbivore_type         = "Cohort"
-metabolizable_energy   = { grass = 15.0 } # MJ/kgDM
 one_hft_per_habitat    = true
+
+[forage]
+gross_energy = { grass = 19.0 } # MJ/kgDM
 
 [output]
 format = "TextTables"
@@ -41,16 +42,17 @@ birth = 0.2
 # itself will be taken from the groups the HFT belongs to.
 
 [[group]]
-name = "hindguts"
+name = "hindgut_fermenters"
 [group.digestion]
-efficiency   = 0.93
-i_g_1992_ijk = [0.108, 3.284, 0.080]
+digestibility_multiplier = 0.9
+me_coefficient           = 0.7
+i_g_1992_ijk             = [0.108, 3.284, 0.080]
 
 [[group]]
 name = "ruminants"
 [group.digestion]
-efficiency   = 1.0
-i_g_1992_ijk = [0.034, 3.565, 0.077]
+me_coefficient = 0.8
+i_g_1992_ijk   = [0.034, 3.565, 0.077]
 
 ###############################################################################
 
@@ -60,27 +62,30 @@ name   = "example"
 groups = [ "ruminants", "all_hfts" ] # first overrides last group
 
 [hft.body_fat]
-birth              = 0.2   # kg/kg
-deviation          = 0.125 # body condition
-maximum            = 0.3   # kg/kg
-maximum_daily_gain = 0.05  # kg/kg/day
+birth                 = 0.2   # kg/kg
+catabolism_efficiency = 0.8   # fraction
+deviation             = 0.125 # body condition
+gross_energy          = 39.3  # MJ/kg
+maximum               = 0.3   # kg/kg
+maximum_daily_gain    = 0.05  # kg/kg/day
 
 [hft.body_mass]
-birth  = 5  # kg/ind
-female = 50 # kg/ind
-male   = 70 # kg/ind
+birth  = 5    # kg/ind
+empty  = 0.87 # fraction
+female = 50   # kg/ind
+male   = 70   # kg/ind
 
 [hft.breeding_season]
 length = 30  # days
 start  = 121 # Julian day
 
 [hft.digestion]
-allometric             = { coefficient = 0.050, exponent = 0.76 }
-anabolism_coefficient  = 54.6 # MJ/kg
-catabolism_coefficient = 39.3 # MJ/kg
-fixed_fraction         = 0.05 # kgDM per kg body mass
-limit                  = "FixedFraction"
-net_energy_model       = "Default"
+allometric       = { coefficient                = 0.050, exponent = 0.76 }
+fixed_fraction   = 0.05 # kgDM per kg body mass
+k_fat            = 0.5
+k_maintenance    = 0.7
+limit            = "FixedFraction"
+net_energy_model = "GrossEnergyFraction"
 
 [hft.establishment]
 age_range = { first = 1, last = 15 } # years

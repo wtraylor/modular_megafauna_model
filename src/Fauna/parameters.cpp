@@ -31,8 +31,8 @@ bool Parameters::is_valid(std::string& messages) const {
     }
 
   for (const auto ft : FORAGE_TYPES)
-    if (metabolizable_energy[ft] == 0.0)
-      stream << "metabolizable_energy." << get_forage_type_name(ft)
+    if (forage_gross_energy[ft] == 0.0)
+      stream << "forage.gross_energy." << get_forage_type_name(ft)
              << " is zero. "
              << "This forage type will effectively be deactivated."
              << std::endl;

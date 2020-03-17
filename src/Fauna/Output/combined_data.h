@@ -11,10 +11,6 @@
 #include "herbivore_data.h"
 
 namespace Fauna {
-class Hft;
-}
-
-namespace Fauna {
 namespace Output {
 /// Output data for herbivores and habitat(s).
 /**
@@ -30,8 +26,8 @@ struct CombinedData {
   /// Habitat output data.
   HabitatData habitat_data;
 
-  /// Herbivore output data aggregated by HFT.
-  std::map<const Fauna::Hft*, HerbivoreData> hft_data;
+  /// Herbivore output data aggregated by output group.
+  std::map<const std::string, HerbivoreData> hft_data;
 
   /// Merge other data into this object.
   /**

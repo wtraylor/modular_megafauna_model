@@ -20,6 +20,7 @@ This document is only about *syntax* only.
     - [Unit Tests](#unit-tests)
     - [Code Checkers](#code-checkers)
     - [Doxygen Documentation](#doxygen-documentation)
+        - [Markdown](#markdown)
         - [BibTeX Bibliography](#bibtex-bibliography)
 
 ## Version Control
@@ -181,6 +182,13 @@ Execute the helper script `./tools/cppclean.sh` in the Bash.
 
 ### Doxygen Documentation
 
+- The documentation is completely in English, preferably with American spelling.
+- Images are placed in `docs/images/`. If the figure was plotted with a script, save the script in the same folder and with the same file name as the image.
+
+#### Markdown
+- Overview pages are written in [Markdown](http://www.doxygen.nl/manual/markdown.html) in `*.md`-files in the `docs/` folder.
+- Make a new line after each sentence (and perhaps after logical sentence structures): [Inner Sentence Rule](https://cirosantilli.com/markdown-style-guide#option-wrap-inner-sentence).
+
 #### BibTeX Bibliography
 [BibTeX](www.bibtex.org) is used for bibliographic references: [docs/bibliography.bib](docs/bibliography.bib).
 The Doxygen command `\cite` is used for that.
@@ -189,6 +197,13 @@ This makes browsing the Doxygen documentation easier.
 In general you should not need to put any references to scientific publications in *comments* in the source code.
 Better you explain everything in a narrative form in the Doxygen *documentation* and use the `\cite` command for that.
 If you do cite in source code comments, make sure that the reference is uniquely identifiable in `bibliography.bib`.
+
+Write the in-text citation in the doxygen documentation (either in a C++ file or in a Markdown document) in the [APA format](https://www.mendeley.com/guides/apa-citation-guide#2_In_Text) followed by the `\cite` reference:
+```plain
+Illius & O’Connor (2000) \cite illius2000resource states that ...
+Blaxter (1989, p. 123) \cite blaxter1989energy states that ...
+(McDonald et al. 2010, p. 123 \cite mcdonald2010animal)
+```
 
 Use [bibsort](http://ftp.math.utah.edu/pub/bibsort/) to sort the
 bibliography entries by label.

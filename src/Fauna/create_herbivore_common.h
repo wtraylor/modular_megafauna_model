@@ -7,6 +7,8 @@
 #ifndef FAUNA_CREATE_HERBIVORE_COMMON_H
 #define FAUNA_CREATE_HERBIVORE_COMMON_H
 
+#include <memory>
+
 namespace Fauna {
 class Hft;
 class Parameters;
@@ -23,21 +25,20 @@ class CreateHerbivoreCommon {
   /// The herbivore functional type.
   const Hft& get_hft() const;
 
+  /// Global simulation parameters.
+  const Parameters& get_params() const;
+
  protected:
   /// Protected constructor.
-  /** \throw std::invalid_argument If `hft==NULL` or
-   * `parameters==NULL`*/
-  CreateHerbivoreCommon(const Hft* hft, const Parameters* parameters);
+  /** \throw std::invalid_argument If `hft==NULL` or `parameters==NULL`*/
+  CreateHerbivoreCommon(const std::shared_ptr<const Hft> hft,
+                        const std::shared_ptr<const Parameters> parameters);
 
   /// Fat mass per maximum fat mass.
   double get_body_condition(const int age_days) const;
 
-  /// Global simulation parameters.
-  const Parameters& get_params() const;
-
- private:
-  const Hft* hft;
-  const Parameters* parameters;
+  const std::shared_ptr<const Hft> hft;
+  const std::shared_ptr<const Parameters> parameters;
 };
 
 }  // namespace Fauna

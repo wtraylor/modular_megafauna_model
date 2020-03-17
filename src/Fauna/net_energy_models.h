@@ -11,32 +11,49 @@
 
 namespace Fauna {
 
-/// Get net energy content of the forage [MJ/kgDM]
+/// Get net energy content of the forage [MJ/kgDM].
 /**
- * Multiply the respective dry matter biomass with the
- * corresponding NE content to obtain the amount of metabolizable
- * energy a herbivore can get out of the forage.
+ * See \ref sec_energy_content for a detailed description of this net energy
+ * model.
  *
- * Formula for ruminants given by Illius & Gordon (1992, p. 148)
- * \cite illius1992modelling
- * citing ARC (1980)
- * \cite agricultural_research_council1980nutrient
- * \f[Net Energy [MJ/kgDM] =  ME * (0.503\frac{MJ}{kgDM} + 0.019 * ME)\f]
- * ME = metabolizable energy of dry matter [MJ/kgDM]
+ * \[f
+ * NE = ME * k_m = DE * ME/DE * k_m = GE * DMD * ME/DE * k_m
+ * \]f
  *
- * For hindgut fermenters, which have a lower digestive efficiency than
- * ruminants, the result may be multiplied with an efficiency factor <=1.
+ * \param ge_content Gross energy (GE), also called combustion energy, in dry
+ * matter. [MJ/kgDM]
+ * \param digestibility Proportional dry-matter digestibility (DMD).
+ * \param me_coefficient Metabolizable energy coefficient, i.e. the ratio of
+ * metabolizable energy to digestible energy, ME/DE. [fractional]
+ * \param k_maintenance Net energy coefficient (k_m) for maintenance, i.e. the
+ * proportion of metabolizable remaining energy after heat increment.
+ * [fractional]
  *
- * Metabolizable energy content ME is calculated by
- * multiplying digestibility with a forage-specific coefficient.
- * \param digestibility Proportional digestibility.
- * \param metabolizable_energy The parameter `ME` in the above formula in
- * MJ/kgDM.
  * \return Net energy content [MJ/kgDM].
+ *
+ * \throw std::invalid_argument If either `me_coefficient` or `k_maintenance`
+ * not in interval (0,1).
+ *
+ * \see \ref sec_energy_content
+ * \see \ref Parameters::forage_gross_energy
+ * \see \ref Hft::digestion_me_coefficient
+ * \see \ref Hft::digestion_k_maintenance
+ * \see \ref Hft::digestion_net_energy_model
+ * \see \ref NetEnergyModel
  */
-ForageEnergyContent get_net_energy_content_default(
+inline ForageEnergyContent get_net_energy_from_gross_energy(
+    const ForageEnergyContent& ge_content,
     const Digestibility& digestibility,
-    const ForageEnergyContent& metabolizable_energy);
+    const double me_coefficient,
+    const double k_maintenance){
+  if (me_coefficient <= 0.0 || me_coefficient >= 1.0)
+    throw std::invalid_argument("Fauna::get_net_energy_from_gross_energy(): "
+        "Parameter `me_coefficient` is not in interval (0,1).");
+  if (k_maintenance <= 0.0 || k_maintenance >= 1.0)
+    throw std::invalid_argument("Fauna::get_net_energy_from_gross_energy(): "
+        "Parameter `k_maintenance` is not in interval (0,1).");
+  return ge_content * digestibility * (me_coefficient * k_maintenance);
+}
 }  // namespace Fauna
 
 #endif  // FAUNA_NET_ENERGY_MODELS_H

@@ -11,13 +11,14 @@
 #include "environment.h"
 #include "habitat_forage.h"
 #include "herbivore_vector.h"
+#include "population_list.h"
 
 namespace Fauna {
 // Forward declarations
-class SimulationUnit;
-class Habitat;
-class Hft;
 class FeedHerbivores;
+class Habitat;
+class PopulationInterface;
+class SimulationUnit;
 
 /// Function object to simulate one day in one habitat.
 /**
@@ -71,6 +72,10 @@ class SimulateDay {
    */
   static HabitatForage get_corrected_forage(const Habitat&);
 
+  /// Get references to all herbivores in the list of populations.
+  static std::map<PopulationInterface*, HerbivoreVector> get_herbivores(
+      const PopulationList&);
+
   /// Iterate over all \ref herbivores and let them do their simulation.
   /**
    * Call \ref HerbivoreInterface::simulate_day() in each alive herbivore
@@ -97,10 +102,10 @@ class SimulateDay {
   const HabitatForage forage_before_feeding;
 
   /// Pointers to all herbivores in the habitat.
-  HerbivoreVector herbivores;
+  std::map<PopulationInterface*, HerbivoreVector> herbivores;
 
-  /// All offspring for each HFT today [ind/km²]
-  std::map<const Hft*, double> total_offspring;
+  /// All offspring for each population today [ind/km²]
+  std::map<PopulationInterface*, double> total_offspring;
 
   /// Reference to the simulation unit.
   SimulationUnit& simulation_unit;

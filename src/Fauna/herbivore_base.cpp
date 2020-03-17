@@ -14,17 +14,19 @@
 using namespace Fauna;
 
 HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
-                             const Hft* hft, const Sex sex,
-                             const ForageEnergyContent& metabolizable_energy)
+                             std::shared_ptr<const Hft> hft, const Sex sex,
+                             const ForageEnergyContent& forage_gross_energy)
     : hft(check_hft_pointer(hft)),  // can be NULL
       sex(sex),                     // always valid
       age_days(age_days),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
-      metabolizable_energy(metabolizable_energy),
-      energy_budget(body_condition * get_max_fatmass(),  // initial fat mass
-                    get_max_fatmass(),                   // maximum fat mass
-                    hft->digestion_anabolism_coefficient,
-                    hft->digestion_catabolism_coefficient),
+      forage_gross_energy(forage_gross_energy),
+      energy_budget(
+          body_condition * get_max_fatmass(),  // initial fat mass
+          get_max_fatmass(),                   // maximum fat mass
+          hft->body_fat_gross_energy * hft->digestion_k_maintenance /
+              hft->digestion_k_fat,
+          hft->body_fat_gross_energy * hft->body_fat_catabolism_efficiency),
       get_forage_demands_per_ind(hft, sex),
       today(-1),  // not initialized yet; call simulate_day() first
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {
@@ -53,16 +55,20 @@ HerbivoreBase::HerbivoreBase(const int age_days, const double body_condition,
         "body_condition < 0.0");
 }
 
-HerbivoreBase::HerbivoreBase(const Hft* hft, const Sex sex,
-                             const ForageEnergyContent& metabolizable_energy)
+HerbivoreBase::HerbivoreBase(std::shared_ptr<const Hft> hft, const Sex sex,
+                             const ForageEnergyContent& forage_gross_energy)
     : hft(check_hft_pointer(hft)),
       sex(sex),
       age_days(0),
-      metabolizable_energy(metabolizable_energy),
+      forage_gross_energy(forage_gross_energy),
       breeding_season(hft->breeding_season_start, hft->breeding_season_length),
-      energy_budget(get_hft().body_fat_birth * get_hft().body_mass_birth,
-                    get_max_fatmass(), hft->digestion_anabolism_coefficient,
-                    hft->digestion_catabolism_coefficient),
+      energy_budget(
+          get_hft().body_mass_birth * get_hft().body_mass_empty *
+              get_hft().body_fat_birth,  // fat mass at birth
+          get_max_fatmass(),             // maximum fat mass
+          hft->body_fat_gross_energy * hft->digestion_k_maintenance /
+              hft->digestion_k_fat,
+          hft->body_fat_gross_energy * hft->body_fat_catabolism_efficiency),
       get_forage_demands_per_ind(hft, sex),
       body_condition_gestation(get_hft().reproduction_gestation_length * 30) {}
 
@@ -185,10 +191,11 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
   nitrogen.ingest(N_kg_per_ind.sum() * get_ind_per_km2());
 }
 
-Hft const* HerbivoreBase::check_hft_pointer(const Hft* _hft) {
+std::shared_ptr<const Hft> HerbivoreBase::check_hft_pointer(
+    std::shared_ptr<const Hft> _hft) {
   // Exception error message is like from a constructor because that’s
   // where this function gets called.
-  if (_hft == NULL)
+  if (_hft.get() == NULL)
     throw std::invalid_argument(
         "Fauna::HerbivoreBase::HerbivoreBase() "
         "Parameter `hft` is NULL.");
@@ -196,11 +203,11 @@ Hft const* HerbivoreBase::check_hft_pointer(const Hft* _hft) {
 }
 
 double HerbivoreBase::get_bodyfat() const {
-  return get_energy_budget().get_fatmass() / get_bodymass();
+  return get_fatmass() / (get_structural_mass() + get_fatmass());
 }
 
 double HerbivoreBase::get_bodymass() const {
-  return get_energy_budget().get_fatmass() + get_lean_bodymass();
+  return (get_structural_mass() + get_fatmass()) / get_hft().body_mass_empty;
 }
 
 double HerbivoreBase::get_bodymass_adult() const {
@@ -227,10 +234,6 @@ double HerbivoreBase::get_conductance() const {
 
 double HerbivoreBase::get_fatmass() const {
   return get_energy_budget().get_fatmass();
-}
-
-double HerbivoreBase::get_lean_bodymass() const {
-  return get_potential_bodymass() * (1.0 - get_hft().body_fat_maximum);
 }
 
 ForageMass HerbivoreBase::get_forage_demands(
@@ -269,16 +272,21 @@ double HerbivoreBase::get_kg_per_km2() const {
 }
 
 double HerbivoreBase::get_max_fatmass() const {
-  return get_potential_bodymass() * get_hft().body_fat_maximum;
+  const double bf_max = get_hft().body_fat_maximum;
+  return (get_structural_mass() * bf_max) / (1.0 - bf_max);
 }
 
 ForageEnergyContent HerbivoreBase::get_net_energy_content(
-    const Digestibility digestibility) const {
+    Digestibility digestibility) const {
+  // Adjust ruminant digestibility for non-ruminants.
+  digestibility *= hft->digestion_digestibility_multiplier;
+
   switch (get_hft().digestion_net_energy_model) {
-    case (NetEnergyModel::Default):
-      return get_net_energy_content_default(digestibility,
-                                            metabolizable_energy) *
-             get_hft().digestion_efficiency;
+    case (NetEnergyModel::GrossEnergyFraction):
+      return get_net_energy_from_gross_energy(
+          forage_gross_energy, digestibility,
+          get_hft().digestion_me_coefficient,
+          get_hft().digestion_k_maintenance);
       // ADD NEW NET ENERGY MODELS HERE
       // in new case statements
     default:
@@ -288,36 +296,36 @@ ForageEnergyContent HerbivoreBase::get_net_energy_content(
   }
 }
 
-double HerbivoreBase::get_potential_bodymass() const {
-  // age of physical maturity in years
+std::string HerbivoreBase::get_output_group() const { return get_hft().name; }
+
+double HerbivoreBase::get_structural_mass() const {
+  // Age of physical maturity in years.
   double maturity_age;
   if (get_sex() == Sex::Male)
     maturity_age = get_hft().life_history_physical_maturity_male;
   else
     maturity_age = get_hft().life_history_physical_maturity_female;
 
-  if (get_age_years() >= maturity_age)
-    return get_bodymass_adult();
-  else {
-    // CALCULATE BODY MASS FOR PRE-ADULTS
+  // Adult structural mass [kg/ind].
+  const double struct_adult = get_bodymass_adult() * get_hft().body_mass_empty *
+                              (1.0 - get_hft().body_fat_maximum / 2.0);
 
-    // lean weight at birth
-    const double birth_leanmass =
-        get_hft().body_mass_birth * (1.0 - get_hft().body_fat_birth);
+  if (get_age_years() >= maturity_age) {
+    return struct_adult;
+  } else {
+    // Neonate structural mass [kg/ind].
+    const double struct_birth = get_hft().body_mass_birth *
+                                get_hft().body_mass_empty *
+                                (1 - get_hft().body_fat_birth);
 
-    // potential full mass at birth
-    assert(1.0 - get_hft().body_fat_maximum > 0.0);
-    const double birth_potmass =
-        birth_leanmass / (1.0 - get_hft().body_fat_maximum);
-
-    // age fraction from birth to physical maturity
-    assert(maturity_age > 0.0);
+    // Age fraction from birth to physical maturity.
     const double fraction = (double)get_age_days() / (maturity_age * 365.0);
 
-    // difference from birth to adult
-    const double difference = get_bodymass_adult() - birth_potmass;
+    // Difference between neonate and adult [kg/ind].
+    const double difference = struct_adult - struct_birth;
 
-    return birth_potmass + fraction * difference;
+    // Interpolate linearly until we implement a proper growth curve.
+    return struct_birth + fraction * difference;
   }
 }
 

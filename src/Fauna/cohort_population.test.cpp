@@ -17,23 +17,23 @@ using namespace Fauna;
 
 TEST_CASE("Fauna::CohortPopulation", "") {
   // prepare parameters
-  Parameters params;
-  REQUIRE(params.is_valid());
+  std::shared_ptr<Parameters> params(new Parameters());
+  REQUIRE(params->is_valid());
 
-  // prepare HFT
-  Hft hft = create_hfts(1, params)[0];
-  hft.establishment_density = 10.0;  // [ind/km²]
-  hft.mortality_factors.clear();     // immortal herbivores
-  REQUIRE(hft.is_valid(params));
+  // Prepare HFT by copying the dummy and modifying it.
+  auto hft = std::shared_ptr<Hft>(new Hft(*create_hfts(1, *params)[0]));
+  hft->establishment_density = 10.0;  // [ind/km²]
+  hft->mortality_factors.clear();     // immortal herbivores
+  REQUIRE(hft->is_valid(*params));
 
   // prepare creating object
-  CreateHerbivoreCohort create_cohort(&hft, &params);
+  CreateHerbivoreCohort create_cohort(hft, params);
 
   // create cohort population
   CohortPopulation pop(create_cohort);
   REQUIRE(pop.get_list().empty());
   REQUIRE(population_lists_match(pop));
-  REQUIRE(pop.get_hft() == hft);
+  REQUIRE(pop.get_hft() == *hft);
 
   CHECK_THROWS(pop.create_offspring(-1.0));
 
@@ -41,7 +41,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
     REQUIRE(pop.get_list().empty());  // empty before
 
     SECTION("Establish one age class") {
-      hft.establishment_age_range.first = hft.establishment_age_range.second =
+      hft->establishment_age_range.first = hft->establishment_age_range.second =
           4;
       pop.establish();
       REQUIRE(!pop.get_list().empty());  // filled afterwards
@@ -51,12 +51,12 @@ TEST_CASE("Fauna::CohortPopulation", "") {
       REQUIRE(pop.get_list().size() == 2);
 
       // Does the total density match?
-      REQUIRE(pop.get_ind_per_km2() == Approx(hft.establishment_density));
+      REQUIRE(pop.get_ind_per_km2() == Approx(hft->establishment_density));
     }
 
     SECTION("Establish several age classes") {
-      hft.establishment_age_range.first = 3;
-      hft.establishment_age_range.second = 6;
+      hft->establishment_age_range.first = 3;
+      hft->establishment_age_range.second = 6;
       pop.establish();
       REQUIRE(!pop.get_list().empty());  // filled afterwards
       REQUIRE(population_lists_match(pop));
@@ -65,7 +65,7 @@ TEST_CASE("Fauna::CohortPopulation", "") {
       REQUIRE(pop.get_list().size() == 4 * 2);
 
       // Does the total density match?
-      REQUIRE(pop.get_ind_per_km2() == Approx(hft.establishment_density));
+      REQUIRE(pop.get_ind_per_km2() == Approx(hft->establishment_density));
     }
 
     SECTION("Removal of dead cohorts with mortality") {
@@ -76,8 +76,8 @@ TEST_CASE("Fauna::CohortPopulation", "") {
       HerbivoreVector vec = pop.get_list();
       const int old_count = vec.size();
       // call birth constructor with zero density
-      static const ForageEnergyContent ME = Parameters().metabolizable_energy;
-      HerbivoreCohort dead(&hft, Sex::Female, 0.0, ME);
+      static const ForageEnergyContent GE = Parameters().forage_gross_energy;
+      HerbivoreCohort dead(hft, Sex::Female, 0.0, GE);
       for (HerbivoreVector::iterator itr = vec.begin(); itr != vec.end();
            itr++) {
         HerbivoreInterface* pint = *itr;

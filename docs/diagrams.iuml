@@ -135,7 +135,7 @@
   HerbivoreBase *-up-> "1" FatmassEnergyBudget
   package "Forage Energy" <<rectangle>> {
     enum NetEnergyModel{
-      Default
+      GrossEnergyFraction
     }
   }
   HerbivoreBase .up.> "1" "Forage Energy"
