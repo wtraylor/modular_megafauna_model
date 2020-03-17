@@ -10,7 +10,6 @@
 #include "hft.h"
 #include "individual_population.h"
 #include "parameters.h"
-#include "population_list.h"
 
 using namespace Fauna;
 

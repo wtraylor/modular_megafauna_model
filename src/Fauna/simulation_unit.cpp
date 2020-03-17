@@ -9,7 +9,6 @@
 #include "habitat.h"
 #include "herbivore_interface.h"
 #include "population_interface.h"
-#include "population_list.h"
 
 using namespace Fauna;
 

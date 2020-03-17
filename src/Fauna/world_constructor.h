@@ -16,7 +16,6 @@ namespace Fauna {
 // Forward declarations
 class Parameters;
 class Hft;
-class PopulationInterface;
 class DistributeForage;
 
 // Repeat typedef from hft.h

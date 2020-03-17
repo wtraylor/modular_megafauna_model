@@ -7,8 +7,7 @@
 #ifndef FAUNA_FORAGING_LIMITS_H
 #define FAUNA_FORAGING_LIMITS_H
 
-#include "forage_values.h"
-#include "hft.h"
+#include <array>
 
 namespace Fauna {
 
