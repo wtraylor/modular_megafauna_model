@@ -9,7 +9,12 @@ library(tidyr)
 filename <- "mass_density_per_hft.tsv"
 if (!file.exists(filename))
   stop("File does not exist: ", filename)
-mass.tbl <- gather(read.csv(filename, sep = "\t"),
+mass.tbl <- read.csv(filename, sep = "\t")
+if ("day" %in% colnames(mass.tbl)) {
+  mass.tbl$year <- mass.tbl$year + mass.tbl$day/365
+  mass.tbl$day <- NULL
+}
+mass.tbl <- gather(mass.tbl,
   key = HFT, value = mass, -year, -agg_unit)
 mass.tbl$mass <- mass.tbl$mass / 100  # kg/km²->kg/ha
 ggplot(mass.tbl, aes(x = year, y = mass, color = HFT)) +
