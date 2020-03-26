@@ -9,12 +9,28 @@ library(tidyr)
 filename <- "mass_density_per_hft.tsv"
 if (!file.exists(filename))
   stop("File does not exist: ", filename)
-mass.tbl <- gather(read.csv(filename, sep = "\t"),
+mass.tbl <- read.csv(filename, sep = "\t")
+
+# Handle daily output.
+if ("day" %in% colnames(mass.tbl)) {
+  mass.tbl$year <- mass.tbl$year + mass.tbl$day/365
+  mass.tbl$day <- NULL
+}
+
+mass.tbl <- gather(mass.tbl,
   key = HFT, value = mass, -year, -agg_unit)
 mass.tbl$mass <- mass.tbl$mass / 100  # kg/km²->kg/ha
-ggplot(mass.tbl, aes(x = year, y = mass, color = HFT)) +
+
+# `timestep` is the output interval: a day, a year, (roughly) a month, or a decade.
+unique_years.v <- sort(unique(mass.tbl$year))
+timestep <- abs(unique_years.v[2] - unique_years.v[1])
+
+# We plot the points not in the beginning of each time step, but in the middle.
+ggplot(mass.tbl, aes(x = year + timestep / 2, y = mass, color = HFT)) +
   geom_line() +
+  coord_cartesian(xlim = c(min(mass.tbl$year), max(mass.tbl$year) + timestep)) +
   facet_wrap(~agg_unit) +
+  expand_limits(y = 0) +
   labs(
     x = "Simulation Year",
     y = "Mean Mass Density [kg/ha]",

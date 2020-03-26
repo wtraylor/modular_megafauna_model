@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
 project ("Modular Megafauna Model"
-  VERSION 0.3.0
+  VERSION 0.3.1
   DESCRIPTION "A physiological, dynamic herbivore simulator in C++."
   LANGUAGES CXX
   )
@@ -156,6 +156,7 @@ if (BUILD_TESTING)
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
     src/Fauna/reproduction_models.test.cpp
+    src/Fauna/world.test.cpp
     src/Fauna/world_constructor.test.cpp
     tests/catch.hpp
     tests/catch_main.cpp
