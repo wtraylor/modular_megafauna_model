@@ -45,12 +45,16 @@ bool DateInterval::matches_output_interval(
       else
         return false;
     case OutputInterval::Decadal: {
-      // We use the existing Annual check by rewinding the last day by ten
-      // years.
+      // We use the existing Annual check by rewinding the last day by nine
+      // years. If the original first and last are separated by a decade, then
+      // the first and last-9 are separated by one year.
       const Date decade_earlier(get_last().get_julian_day(),
-                                get_last().get_year() - 10);
-      return DateInterval(get_first(), decade_earlier)
-          .matches_output_interval(OutputInterval::Annual);
+                                get_last().get_year() - 9);
+      if (decade_earlier < get_first())
+        return false;
+      else
+        return DateInterval(get_first(), decade_earlier)
+            .matches_output_interval(OutputInterval::Annual);
     }
     default:
       throw std::logic_error(

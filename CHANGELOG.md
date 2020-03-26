@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Fixed
 - Correctly plot demo results with `demo_results.Rmd` if output is daily.
+- Fix “First day before last” error in decadal output. [#3]
 
 ## [0.3.0] - 2020-03-17
 ### Added
