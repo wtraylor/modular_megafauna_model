@@ -156,6 +156,7 @@ if (BUILD_TESTING)
     src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
     src/Fauna/reproduction_models.test.cpp
+    src/Fauna/world.test.cpp
     src/Fauna/world_constructor.test.cpp
     tests/catch.hpp
     tests/catch_main.cpp

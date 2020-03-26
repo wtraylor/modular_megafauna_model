@@ -24,7 +24,8 @@
 using namespace Fauna;
 
 World::World(const std::string instruction_filename)
-    : insfile(read_instruction_file(instruction_filename)),
+    : activated(true),
+      insfile(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
       world_constructor(new WorldConstructor(insfile.params, get_hfts())),
       output_aggregator(new Output::Aggregator()) {
@@ -42,6 +43,8 @@ World::World(const std::string instruction_filename)
   }
 }
 
+World::World() : activated(false) {}
+
 // The destructor must be implemented here in the source file, where the
 // forward-declared types are complete.
 World::~World() = default;
@@ -50,6 +53,7 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
   if (habitat == NULL)
     throw std::invalid_argument(
         "World::create_simulation_unit(): Pointer to habitat is NULL.");
+  if (!activated) return;
 
   PopulationList* populations = world_constructor->create_populations();
   assert(populations);
@@ -65,6 +69,15 @@ const HftList& World::get_hfts() {
 }
 
 const Parameters& World::get_params() const {
+  if (!activated)
+    throw std::logic_error(
+        "Fauna::World::get_params() "
+        "The megafauna model was created without an instruction file. "
+        "Parameters are not available.");
+  if (!insfile.params)
+    throw std::logic_error(
+        "Fauna::World::get_params() "
+        "The member variable insfile.params is not set.");
   assert(insfile.params.get());
   return *(insfile.params);
 }
@@ -83,6 +96,7 @@ World::InsfileContent World::read_instruction_file(
 }
 
 void World::simulate_day(const Date& date, const bool do_herbivores) {
+  if (!activated) return;
   // Create one function object to feed all herbivores.
   const FeedHerbivores feed_herbivores(
       world_constructor->create_distribute_forage());
