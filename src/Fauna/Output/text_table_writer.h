@@ -132,6 +132,7 @@ class TextTableWriter : public WriterInterface {
   const TextTableWriterOptions options;
 
   /** @{ \name File Streams */
+  std::ofstream available_forage;
   std::ofstream digestibility;
   std::ofstream eaten_forage_per_ind;
   std::ofstream mass_density_per_hft;

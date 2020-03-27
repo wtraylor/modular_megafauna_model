@@ -24,6 +24,7 @@ interval = "Annual"
 directory = "."
 precision = 4
 tables = [
+  "available_forage",
   "digestibility",
   "eaten_forage_per_ind",
   "mass_density_per_hft"

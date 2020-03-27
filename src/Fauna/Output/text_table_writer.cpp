@@ -23,6 +23,12 @@ TextTableWriter::TextTableWriter(const OutputInterval interval,
   create_directories(dir);
 
   // Add all selected output files to list of file streams.
+  if (options.available_forage) {
+    const std::string path = dir + "/available_forage" + FILE_EXTENSION;
+    check_file_exists(path);
+    file_streams.push_back(&available_forage);
+    available_forage.open(path);
+  }
   if (options.digestibility) {
     const std::string path = dir + "/digestibility" + FILE_EXTENSION;
     check_file_exists(path);
@@ -155,12 +161,15 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   }
 
   // Per-ForageType Tables
+  if (available_forage.is_open()) start_row(datapoint, available_forage);
   if (digestibility.is_open()) start_row(datapoint, digestibility);
   const auto digestibility_data =
       datapoint.data.habitat_data.available_forage.get_digestibility();
   const auto forage_mass_data =
       datapoint.data.habitat_data.available_forage.get_mass();
   for (const auto t : FORAGE_TYPES) {
+    if (available_forage.is_open())
+      available_forage << FIELD_SEPARATOR << forage_mass_data[t];
     if (digestibility.is_open()) {
       if (forage_mass_data[t] > 0)
         digestibility << FIELD_SEPARATOR << digestibility_data[t];
@@ -169,6 +178,7 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
     }
     // Add more tables here.
   }
+  if (available_forage.is_open()) available_forage << std::endl;
   if (digestibility.is_open()) digestibility << std::endl;
   // Add more tables here.
 
@@ -234,6 +244,8 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
 
   // Per-ForageType Tables
   for (const auto t : FORAGE_TYPES) {
+    if (available_forage.is_open())
+      available_forage << FIELD_SEPARATOR << get_forage_type_name(t);
     if (digestibility.is_open())
       digestibility << FIELD_SEPARATOR << get_forage_type_name(t);
   }

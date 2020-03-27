@@ -30,9 +30,15 @@ struct TextTableWriterOptions {
   unsigned int precision = 3;
 
   /** @{ \name Per-ForageType tables: one column per forage type. */
+
+  /// Dry matter weight of available forage in the habitat [kgDM/km²].
+  /** \see \ref Fauna::HabitatForage::get_mass() */
+  bool available_forage = false;
+
   /// Digestibility of available forage in the habitat.
   /** \see \ref Fauna::HabitatForage::get_digestibility() */
   bool digestibility = false;
+
   /** @} */
 
   /** @{ \name Per-HFT tables: one column per HFT. */
