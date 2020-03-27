@@ -29,6 +29,12 @@ TextTableWriter::TextTableWriter(const OutputInterval interval,
     file_streams.push_back(&digestibility);
     digestibility.open(path);
   }
+  if (options.eaten_forage_per_ind) {
+    const std::string path = dir + "/eaten_forage_per_ind" + FILE_EXTENSION;
+    check_file_exists(path);
+    file_streams.push_back(&eaten_forage_per_ind);
+    eaten_forage_per_ind.open(path);
+  }
   if (options.mass_density_per_hft) {
     const std::string path = dir + "/mass_density_per_hft" + FILE_EXTENSION;
     check_file_exists(path);
@@ -52,6 +58,52 @@ void TextTableWriter::check_file_exists(const std::string& path) {
         "Fauna::Output::TextTableWriter "
         "Output file already exists: '" +
         path + "'");
+}
+
+const HerbivoreData* TextTableWriter::get_hft_data(
+    const Datapoint* datapoint, const std::string& hft_name) const {
+  assert(datapoint);
+  for (const auto& i : datapoint->data.hft_data)
+    if (i.first == hft_name) return &i.second;
+  throw std::runtime_error(
+      "Fauna::Output::TextTableWriter::get_hft_data(): "
+      "There is no record for HFT \"" +
+      hft_name +
+      "\" "
+      "in given herbivore data.");
+}
+
+void TextTableWriter::start_row(const Datapoint& datapoint,
+                                std::ofstream& table) {
+  switch (interval) {
+    case OutputInterval::Daily:
+      table << datapoint.interval.get_first().get_julian_day()
+            << FIELD_SEPARATOR << datapoint.interval.get_first().get_year()
+            << FIELD_SEPARATOR;
+      break;
+    case OutputInterval::Monthly:
+      // We don’t know if this is a 365-days year or a leap year. We
+      // calculate the month number assuming it’s not a leap year.
+      // Then we take the last day of the month period to get the month
+      // number. This is because in a leap year the first day of the month
+      // would shift to the last day of the preceding month (for after
+      // February). The last day of the month can be shifted forward, but
+      // will not leave the month period.
+      table << datapoint.interval.get_last().get_month() << FIELD_SEPARATOR
+            << datapoint.interval.get_last().get_year() << FIELD_SEPARATOR;
+      break;
+    case OutputInterval::Annual:
+      table << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
+      break;
+    case OutputInterval::Decadal:
+      table << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
+      break;
+    default:
+      std::logic_error(
+          "Fauna::TextTableWriter::write_datapoint() Output time interval is "
+          "not implemented.");
+  }
+  table << datapoint.aggregation_unit;
 }
 
 void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
@@ -102,39 +154,8 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
         found_names.str());
   }
 
-  // Write common information for all output tables.
-  for (auto& f : file_streams) {
-    switch (interval) {
-      case OutputInterval::Daily:
-        *f << datapoint.interval.get_first().get_julian_day() << FIELD_SEPARATOR
-           << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
-        break;
-      case OutputInterval::Monthly:
-        // We don’t know if this is a 365-days year or a leap year. We
-        // calculate the month number assuming it’s not a leap year.
-        // Then we take the last day of the month period to get the month
-        // number. This is because in a leap year the first day of the month
-        // would shift to the last day of the preceding month (for after
-        // February). The last day of the month can be shifted forward, but
-        // will not leave the month period.
-        *f << datapoint.interval.get_last().get_month() << FIELD_SEPARATOR
-           << datapoint.interval.get_last().get_year() << FIELD_SEPARATOR;
-        break;
-      case OutputInterval::Annual:
-        *f << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
-        break;
-      case OutputInterval::Decadal:
-        *f << datapoint.interval.get_first().get_year() << FIELD_SEPARATOR;
-        break;
-      default:
-        std::logic_error(
-            "Fauna::TextTableWriter::write_datapoint() Output time interval is "
-            "not implemented.");
-    }
-    *f << datapoint.aggregation_unit;
-  }
-
   // Per-ForageType Tables
+  if (digestibility.is_open()) start_row(datapoint, digestibility);
   const auto digestibility_data =
       datapoint.data.habitat_data.available_forage.get_digestibility();
   const auto forage_mass_data =
@@ -152,30 +173,37 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   // Add more tables here.
 
   // Per-HFT Tables
+  if (mass_density_per_hft.is_open())
+    start_row(datapoint, mass_density_per_hft);
   // Iterate over predefined order of HFTs.
   for (const auto& hft_name : hft_names) {
-    // Search for this HFT name in the `hft_data` map.
-    bool hft_found = false;
-    for (const auto& i : datapoint.data.hft_data) {
-      if (i.first == hft_name) {
-        // Add this HFT name as a column caption.
-        if (mass_density_per_hft.is_open())
-          mass_density_per_hft << FIELD_SEPARATOR << i.second.massdens;
-        // Add more tables here.
-
-        hft_found = true;
-        break;  // Leave the inner for loop in order to go to the next HFT.
-      }
-    }
-    if (!hft_found)
-      throw std::runtime_error(
-          "Fauna::Output::TextTableWriter::write_datapoint(): "
-          "There is no record for HFT \"" +
-          hft_name +
-          "\" "
-          "in given herbivore data.");
+    const HerbivoreData* d = get_hft_data(&datapoint, hft_name);
+    assert(d);
+    // Add datum for this HFT.
+    if (mass_density_per_hft.is_open())
+      mass_density_per_hft << FIELD_SEPARATOR << d->massdens;
+    // Add more per-HFT tables here.
   }
   if (mass_density_per_hft.is_open()) mass_density_per_hft << std::endl;
+  // Add more tables here.
+
+  // Per-HFT/Per-Forage Tables
+  // There is one new row for each forage type.
+  for (const auto t : FORAGE_TYPES) {
+    if (eaten_forage_per_ind.is_open()) {
+      start_row(datapoint, eaten_forage_per_ind);
+      eaten_forage_per_ind << FIELD_SEPARATOR << get_forage_type_name(t);
+    }
+    for (const auto& hft_name : hft_names) {
+      const HerbivoreData* d = get_hft_data(&datapoint, hft_name);
+      assert(d);
+      // Write the datum for this HFT and forage type.
+      if (eaten_forage_per_ind.is_open())
+        eaten_forage_per_ind << FIELD_SEPARATOR << d->eaten_forage_per_ind[t];
+    }
+    // Add more per-HFT/per-forage tables here.
+  }
+  if (eaten_forage_per_ind.is_open()) eaten_forage_per_ind << std::endl;
   // Add more tables here.
 }
 
@@ -210,6 +238,10 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
       digestibility << FIELD_SEPARATOR << get_forage_type_name(t);
   }
 
+  // Add Forage Type column to per-hft/per-forage tables.
+  if (eaten_forage_per_ind.is_open())
+    eaten_forage_per_ind << FIELD_SEPARATOR << "forage_type";
+
   // Per-HFT Tables
   // First create the list of of HFT names.
   for (const auto& i : datapoint.data.hft_data) {
@@ -231,11 +263,13 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
           hft_name + "' contains the field delimiter '" + FIELD_SEPARATOR +
           "'");
 
+    if (eaten_forage_per_ind.is_open())
+      eaten_forage_per_ind << FIELD_SEPARATOR << hft_name;
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << hft_name;
   }
-  // This assertion will fail if there are several HFTs with the same name (but
-  // different pointers) in the `hft_data` map.
+  // This assertion will fail if there are several HFTs with the same name
+  // (but different pointers) in the `hft_data` map.
   assert(hft_names.size() == datapoint.data.hft_data.size());
 
   for (auto& f : file_streams) *f << std::endl;
