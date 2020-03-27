@@ -43,6 +43,8 @@ available.tbl$VALUE <- available.tbl$VALUE * 10^-6 # convert kg/km² to kg/m²
 
 eaten.tbl <- read_per_hft_per_forage_table("eaten_forage_per_ind.tsv")
 
+eaten_nitrogen.tbl <- read_per_hft_table("eaten_nitrogen_per_ind.tsv")
+
 mass.tbl <- read_per_hft_table("mass_density_per_hft.tsv")
 mass.tbl$VALUE <- mass.tbl$VALUE / 100 # convert kg/km² to kg/ha
 
@@ -75,6 +77,19 @@ ggplot(eaten.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT, linetype 
     x = "Simulation Year",
     y = "Eaten Forage per Individual [kgDM/ind/day]",
     title = "Eaten Forage per Individual"
+  )
+```
+
+```{r fig.cap = "Eaten Nitrogen", echo = FALSE}
+ggplot(eaten_nitrogen.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
+  geom_line() +
+  coord_cartesian(xlim = c(min(eaten_nitrogen.tbl$year), max(eaten_nitrogen.tbl$year) + timestep)) +
+  facet_wrap(~agg_unit) +
+  expand_limits(y = 0) +
+  labs(
+    x = "Simulation Year",
+    y = "Eaten Nitrogen [kgDM/ind/day]",
+    title = "Eaten Nitrogen per Individual"
   )
 ```
 

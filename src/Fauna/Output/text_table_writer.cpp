@@ -41,6 +41,12 @@ TextTableWriter::TextTableWriter(const OutputInterval interval,
     file_streams.push_back(&eaten_forage_per_ind);
     eaten_forage_per_ind.open(path);
   }
+  if (options.eaten_nitrogen_per_ind) {
+    const std::string path = dir + "/eaten_nitrogen_per_ind" + FILE_EXTENSION;
+    check_file_exists(path);
+    file_streams.push_back(&eaten_nitrogen_per_ind);
+    eaten_nitrogen_per_ind.open(path);
+  }
   if (options.mass_density_per_hft) {
     const std::string path = dir + "/mass_density_per_hft" + FILE_EXTENSION;
     check_file_exists(path);
@@ -183,6 +189,8 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   // Add more tables here.
 
   // Per-HFT Tables
+  if (eaten_nitrogen_per_ind.is_open())
+    start_row(datapoint, eaten_nitrogen_per_ind);
   if (mass_density_per_hft.is_open())
     start_row(datapoint, mass_density_per_hft);
   // Iterate over predefined order of HFTs.
@@ -192,8 +200,11 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
     // Add datum for this HFT.
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << d->massdens;
+    if (eaten_nitrogen_per_ind.is_open())
+      eaten_nitrogen_per_ind << FIELD_SEPARATOR << d->eaten_nitrogen_per_ind;
     // Add more per-HFT tables here.
   }
+  if (eaten_nitrogen_per_ind.is_open()) eaten_nitrogen_per_ind << std::endl;
   if (mass_density_per_hft.is_open()) mass_density_per_hft << std::endl;
   // Add more tables here.
 
@@ -277,6 +288,8 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
 
     if (eaten_forage_per_ind.is_open())
       eaten_forage_per_ind << FIELD_SEPARATOR << hft_name;
+    if (eaten_nitrogen_per_ind.is_open())
+      eaten_nitrogen_per_ind << FIELD_SEPARATOR << hft_name;
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << hft_name;
   }
