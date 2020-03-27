@@ -20,6 +20,9 @@ class StaticReindeer : public HerbivoreInterface {
   virtual void eat(const ForageMass& kg_per_km2,
                    const Digestibility& digestibility,
                    const ForageMass& N_kg_per_km2 = ForageMass(0)) {
+    todays_output.eaten_forage_per_ind = kg_per_km2 / get_ind_per_km2();
+    todays_output.eaten_nitrogen_per_ind =
+        N_kg_per_km2.sum() / get_ind_per_km2();
     // Nothing is happening here, forage just disappears.
   }
 
