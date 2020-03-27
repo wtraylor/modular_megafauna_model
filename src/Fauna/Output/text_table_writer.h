@@ -14,6 +14,8 @@
 
 namespace Fauna {
 namespace Output {
+// Forward declarations
+class HerbivoreData;
 
 /// Writes output data to tabular plaintext files.
 /**
@@ -77,6 +79,27 @@ class TextTableWriter : public WriterInterface {
   /// Throw an exception if output file already exists.
   static void check_file_exists(const std::string& path);
 
+  /// Retrieve herbivore data from datapoint for given HFT.
+  /**
+   * The return type is a pointer in order to minimize copying memory. It is
+   * save as long as `datapoint` is stable.
+   * \param datapoint Where the herbivore data is in \ref Datapoint::data.
+   * \param hft_name The name of the HFT in \ref Datapoint::data.
+   * \throw std::runtime_error If there is no record for given HFT.
+   * \see \ref HerbivoreInterface::get_output_group() is the “HFT”.
+   */
+  const HerbivoreData* get_hft_data(const Datapoint* datapoint,
+                                    const std::string& hft_name) const;
+
+  /// Create a new row by writing year/month/day and aggregation unit.
+  /**
+   * There is no \ref FIELD_SEPARATOR at the end of the row.
+   * \param datapoint Contains the date and aggregation unit.
+   * \param table Output stream to write to. This is a member variable of this
+   * class.
+   */
+  void start_row(const Datapoint& datapoint, std::ofstream& table);
+
   /// Write the first line in the output files: column headers
   /**
    * \param datapoint Any output data with the same structure (e.g. list of
@@ -110,6 +133,7 @@ class TextTableWriter : public WriterInterface {
 
   /** @{ \name File Streams */
   std::ofstream digestibility;
+  std::ofstream eaten_forage_per_ind;
   std::ofstream mass_density_per_hft;
   // Add new output variables here (alphabetical order).
   /** @} */  // File Streams

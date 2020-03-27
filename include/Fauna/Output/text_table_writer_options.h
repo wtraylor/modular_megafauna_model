@@ -40,6 +40,12 @@ struct TextTableWriterOptions {
   /** \see \ref Fauna::Output::HerbivoreData::massdens */
   bool mass_density_per_hft = false;
   /** @} */
+
+  /** @{ \name Per-HFT/per-forage tables: one column per HFT. */
+  /// Herbivore mass density per HFT in kg/km².
+  /** \see \ref Fauna::Output::HerbivoreData::eaten_forage_per_ind */
+  bool eaten_forage_per_ind = false;
+  /** @} */
 };
 }  // namespace Output
 }  // namespace Fauna

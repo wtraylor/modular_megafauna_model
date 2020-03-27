@@ -3,30 +3,47 @@
 Each aggregation unit (habitat group) comprises several habitats.
 Since all habitats have the same properties and there is no stochasticity, the curves from all aggregation units look the same.
 
-```{r echo=FALSE}
+```{r include = FALSE}
 library(ggplot2)
 library(tidyr)
-filename <- "mass_density_per_hft.tsv"
-if (!file.exists(filename))
-  stop("File does not exist: ", filename)
-mass.tbl <- read.csv(filename, sep = "\t")
 
-# Handle daily output.
-if ("day" %in% colnames(mass.tbl)) {
-  mass.tbl$year <- mass.tbl$year + mass.tbl$day/365
-  mass.tbl$day <- NULL
+# READ TABLES
+
+read_generic_table <- function(filename){
+  if (!file.exists(filename))
+    stop("File does not exist: ", filename)
+  tbl <- read.csv(filename, sep = "\t")
+  # Handle daily output.
+  if ("day" %in% colnames(tbl)) {
+    tbl$year <- tbl$year + tbl$day/365
+    tbl$day <- NULL
+  }
+  return(tbl)
 }
 
-mass.tbl <- gather(mass.tbl,
-  key = HFT, value = mass, -year, -agg_unit)
-mass.tbl$mass <- mass.tbl$mass / 100  # kg/km²->kg/ha
+read_per_hft_table <- function(filename){
+  read_generic_table(filename) %>%
+  gather(key = HFT, value = VALUE, -year, -agg_unit)
+}
+
+read_per_hft_per_forage_table <- function(filename){
+  read_generic_table(filename) %>%
+  gather(key = HFT, value = VALUE, -forage_type, -year, -agg_unit)
+}
+
+mass.tbl <- read_per_hft_table("mass_density_per_hft.tsv")
+mass.tbl$VALUE <- mass.tbl$VALUE / 100 # convert kg/km² to kg/ha
+
+eaten.tbl <- read_per_hft_per_forage_table("eaten_forage_per_ind.tsv")
 
 # `timestep` is the output interval: a day, a year, (roughly) a month, or a decade.
 unique_years.v <- sort(unique(mass.tbl$year))
 timestep <- abs(unique_years.v[2] - unique_years.v[1])
+```
 
+```{r fig.cap = "Mass Density", echo = FALSE}
 # We plot the points not in the beginning of each time step, but in the middle.
-ggplot(mass.tbl, aes(x = year + timestep / 2, y = mass, color = HFT)) +
+ggplot(mass.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
   geom_line() +
   coord_cartesian(xlim = c(min(mass.tbl$year), max(mass.tbl$year) + timestep)) +
   facet_wrap(~agg_unit) +
@@ -35,5 +52,19 @@ ggplot(mass.tbl, aes(x = year + timestep / 2, y = mass, color = HFT)) +
     x = "Simulation Year",
     y = "Mean Mass Density [kg/ha]",
     title = "Mass Density per Habitat Group"
+  )
+```
+
+```{r fig.cap = "Eaten Forage per Individual", echo = FALSE}
+# We plot the points not in the beginning of each time step, but in the middle.
+ggplot(eaten.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT, linetype = forage_type)) +
+  geom_line() +
+  coord_cartesian(xlim = c(min(eaten.tbl$year), max(eaten.tbl$year) + timestep)) +
+  facet_wrap(~agg_unit) +
+  expand_limits(y = 0) +
+  labs(
+    x = "Simulation Year",
+    y = "Eaten Forage per Individual [kgDM/ind/day]",
+    title = "Eaten Forage per Individual"
   )
 ```
