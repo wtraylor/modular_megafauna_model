@@ -48,14 +48,21 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 }  // namespace
 
-TEST_CASE("Fauna::Output::TextTableWriter", "") {
+TEST_CASE("Fauna::Output::TextTableWriter ANNUAL", "") {
   TextTableWriterOptions opt;
+  opt.eaten_forage_per_ind = true;
   opt.mass_density_per_hft = true;
+
+  // Constructor with new random output directory.
   opt.directory = generate_output_dir();
-
   REQUIRE(!directory_exists(opt.directory));
-
+  TextTableWriter writer(OutputInterval::Annual, opt);
+  REQUIRE(directory_exists(opt.directory));
   INFO((std::string) "Random output directory: " + opt.directory);
+
+  SECTION("File already exists") {
+    CHECK_THROWS(TextTableWriter(OutputInterval::Annual, opt));
+  }
 
   static const int YEAR = 4;
   static const std::string AGG_UNIT = "unit1";
@@ -72,50 +79,71 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
   Datapoint datapoint;
   datapoint.aggregation_unit = AGG_UNIT;
 
+  SECTION("Error on non-annual interval") {
+    for (int day = 0; day < 366; day++)
+      for (int year = YEAR; year < YEAR + 3; year++) {
+        datapoint.interval = DateInterval(Date(0, YEAR), Date(day, year));
+        if ((day != 364 && day != 365) || year != YEAR)
+          CHECK_THROWS(writer.write_datapoint(datapoint));
+      }
+  }
+
+  // Correct output interval.
+  datapoint.interval = DateInterval(Date(0, YEAR), Date(364, YEAR));
+
+  SECTION("Error on empty data") {
+    datapoint.data.datapoint_count = 0;
+    REQUIRE_THROWS(writer.write_datapoint(datapoint));
+  }
+
   // Fill data with some arbitrary numbers.
   // -> Set more variables for tests for new output tables.
   datapoint.data.hft_data[HFTS[0].get()->name].massdens = 10.0;
   datapoint.data.hft_data[HFTS[1].get()->name].massdens = 16.0;
   datapoint.data.hft_data[HFTS[2].get()->name].massdens = 29.0;
+  datapoint.data.hft_data[HFTS[0].get()->name].eaten_forage_per_ind = 10.0;
+  datapoint.data.hft_data[HFTS[1].get()->name].eaten_forage_per_ind = 16.0;
+  datapoint.data.hft_data[HFTS[2].get()->name].eaten_forage_per_ind = 29.0;
   datapoint.data.datapoint_count = 1;
 
-  SECTION("Annual") {
+  // The first call should create captions.
+  REQUIRE(datapoint.data.datapoint_count > 0);
+  REQUIRE_NOTHROW(writer.write_datapoint(datapoint));
+
+  SECTION("Error on missing HFT") {
+    // Try to write a second line with a datapoint where an HFT is missing.
+    datapoint.data.hft_data.erase(datapoint.data.hft_data.begin());
+    CHECK_THROWS(writer.write_datapoint(datapoint));
+  }
+
+  SECTION("Error on extra HFT") {
+    // Try to write a second line with a datapoint where a new HFT suddenly
+    // appeared.
+    datapoint.data.hft_data[HFTS[3].get()->name].massdens = 12.0;
+    CHECK_THROWS(writer.write_datapoint(datapoint));
+  }
+
+  SECTION("Illegal Aggregation Unit: Whitespace") {
+    datapoint.aggregation_unit = "agg unit";
+    REQUIRE(datapoint.data.datapoint_count > 0);
+    CHECK_THROWS(writer.write_datapoint(datapoint));
+  }
+
+  SECTION("Illegal Aggregation Unit: Delimiter") {
+    datapoint.aggregation_unit =
+        (std::string) "aggunit" + TextTableWriter::FIELD_SEPARATOR;
+    REQUIRE(datapoint.data.datapoint_count > 0);
+    CHECK_THROWS(writer.write_datapoint(datapoint));
+  }
+
+  // mass_density_per_hft_path
+  SECTION("mass_density_per_hft_path") {
     const std::string mass_density_per_hft_path =
         opt.directory + '/' + "mass_density_per_hft" +
         TextTableWriter::FILE_EXTENSION;
 
-    // Constructor
-    TextTableWriter writer(OutputInterval::Annual, opt);
-
-    REQUIRE(directory_exists(opt.directory));
-
     std::ifstream mass_density_per_hft(mass_density_per_hft_path);
     REQUIRE(mass_density_per_hft.good());
-
-    SECTION("File already exists") {
-      CHECK_THROWS(TextTableWriter(OutputInterval::Annual, opt));
-    }
-
-    SECTION("Error on non-annual interval") {
-      for (int day = 0; day < 366; day++)
-        for (int year = YEAR; year < YEAR + 3; year++) {
-          datapoint.interval = DateInterval(Date(0, YEAR), Date(day, year));
-          if ((day != 364 && day != 365) || year != YEAR)
-            CHECK_THROWS(writer.write_datapoint(datapoint));
-        }
-    }
-
-    datapoint.interval = DateInterval(Date(0, YEAR), Date(364, YEAR));
-
-    SECTION("Error on empty data") {
-      datapoint.data.datapoint_count = 0;
-      REQUIRE_THROWS(writer.write_datapoint(datapoint));
-    }
-
-    // The first call should create captions.
-    datapoint.data.datapoint_count = 1;
-    REQUIRE(datapoint.data.datapoint_count > 0);
-    writer.write_datapoint(datapoint);
 
     INFO((std::string) "Random output directory: " + opt.directory);
     // Check column captions
@@ -126,8 +154,6 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
           split(line, TextTableWriter::FIELD_SEPARATOR);
 
       INFO((std::string) "line: " + line);
-      INFO("fields array:");
-      for (const auto &f : fields) INFO(f);
       REQUIRE(fields.size() == 5);
 
       CHECK(fields[0] == "year");
@@ -154,46 +180,72 @@ TEST_CASE("Fauna::Output::TextTableWriter", "") {
       std::string agg_unit;
       double hft1, hft2, hft3;
       REQUIRE_NOTHROW(year = std::stoi(fields[0]));
-      agg_unit = fields[1];
+      CHECK(fields[1] == AGG_UNIT);
       REQUIRE_NOTHROW(hft1 = std::stod(fields[2]));
       REQUIRE_NOTHROW(hft2 = std::stod(fields[3]));
       REQUIRE_NOTHROW(hft3 = std::stod(fields[4]));
 
       CHECK(year == YEAR);
-      CHECK(agg_unit == AGG_UNIT);
-      CHECK(hft1 ==
-            Approx(datapoint.data.hft_data[HFTS[0].get()->name].massdens));
-      CHECK(hft2 ==
-            Approx(datapoint.data.hft_data[HFTS[1].get()->name].massdens));
-      CHECK(hft3 ==
-            Approx(datapoint.data.hft_data[HFTS[2].get()->name].massdens));
+      auto &hd = datapoint.data.hft_data;
+      CHECK(hft1 == Approx(hd[HFTS[0].get()->name].massdens));
+      CHECK(hft2 == Approx(hd[HFTS[1].get()->name].massdens));
+      CHECK(hft3 == Approx(hd[HFTS[2].get()->name].massdens));
+    }
+  }
+
+  // eaten_forage_per_ind
+  SECTION("eaten_forage_per_ind") {
+    const std::string eaten_forage_per_ind_path =
+        opt.directory + '/' + "eaten_forage_per_ind" +
+        TextTableWriter::FILE_EXTENSION;
+
+    std::ifstream eaten_forage_per_ind(eaten_forage_per_ind_path);
+    REQUIRE(eaten_forage_per_ind.good());
+    datapoint.interval = DateInterval(Date(0, YEAR), Date(364, YEAR));
+
+    // Check column captions
+    {
+      std::string line;
+      REQUIRE(std::getline(eaten_forage_per_ind, line));
+      std::vector<std::string> fields =
+          split(line, TextTableWriter::FIELD_SEPARATOR);
+
+      INFO((std::string) "line: " + line);
+      REQUIRE(fields.size() == 6);
+
+      CHECK(fields[0] == "year");
+      CHECK(fields[1] == "agg_unit");
+      CHECK(fields[2] == "forage_type");
+      CHECK(fields[3] == HFTS[0]->name);
+      CHECK(fields[4] == HFTS[1]->name);
+      CHECK(fields[5] == HFTS[2]->name);
     }
 
-    SECTION("Error on missing HFT") {
-      // Try to write a second line with a datapoint where an HFT is missing.
-      datapoint.data.hft_data.erase(datapoint.data.hft_data.begin());
-      CHECK_THROWS(writer.write_datapoint(datapoint));
-    }
+    // Check tuple: one row for each forage type.
+    for (const auto &ft : FORAGE_TYPES) {
+      std::string line;
+      REQUIRE(std::getline(eaten_forage_per_ind, line));
 
-    SECTION("Error on extra HFT") {
-      // Try to write a second line with a datapoint where a new HFT suddenly
-      // appeared.
-      datapoint.data.hft_data[HFTS[3].get()->name].massdens = 12.0;
-      CHECK_THROWS(writer.write_datapoint(datapoint));
-    }
+      std::vector<std::string> fields =
+          split(line, TextTableWriter::FIELD_SEPARATOR);
 
-    SECTION("Error on illegal aggregation unit name") {
-      SECTION("Whitespace") {
-        datapoint.aggregation_unit = "agg unit";
-        REQUIRE(datapoint.data.datapoint_count > 0);
-        CHECK_THROWS(writer.write_datapoint(datapoint));
-      }
-      SECTION("Delimiter") {
-        datapoint.aggregation_unit =
-            (std::string) "aggunit" + TextTableWriter::FIELD_SEPARATOR;
-        REQUIRE(datapoint.data.datapoint_count > 0);
-        CHECK_THROWS(writer.write_datapoint(datapoint));
-      }
+      INFO((std::string) "line: " + line);
+      REQUIRE(fields.size() == 6);
+
+      int year;
+      double hft1, hft2, hft3;
+      REQUIRE_NOTHROW(year = std::stoi(fields[0]));
+      CHECK(fields[1] == AGG_UNIT);
+      REQUIRE(fields[2] == get_forage_type_name(ft));
+      REQUIRE_NOTHROW(hft1 = std::stod(fields[3]));
+      REQUIRE_NOTHROW(hft2 = std::stod(fields[4]));
+      REQUIRE_NOTHROW(hft3 = std::stod(fields[5]));
+
+      CHECK(year == YEAR);
+      auto &hd = datapoint.data.hft_data;
+      CHECK(hft1 == Approx(hd[HFTS[0].get()->name].eaten_forage_per_ind[ft]));
+      CHECK(hft2 == Approx(hd[HFTS[1].get()->name].eaten_forage_per_ind[ft]));
+      CHECK(hft3 == Approx(hd[HFTS[2].get()->name].eaten_forage_per_ind[ft]));
     }
   }
 

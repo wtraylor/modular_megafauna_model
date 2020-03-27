@@ -30,15 +30,33 @@ struct TextTableWriterOptions {
   unsigned int precision = 3;
 
   /** @{ \name Per-ForageType tables: one column per forage type. */
+
+  /// Dry matter weight of available forage in the habitat [kgDM/km²].
+  /** \see \ref Fauna::HabitatForage::get_mass() */
+  bool available_forage = false;
+
   /// Digestibility of available forage in the habitat.
   /** \see \ref Fauna::HabitatForage::get_digestibility() */
   bool digestibility = false;
+
   /** @} */
 
   /** @{ \name Per-HFT tables: one column per HFT. */
+
+  /// Daily consumption of dry matter by herbivore individuals [kgDM/day/ind].
+  /** \see \ref Fauna::Output::HerbivoreData::eaten_nitrogen_per_ind */
+  bool eaten_nitrogen_per_ind = false;
+
   /// Herbivore mass density per HFT in kg/km².
   /** \see \ref Fauna::Output::HerbivoreData::massdens */
   bool mass_density_per_hft = false;
+
+  /** @} */
+
+  /** @{ \name Per-HFT/per-forage tables: one column per HFT. */
+  /// Daily consumption of dry matter by herbivore individuals [kgDM/day/ind].
+  /** \see \ref Fauna::Output::HerbivoreData::eaten_forage_per_ind */
+  bool eaten_forage_per_ind = false;
   /** @} */
 };
 }  // namespace Output

@@ -710,14 +710,22 @@ void InsfileReader::read_table_output_text_tables() {
     auto value = ins->get_qualified_array_of<std::string>(key);
     if (value) {
       for (const auto& s : *value)
-        if (lowercase(s) == "digestibility")
+        if (lowercase(s) == "available_forage")
+          params.output_text_tables.available_forage = true;
+        else if (lowercase(s) == "digestibility")
           params.output_text_tables.digestibility = true;
+        else if (lowercase(s) == "eaten_forage_per_ind")
+          params.output_text_tables.eaten_forage_per_ind = true;
+        else if (lowercase(s) == "eaten_nitrogen_per_ind")
+          params.output_text_tables.eaten_nitrogen_per_ind = true;
         else if (lowercase(s) == "mass_density_per_hft")
           params.output_text_tables.mass_density_per_hft = true;
         // -> Add new output tables here (alphabetical order).
         else
-          throw invalid_option(key, s,
-                               {"digestibility", "mass_density_per_hft"});
+          throw invalid_option(
+              key, s,
+              {"available_forage", "digestibility", "eaten_forage_per_ind",
+               "eaten_nitrogen_per_ind", "mass_density_per_hft"});
     }
     remove_qualified_key(ins, key);
   }
