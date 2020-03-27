@@ -43,7 +43,7 @@ PopulationList* WorldConstructor::create_populations() const {
       plist->emplace_back(
           new IndividualPopulation(CreateHerbivoreIndividual(hft_ptr, params)));
   } else if (get_params().herbivore_type == HerbivoreType::StaticReindeer) {
-    return new StaticReindeerPopulation();
+    plist->emplace_back(new StaticReindeerPopulation());
   } else
     throw std::logic_error(
         "WorldConstructor::create_population(): unknown herbivore type");

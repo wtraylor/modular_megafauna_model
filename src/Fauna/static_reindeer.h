@@ -9,7 +9,6 @@
 
 #include "herbivore_data.h"
 #include "herbivore_interface.h"
-#include "hft.h"
 #include "population_interface.h"
 
 namespace Fauna {
@@ -33,13 +32,13 @@ class StaticReindeer : public HerbivoreInterface {
     return demand;
   }
 
-  virtual const Hft& get_hft() const;
-
   virtual double get_ind_per_km2() const { return 2.5; }
 
   virtual double get_kg_per_km2() const {
     return get_ind_per_km2() * get_bodymass();
   }
+
+  virtual std::string get_output_group() const { return "Reindeer"; }
 
   virtual const Output::HerbivoreData& get_todays_output() const {
     return todays_output;
@@ -68,16 +67,14 @@ class StaticReindeer : public HerbivoreInterface {
 
 class StaticReindeerPopulation : public PopulationInterface {
  public:
-   StaticReindeerPopulation(){
-     reindeer_dummy.name = "Reindeer";
-   }
+  StaticReindeerPopulation() {}
   virtual void create_offspring(const double ind_per_km2) {}
   virtual void establish() {}
-  virtual const Hft& get_hft() const { return reindeer_dummy; }
 
-  static Hft reindeer_dummy;
   virtual ConstHerbivoreVector get_list() const;
   virtual HerbivoreVector get_list() { return list; }
+
+  virtual void kill_nonviable() {}
 
   virtual void purge_of_dead() {}
 
