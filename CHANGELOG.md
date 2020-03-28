@@ -112,5 +112,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 [#1]: https://github.com/wtraylor/modular_megafauna_model/issues/1
 [#2]: https://github.com/wtraylor/modular_megafauna_model/issues/2
+[#3]: https://github.com/wtraylor/modular_megafauna_model/issues/3
+[#4]: https://github.com/wtraylor/modular_megafauna_model/issues/4
 [#5]: https://github.com/wtraylor/modular_megafauna_model/issues/5
+[#6]: https://github.com/wtraylor/modular_megafauna_model/issues/6
 [#7]: https://github.com/wtraylor/modular_megafauna_model/issues/7
