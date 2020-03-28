@@ -152,6 +152,10 @@ void HerbivoreBase::apply_mortality_factors_today() {
 void HerbivoreBase::eat(const ForageMass& kg_per_km2,
                         const Digestibility& digestibility,
                         const ForageMass& N_kg_per_km2) {
+  if (is_dead())
+    throw std::logic_error(
+        "Fauna::HerbivoreBase::eat() "
+        "This herbivore is dead. Don’t call eat() in a dead herbivore.");
   if (get_ind_per_km2() == 0.0 && kg_per_km2 == 0.0)
     throw std::logic_error(
         "Fauna::HerbivoreBase::eat() "

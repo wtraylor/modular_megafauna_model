@@ -39,8 +39,7 @@ struct HerbivoreInterface {
    * \param digestibility Proportional forage digestibility.
    * \throw std::logic_error If `forage` exceeds
    * intake constraints of maximal foraging and digestion.
-   * \throw std::logic_error If this herbivore is dead or
-   * has no individuals.
+   * \throw std::logic_error If this herbivore is dead or has no individuals.
    * \throw std::logic_error If `N_kg_per_km2` is not zero and this herbivore
    * implementation does not handle nitrogen excretion. The vegetation model
    * should never send nitrogen to an herbivore that doesn’t excrete it again.
