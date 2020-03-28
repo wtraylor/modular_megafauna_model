@@ -18,7 +18,7 @@ HerbivoreCohort::HerbivoreCohort(
       ind_per_km2(ind_per_km2) {
   if (ind_per_km2 < 0.0)
     throw std::invalid_argument(
-        "Fauna::HerbivoreIndividual::HerbivoreIndividual() "
+        "Fauna::HerbivoreCohort::HerbivoreCohort() "
         "ind_per_km2 <0.0");
 }
 
@@ -28,7 +28,7 @@ HerbivoreCohort::HerbivoreCohort(
     : HerbivoreBase(hft, sex, forage_gross_energy), ind_per_km2(ind_per_km2) {
   if (ind_per_km2 < 0.0)
     throw std::invalid_argument(
-        "Fauna::HerbivoreIndividual::HerbivoreIndividual() "
+        "Fauna::HerbivoreCohort::HerbivoreCohort() "
         "ind_per_km2 <0.0");
 }
 
