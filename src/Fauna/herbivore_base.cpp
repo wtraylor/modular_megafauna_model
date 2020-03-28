@@ -156,10 +156,6 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
     throw std::logic_error(
         "Fauna::HerbivoreBase::eat() "
         "This herbivore is dead. Don’t call eat() in a dead herbivore.");
-  if (get_ind_per_km2() == 0.0 && kg_per_km2 == 0.0)
-    throw std::logic_error(
-        "Fauna::HerbivoreBase::eat() "
-        "This herbivore has no individuals and cannot be fed.");
   if (!(N_kg_per_km2 <= kg_per_km2))
     throw std::invalid_argument(
         "Fauna::HerbivoreBase::eat() "
