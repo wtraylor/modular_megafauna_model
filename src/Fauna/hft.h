@@ -276,8 +276,6 @@ struct Hft {
   /**
    * Body condition is the proportion of current body fat relative to
    * physiological maximum.
-   * For herbivore individuals, the standard deviation refers to the
-   * whole population. In cohort mode, it refers only to one cohort.
    *
    * \note For juveniles (1st year of life), body fat variation is
    * always zero in order to avoid artificially high death rates if

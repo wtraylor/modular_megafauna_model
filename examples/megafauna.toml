@@ -9,7 +9,6 @@
 [simulation]
 establishment_interval = 3650 # every 10 years
 forage_distribution    = "Equally"
-habitat_area_km2       = 1.0  # km² per habitat
 herbivore_type         = "Cohort"
 one_hft_per_habitat    = true
 

@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Changed
 - Output `eaten_nitrogen_per_ind` is now in milligram, not kilogram, per day and individual.
 
+### Removed
+- Individual mode. [#7]
+
 ## [0.4.0] - 2020-03-27
 
 ### Added
@@ -110,3 +113,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [#1]: https://github.com/wtraylor/modular_megafauna_model/issues/1
 [#2]: https://github.com/wtraylor/modular_megafauna_model/issues/2
 [#5]: https://github.com/wtraylor/modular_megafauna_model/issues/5
+[#7]: https://github.com/wtraylor/modular_megafauna_model/issues/7

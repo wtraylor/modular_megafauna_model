@@ -83,14 +83,13 @@ They can be used for example in algorithms of:
 The simulation framework can operate with any class that implements \ref Fauna::HerbivoreInterface (compare \ref sec_liskov_substitution).
 Which class to choose is defined by the instruction file parameter \ref Fauna::Parameters::herbivore_type.
 
-Currently, two classes, \ref Fauna::HerbivoreIndividual and \ref Fauna::HerbivoreCohort, are implemented.
-Their common model mechanics are defined in their abstract parent class, \ref Fauna::HerbivoreBase.
+Currently, only one herbivore class is implemented: \ref Fauna::HerbivoreCohort.
 
 The herbivore model performs calculations generally *per area* and not per individual.
 That’s why individual herbivores can only be simulated if an absolute habitat area size is defined.
 That is done by the parameter \ref Fauna::Parameters::habitat_area_km2.
 
-@startuml "Class diagram of the two default herbivore classes (for individual and cohort mode), which share the same model mechanics defined in Fauna::HerbivoreBase."
+@startuml "Class diagram of the default herbivore class: Fauna::HerbivoreCohort."
 	!include diagrams.iuml!herbivore_classes
 @enduml
 
@@ -111,7 +110,6 @@ The herbivore object is self-responsible to call the implementation of the given
 (given by [constructor injection](\ref sec_inversion_of_control)).
 - **Death** of herbivores is controlled by a set of \ref Fauna::Hft::mortality_factors.
 For a cohort that means that the density is proportionally reduced.
-For an individual, death is a stochastic event.
 The corresponding population objects will release dead herbivore objects automatically.
 
 @startuml "Model components around Fauna::HerbivoreBase. Each component is selected by an HFT enum parameter by the user through the instruction file. The herbivore class then creates/calls the appropriate classes and functions."
@@ -124,7 +122,7 @@ Each habitat (\ref Fauna::Habitat) is populated by herbivores.
 The class \ref Fauna::SimulationUnit contains a habitat and the herbivore populations (\ref Fauna::PopulationList).
 
 A herbivore population instantiates new herbivore objects in the function \ref Fauna::PopulationInterface::establish().
-For cohort and individual herbivores, there are simple helper classes to construct new objects: \ref Fauna::CreateHerbivoreCohort and \ref Fauna::CreateHerbivoreIndividual.
+For cohort herbivores, there is a simple helper class to construct new objects: \ref Fauna::CreateHerbivoreCohort.
 The `establish()` function is called by the simulation framework (\ref Fauna::World).
 In this design, the framework is only responsible for triggering the spawning of herbivores.
 How the reproduce and die is managed by the herbivore class itself, and the corresponding population and creator class.

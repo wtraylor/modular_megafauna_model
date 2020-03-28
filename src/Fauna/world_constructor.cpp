@@ -8,7 +8,6 @@
 #include "cohort_population.h"
 #include "forage_distribution_algorithms.h"
 #include "hft.h"
-#include "individual_population.h"
 #include "parameters.h"
 
 using namespace Fauna;
@@ -36,11 +35,6 @@ PopulationList* WorldConstructor::create_populations() const {
     for (const auto& hft_ptr : get_hftlist())
       plist->emplace_back(
           new CohortPopulation(CreateHerbivoreCohort(hft_ptr, params)));
-  } else if (get_params().herbivore_type == HerbivoreType::Individual) {
-    // Create one population per HFT.
-    for (const auto& hft_ptr : get_hftlist())
-      plist->emplace_back(
-          new IndividualPopulation(CreateHerbivoreIndividual(hft_ptr, params)));
   } else
     throw std::logic_error(
         "WorldConstructor::create_population(): unknown herbivore type");

@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Base class for creating herbivore cohorts & individuals.
+ * \brief Base class for creating herbivore cohorts.
  * \copyright ...
  * \date 2019
  */
@@ -14,8 +14,7 @@ class Hft;
 class Parameters;
 enum class Sex;
 
-/// Parent class for \ref CreateHerbivoreIndividual and
-/// \ref  CreateHerbivoreCohort
+/// Parent class for \ref  CreateHerbivoreCohort
 /**
  * This parent class simply provides some common functionality common to both
  * child classes.

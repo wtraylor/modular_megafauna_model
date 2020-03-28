@@ -23,10 +23,6 @@ class CohortPopulation : public PopulationInterface {
   virtual void create_offspring(const double ind_per_km2);
 
   /** \copydoc PopulationInterface::establish()
-   *
-   * Establish with even sex ratio and *at least* as many
-   * individuals as given by \ref Hft::establishment_density.
-   *
    * - The age of new herbivores is evenly distributed in the range
    *   \ref Hft::establishment_age_range.
    * - The sex ratio is even.

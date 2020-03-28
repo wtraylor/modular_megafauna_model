@@ -24,9 +24,7 @@ enum class ForageDistributionAlgorithm {
 /// Fauna::HerbivoreInterface.
 enum class HerbivoreType {
   /// Use class \ref HerbivoreCohort
-  Cohort,
-  /// Use class \ref HerbivoreIndividual
-  Individual
+  Cohort
 };
 
 /// Time interval for aggregating output.
@@ -65,10 +63,6 @@ struct Parameters {
   /// Algorithm for how to distribute available forage among herbivores.
   ForageDistributionAlgorithm forage_distribution =
       ForageDistributionAlgorithm::Equally;
-
-  /// Habitat area [km²].
-  /** Only relevant if \ref herbivore_type == \ref HerbivoreType::Individual. */
-  double habitat_area_km2 = 1.0;
 
   /// Gross energy content for forage types [MJ/kgDM].
   /**

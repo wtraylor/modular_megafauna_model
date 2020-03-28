@@ -25,7 +25,7 @@ class GetForageDemands {
   /// Constructor.
   /**
    * \param hft Herbivore functional type.
-   * \param sex The sex of the herbivore individual/cohort.
+   * \param sex The sex of the herbivore cohort.
    * \throw std::invalid_argument If `hft==NULL`.
    */
   GetForageDemands(std::shared_ptr<const Hft> hft, const Sex sex);
@@ -182,7 +182,7 @@ class GetForageDemands {
   double energy_needs;                 /// [MJ/ind]
   ForageMass max_intake;               /// [kgDM/ind/day]
   int today;                           /// 0 = January 1st
-  /** @} */
+                                       /** @} */
 };
 
 }  // namespace Fauna

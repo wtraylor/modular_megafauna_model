@@ -38,8 +38,6 @@ set (SOURCE_FILES
   src/Fauna/create_herbivore_cohort.h
   src/Fauna/create_herbivore_common.cpp
   src/Fauna/create_herbivore_common.h
-  src/Fauna/create_herbivore_individual.cpp
-  src/Fauna/create_herbivore_individual.h
   src/Fauna/date.cpp
   src/Fauna/date_interval.cpp
   src/Fauna/date_interval.h
@@ -67,14 +65,10 @@ set (SOURCE_FILES
   src/Fauna/herbivore_base.h
   src/Fauna/herbivore_cohort.cpp
   src/Fauna/herbivore_cohort.h
-  src/Fauna/herbivore_individual.cpp
-  src/Fauna/herbivore_individual.h
   src/Fauna/herbivore_interface.h
   src/Fauna/herbivore_vector.h
   src/Fauna/hft.cpp
   src/Fauna/hft.h
-  src/Fauna/individual_population.cpp
-  src/Fauna/individual_population.h
   src/Fauna/insfile_reader.cpp
   src/Fauna/insfile_reader.h
   src/Fauna/mortality_factors.cpp
@@ -147,9 +141,7 @@ if (BUILD_TESTING)
     src/Fauna/habitat_forage.test.cpp
     src/Fauna/herbivore_base.test.cpp
     src/Fauna/herbivore_cohort.test.cpp
-    src/Fauna/herbivore_individual.test.cpp
     src/Fauna/hft.test.cpp
-    src/Fauna/individual_population.test.cpp
     src/Fauna/insfile_reader.test.cpp
     src/Fauna/mortality_factors.test.cpp
     src/Fauna/net_energy_models.test.cpp

@@ -59,8 +59,7 @@ InsfileReader::InsfileReader(const std::string filename)
       throw std::runtime_error("Parameters are not valid:\n" + err_msg);
   }
 
-  if (params.herbivore_type == HerbivoreType::Cohort ||
-      params.herbivore_type == HerbivoreType::Individual) {
+  if (params.herbivore_type == HerbivoreType::Cohort) {
     auto hft_table_array = ins->get_table_array("hft");
     if (hft_table_array) {
       for (const auto& hft_table : *hft_table_array) {
@@ -748,14 +747,6 @@ void InsfileReader::read_table_simulation() {
     }
   }
   {
-    const auto key = "simulation.habitat_area_km2";
-    auto value = ins->get_qualified_as<double>(key);
-    if (value) {
-      params.habitat_area_km2 = *value;
-      remove_qualified_key(ins, key);
-    }
-  }
-  {
     const auto key = "simulation.establishment_interval";
     auto value = ins->get_qualified_as<int>(key);
     if (value) {
@@ -769,10 +760,8 @@ void InsfileReader::read_table_simulation() {
     if (value) {
       if (lowercase(*value) == lowercase("Cohort"))
         params.herbivore_type = HerbivoreType::Cohort;
-      else if (lowercase(*value) == lowercase("Individual"))
-        params.herbivore_type = HerbivoreType::Individual;
       else
-        throw invalid_option(key, *value, {"Cohort", "Individual"});
+        throw invalid_option(key, *value, {"Cohort"});
       remove_qualified_key(ins, key);
     } else
       throw missing_parameter(key);

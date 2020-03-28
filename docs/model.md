@@ -59,18 +59,16 @@ Note that “mass” and “weight” are used interchangeably.
 - Explain some design choices:
 	+ Why differentiate sexes? ⇒ e.g. Shannon et al. (2013), Guthrie (1990)
 	+ Why forage types?
-	+ Suggest use cases for individual mode.
 
 The world of the megafauna model is comprised of **simulation units.**
 Each such unit consists of a **habitat** and the herbivore **populations** inhabiting it.
 The habitat must be implemented by the outside vegetation model.
-Each herbivore cohort (or individual) is assigned a **herbivore functional type (HFT),** the herbivore species so to say.
+Each herbivore cohort is assigned a **herbivore functional type (HFT),** the herbivore species so to say.
 An HFT is simply a user-defined, constant set of parameters defining physiology, life history, and everything else.
 Each population contains all herbivores of one HFT in a particular habitat.
 
-Herbivores can be simulated as cohorts or as individuals.
-In cohort mode, all herbivores of one annual age class have the same state variables.
-In individual mode, each individual herbivore has its own state.
+Herbivores are simulated as cohorts.
+All herbivores of one annual age class (by year) have the same state variables.
 These are the state variables for each herbivore object:
 
 - Age
@@ -367,7 +365,7 @@ Mean retention time in hours is calculated according to Clauss et al. (2007)\cit
 	+ What mechanisms have we explored to prevent population crashes?
 
 ### Minimum Density Threshold {#sec_minimum_density_threshold}
-The parameter \ref Fauna::Hft::mortality_minimum_density_threshold defines at which point a dwindling population (sum of all cohorts/individuals) may be considered dead.
+The parameter \ref Fauna::Hft::mortality_minimum_density_threshold defines at which point a dwindling population (sum of all cohorts) may be considered dead.
 It is an arbitrary, but critical value for model performance.
 Possible re-establishment only happens if all cohorts are dead within one habitat.
 

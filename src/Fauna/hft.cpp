@@ -28,8 +28,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
   }
 
   //------------------------------------------------------------
-  if (params.herbivore_type == HerbivoreType::Cohort ||
-      params.herbivore_type == HerbivoreType::Individual) {
+  if (params.herbivore_type == HerbivoreType::Cohort) {
     if (body_fat_birth <= 0.0) {
       stream << "body_fat.birth must be >0.0 (" << body_fat_birth << ")"
              << std::endl;
@@ -182,16 +181,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
     if (establishment_density <= 0.0) {
       stream << "establishment.density must be >=0.0 (" << establishment_density
              << ")" << std::endl;
-      is_valid = false;
-    }
-
-    if (params.herbivore_type == HerbivoreType::Individual &&
-        establishment_density <= 2.0 / params.habitat_area_km2) {
-      stream << "establishment.density (" << establishment_density
-             << " ind/km²) "
-             << "must not be smaller than two individuals in a habitat"
-             << " (habitat_area_km2 = " << params.habitat_area_km2 << " km²)."
-             << std::endl;
       is_valid = false;
     }
 
@@ -399,15 +388,6 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       }
     }
     // add more checks in alphabetical order
-  }
-
-  if (params.herbivore_type == HerbivoreType::Individual) {
-    if (mortality_factors.count(MortalityFactor::StarvationIlliusOConnor2000)) {
-      stream << "Mortality factor `StarvationIlliusOConnor2000` "
-                "is not meant for individual mode."
-             << std::endl;
-      is_valid = false;
-    }
   }
 
   // convert stream to string
