@@ -53,7 +53,7 @@ struct HerbivoreData {
   /// Eaten forage per body mass [kgDM/kg/day].
   Fauna::ForageMass eaten_forage_per_mass = 0.0;
 
-  /// Ingested nitrogen mass per individual and day [kgN/ind/day].
+  /// Ingested nitrogen mass per individual and day [mgN/ind/day].
   double eaten_nitrogen_per_ind = 0.0;
 
   /// Net energy content of available forage [MJ/kgDM].

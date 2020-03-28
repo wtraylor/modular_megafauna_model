@@ -165,7 +165,6 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
   // convert forage from *per km²* to *per individual*
   assert(get_ind_per_km2() != 0.0);
   const ForageMass kg_per_ind = kg_per_km2 / get_ind_per_km2();
-  const ForageMass N_kg_per_ind = N_kg_per_km2 / get_ind_per_km2();
 
   // net energy in the forage per individual [MJ/ind]
   // Divide mass by energy content and set any forage with zero
@@ -190,10 +189,11 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
   get_todays_output().eaten_forage_per_mass += kg_per_ind / get_bodymass();
   get_todays_output().energy_intake_per_ind += mj_per_ind;
   get_todays_output().energy_intake_per_mass += mj_per_ind / get_bodymass();
-  get_todays_output().eaten_nitrogen_per_ind += N_kg_per_ind.sum();
+  get_todays_output().eaten_nitrogen_per_ind +=
+      (10e6 * N_kg_per_km2.sum()) / get_ind_per_km2();
 
   // Ingest the nitrogen
-  nitrogen.ingest(N_kg_per_ind.sum() * get_ind_per_km2());
+  nitrogen.ingest(N_kg_per_km2.sum());
 }
 
 std::shared_ptr<const Hft> HerbivoreBase::check_hft_pointer(

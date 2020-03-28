@@ -88,7 +88,7 @@ ggplot(eaten_nitrogen.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT))
   expand_limits(y = 0) +
   labs(
     x = "Simulation Year",
-    y = "Eaten Nitrogen [kgN/ind/day]",
+    y = "Eaten Nitrogen [mgN/ind/day]",
     title = "Eaten Nitrogen per Individual"
   )
 ```

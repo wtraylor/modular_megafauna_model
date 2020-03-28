@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Output `eaten_nitrogen_per_ind` is now in milligram, not kilogram, per day and individual.
+
 ## [0.4.0] - 2020-03-27
 
 ### Added

@@ -43,8 +43,13 @@ struct TextTableWriterOptions {
 
   /** @{ \name Per-HFT tables: one column per HFT. */
 
-  /// Daily consumption of dry matter by herbivore individuals [kgDM/day/ind].
-  /** \see \ref Fauna::Output::HerbivoreData::eaten_nitrogen_per_ind */
+  /// Daily consumption of nitrogen by herbivore individuals [mgDM/day/ind].
+  /**
+   * This is measured in milligram because the amount might be very tiny. For
+   * them to appear not as zeros in the output table, the unit must be made
+   * very small.
+   * \see \ref Fauna::Output::HerbivoreData::eaten_nitrogen_per_ind
+   */
   bool eaten_nitrogen_per_ind = false;
 
   /// Herbivore mass density per HFT in kg/km².
