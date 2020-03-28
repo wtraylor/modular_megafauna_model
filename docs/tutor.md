@@ -149,7 +149,7 @@ If your variable of interest is already present in \ref Fauna::Output::HabitatDa
 - Extend the appropriate container: \ref Fauna::Output::HabitatData or \ref Fauna::Output::HerbivoreData by a new member variable and initialize it with zero.
     + Add it in the `reset()` function.
 	+ Implement average building in the appropriate `merge()` function.
-	+ For herbivore data, you need to add it to \ref Fauna::Output::HerbivoreData::create_datapoint(). If your value is *per individual*, you don’ TODO
+	+ For herbivore data, you need to add it to \ref Fauna::Output::HerbivoreData::create_datapoint(). If your value is *per individual*, you will need to weight the value by individual density; if it is *per area* or *per habitat*, you can calculate the sum.
 	+ Assign a value to the variable somewhere in daily simulation.
 
 - Write the variable in \ref Fauna::Output::TextTableWriter.
