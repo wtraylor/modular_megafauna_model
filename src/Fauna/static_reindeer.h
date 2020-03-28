@@ -32,7 +32,7 @@ class StaticReindeer : public HerbivoreInterface {
     todays_output.eaten_forage_per_ind += kg_per_km2 / get_ind_per_km2();
     todays_output.eaten_nitrogen_per_ind +=
         N_kg_per_km2.sum() / get_ind_per_km2();
-    // Nothing is happening here, forage just disappears.
+    eaten_nitrogen += N_kg_per_km2.sum();
   }
 
   virtual double get_bodymass() const { return 75; }
@@ -72,10 +72,18 @@ class StaticReindeer : public HerbivoreInterface {
     todays_output.massdens = get_kg_per_km2();
   }
 
-  virtual double take_nitrogen_excreta() { return 0; }
+  virtual double take_nitrogen_excreta() { return eaten_nitrogen; }
 
  private:
   Output::HerbivoreData todays_output;
+
+  /// Nitrogen pool within the reindeer [kgN/km²].
+  /**
+   * This is filled by \ref eat() and emptied again by
+   * \ref take_nitrogen_excreta(). So there is no retention of nitrogen. It
+   * cycles directly back into the vegetation model.
+   */
+  bool eaten_nitrogen = 0.0;
 };
 
 class StaticReindeerPopulation : public PopulationInterface {
