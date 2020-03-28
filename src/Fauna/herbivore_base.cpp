@@ -156,6 +156,11 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
     throw std::logic_error(
         "Fauna::HerbivoreBase::eat() "
         "This herbivore has no individuals and cannot be fed.");
+  if (N_kg_per_km2 > kg_per_km2)
+    throw std::invalid_argument(
+        "Fauna::HerbivoreBase::eat() "
+        "Nitrogen content is larger than dry matter for at least one forage "
+        "type. A nitrogen content of >100% is illogical.");
 
   // convert forage from *per km²* to *per individual*
   assert(get_ind_per_km2() != 0.0);
