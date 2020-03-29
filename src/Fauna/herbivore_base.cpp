@@ -79,7 +79,6 @@ void HerbivoreBase::apply_mortality_factors_today() {
   double mortality_sum = 0.0;
 
   // iterate through all mortality factors.
-  std::set<MortalityFactor>::const_iterator itr;
   for (const auto& itr : get_hft().mortality_factors) {
     if (itr == MortalityFactor::Background) {
       const GetBackgroundMortality background(get_hft().mortality_juvenile_rate,
