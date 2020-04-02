@@ -1,25 +1,28 @@
-# Ecological Model Description {#page_model}
+# Ecological Model Discussion {#page_model}
 
 \brief Scientific background of the Modular Megafauna Model.
 
 \tableofcontents
 
-This document explains the design choices for the megafauna model from a scientific rather than a programmatical angle.
-It also discusses the different modules in the model framework: what their assumptions are, how to use them, and how to combine them.
+This document explains the design choices for the modules and concepts in the megafauna model from a scientific rather than a programmatical angle.
+It discusses the different submodels in the framework: what their assumptions are, how to use them, and how to combine them.
+
+Because of the modular nature of the software, you can “generate” a range of models with different combinations and configurations of submodels.
+Therefore this documentation page must not be seen as a “model description”, but rather as a loose discussion of available model components.
+It is a *living* document that ought to be expanded when new features are introduced to the library.
 
 The first section introduces the framework of the simulation scheme.
-The following four sections describe the four distinct, but interlinked conceptual elements of the modeled animal ecology.
+The following four sections describe four distinct, but interlinked conceptual elements of the modeled animal ecology:
+Basic Model Concepts,
+Energy Budget,
+Reproduction,
+Mortality,
+Effects on Environment, and
+Population Dynamics.
 The last section covers some lessons learned from emerging model behavior.
 
-- Basic Model Concepts
-- Energy Budget
-- Reproduction
-- Mortality
-- Effects on Environment
-- Population Dynamics
-
 Some aspects of the model can only be evaluated in the context of the connected vegetation model.
-For LPJ-GUESS you will find those aspects in the megafauna doxygen page of the LPJ-GUESS repository.
+For [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/) you will find those aspects in the megafauna doxygen page of the LPJ-GUESS repository.
 
 ## Symbols and Abbreviations
 
