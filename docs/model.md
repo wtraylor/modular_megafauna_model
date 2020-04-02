@@ -26,25 +26,25 @@ For [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/) you will find those aspects
 
 ## Symbols and Abbreviations
 
-- bf  = Current body fat as fraction of lipids per empty body [frac.]
-- BM  = Live body mass [kg/ind]
-- DM  = Dry matter
-- DMD = Dry-matter digestibility [frac.]
-- eb  = Empty body fraction [frac.]
-- FM  = Fat mass of an individual [kg/ind]
-- GE  = Gross energy, also known as heat of combustion or calorific value [MJ/kgDM]
-- k   = Net energy coefficient, efficiency of converting ME to usable energy
-    - Subscript f = conversion to fat gross energy
-    - Subscript m = conversion to NE, to meet needs of maintenance and field metabolic rate
-    - Subscript p = conversion to protein gross energy
-- ME  = Metabolizable energy content in forage [MJ/kgDM]
-- MRT = Mean retention time [hours]
-- NE  = Net energy content in forage, usable for meeting energy requirements [MJ/kgDM]
-- SM  = Structural mass [kg/ind]
+- \f$bf\f$  = Current body fat as fraction of lipids per empty body [frac.]
+- \f$BM\f$  = Live body mass [kg/ind]
+- \f$DM\f$  = Dry matter
+- \f$DMD\f$ = Dry-matter digestibility [frac.]
+- \f$eb\f$  = Empty body fraction [frac.]
+- \f$FM\f$  = Fat mass of an individual [kg/ind]
+- \f$GE\f$  = Gross energy, also known as heat of combustion or calorific value [MJ/kgDM]
+- \f$k\f$   = Net energy coefficient, efficiency of converting ME to usable energy
+    - Subscript \f$_f\f$ = conversion to fat gross energy
+    - Subscript \f$_m\f$ = conversion to NE, to meet needs of maintenance and field metabolic rate
+    - Subscript \f$_p\f$ = conversion to protein gross energy
+- \f$ME\f$  = Metabolizable energy content in forage [MJ/kgDM]
+- \f$MRT\f$ = Mean retention time [hours]
+- \f$NE\f$  = Net energy content in forage, usable for meeting energy requirements [MJ/kgDM]
+- \f$SM\f$  = Structural mass [kg/ind]
 - General subscripts:
-    - ad    = Adult
-    - birth = At birth/for neonates
-    - max   = Maximum (body fat, fat mass, reproduction rate, …)
+    - \f$_{ad}\f$    = Adult
+    - \f$_{birth}\f$ = At birth/for neonates
+    - \f$_{max}\f$   = Maximum (body fat, fat mass, reproduction rate, …)
 
 Note that “mass” and “weight” are used interchangeably.
 
@@ -200,10 +200,10 @@ The model for energy content in herbivore forage presented here is based on the 
 A historical overview of the model framework is given by Ferrell & Oltjen (2008) \cite ferrell2008asas.
 Its conceptual shortcomings and difficulties in practical methodology are summarized by Birkett & de Lange (2001) \cite birkett2001limitations.
 
-The diagram on the energy budget shows how energy from the forage is used by an herbivore: **Gross energy** (GE) is the heat that could be produced from complete combustion of the feedstuff.
-From that, the part which is not excreted in feces is the **digestible energy** (DE).
-Some proportion of it is then lost to urine and gas production, but the rest is **metabolizable energy** (ME).
-After deducing now the losses due to heat increment, the remaining **net energy** (NE) is effectively utilizable for all physiological processes.
+The diagram on the energy budget shows how energy from the forage is used by an herbivore: **Gross energy** (\f$GE\f$) is the heat that could be produced from complete combustion of the feedstuff.
+From that, the part which is not excreted in feces is the **digestible energy** (\f$DE\f$).
+Some proportion of it is then lost to urine and gas production, but the rest is **metabolizable energy** (\f$ME\f$).
+After deducing now the losses due to heat increment, the remaining **net energy** (\f$NE\f$) is effectively utilizable for all physiological processes.
 
 Gross energy depends only on the physical properties of the forage and measured in a combustion chamber.
 It is therefore independent of the animal.
@@ -211,7 +211,7 @@ McDonald et al. (2010, p. 259)\cite mcdonald2010animal provide an overview of g
 The measurements by Golley (1961) \cite golley1961energy suggest that there is some seasonal variation in gross energy of leaves.
 However, the model assumes a constant value.
 
-The proportional **dry-matter digestibility** (DMD) of the forage is a central variable in the model.
+The proportional **dry-matter digestibility** (\f$DMD\f$) of the forage is a central variable in the model.
 It measures the fraction of the gross energy that is usable by the animal.
 The rest gets excreted in the feces because it is undigestible fiber: protected cellulose and hemicellulose, silica, and cutin.
 Agricultural research has shown that the digestibility is closely correlated with metabolizable energy and net energy (Minson, 1990, p. 7 \cite minson1990forage).
@@ -229,48 +229,50 @@ This approach is taken from by and Pachzelt et al. (2015) \cite pachzelt2015pote
 Ruminants typically lose a relatively constant fraction of about 19% of digestible energy in urine and methane (López et al. 2000 \cite lopez2000prediction, McDonald et al. 2010 \cite mcdonald2010animal, p. 258).
 The difference between cattle and sheep is very small here (McDonald et al. 2010, p. 260).
 McDonald et al. (2010, p. 258) specify that 11–13 percent of digestible energy is lost as methane.
-The 19% loss to urine and gases is often expressed as the ratio of metabolizable energy to digestible energy, ME/DE=0.81.
+The 19% loss to urine and gases is often expressed as the ratio of metabolizable energy to digestible energy, \f$ME/DE=0.81\f$.
 This ratio is also known as the **metabolizable energy coefficient** (e.g. in Robbins, 1983\cite robbins1983wildlife).With a gross energy of about 19 MJ/kg, metabolizable energy in the digestible fraction of the forage is then about 15–16 MJ/kg.
 Various herbivore models work with these numbers, for instance: Givens et al. (1989)\cite givens1989digestibility, Illius and Gorden (1991)\cite illius1991prediction, Parker et al. (1991) \cite parker1996foraging, Illius and Gordon (1999)\cite illius1999scaling, Smallegange and Brinsting (2002)\cite smallegange2002food.
 
 \warning
-Some publication, like Minson (1990)\cite minson1990forage, use the term “metabolizability of energy” or “metabolizable energy coefficient” to refer to the ME/GE ratio: the metabolizable fraction of the *gross* energy.
+Some publication, like Minson (1990)\cite minson1990forage, use the term “metabolizability of energy” or “metabolizable energy coefficient” to refer to the \f$ME/GE\f$ ratio: the metabolizable fraction of the *gross* energy.
 This includes fecal losses and has the dry-matter digestibility already calculated in.
 However, the modular megafauna model works with explicit digestibility values and the ME/DE ratio.
-You could divide the ME/GE ratio by the fractional digestibility to get ME/DE.
+You could divide the \f$ME/GE\f$ ratio by the fractional digestibility to get \f$ME/DE\f$.
 
-A unitless **net energy coefficient** (k) defines the efficiency of using the metabolizable energy for meeting maintenance energy needs, i.e. for converting metabolizable energy content to **net energy** content (NE) of the forage.
+A unitless **net energy coefficient** (\f$k\f$) defines the efficiency of using the metabolizable energy for meeting maintenance energy needs, i.e. for converting metabolizable energy content to **net energy** content (\f$NE\f$) of the forage.
 (In Robbins (1983)\cite robbins1983wildlife it is called *NEC*.)
-Many livestock models differentiate between different k values to reflect different conversion efficiencies: for meeting maintenance needs (k<sub>m</sub>), for growth and fattening (k<sub>f</sub>), and for lactation (k<sub>l</sub>) (Blaxter 1989, p. 254ff\cite blaxter1989energy; Minson 1990\cite minson1990forage, p. 151).
+Many livestock models differentiate between different k values to reflect different conversion efficiencies: for meeting maintenance needs (\f$k_m\f$), for growth and fattening (\f$k_f\f$), and for lactation (\f$k_l\f$) (Blaxter 1989, p. 254ff\cite blaxter1989energy; Minson 1990\cite minson1990forage, p. 151).
 
 In the Modular Megafauna Model, the energy budget calculates with the “currency” net energy, which broadly represents the available oxidizable metabolic fuels—glucose and fatty acid.
 Basal and field metabolic rate and other energy expenditures are directly “paid” with net energy.
-Therefore the efficiency factor k<sub>m</sub> is used to convert from metabolizable energy to net energy.
-Body fat is anabolized from metabolizable forage energy with the efficiency factor k<sub>f</sub>.
+Therefore the efficiency factor \f$k_m\f$ is used to convert from metabolizable energy to net energy.
+Body fat is anabolized from metabolizable forage energy with the efficiency factor \f$k_f\f$.
 
 ![Model of energy retention in an herbivore. km and kf denote the slope of the line, i.e. the efficiency of utilizing metabolizable energy. When fed maintenance requirements, the animal will neither gain nor lose weight. Below that point it will starve (i.e. catabolize reserves) and above it will build reserves (i.e. anabolize fat). After McDonald et al. (2010), Fig. 11.5.](images/retention_over_intake.svg)
 
 Feeding trials have shown that the net energy coefficient can linearly depend on the metabolizable energy content of the forage (Robbins, 1983, p. 296f; Minson, 1990, p. 93, 155).
 However, this effect seems to be mostly related to very high levels of feeding and by pelleting the feed.
-In this model, the energy coefficients k<sub>m</sub> and k<sub>f</sub> are assumed to be constant.
+In this model, the energy coefficients \f$k_m\f$ and \f$k_f\f$ are assumed to be constant.
 
 \remark
 Internally the model converts first from metabolizable energy to net energy to pay energy expenditures.
 If there is excess net energy, this gets converted *afterwards* to body fat.
-The amount of net energy required to build up one kilogram of body fat is given by the product of fat gross energy content, k<sub>m</sub> and k<sub>f</sub>⁻¹.
+The amount of net energy required to build up one kilogram of body fat is given by the product of fat gross energy content, \f$k_m\f$ and \f$k_f^{-1}\f$.
 Note that Illius & O’Connor (2000) \cite illius2000resource probably took the same approach when they specify an anabolism coefficient of 54.6 MJ/kg, citing Blaxter (1989) \cite blaxter1989energy.
-Namely, 54.6 MJ/kg is the product of 39 MJ/kg, k<sub>m</sub>=0.70, and the inverse of k<sub>f</sub>=0.50; probably Illius & O’Connor (2000) took the latter two figures from Table 12.1 on page 259 in Blaxter (1989) for oxen on an “average diet.”
+Namely, 54.6 MJ/kg is the product of 39 MJ/kg, \f$k_m=0.70\f$, and the inverse of \f$k_f=0.50\f$; probably Illius & O’Connor (2000) took the latter two figures from Table 12.1 on page 259 in Blaxter (1989) for oxen on an “average diet.”
 
 In summary:
-Net energy content, NE in MJ/kgDM, depends on variable dry-matter digestibility, DMD, as the key variable.
-Gross energy content, GE, is user-specified for each forage type.
-Only the digestible fraction of the gross energy in dry matter is counted as digestible energy, DE.
-How much metabolizable energy can be extracted from the digested part of the forage is species-specific and defined by the user as the metabolizable energy coefficient or ME/DE ratio.
-A user-defined factor, k<sub>m</sub>, defines how efficient the metabolizable energy is used to meet net energy needs for maintenance and other activities.
-The factor k<sub>f</sub> denotes the efficiency for converting from ME to body fat (anabolism), but burning of fat reserves happens without energy loss.
+Net energy content, \f$NE\f$ in MJ/kgDM, depends on variable dry-matter digestibility, \f$DMD\f$, as the key variable.
+Gross energy content, \f$GE\f$, is user-specified for each forage type.
+Only the digestible fraction of the gross energy in dry matter is counted as digestible energy, \f$DE\f$.
+How much metabolizable energy can be extracted from the digested part of the forage is species-specific and defined by the user as the metabolizable energy coefficient or \f$ME/DE\f$ ratio.
+A user-defined factor, \f$k_m\f$, defines how efficient the metabolizable energy is used to meet net energy needs for maintenance and other activities.
+The factor \f$k_f\f$ denotes the efficiency for converting from \f$ME\f$ to body fat (anabolism), but burning of fat reserves happens without energy loss.
 The net energy content is given by:
 
-NE = ME * k<sub>m</sub> = DE * ME/DE * k<sub>m</sub> = GE * DMD * ME/DE * k<sub>m</sub>
+\f[
+NE = ME * k_m = DE * \frac{ME}{DE} * k_m = GE * DMD * \frac{ME}{DE} * k_m
+\f]
 
 ### Maximum Daily Forage Intake {#sec_daily_forage_intake}
 
@@ -292,16 +294,20 @@ Thermoregulatory costs arise when the ambient temperature drops below the *lower
 The rate of heat loss depends on the *thermal conductance* of the whole animal (energy flow per temperature difference), which in turn depends on the *thermal conductivity* (energy flow per temperature difference and per thickness) of fur and skin and the body surface.
 Conductance is the inverse of resistance or insulation, and conductivity is the inverse of resistivity.
 
-- T<sub>crit</sub>: Lower critical temperature [°C].
-- T<sub>core</sub>: Body core temperature [°C].
-- T<sub>air</sub>: Ambient air temperature [°C].
-- E<sub>neu</sub>: Thermoneutral metabolic rate [MJ/ind/day]
-- C: Whole-body thermal conductance [W/ind].
-- Φ: Heat loss [MJ/ind/day]
+- \f$T_{crit}\f$: Lower critical temperature [°C].
+- \f$T_{core}\f$: Body core temperature [°C].
+- \f$T_{air}\f$: Ambient air temperature [°C].
+- \f$E_{neu}\f$: Thermoneutral metabolic rate [MJ/ind/day]
+- \f$C\f$: Whole-body thermal conductance [W/ind].
+- \f$\Phi\f$: Heat loss [MJ/ind/day]
 
-T<sub>crit</sub> = T<sub>core</sub> - E<sub>neu</sub> / C
+\f[
+T_{crit} = T_{core} - \frac{E_{neu}}{C}
+\f]
 
-Φ = C * max(T<sub>crit</sub> - T<sub>air</sub>, 0)
+\f[
+\Phi = C * max(T_{crit} - T_{air}, 0)
+\f]
 
 ![](thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms. – Peters 1983, Fig. 5.6")
 
