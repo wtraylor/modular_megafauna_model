@@ -48,13 +48,35 @@ For [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/) you will find those aspects
 
 Note that “mass” and “weight” are used interchangeably.
 
+## Model Goals
+Before you start your modeling project, you should have your model **goal** defined.
+The formulation of the model goal paints in broad strokes a picture of the direction you want to take.
+In the next step, the definition of a model **purpose** will help you convert the goal statement into an **objective** statement.
+The objective is more concrete than the goal and can be further refined into **model specifications,** which serve as reference points for evaluating the output of your model candidates and whether you have reached your goal.
+For a more more detailed discussion of these terms see Overton (1990)\cite overton1990strategy.
+
+The Modular Megafauna Model, by its flexible nature, shall serve as broad of a range of model goals as possible.
+Its modularity is supposed to help in the iterative modeling process.
+You can combine different submodels to create a number of different intermediate developmental models.
+They can then be evaluated against your model specifications.
+
+The only goal given by the software architecture of the Modular Megafauna Model can be stated thus:
+*to simulate herbivore–vegetation dynamics over time.*
+By selecting model components, the goal becomes more specific, and so the herbivore type “cohort” (see Section \ref sec_herbivore_cohorts) has the goal
+*to dynamically simulate herbivore population densities as they emerge from basic mechanistic processes.*
+Herbivore densities are not prescribed, but emerge **bottom-up.**
+Based on that, project-specific model objective statements can be formulated, for instance, “to simulate bison populations in the North American prairie for the *purpose* of estimating potential pre-European carrying capacity.”
+The model components must then be selected or newly implemented to meet that objective.
+In North America, for example snow cover may play a role and should be included in the model.
+If the objective were to simulate wildebeest in the Serengeti, snow wouldn’t play a role and should be excluded from the model.
+
+Therefore, before you start working with the Modular Megafauna Model, gain as much clarity as possible about your model goals, purposes, objectives, and specifications.
+You might even want to consider a **preregistration,** see for example Nosek et al. (2018)\cite nosek2018preregistration, Lee et al. (2019)\cite lee2019robust, and Dirnagl (2020)\cite dirnagl2020preregistration.
+
 ## Basic Model Concepts {#sec_basic_model_concepts}
 
 \todo
-- Give a general introduction for what use case this model was originally developed. -> scientific motivation
-    - Explain bottom-up approach.
-    - No density dependence prescribed, but that should emerge from the model.
-    - Explain what output uncertainty means: how can we measure it, what are the trade-offs in adding new processes.
+- Explain what output uncertainty means: how can we measure it, what are the trade-offs in adding new processes.
 - Describe the context within which we intend the model to operate.
 - Limitations of the model design:
 	+ habitats equal size
