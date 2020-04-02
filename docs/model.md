@@ -66,20 +66,10 @@ Note that “mass” and “weight” are used interchangeably.
 The world of the megafauna model is comprised of **simulation units.**
 Each such unit consists of a **habitat** and the herbivore **populations** inhabiting it.
 The habitat must be implemented by the outside vegetation model.
-Each herbivore cohort is assigned a **herbivore functional type (HFT),** the herbivore species so to say.
-An HFT is simply a user-defined, constant set of parameters defining physiology, life history, and everything else.
-Each population contains all herbivores of one HFT in a particular habitat.
+What kind of **herbivores** populate the world can be defined by the user.
+**Cohorts** are the first herbivore type implemented.
 
-Herbivores are simulated as cohorts.
-All herbivores of one annual age class (by year) have the same state variables.
-These are the state variables for each herbivore object:
-
-- Age
-- Sex
-- Current energy need
-- Fat mass
-
-![Basic model entities in the Modular Megafauna Model. Aggregation units (disjunct sets of simulation units) are only needed to aggregate output spatially.](images/model_entities.svg)
+![Basic model entities in the Modular Megafauna Model. Aggregation units (disjunct sets of simulation units) are only needed to aggregate output spatially. Cohorts are only one possible implementation of herbivores.](images/model_entities.svg)
 
 The simulations run with daily time steps. The predecessor model by Adrian Pachzelt \cite pachzelt2013coupling operated on a monthly schedule and was thus much faster.
 However, the Modular Megafauna Model should be applicable on different spatial and temporal scales.
@@ -88,9 +78,28 @@ same.
 Moreover, there has been no formal analysis how much a coarser temporal resolution affects the model outcome.
 So it seemed better to air on the side of a finer resolution.
 
+### Herbivore Cohorts {#sec_herbivore_cohorts}
+
+A cohort represents all herbivores born in one year.
+The state variables of a cohort represent an average over all individual animals within the cohort.
+The main reason to not simulate individuals is to save computational resources.
+
+These are the state variables for each herbivore object:
+
+- Age
+- Sex
+- Current energy need
+- Fat mass
+
+Each herbivore cohort is assigned a **herbivore functional type (HFT).**
+The HFT can be interpreted as representing a species, a guild, or a trophic level.
+An HFT is simply a user-defined, constant set of parameters defining physiology, life history, and everything else.
+Each **cohort population** contains all cohorts of one HFT in a particular habitat.
+Therefore, the maximum number of cohorts within one population is given by the HFT life span in years times two, for the two sexes.
+
 Offspring of large herbivores usually shows an even sex ratio.
 Most model processes don’t differentiate between males and females, only body size and age of maturity have sex-specific parameters.
-It seems important to at least set the basis for gender differentiation because some large herbivores do show pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but also in diet and behavior (e.g. elephants: \cite shannon2013diet).
+During the model design, it seemed advisable to at least set the basis for gender differentiation because some large herbivores do show pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but also in diet and behavior (e.g. elephants: \cite shannon2013diet).
 
 ### Body Mass and Composition {#sec_body_mass_and_composition}
 
