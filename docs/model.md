@@ -54,7 +54,6 @@ You might even want to consider a **preregistration,** see for example Nosek et 
 
 \todo
 - Explain what output uncertainty means: how can we measure it, what are the trade-offs in adding new processes.
-- Describe the context within which we intend the model to operate.
 - Limitations of the model design:
 	+ habitats equal size
 	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
