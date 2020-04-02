@@ -36,6 +36,7 @@ The Modular Megafauna Model, by its flexible nature, shall serve as broad of a r
 Its modularity is supposed to help in the iterative modeling process.
 You can combine different submodels to create a number of different intermediate developmental models.
 They can then be evaluated against your model specifications.
+When composing your model, be wary of the **“complexity paradox”:** The more complex (i.e. “realistic”) your model is, the more uncertain it is and the more difficult it is to know if your tests of the model are meaningful (Oreskes 2003\cite oreskes2003role).
 
 The only goal given by the software architecture of the Modular Megafauna Model can be stated thus:
 *to simulate herbivore–vegetation dynamics over time.*
@@ -53,7 +54,6 @@ You might even want to consider a **preregistration,** see for example Nosek et 
 ## Basic Model Concepts {#sec_basic_model_concepts}
 
 \todo
-- Explain what output uncertainty means: how can we measure it, what are the trade-offs in adding new processes.
 - Limitations of the model design:
 	+ habitats equal size
 	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
