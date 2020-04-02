@@ -20,33 +20,10 @@ Mortality,
 Effects on Environment, and
 Population Dynamics.
 The last section covers some lessons learned from emerging model behavior.
+At the end of this document, you will find a list of \ref sec_symbols_and_abbreviations
 
 Some aspects of the model can only be evaluated in the context of the connected vegetation model.
 For [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/) you will find those aspects in the megafauna doxygen page of the LPJ-GUESS repository.
-
-## Symbols and Abbreviations
-
-- \f$bf\f$  = Current body fat as fraction of lipids per empty body [frac.]
-- \f$BM\f$  = Live body mass [kg/ind]
-- \f$DM\f$  = Dry matter
-- \f$DMD\f$ = Dry-matter digestibility [frac.]
-- \f$eb\f$  = Empty body fraction [frac.]
-- \f$FM\f$  = Fat mass of an individual [kg/ind]
-- \f$GE\f$  = Gross energy, also known as heat of combustion or calorific value [MJ/kgDM]
-- \f$k\f$   = Net energy coefficient, efficiency of converting ME to usable energy
-    - Subscript \f$_f\f$ = conversion to fat gross energy
-    - Subscript \f$_m\f$ = conversion to NE, to meet needs of maintenance and field metabolic rate
-    - Subscript \f$_p\f$ = conversion to protein gross energy
-- \f$ME\f$  = Metabolizable energy content in forage [MJ/kgDM]
-- \f$MRT\f$ = Mean retention time [hours]
-- \f$NE\f$  = Net energy content in forage, usable for meeting energy requirements [MJ/kgDM]
-- \f$SM\f$  = Structural mass [kg/ind]
-- General subscripts:
-    - \f$_{ad}\f$    = Adult
-    - \f$_{birth}\f$ = At birth/for neonates
-    - \f$_{max}\f$   = Maximum (body fat, fat mass, reproduction rate, …)
-
-Note that “mass” and “weight” are used interchangeably.
 
 ## Model Goals
 Before you start your modeling project, you should have your model **goal** defined.
@@ -422,6 +399,30 @@ Though there are indeed ecological mechanisms that can facilitate coexistence wi
 In order to simply avoid competition among different HFTs, the option `one_hft_per_habitat` can be enabled: Each HFT exists on its own, without any interaction with other species.
 With that option enabled, all HFTs should each be assigned to the same number of habitats.
 It is the responsibility of the host application (the vegetation model) to ensure that the number of habitats is an integer multiple of the HFT count.
+
+## Symbols and Abbreviations {#sec_symbols_and_abbreviations}
+
+- \f$bf\f$  = Current body fat as fraction of lipids per empty body [frac.]
+- \f$BM\f$  = Live body mass [kg/ind]
+- \f$DM\f$  = Dry matter
+- \f$DMD\f$ = Dry-matter digestibility [frac.]
+- \f$eb\f$  = Empty body fraction [frac.]
+- \f$FM\f$  = Fat mass of an individual [kg/ind]
+- \f$GE\f$  = Gross energy, also known as heat of combustion or calorific value [MJ/kgDM]
+- \f$k\f$   = Net energy coefficient, efficiency of converting ME to usable energy
+    - Subscript \f$_f\f$ = conversion to fat gross energy
+    - Subscript \f$_m\f$ = conversion to NE, to meet needs of maintenance and field metabolic rate
+    - Subscript \f$_p\f$ = conversion to protein gross energy
+- \f$ME\f$  = Metabolizable energy content in forage [MJ/kgDM]
+- \f$MRT\f$ = Mean retention time [hours]
+- \f$NE\f$  = Net energy content in forage, usable for meeting energy requirements [MJ/kgDM]
+- \f$SM\f$  = Structural mass [kg/ind]
+- General subscripts:
+    - \f$_{ad}\f$    = Adult
+    - \f$_{birth}\f$ = At birth/for neonates
+    - \f$_{max}\f$   = Maximum (body fat, fat mass, reproduction rate, …)
+
+Note that “mass” and “weight” are used interchangeably.
 
 ---
 
