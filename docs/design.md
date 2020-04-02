@@ -3,6 +3,8 @@
 
 \tableofcontents
 
+\todo Encourage to do refactoring of the architecture if it supports modularity and flexibility.
+
 ## Overview {#sec_design_overview}
 
 The megafauna model aims to apply principles of object-oriented programming as much as possible (see the page [Object-oriented Programming](\ref page_object_orientation)).
