@@ -60,7 +60,6 @@ Note that “mass” and “weight” are used interchangeably.
 	+ habitats equal size
 	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
 - Explain some design choices:
-	+ Why differentiate sexes? ⇒ e.g. Shannon et al. (2013), Guthrie (1990)
 	+ Why forage types?
 
 The world of the megafauna model is comprised of **simulation units.**
@@ -99,7 +98,7 @@ Therefore, the maximum number of cohorts within one population is given by the H
 
 Offspring of large herbivores usually shows an even sex ratio.
 Most model processes don’t differentiate between males and females, only body size and age of maturity have sex-specific parameters.
-During the model design, it seemed advisable to at least set the basis for gender differentiation because some large herbivores do show pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but also in diet and behavior (e.g. elephants: \cite shannon2013diet).
+During the model design, it seemed advisable to at least set the basis for gender differentiation because some large herbivores do show pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but also in diet and behavior (e.g. elephants, Shannon et al. (2013)\cite shannon2013diet, and steppe bison, Guthrie (1990)\cite guthrie1990frozen).
 
 ### Body Mass and Composition {#sec_body_mass_and_composition}
 
