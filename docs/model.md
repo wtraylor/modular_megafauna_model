@@ -333,9 +333,19 @@ An herbivore’s daily dry matter intake can be limited by any of a number of fa
 	!include diagrams.iuml!intake_limit_levels
 @enduml
 
-The **functional response** is the intake rate as a function of available forage (Holling 1959\cite holling1959components) and corresponds to the “foraging limit” in the megafauna model.
+The **functional response** is the intake rate as a function of available forage (Holling 1959a\cite holling1959components) and corresponds to the “foraging limit” in the megafauna model.
 Grazers are generally thought to have a Type II functional response (Owen-Smith 2002\cite owensmith2002metaphysiological): their intake rate quickly increases with increasing food abundance towards an asymptotic maximum.
-This maximum corresponds to the “digestive limit”.
+This maximum is the rate at which an herbivore could *theoretically* ingest forage if there were no constraints of forage abundance, digestive capacity, or metabolic requirements.
+
+The Type II functional response is commonly expressed as a hyperbolically saturating function (Holling 1959b\cite holling1959some), which is also known as [“Michaelis–Menten” function](https://en.wikipedia.org/wiki/Michaelis%E2%80%93Menten_kinetics) in other contexts.
+The critical parameter of this function is the forage density at which the intake rate reaches half of its maximum.
+Owen-Smith (2002)\cite owensmith2002metaphysiological calls it \f$v_{1/2}\f$; Illius and O’Connor (2000) call it \f$\beta\f$.
+
+\note
+Illius and O’Connor (2000)\cite illius2000resource and subsequent similar models (e.g. Pachzelt et al. 2013\cite pachzelt2013coupling) use an empirically derived half-maximum intake density, \f$\beta\f$, to constrain intake.
+However, they set the *daily digestive limit* as the asymptotic maximum.
+This can successfully create a density dependence effect: when herbivore densities rise and forage becomes scarce, the intake rate *gradually* decreases.
+However, it is not congruent with the original empirical measurement of \f$\beta\f$, which assumes a *short-term* intake rate irrespective of digestive capacity.
 
 ![The different types of functional responses. This image is in the Public Domain.](images/functional_response_types.svg)
 
@@ -350,9 +360,6 @@ In the short term, grazers may be limited by encounter rate (moving between fora
 However, in the long term (i.e. over days and months), the intake of grazers is most likely to be digestion-limited.
 That is because they can compensate encounter and handling limatation by increasing their daily foraging time.
 In other words, the functional response curve increases so sharply with even low forage density that it does not play a major role in the long term.
-
-\todo
-- What is the problem with β (half-max intake density) in Illius & O’Connor (2000) and Pachzelt et al.?
 
 ### Mortality {#sec_mortality}
 
