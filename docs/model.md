@@ -337,15 +337,6 @@ Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ ([Hudson & White 1985
 
 ### Foraging {#sec_foraging}
 
-\note **Units**
-- All forage values (e.g. available grass biomass, consumed forage) are *dry matter mass* in kilograms (`DMkg`).
-- Any forage per area (e.g. forage in a habitat) is `kgDM/km²`.
-- Herbivore-related mass values (e.g. body mass, fat mass) are also `kg`, but live mass.
-- Population densities of herbivores are either in `kg/km²` or `ind/km²` (ind=individuals).
-- Digestibility values are interpreted as in-vitro digestibility.
-
-\todo Find a reference for this definition of in-vitro digestibility.
-
 @startuml "Levels of herbivore intake constraints. What and how much of the available forage an herbivore ingests is limited by a cascade of internal and external factors."
 	!include diagrams.iuml!intake_limit_levels
 @enduml
@@ -428,6 +419,18 @@ It is the responsibility of the host application (the vegetation model) to ensur
     - \f$_{max}\f$   = Maximum (body fat, fat mass, reproduction rate, …)
 
 Note that “mass” and “weight” are used interchangeably.
+
+### Units of Measurement
+- All forage values (e.g. available grass biomass, consumed forage) are *dry matter mass* in kilograms (`DMkg`).
+- Any forage per area (e.g. forage in a habitat) is `kgDM/km²`.
+- Herbivore-related mass values (e.g. body mass, fat mass) are also `kg`, but live mass (see \ref sec_body_mass_and_composition).
+- Population densities of herbivores are either in `kg/km²` or `ind/km²` (“ind” = “individuals”).
+- Digestibility values are interpreted as in-vitro digestibility (see \ref sec_energy_content).
+
+\remark
+The units of measurement were primarily chosen in a way to yield numbers broadly around zero for calculation.
+Floating point operations are most precise then, and the values can be printed in a text output table.
+When post-processing the output, you can convert to your units of choice, e.g. `ind/ha` instead of `ind/km²`.
 
 ---
 
