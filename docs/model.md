@@ -284,9 +284,6 @@ The net energy content is given by:
 NE = ME * k_m = DE * \frac{ME}{DE} * k_m = GE * DMD * \frac{ME}{DE} * k_m
 \f]
 
-#### Maximum Daily Forage Intake {#sec_daily_forage_intake}
-\todo Write something here.
-
 #### Thermoregulation by Conductance {#sec_thermoregulation}
 
 This model of thermoregulation is often called the **Scholander-Irving model** and was published in two seminal papers in 1950: \cite scholander1950adaptation \cite scholander1950heat.
