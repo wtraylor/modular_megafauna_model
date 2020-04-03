@@ -261,11 +261,6 @@ That is a violation of the [Open/Closed Principle](\ref sec_open_closed).
 The user is then responsible to interpret them as invalid or disable their output.
 So far, there is no check of congruency between [parameters](\ref Fauna::Parameters)/[HFT settings](\ref Fauna::Hft) and the selection of output variables in the output module.
 
-\todo
-The output data classes are currently always in a consistent state. With every new datum, the total average is recalculated.
-This is a great waste of computing power.
-It would be a lot more efficient to _first_ gather a long series of data, and _finally_ calculate the mean or sum.
-
 ------------------------------------------------------------
 
 \author Wolfgang Traylor, Senckenberg BiK-F
