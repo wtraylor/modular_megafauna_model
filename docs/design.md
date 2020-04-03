@@ -86,10 +86,8 @@ The simulation framework can operate with any class that implements \ref Fauna::
 Which class to choose is defined by the instruction file parameter \ref Fauna::Parameters::herbivore_type.
 
 Currently, only one herbivore class is implemented: \ref Fauna::HerbivoreCohort.
-
 The herbivore model performs calculations generally *per area* and not per individual.
-That’s why individual herbivores can only be simulated if an absolute habitat area size is defined.
-That is done by the parameter \ref Fauna::Parameters::habitat_area_km2.
+The area size of a habitat is undefined.
 
 @startuml "Class diagram of the default herbivore class: Fauna::HerbivoreCohort."
 	!include diagrams.iuml!herbivore_classes
