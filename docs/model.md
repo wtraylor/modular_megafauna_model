@@ -55,7 +55,6 @@ You might even want to consider a **preregistration,** see for example Nosek et 
 
 \todo
 - Limitations of the model design:
-	+ habitats equal size
 	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
 - Explain some design choices:
 	+ Why forage types?
@@ -63,8 +62,15 @@ You might even want to consider a **preregistration,** see for example Nosek et 
 The world of the megafauna model is comprised of **simulation units.**
 Each such unit consists of a **habitat** and the herbivore **populations** inhabiting it.
 The habitat must be implemented by the outside vegetation model.
+Output can be spatially aggregated over several habitats by assigning multiple habitats to the same **aggregation unit.**
+Again, this is done done by the habitat implementation of the vegetation model.
 What kind of **herbivores** populate the world can be defined by the user.
 **Cohorts** are the first herbivore type implemented.
+
+For the megafauna model, all habitats are of equal size and spatially inexplicit.
+Spatial meaning must be given by the outside vegetation model; for example LPJ-GUESS maps each grid cell in the longitude/latitude raster to one aggregation unit.
+Currently, there is no interaction between habitats, that is herbivores cannot move from one to the other.
+Each habitat can be thought of as a little homogenous capsulated world of forage and herbivores.
 
 ![Basic model entities in the Modular Megafauna Model. Aggregation units (disjunct sets of simulation units) are only needed to aggregate output spatially. Cohorts are only one possible implementation of herbivores.](images/model_entities.svg)
 
