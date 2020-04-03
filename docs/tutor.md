@@ -12,7 +12,7 @@ If you want to implement a completely new model behaviour, you can derive your n
 If you want to build upon the base functionality, derive it from \ref Fauna::HerbivoreBase.
 
 Then, derive a new class from \ref Fauna::PopulationInterface to manage and construct your object instances.
-In \ref Fauna::WorldConstructor::create_population(), create that population class.
+In \ref Fauna::WorldConstructor::create_populations(), create all instances of that population class for one habitat.
 
 @startuml "Relationships for a new herbivore type."
 	!include diagrams.iuml!new_herbivore_type
