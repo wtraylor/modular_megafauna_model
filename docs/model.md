@@ -336,6 +336,9 @@ Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ ([Hudson & White 1985
 
 ### Mortality {#sec_mortality}
 
+Cohorts are deleted when they have reached their **life span.**
+The population numbers are gradually decreased with a user-specified **annual background mortality** and by **starvation.**
+
 #### Death of Starvation
 
 In the process of starvation, different fat depots are mobilized in a typical sequence: rump fat, subcutaneous fat, visceral fat, and, finally, marrow fat (Hanks, 2004/1981 \cite hanks2004characterization).
