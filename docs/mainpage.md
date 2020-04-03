@@ -32,7 +32,6 @@ In order to be included in a sensitivity/uncertainty analysis, the parameter mus
 ## Integration into a Vegetation Model
 
 If you want to introduce the megafauna library to a vegetation model, you should study the code of the demo simulator (`tools/demo_simulator`) and its documentation on the page \ref page_demo_simulator.
-<!--TODO: Add advice on dynamic vs. static library to comply with library license.-->
 
 -------------------------------------------------
 
