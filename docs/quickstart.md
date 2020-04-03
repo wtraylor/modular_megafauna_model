@@ -42,7 +42,7 @@ Congratulations, you have run your first simulation!
 The simulator does not want to have you lose your results and will refuse to overwrite existing output files.
 So if you want to run it again, you will first need to remove the previously created output tables: `rm *.tsv`
 
-A very simple [RMarkdown]()<!--TODO--> file to visualize the demo output is provided in the `build` folder.
+A very simple [RMarkdown](https://rmarkdown.rstudio.com/) file to visualize the demo output is provided in the `build` folder.
 It is called `demo_results.Rmd`.
 You can open and render it in RStudio.
 Alternatively, to produce an HTML file (`demo_results.html`) to open it in a web browser, execute these commands in an R console inside the `build/` directory:
