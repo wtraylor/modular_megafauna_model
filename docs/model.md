@@ -327,9 +327,29 @@ Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ ([Hudson & White 1985
 
 #### Foraging {#sec_foraging}
 
+An herbivore’s daily dry matter intake can be limited by any of a number of factors, as illustrated by the following figure:
+
 @startuml "Levels of herbivore intake constraints. What and how much of the available forage an herbivore ingests is limited by a cascade of internal and external factors."
 	!include diagrams.iuml!intake_limit_levels
 @enduml
+
+The **functional response** is the intake rate as a function of available forage (Holling 1959\cite holling1959components) and corresponds to the “foraging limit” in the megafauna model.
+Grazers are generally thought to have a Type II functional response (Owen-Smith 2002\cite owensmith2002metaphysiological): their intake rate quickly increases with increasing food abundance towards an asymptotic maximum.
+This maximum corresponds to the “digestive limit”.
+
+![The different types of functional responses. This image is in the Public Domain.](images/functional_response_types.svg)
+
+Following a seminal publication by Spalinger and Hobbs (1992)\cite spalinger1992mechanisms, a lot of work has been done to model the functional response of grazers mechanistically (e.g.
+Illius and Fitzgibbon 1994\cite illius1994costs;
+Bradbury et al. 1996\cite bradbury1996relationship;
+Fortin et al. 2002\cite fortin2002temporal;
+Hobbs et al. 2003\cite hobbs2003challenges;
+Fortin et al. 2004\cite fortin2004multitasking;
+Robinson and Merrill 2012\cite robinson2012influence).
+In the short term, grazers may be limited by encounter rate (moving between forage patches) or handling rate (cropping and chewing), which means they might not be able to ingest the amount of forage they desire even though there is enough forage available.
+However, in the long term (i.e. over days and months), the intake of grazers is most likely to be digestion-limited.
+That is because they can compensate encounter and handling limatation by increasing their daily foraging time.
+In other words, the functional response curve increases so sharply with even low forage density that it does not play a major role in the long term.
 
 \todo
 - What is the problem with β (half-max intake density) in Illius & O’Connor (2000) and Pachzelt et al.?
