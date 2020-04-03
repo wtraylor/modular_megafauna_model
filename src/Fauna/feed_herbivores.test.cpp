@@ -97,10 +97,6 @@ TEST_CASE("Fauna::FeedHerbivores") {
       CHECK(AVAILABLE.get_mass() == 0.0);  // nothing changed
       CHECK(herbi.get_eaten() == 0.0);
     }
-
-    SECTION("diet switch") {
-      // TODO
-    }
   }
 
   SECTION("many herbivores") {
