@@ -156,7 +156,8 @@ class InsfileReader {
    * \param[in] filename Relative or absolute file path to the instruction
    * file.
    * \return The HFTs and parameters from the instruction file.
-   * \throw TODO
+   * \throw std::runtime_error If the instruction file cannot be parsed
+   * completely, contains logical errors, or has missing parameters.
    */
   InsfileReader(const std::string filename);
 
