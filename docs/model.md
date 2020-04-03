@@ -74,7 +74,7 @@ Each habitat can be thought of as a little homogenous capsulated world of forage
 
 ![Basic model entities in the Modular Megafauna Model. Aggregation units (disjunct sets of simulation units) are only needed to aggregate output spatially. Cohorts are only one possible implementation of herbivores.](images/model_entities.svg)
 
-The simulations run with daily time steps. The predecessor model by Adrian Pachzelt \cite pachzelt2013coupling operated on a monthly schedule and was thus much faster.
+The simulations run with **daily time steps.** The predecessor model by Adrian Pachzelt \cite pachzelt2013coupling operated on a monthly schedule and was thus much faster.
 However, the Modular Megafauna Model should be applicable on different spatial and temporal scales.
 LPJ-GUESS simulates vegetation in a daily schedule, and so naturally the attached herbivores should be treated the
 same.
