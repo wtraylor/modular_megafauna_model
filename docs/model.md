@@ -175,14 +175,9 @@ This efficiency factor is multiplied with the fat gross energy to derive the net
 
 ### Ontogenetic Growth
 
-\todo
-- What does the growth curve look like?
-    - Compare price1985growth [pp. 187-190] and blaxter1989energy
-      [p. 242-244].
-
-\todo Explain how growth is linear in \ref Fauna::HerbivoreBase::get_bodymass()
-
-Blaxter (1989)\cite blaxter1989energy, p. 242f:
+The growth curve is currently linear.
+The body mass of a cohort that hasn’t reached physical maturity yet is calculated as a linear interpolation between the user-defined neonate body mass and adult body mass.
+However, the growth curve should be sigmoid, compare Price (1985, pp. 187–190)\cite price1985growth and this quote by Blaxter (1989)\cite blaxter1989energy, p. 242f:
 
 > Growth in weight is characteristically sigmoid; it accelerates during a short
 > initial period and then declines until, as maturity approaches, it approaches
