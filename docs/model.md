@@ -4,6 +4,8 @@
 
 \tableofcontents
 
+## Introduction
+
 This document explains the design choices for the modules and concepts in the megafauna model from a scientific rather than a programmatical angle.
 It discusses the different submodels in the framework: what their assumptions are, how to use them, and how to combine them.
 
@@ -11,21 +13,15 @@ Because of the modular nature of the software, you can “generate” a range of
 Therefore this documentation page must not be seen as a “model description”, but rather as a loose discussion of available model components.
 It is a *living* document that ought to be expanded when new features are introduced to the library.
 
-The first section introduces the framework of the simulation scheme.
-The following four sections describe four distinct, but interlinked conceptual elements of the modeled animal ecology:
-Basic Model Concepts,
-Energy Budget,
-Reproduction,
-Mortality,
-Effects on Environment, and
-Population Dynamics.
-The last section covers some lessons learned from emerging model behavior.
-At the end of this document, you will find a list of \ref sec_symbols_and_abbreviations
+The first section, \ref sec_model_goals, shall help you clarify the direction of your modeling project.
+The section \ref sec_basic_model_concepts introduces the simulation framework of the Modular Megafauna Model: where it is flexible and where it is constrained.
+The following sections describe conceptual elements of the \ref sec_dynamic_populations, which are currently represented by the herbivore type “cohort,” and conclude with some lessons learned from emerging model behavior.
+At the end of this document, you will find a list of \ref sec_symbols_and_abbreviations and a remark on the choice of \ref sec_units_of_measurement in the model.
 
 Some aspects of the model can only be evaluated in the context of the connected vegetation model.
 For [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/) you will find those aspects in the megafauna doxygen page of the LPJ-GUESS repository.
 
-## Model Goals
+## Model Goals {#sec_model_goals}
 Before you start your modeling project, you should have your model **goal** defined.
 The formulation of the model goal paints in broad strokes a picture of the direction you want to take.
 In the next step, the definition of a model **purpose** will help you convert the goal statement into an **objective** statement.
@@ -81,6 +77,8 @@ It is up to the vegetation model to map its own representation of edible biomass
 The advantage of this approach is that the herbivore model is highly decoupled from the vegetation model.
 Placing forage types as hard-coded entities at the core of the herbivore model makes it easy to design herbivore diet preferences, foraging, and digestion around them.
 New forage types can be implemented as necessary.
+
+## Dynamic Populations {#sec_dynamic_populations}
 
 ### Herbivore Cohorts {#sec_herbivore_cohorts}
 
@@ -190,11 +188,11 @@ However, the growth curve should be sigmoid, compare Price (1985, pp. 187–190)
 > 1977). They were generalised by F.J. Richards (1959) and have been reviewed
 > and critically analysed by Parts (1982).
 
-## Energy Budget
+### Energy Budget
 
 ![Model of energy budget for a ruminant or hindgut fermenter. Modified after Minson (1990), Fig. 5.1.](images/energy_budget.svg)
 
-### Energy Expenditure
+#### Energy Expenditure
 
 The allometric scaling of metabolic rate in the megafauna model does not differentiate between inter- and intraspecific scaling.
 This model assumption might need to be re-evaluated in the future.
@@ -206,7 +204,7 @@ As Makarieva et al. \cite makarieva2009comment point out:
 
 Compare also Glazier (2005) \cite glazier2005beyond for a discussion on intraspecific metabolic scaling.
 
-### Energy Content of Forage {#sec_energy_content}
+#### Energy Content of Forage {#sec_energy_content}
 
 The model for energy content in herbivore forage presented here is based on the partitioning of metabolizable energy.
 A historical overview of the model framework is given by Ferrell & Oltjen (2008) \cite ferrell2008asas.
@@ -286,16 +284,10 @@ The net energy content is given by:
 NE = ME * k_m = DE * \frac{ME}{DE} * k_m = GE * DMD * \frac{ME}{DE} * k_m
 \f]
 
-### Maximum Daily Forage Intake {#sec_daily_forage_intake}
+#### Maximum Daily Forage Intake {#sec_daily_forage_intake}
+\todo Write something here.
 
-### Death of Starvation
-
-In the process of starvation, different fat depots are mobilized in a typical sequence: rump fat, subcutaneous fat, visceral fat, and, finally, marrow fat (Hanks, 2004/1981 \cite hanks2004characterization).
-When the energy reserves of an animal are exhausted, it will die of starvation.
-Body fat, i.e. lipid in the ingesta-free body, is then zero.
-Different studies have found that the carcasses of large herbivores that have starved to death contain virtually no body fat anymore (Reimers et al., 1982 \cite reimers1982body; Depperschmidt et al., 1987 \cite depperschmidt1987body), but chemical analysis of fat content in carcass samples can be imprecise (Depperschmidt et al., 1987).
-
-### Thermoregulation by Conductance {#sec_thermoregulation}
+#### Thermoregulation by Conductance {#sec_thermoregulation}
 
 This model of thermoregulation is often called the **Scholander-Irving model** and was published in two seminal papers in 1950: \cite scholander1950adaptation \cite scholander1950heat.
 The more detailed implementation is taken from Peters (1983) \cite peters1983ecological.
@@ -327,15 +319,13 @@ T_{crit} = T_{core} - \frac{E_{neu}}{C}
 In its current form, the model only considers costs when temperatures are too low.
 Overheating effects are not implemented since the model was developed with the focus on Arctic megafauna.
 
-#### Conductance
-
-The critical parameter for thermoregulatory expenditure is the (whole-body) conductance: the rate of heat flow per difference between core and air temperature (W/°C).
+The critical parameter for thermoregulatory expenditure is the **whole-body conductance:** the rate of heat flow per difference between core and air temperature (W/°C).
 The conductance can be approximated from the average conductivity and the body surface.
 Conductivity is the inverse of insulation: it is the heat flow per temperature difference per area.
 
 Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ ([Hudson & White 1985](\cite hudson1985bioenergetics)).
 
-### Foraging {#sec_foraging}
+#### Foraging {#sec_foraging}
 
 @startuml "Levels of herbivore intake constraints. What and how much of the available forage an herbivore ingests is limited by a cascade of internal and external factors."
 	!include diagrams.iuml!intake_limit_levels
@@ -344,9 +334,14 @@ Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ ([Hudson & White 1985
 \todo
 - What is the problem with β (half-max intake density) in Illius & O’Connor (2000) and Pachzelt et al.?
 
-## Mortality {#sec_mortality}
+### Mortality {#sec_mortality}
 
-## Effects on Environment {#sec_effects_on_environment}
+#### Death of Starvation
+
+In the process of starvation, different fat depots are mobilized in a typical sequence: rump fat, subcutaneous fat, visceral fat, and, finally, marrow fat (Hanks, 2004/1981 \cite hanks2004characterization).
+When the energy reserves of an animal are exhausted, it will die of starvation.
+Body fat, i.e. lipid in the ingesta-free body, is then zero.
+Different studies have found that the carcasses of large herbivores that have starved to death contain virtually no body fat anymore (Reimers et al., 1982 \cite reimers1982body; Depperschmidt et al., 1987 \cite depperschmidt1987body), but chemical analysis of fat content in carcass samples can be imprecise (Depperschmidt et al., 1987).
 
 ### Nitrogen Cycling {#sec_nitrogen_cycling}
 The vegetation model defines the nitrogen content in forage.
@@ -369,14 +364,14 @@ Mean retention time in hours is calculated according to Clauss et al. (2007)\cit
   MRT = 32.8 * BM^{0.07}
 \f]
 
-## Population Dynamics {#sec_population_dynamics}
+### Population Dynamics {#sec_population_dynamics}
 \todo
 - Explain the drama of population fluctuations:
 	+ What makes populations crash to zero?
 	+ What’s the problem with annual allocation?
 	+ What mechanisms have we explored to prevent population crashes?
 
-### Minimum Density Threshold {#sec_minimum_density_threshold}
+#### Minimum Density Threshold {#sec_minimum_density_threshold}
 The parameter \ref Fauna::Hft::mortality_minimum_density_threshold defines at which point a dwindling population (sum of all cohorts) may be considered dead.
 It is an arbitrary, but critical value for model performance.
 Possible re-establishment only happens if all cohorts are dead within one habitat.
@@ -386,7 +381,7 @@ After establishment, the background mortality continually diminishes the adult c
 
 On the other hand, the `minimum_density_threshold` should not be set *too* low as this would result in extremely thin “ghost” populations that are effectively preventing re-establishment.
 
-### Species Coexistence {#sec_coexistence}
+#### Species Coexistence {#sec_coexistence}
 
 The classical competitive exclusion principle predicts that no two species can coexist in the long term if they each solely depend on one shared resource (\cite hardin1960competitive).
 One species will inevitably outcompete the other one.
@@ -420,7 +415,7 @@ It is the responsibility of the host application (the vegetation model) to ensur
 
 Note that “mass” and “weight” are used interchangeably.
 
-### Units of Measurement
+## Units of Measurement {#sec_units_of_measurement}
 - All forage values (e.g. available grass biomass, consumed forage) are *dry matter mass* in kilograms (`DMkg`).
 - Any forage per area (e.g. forage in a habitat) is `kgDM/km²`.
 - Herbivore-related mass values (e.g. body mass, fat mass) are also `kg`, but live mass (see \ref sec_body_mass_and_composition).
