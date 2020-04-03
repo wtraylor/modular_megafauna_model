@@ -56,8 +56,6 @@ You might even want to consider a **preregistration,** see for example Nosek et 
 \todo
 - Limitations of the model design:
 	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
-- Explain some design choices:
-	+ Why forage types?
 
 The world of the megafauna model is comprised of **simulation units.**
 Each such unit consists of a **habitat** and the herbivore **populations** inhabiting it.
@@ -80,6 +78,13 @@ LPJ-GUESS simulates vegetation in a daily schedule, and so naturally the attache
 same.
 Moreover, there has been no formal analysis how much a coarser temporal resolution affects the model outcome.
 So it seemed better to air on the side of a finer resolution.
+
+The vegetation model makes plant biomass available to herbivores as dry matter forage mass per area.
+The megafauna model works with a hard-coded set of **forage types,** for example “grass.”
+It is up to the vegetation model to map its own representation of edible biomass to forage types, for instance by aggregating all graminoids, herbs, and forbs to one “grass” forage mass.
+The advantage of this approach is that the herbivore model is highly decoupled from the vegetation model.
+Placing forage types as hard-coded entities at the core of the herbivore model makes it easy to design herbivore diet preferences, foraging, and digestion around them.
+New forage types can be implemented as necessary.
 
 ### Herbivore Cohorts {#sec_herbivore_cohorts}
 
