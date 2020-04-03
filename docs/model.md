@@ -53,10 +53,6 @@ You might even want to consider a **preregistration,** see for example Nosek et 
 
 ## Basic Model Concepts {#sec_basic_model_concepts}
 
-\todo
-- Limitations of the model design:
-	+ After offspring is created no connection to parents ⇒ no lactation, bonding, herding, etc.
-
 The world of the megafauna model is comprised of **simulation units.**
 Each such unit consists of a **habitat** and the herbivore **populations** inhabiting it.
 The habitat must be implemented by the outside vegetation model.
@@ -108,6 +104,10 @@ Therefore, the maximum number of cohorts within one population is given by the H
 Offspring of large herbivores usually shows an even sex ratio.
 Most model processes don’t differentiate between males and females, only body size and age of maturity have sex-specific parameters.
 During the model design, it seemed advisable to at least set the basis for gender differentiation because some large herbivores do show pronounced sexual dimorphism not only in size (e.g. bison or proboscideans) but also in diet and behavior (e.g. elephants, Shannon et al. (2013)\cite shannon2013diet, and steppe bison, Guthrie (1990)\cite guthrie1990frozen).
+
+Each year, the newborn animals of all reproductive cohorts of one HFT in one habitat are combined into one new cohort.
+This effectively eliminates the connection between parents and offspring.
+Therefore it is not possible to implement an exchange of energy through lactation between parents and young directly.
 
 ### Body Mass and Composition {#sec_body_mass_and_composition}
 
