@@ -192,7 +192,7 @@ However, the growth curve should be sigmoid, compare Price (1985, pp. 187–190)
 
 ## Energy Budget
 
-![Model of energy budget for a ruminant or hindgut fermenter. Modified after Minson (1990), Fig. 5.1.](images/energy_household.svg)
+![Model of energy budget for a ruminant or hindgut fermenter. Modified after Minson (1990), Fig. 5.1.](images/energy_budget.svg)
 
 ### Energy Expenditure
 
