@@ -3,6 +3,8 @@
 
 \tableofcontents
 
+\todo Encourage to do refactoring of the architecture if it supports modularity and flexibility.
+
 ## Overview {#sec_design_overview}
 
 The megafauna model aims to apply principles of object-oriented programming as much as possible (see the page [Object-oriented Programming](\ref page_object_orientation)).
@@ -84,10 +86,8 @@ The simulation framework can operate with any class that implements \ref Fauna::
 Which class to choose is defined by the instruction file parameter \ref Fauna::Parameters::herbivore_type.
 
 Currently, only one herbivore class is implemented: \ref Fauna::HerbivoreCohort.
-
 The herbivore model performs calculations generally *per area* and not per individual.
-That’s why individual herbivores can only be simulated if an absolute habitat area size is defined.
-That is done by the parameter \ref Fauna::Parameters::habitat_area_km2.
+The area size of a habitat is undefined.
 
 @startuml "Class diagram of the default herbivore class: Fauna::HerbivoreCohort."
 	!include diagrams.iuml!herbivore_classes
@@ -260,11 +260,6 @@ That is a violation of the [Open/Closed Principle](\ref sec_open_closed).
 - Any variable that is specific to a submodule or interface implementation (e.g. `bodyfat` is specific to \ref Fauna::HerbivoreBase) will produce undefined values if that submodule is not active.
 The user is then responsible to interpret them as invalid or disable their output.
 So far, there is no check of congruency between [parameters](\ref Fauna::Parameters)/[HFT settings](\ref Fauna::Hft) and the selection of output variables in the output module.
-
-\todo
-The output data classes are currently always in a consistent state. With every new datum, the total average is recalculated.
-This is a great waste of computing power.
-It would be a lot more efficient to _first_ gather a long series of data, and _finally_ calculate the mean or sum.
 
 ------------------------------------------------------------
 

@@ -287,8 +287,7 @@ struct Hft {
 
   /// Conversion factor from fat mass to net energy [MJ/kg].
   /**
-   * The default value is from Blaxter (1989, p. 52)
-   * \cite blaxter1989energy:
+   * The default value is from Blaxter (1989, p. 52)\cite blaxter1989energy :
    * > For example, in sheep the enthalpy of combustion of the ether
    * > extracted (crude) fat is 39.1 kJ/g.
    */

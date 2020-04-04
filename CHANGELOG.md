@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added
+- Revised and expanded Doxygen page on model description/discussion.
+
 ### Changed
 - Output `eaten_nitrogen_per_ind` is now in milligram, not kilogram, per day and individual.
 

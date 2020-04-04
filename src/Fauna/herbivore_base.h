@@ -248,7 +248,7 @@ class HerbivoreBase : public HerbivoreInterface {
   /// Get forage energy content [MJ/kgDM] using selected net energy model.
   /**
    * \param digestibility Forage digestibility (for ruminants). This will be
-   * adjusted with \ref hft::digestion_digestibility_multiplier for
+   * adjusted with \ref Hft::digestion_digestibility_multiplier for
    * non-ruminants.
    * \return Net energy content in MJ/kgDM.
    * \throw std::logic_error If the net energy model is not implemented.

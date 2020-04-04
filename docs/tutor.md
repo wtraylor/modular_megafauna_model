@@ -12,14 +12,14 @@ If you want to implement a completely new model behaviour, you can derive your n
 If you want to build upon the base functionality, derive it from \ref Fauna::HerbivoreBase.
 
 Then, derive a new class from \ref Fauna::PopulationInterface to manage and construct your object instances.
-In \ref Fauna::WorldConstructor::create_population(), create that population class.
+In \ref Fauna::WorldConstructor::create_populations(), create all instances of that population class for one habitat.
 
 @startuml "Relationships for a new herbivore type."
 	!include diagrams.iuml!new_herbivore_type
 @enduml
 
 ### How to add a new energy expenditure component {#sec_new_expenditure_component}
-- Add a new enum entry in \ref Fauna::ExpenditureComponent. <!--TODO: ref-->
+- Add a new enum entry in \ref Fauna::ExpenditureComponent.
 - TOML instruction file: Add new possible string value for the HFT parameter `expenditure.components` in \ref Fauna::InsfileReader::read_hft(); include it in the error message.
 - Implement your algorithm as a free function or a class. See \ref expenditure_components.h for examples.
 - Call your model in \ref Fauna::HerbivoreBase::get_todays_expenditure().
@@ -31,7 +31,7 @@ Foraging limits are implemented as functors (without using the [strategy design 
 Which ones are activated is defined by `foraging.limits` in \ref Fauna::Hft.
 They are called in \ref Fauna::GetForageDemands::get_max_foraging().
 
-- Add a new enum entry in \ref Fauna::ForagingLimit<!--TODO: ref-->.
+- Add a new enum entry in \ref Fauna::ForagingLimit.
 - TOML instruction file: Add a new possible string value for the HFT parameter `foraging.limits` in \ref Fauna::InsfileReader::read_hft()
 - Implement your foraging limit (preferably as a function object in the file \ref foraging_limits.h, but you can do as you wish).
 Make sure that an exception is thrown if it is called with an unknown forage type.
