@@ -412,7 +412,7 @@ For further discussion and brainstorming see also these excerpts from Wolfgang T
 
 #### Minimum Density Threshold {#sec_minimum_density_threshold}
 The parameter \ref Fauna::Hft::mortality_minimum_density_threshold defines at which point a dwindling population (sum of all cohorts) may be considered dead.
-It is an arbitrary, but critical value for model performance.
+It is an arbitrary and artificial, but critical “tuning parameter” for realistic model performance.
 Possible re-establishment only happens if all cohorts are dead within one habitat.
 
 It is important to keep this parameter low enough for slowly breeding and long-lived animals because otherwise they may die out after establishment:
