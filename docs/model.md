@@ -392,11 +392,23 @@ Mean retention time in hours is calculated according to Clauss et al. (2007)\cit
 \f]
 
 ### Population Dynamics {#sec_population_dynamics}
-\todo
-- Explain the drama of population fluctuations:
-	+ What makes populations crash to zero?
-	+ What’s the problem with annual allocation?
-	+ What mechanisms have we explored to prevent population crashes?
+
+#### Population Stability
+Several qualities of the model result in a propensity towards extreme instability of the simulated herbivore populations, with exponential irruptions followed by sudden crashes (sometimes to extinction).
+Here are some of the reasons for these “boom–bust cycles”:
+
+- If there is **no regular seasonal die-off,** there is effectively **no early density dependence** effect. Herbivores just reproduce exponentially until the population crashes completely. In winter or the dry season, the fat storage should drop so far that a fraction of the population dies because then density dependence effects occur at those times when there is not enough forage in the vegetation period to completely fill all animals’ fat storage. Another controlling factor can be **variable climate:** long or harsh winters/dry seasons can also regulate the population and prevent uninterrupted exponential growth. See for example Stewart et al. (2005)\cite stewart2005densitydependent for a discussion of the roles of summer versus winter in regulating populations of large mammals.
+- There is **no resource heteregeneity,** only grass. If there was more heterogeneity with low-quality and high-quality forage, populations might be more stable (Owen-Smith 2004\cite owensmith2004functional).
+- There is **no movement** between habitats. That is, a crashing population has no way to escape extinction by moving somewhere else. The situation in each habitat is comparable to an island population (e.g. Klein 1968\cite klein1968reindeer).
+- **Annual grass allocation** in the case of MMM being coupled with LPJ-GUESS: Since LPJ-GUESS allocates one year’s NPP at the end of the year (Dec. 31st), herbivores will have to starve until the end of the year when all forage is eaten.
+
+For further discussion and brainstorming see also these excerpts from Wolfgang Traylor’s lab notebook on [Open Science Framework](https://osf.io/):
+
+- [2017-09 Why do Populations Crash?](https://osf.io/df69m/)
+- [2017-10 Christmas Present](https://osf.io/fj74e/)
+- [2017-12 Coexistence and Stability](https://osf.io/bajku/)
+- [2018-02 Closeup on a Crash](https://osf.io/5pnyg/)
+- [2018-06 Fat, Stability, and Movement](https://osf.io/8swth/)
 
 #### Minimum Density Threshold {#sec_minimum_density_threshold}
 The parameter \ref Fauna::Hft::mortality_minimum_density_threshold defines at which point a dwindling population (sum of all cohorts) may be considered dead.
