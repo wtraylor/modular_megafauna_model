@@ -415,7 +415,7 @@ The parameter \ref Fauna::Hft::mortality_minimum_density_threshold defines at wh
 It is an arbitrary, but critical value for model performance.
 Possible re-establishment only happens if all cohorts are dead within one habitat.
 
-It is important to keep this parameter low enough for slow-breeding and long-lived animals because otherwise they may die out after establishment:
+It is important to keep this parameter low enough for slowly breeding and long-lived animals because otherwise they may die out after establishment:
 After establishment, the background mortality continually diminishes the adult cohorts, and after some years the total population (all cohorts together) my drop below the `minimum_density_threshold` before reproduction could compensate.
 
 On the other hand, the `minimum_density_threshold` should not be set *too* low as this would result in extremely thin “ghost” populations that are effectively preventing re-establishment.
