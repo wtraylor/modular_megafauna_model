@@ -60,7 +60,7 @@ What kind of **herbivores** populate the world can be defined by the user.
 For the megafauna model, all habitats are of equal size and spatially inexplicit.
 Spatial meaning must be given by the outside vegetation model; for example LPJ-GUESS maps each grid cell in the longitude/latitude raster to one aggregation unit.
 Currently, there is no interaction between habitats, that is herbivores cannot move from one to the other.
-Each habitat can be thought of as a little homogenous capsulated world of forage and herbivores.
+Each habitat can be thought of as a little homogeneous capsulated world of forage and herbivores.
 
 ![Basic model entities in the Modular Megafauna Model. Aggregation units (disjunct sets of simulation units) are only needed to aggregate output spatially. Cohorts are only one possible implementation of herbivores.](images/model_entities.svg)
 
@@ -355,7 +355,7 @@ Fortin et al. 2004\cite fortin2004multitasking;
 Robinson and Merrill 2012\cite robinson2012influence).
 In the short term, grazers may be limited by encounter rate (moving between forage patches) or handling rate (cropping and chewing), which means they might not be able to ingest the amount of forage they desire even though there is enough forage available.
 However, in the long term (i.e. over days and months), the intake of grazers is most likely to be digestion-limited.
-That is because they can compensate encounter and handling limatation by increasing their daily foraging time.
+That is because they can compensate encounter and handling limitation by increasing their daily foraging time.
 In other words, the functional response curve increases so sharply with even low forage density that it does not play a major role in the long term.
 
 ### Mortality {#sec_mortality}
@@ -398,7 +398,7 @@ Several qualities of the model result in a propensity towards extreme instabilit
 Here are some of the reasons for these “boom–bust cycles”:
 
 - If there is **no regular seasonal die-off,** there is effectively **no early density dependence** effect. Herbivores just reproduce exponentially until the population crashes completely. In winter or the dry season, the fat storage should drop so far that a fraction of the population dies because then density dependence effects occur at those times when there is not enough forage in the vegetation period to completely fill all animals’ fat storage. Another controlling factor can be **variable climate:** long or harsh winters/dry seasons can also regulate the population and prevent uninterrupted exponential growth. See for example Stewart et al. (2005)\cite stewart2005densitydependent for a discussion of the roles of summer versus winter in regulating populations of large mammals.
-- There is **no resource heteregeneity,** only grass. If there was more heterogeneity with low-quality and high-quality forage, populations might be more stable (Owen-Smith 2004\cite owensmith2004functional).
+- There is **no resource heterogeneity,** only grass. If there was more heterogeneity with low-quality and high-quality forage, populations might be more stable (Owen-Smith 2004\cite owensmith2004functional).
 - There is **no movement** between habitats. That is, a crashing population has no way to escape extinction by moving somewhere else. The situation in each habitat is comparable to an island population (e.g. Klein 1968\cite klein1968reindeer).
 - **Annual grass allocation** in the case of MMM being coupled with LPJ-GUESS: Since LPJ-GUESS allocates one year’s NPP at the end of the year (Dec. 31st), herbivores will have to starve until the end of the year when all forage is eaten.
 
