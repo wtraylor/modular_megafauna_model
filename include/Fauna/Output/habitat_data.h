@@ -14,15 +14,17 @@ namespace Fauna {
 namespace Output {
 /// Habitat output data for one time unit.
 /**
- * \see \ref sec_design_output_classes
+ * \see The section on output classes in the MMM software design documentation.
  */
 struct HabitatData {
   /// Available forage in the habitat.
   Fauna::HabitatForage available_forage;
 
   /// Forage mass [kgDM/km²/day] eaten by herbivores.
-  /** This equals the sum of \ref HerbivoreData::eaten_forage_per_ind
-   * over all HFTs */
+  /**
+   * This is the sum of all forage that has been eaten by all herbivores
+   * together.
+   */
   Fauna::ForageMass eaten_forage;
 
   /// Abiotic conditions in the habitat.

@@ -36,7 +36,7 @@ class World {
    * \param instruction_filename Path to the instruction file for the megafauna
    * model. It contains global settings and herbivore parameters.
    *
-   * \throw std::logic_error If selected \ref Parameters::output_format is not
+   * \throw std::logic_error If a selected instruction file parameter is not
    * implemented.
    */
   World(const std::string instruction_filename);
