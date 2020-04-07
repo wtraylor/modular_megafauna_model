@@ -210,7 +210,6 @@ void Framework::read_instruction_file(const std::string filename) {
 
 bool Framework::run(const std::string insfile_fauna,
                     const std::string insfile_demo) {
-  Fauna::Parameters global_params;
   std::unique_ptr<Fauna::World> fauna_world;
 
   try {

@@ -8,7 +8,6 @@ project ("Modular Megafauna Model"
 set (SOURCE_FILES
   external/cpptoml/include/cpptoml.h
   include/Fauna/Output/habitat_data.h
-  include/Fauna/Output/text_table_writer_options.h
   include/Fauna/average.h
   include/Fauna/date.h
   include/Fauna/environment.h
@@ -17,7 +16,6 @@ set (SOURCE_FILES
   include/Fauna/grass_forage.h
   include/Fauna/habitat.h
   include/Fauna/habitat_forage.h
-  include/Fauna/parameters.h
   include/Fauna/world.h
   src/Fauna/Output/aggregator.cpp
   src/Fauna/Output/aggregator.h
@@ -28,6 +26,7 @@ set (SOURCE_FILES
   src/Fauna/Output/herbivore_data.h
   src/Fauna/Output/text_table_writer.cpp
   src/Fauna/Output/text_table_writer.h
+  src/Fauna/Output/text_table_writer_options.h
   src/Fauna/Output/writer_interface.h
   src/Fauna/average.cpp
   src/Fauna/breeding_season.cpp
@@ -78,6 +77,7 @@ set (SOURCE_FILES
   src/Fauna/nitrogen.cpp
   src/Fauna/nitrogen.h
   src/Fauna/parameters.cpp
+  src/Fauna/parameters.h
   src/Fauna/population_interface.cpp
   src/Fauna/population_interface.h
   src/Fauna/population_list.h

@@ -5,6 +5,7 @@
  * \date 2019
  */
 #include "catch.hpp"
+#include "parameters.h"
 #include "population_list.h"
 #include "simple_habitat.h"
 

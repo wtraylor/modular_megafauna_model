@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Changed
 - Output `eaten_nitrogen_per_ind` is now in milligram, not kilogram, per day and individual.
+- Remove `Fauna::Parameters` from the library’s include interface.
+- The Doxygen documentation of the library’s include interface can be parsed without errors.
 
 ### Removed
 - Individual mode. [#7]
