@@ -34,7 +34,8 @@ Usage
 The first step in working with the model is to create the documentation and read the introductory pages.
 On the Quickstart page you will find instructions for compiling the source code.
 
-If you don’t want or are unable to compile the documentation, you can also open the file [docs/quickstart.md](docs/quickstart.md) and the other markdown files in `docs/` directly.
+The compiled documentation of the latest release is currently available for download as a ZIP file from Open Science Framework [here](https://osf.io/jzn5a/download).
+As soon as this repository is public, the documentation will be available on [Read the Docs](http://readthedocs.io/) (issue [#22](https://github.com/wtraylor/modular_megafauna_model/issues/22)).
 
 ### Compile the Doxygen Documentation
 
