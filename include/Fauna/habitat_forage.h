@@ -26,7 +26,10 @@ class HabitatForage {
   // ADD NEW FORAGE TYPES (E.G. BROWSE) HERE.
 
   /// Get digestibility [fractional] for all edible forage types.
-  /** If mass is zero, digestibility is undefined.*/
+  /**
+   * If mass is zero, digestibility is undefined.
+   * \see \ref sec_energy_content
+   */
   Digestibility get_digestibility() const;
 
   /// Get dry matter mass [kgDM/km²] for all edible forage types.
