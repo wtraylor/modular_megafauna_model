@@ -229,7 +229,7 @@ Therefore digestibility is modeled as the *one* indicator for forage quality, i.
 This neglects any other effects on the digestibility, like interactions of different forages or effects of the individual animal on the digestibility.
 Digestibility is best measured *in vivo* in the rumen of a living ruminant, but there exist various indirect methods with reliable conversions.
 For an overview see Minson (1990) \cite minson1990forage and McDonald (2010) \cite mcdonald2010animal.
-Formulas in the megafauna model assume *in vivo* digestibility.
+In order to precisely define the model interface: Formulas in the megafauna model assume *in vivo* digestibility of livestock ruminants.
 
 Research has focused mainly on the digestion of ruminant livestock, and so the megafauna model works primarily with the well-established formulas for ruminants.
 Digestibility is also defined for ruminants.
