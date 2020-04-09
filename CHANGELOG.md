@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Output `eaten_nitrogen_per_ind` is now in milligram, not kilogram, per day and individual.
 - Remove `Fauna::Parameters` from the library’s include interface.
 - The Doxygen documentation of the library’s include interface can be parsed without errors.
+- Reproductive success at parturition is now based on body condition at day of conception. [#10]
 
 ### Removed
 - Individual mode. [#7]
@@ -122,3 +123,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [#5]: https://github.com/wtraylor/modular_megafauna_model/issues/5
 [#6]: https://github.com/wtraylor/modular_megafauna_model/issues/6
 [#7]: https://github.com/wtraylor/modular_megafauna_model/issues/7
+[#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10

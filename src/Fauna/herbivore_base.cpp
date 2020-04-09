@@ -415,13 +415,13 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
                                           get_hft().reproduction_logistic[1]);
       // get today’s value
       return logistic.get_offspring_density(
-          get_today(), body_condition_gestation.get_average());
+          get_today(), body_condition_gestation.get_first());
     }
     case (ReproductionModel::Linear): {
       const ReproductionLinear linear(breeding_season,
                                       get_hft().reproduction_annual_maximum);
       return linear.get_offspring_density(
-          get_today(), body_condition_gestation.get_average());
+          get_today(), body_condition_gestation.get_first());
     }
     case (ReproductionModel::None): {
       return 0.0;

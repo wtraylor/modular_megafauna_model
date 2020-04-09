@@ -55,6 +55,12 @@ class PeriodAverage {
    */
   double get_average() const;
 
+  /// Get first (oldest) value in the record.
+  /**
+   * \throw std::logic_error If no values were added yet.
+   */
+  double get_first() const;
+
  private:
   std::vector<double> values;
   unsigned int count;  // constant

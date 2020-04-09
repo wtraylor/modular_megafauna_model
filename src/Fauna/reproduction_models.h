@@ -75,8 +75,8 @@ class ReproductionLogistic {
   /// Get the amount of offspring for one day in the year.
   /**
    * \param day_of_year Day of year (0=Jan 1st).
-   * \param body_condition Current fat mass divided by
-   * potential maximum fat mass [kg/kg].
+   * \param body_condition Fat mass divided by potential maximum fat mass
+   * [kg/kg].
    * \return The average number of children a female gives
    * birth to at given day.
    * \throw std::invalid_argument If `day_of_year` not in [0,364]
@@ -138,8 +138,8 @@ class ReproductionLinear {
   /// Get the amount of offspring for one day in the year.
   /**
    * \param day_of_year Day of year (0=Jan 1st).
-   * \param body_condition Current fat mass divided by
-   * potential maximum fat mass [kg/kg].
+   * \param body_condition Fat mass divided by potential maximum fat mass
+   * [kg/kg].
    * \return The average number of children a female gives birth to at
    * given day.
    * \throw std::invalid_argument If `day_of_year` not in [0,364]
