@@ -35,8 +35,8 @@ typedef std::vector<std::shared_ptr<const Hft> > HftList;
  * \f[
  * x = c * M^e
  * \f]
- * - $c$ = \ref coefficient
- * - $e$ = \ref exponent
+ * - \f$c\f$ = \ref coefficient
+ * - \f$e\f$ = \ref exponent
  */
 struct AllometryParameters {
   /// Constructor.
