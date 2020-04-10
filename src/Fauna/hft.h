@@ -413,7 +413,7 @@ struct Hft {
    */
   double digestion_digestibility_multiplier = 1.0;
 
-  /// Constants i, j, k for \ref DigestionLimit::IlliusGordon1992 (grass only).
+  /// Constants i, j, k for \ref DigestiveLimit::IlliusGordon1992 (grass only).
   /**
    * Shipley et al. (1999)\cite shipley1999predicting derived the parameters i,
    * j, and k from regression analysis with 12 mammalian herbivores (0.05--547
@@ -426,7 +426,7 @@ struct Hft {
    * | k   | 0.080   | 0.077    |
    *
    * \see \ref get_digestive_limit_illius_gordon_1992()
-   * \see \ref DigestionLimit::IlliusGordon1992
+   * \see \ref DigestiveLimit::IlliusGordon1992
    */
   std::array<double, 3> digestion_i_g_1992_ijk = {0.034, 3.565, 0.077};
 
