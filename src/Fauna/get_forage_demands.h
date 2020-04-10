@@ -13,8 +13,22 @@
 
 namespace Fauna {
 // Forward Declarations
+class GivenPointAllometry;
 class Hft;
 enum class Sex;
+
+/// Extrapolate/Interpolate allometrically from a value for adult male.
+/**
+ * \param allometry Parameters to define the allometric relationship.
+ * \param bodymass_male_adult The body mass of an adult, male animal. See
+ * \ref Hft::bodymass_male_adult.
+ * \param bodymass Current body mass of the animal for which the value is to be
+ * calculated.
+ * \throw std::invalid_argument If any given parameter is outside of the
+ * allowed range.
+ */
+double calc_allometry(const GivenPointAllometry& allometry,
+                      const double bodymass_male_adult, const double bodymass);
 
 /// Function object to calculate forage demands for a herbivore.
 /**
