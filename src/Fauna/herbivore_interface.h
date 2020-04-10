@@ -39,8 +39,10 @@ struct HerbivoreInterface {
    * \param digestibility Proportional forage digestibility.
    * \throw std::logic_error If `forage` exceeds
    * intake constraints of maximal foraging and digestion.
-   * \throw std::logic_error If this herbivore is dead or
-   * has no individuals.
+   * \throw std::logic_error If this herbivore is dead or has no individuals.
+   * \throw std::invalid_argument If `N_kg_per_km2` is larger than `kg_per_km2`
+   * for a forage type. The nitrogen mass is only a fraction of dry matter, and
+   * there cannot be more then 100% nitrogen in the forage.
    */
   virtual void eat(const ForageMass& kg_per_km2,
                    const Digestibility& digestibility,

@@ -12,7 +12,6 @@
 #include "Fauna/forage_values.h"
 #include "Fauna/habitat.h"
 #include "Fauna/habitat_forage.h"
-#include "Fauna/parameters.h"
 #include "Fauna/world.h"
 
 #endif  // MODULAR_MEGAFAUNA_LIBRARY_H

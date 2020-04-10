@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
 project ("Modular Megafauna Model"
-  VERSION 0.4.0
+  VERSION 0.5.0
   DESCRIPTION "A physiological, dynamic herbivore simulator in C++."
   LANGUAGES CXX
   )
@@ -8,7 +8,6 @@ project ("Modular Megafauna Model"
 set (SOURCE_FILES
   external/cpptoml/include/cpptoml.h
   include/Fauna/Output/habitat_data.h
-  include/Fauna/Output/text_table_writer_options.h
   include/Fauna/average.h
   include/Fauna/date.h
   include/Fauna/environment.h
@@ -17,7 +16,6 @@ set (SOURCE_FILES
   include/Fauna/grass_forage.h
   include/Fauna/habitat.h
   include/Fauna/habitat_forage.h
-  include/Fauna/parameters.h
   include/Fauna/world.h
   src/Fauna/Output/aggregator.cpp
   src/Fauna/Output/aggregator.h
@@ -28,6 +26,7 @@ set (SOURCE_FILES
   src/Fauna/Output/herbivore_data.h
   src/Fauna/Output/text_table_writer.cpp
   src/Fauna/Output/text_table_writer.h
+  src/Fauna/Output/text_table_writer_options.h
   src/Fauna/Output/writer_interface.h
   src/Fauna/average.cpp
   src/Fauna/breeding_season.cpp
@@ -38,8 +37,6 @@ set (SOURCE_FILES
   src/Fauna/create_herbivore_cohort.h
   src/Fauna/create_herbivore_common.cpp
   src/Fauna/create_herbivore_common.h
-  src/Fauna/create_herbivore_individual.cpp
-  src/Fauna/create_herbivore_individual.h
   src/Fauna/date.cpp
   src/Fauna/date_interval.cpp
   src/Fauna/date_interval.h
@@ -67,14 +64,10 @@ set (SOURCE_FILES
   src/Fauna/herbivore_base.h
   src/Fauna/herbivore_cohort.cpp
   src/Fauna/herbivore_cohort.h
-  src/Fauna/herbivore_individual.cpp
-  src/Fauna/herbivore_individual.h
   src/Fauna/herbivore_interface.h
   src/Fauna/herbivore_vector.h
   src/Fauna/hft.cpp
   src/Fauna/hft.h
-  src/Fauna/individual_population.cpp
-  src/Fauna/individual_population.h
   src/Fauna/insfile_reader.cpp
   src/Fauna/insfile_reader.h
   src/Fauna/mortality_factors.cpp
@@ -84,6 +77,7 @@ set (SOURCE_FILES
   src/Fauna/nitrogen.cpp
   src/Fauna/nitrogen.h
   src/Fauna/parameters.cpp
+  src/Fauna/parameters.h
   src/Fauna/population_interface.cpp
   src/Fauna/population_interface.h
   src/Fauna/population_list.h
@@ -147,9 +141,7 @@ if (BUILD_TESTING)
     src/Fauna/habitat_forage.test.cpp
     src/Fauna/herbivore_base.test.cpp
     src/Fauna/herbivore_cohort.test.cpp
-    src/Fauna/herbivore_individual.test.cpp
     src/Fauna/hft.test.cpp
-    src/Fauna/individual_population.test.cpp
     src/Fauna/insfile_reader.test.cpp
     src/Fauna/mortality_factors.test.cpp
     src/Fauna/net_energy_models.test.cpp

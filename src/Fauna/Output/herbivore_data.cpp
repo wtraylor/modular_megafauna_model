@@ -159,4 +159,3 @@ HerbivoreData HerbivoreData::create_datapoint(
 
   return result;
 }
-

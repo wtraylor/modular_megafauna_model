@@ -21,38 +21,38 @@ double g_m2_to_kg_km2(const double g_m2) { return g_m2 * 1000; }
 }  // namespace
 
 /// Run the demo simulation with parameters read from instruction file
-/** \todo Print version, print help */
 int main(int argc, char* argv[]) {
   std::string insfile_fauna;
   std::string insfile_demo;
   try {
-    std::cerr << "This is the demo simulator for the Modular Megafauna Model."
-              << std::endl;
-
     // The singleton instance for managing the whole simulation.
     Framework& framework = Framework::get_instance();
 
-    // Read ins file from command line parameters.
-    // We expect two arguments: the two instruction files.
-    if (argc == 3) {
-      if (std::string(argv[1]) == "--help" || std::string(argv[1]) == "-help")
+    if (argc == 2) {
+      if (std::string(argv[1]) == "--help" || std::string(argv[1]) == "-help") {
         framework.print_help();
-      else {
-        insfile_fauna = argv[1];
-        insfile_demo = argv[2];
+        return EXIT_SUCCESS;
+      } else {
+        framework.print_usage();
+        return EXIT_FAILURE;
+      }
+    } else if (argc == 3) {
+      std::cerr << "This is the demo simulator for the Modular Megafauna Model."
+                << std::endl;
+      // Read ins file from command line parameters.
+      // We expect two arguments: the two instruction files.
+      insfile_fauna = argv[1];
+      insfile_demo = argv[2];
+      // Run the simulation with the global parameters
+      const bool success = framework.run(insfile_fauna, insfile_demo);
+      if (!success) {
+        std::cerr << "Exiting simulation." << std::endl;
+        return EXIT_FAILURE;
       }
     } else {
       framework.print_usage();
       return EXIT_FAILURE;
     }
-
-    // Run the simulation with the global parameters
-    const bool success = framework.run(insfile_fauna, insfile_demo);
-    if (!success) {
-      std::cerr << "Exiting simulation." << std::endl;
-      return EXIT_FAILURE;
-    }
-
   } catch (const std::exception& e) {
     std::cerr << "Unhandled exception:\n" << e.what() << std::endl;
     return EXIT_FAILURE;
@@ -66,9 +66,13 @@ int main(int argc, char* argv[]) {
 
 void Framework::print_help() {
   // We use C++11 raw string literals like a Bash Here Document.
-  // TODO: complete help message
   std::cout << R"EOF(
-This is a stub help message.
+This is the demo simulator of the Modular Megafauna Model (MMM). It only
+implements a very simple logistic grass growth model. It’s purpose is not
+to simulate ecosystems, but to demonstrate how to integrate the megafauna
+library in a vegetation model. Moreover, it serves as a testing framework
+to run the megafauna model with as little overhead as possible and in a
+controlled environment.
 )EOF";
 }
 
@@ -77,7 +81,7 @@ void Framework::print_usage() {
   std::cerr << R"EOF(
 Usage:
   megafauna_demo_simulator <fauna_instruction_file> <simulation_instruction_file>
-  megafauna_demo_simulator -help
+  megafauna_demo_simulator --help
 )EOF";
 }
 
@@ -206,7 +210,6 @@ void Framework::read_instruction_file(const std::string filename) {
 
 bool Framework::run(const std::string insfile_fauna,
                     const std::string insfile_demo) {
-  Fauna::Parameters global_params;
   std::unique_ptr<Fauna::World> fauna_world;
 
   try {
@@ -256,8 +259,7 @@ bool Framework::run(const std::string insfile_fauna,
       // PRINT PROGRESS
       std::cerr << "\r\e[2K"  // clear line
                 << "Year: " << year + 1 << "/" << params.nyears
-                << " Day: " << day_of_year + 1
-                << std::flush;
+                << " Day: " << day_of_year + 1 << std::flush;
 
       // VEGATATION AND HERBIVORE SIMULATION
       const bool do_herbivores = true;

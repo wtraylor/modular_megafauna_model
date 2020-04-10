@@ -33,15 +33,10 @@ class World {
  public:
   /// Constructor: Read parameters and HFTs from instruction file.
   /**
-   * \todo Shall this throw an exception on malformed instruction file? The way
-   * the framework() function in LPJ-GUESS is constructed it does not work well
-   * to catch an exception. So perhaps Fauna::World::World() should just write
-   * to stderr and *then* throw an exception?
-   *
    * \param instruction_filename Path to the instruction file for the megafauna
    * model. It contains global settings and herbivore parameters.
    *
-   * \throw std::logic_error If selected \ref Parameters::output_format is not
+   * \throw std::logic_error If a selected instruction file parameter is not
    * implemented.
    */
   World(const std::string instruction_filename);

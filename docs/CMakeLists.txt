@@ -76,6 +76,11 @@ if (DOXYGEN_FOUND)
     ALL
     COMMENT "Generating doxygen documentation..."
     )
+
+  # Print message after "megafauna_docs" is completed.
+  add_custom_command (TARGET megafauna_docs POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "The documentation is ready. Open docs/html/index.html in your browser."
+    )
 else (DOXYGEN_FOUND)
   message (
     WARNING "Doxygen does not seem to be installed. No documentation will be

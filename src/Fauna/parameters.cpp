@@ -23,13 +23,6 @@ bool Parameters::is_valid(std::string& messages) const {
     is_valid = false;
   }
 
-  if (herbivore_type == HerbivoreType::Individual)
-    if (habitat_area_km2 <= 0.0) {
-      stream << "habitat_area_km2 must be >0 with individual herbiovres."
-             << std::endl;
-      is_valid = false;
-    }
-
   for (const auto ft : FORAGE_TYPES)
     if (forage_gross_energy[ft] == 0.0)
       stream << "forage.gross_energy." << get_forage_type_name(ft)

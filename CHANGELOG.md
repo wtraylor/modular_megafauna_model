@@ -3,6 +3,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2020-04-10
+
+### Added
+- Revised and expanded Doxygen page on model description/discussion.
+- Parameter `hft.expenditure.fmr_multiplier`. [#9]
+
+### Changed
+- Output `eaten_nitrogen_per_ind` is now in milligram, not kilogram, per day and individual.
+- Remove `Fauna::Parameters` from the library’s include interface.
+- The Doxygen documentation of the library’s include interface can be parsed without errors.
+- Reproductive success at parturition is now based on body condition at day of conception. [#10]
+- Scale maximum daily intake (DMI) allometrically from fraction of adult mass. [#8]
+    - Parameter `hft.digestion.allometric.coefficient` changed to `.value_male_adult`.
+- Expenditure component `Allometric` is now `BasalMetabolicRate` and `FieldMetabolicRate`. [#9]
+    - Parameter `hft.expenditure.allometric` changed to `.basal_rate`.
+
+### Removed
+- Individual mode. [#7]
+
 ## [0.4.0] - 2020-03-27
 
 ### Added
@@ -95,7 +114,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.4.0...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.0...develop
+[0.5.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/wtraylor/modular_megafauna_model/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.2.0...0.3.0
@@ -104,4 +124,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 [#1]: https://github.com/wtraylor/modular_megafauna_model/issues/1
 [#2]: https://github.com/wtraylor/modular_megafauna_model/issues/2
+[#3]: https://github.com/wtraylor/modular_megafauna_model/issues/3
+[#4]: https://github.com/wtraylor/modular_megafauna_model/issues/4
 [#5]: https://github.com/wtraylor/modular_megafauna_model/issues/5
+[#6]: https://github.com/wtraylor/modular_megafauna_model/issues/6
+[#7]: https://github.com/wtraylor/modular_megafauna_model/issues/7
+[#8]: https://github.com/wtraylor/modular_megafauna_model/issues/8
+[#9]: https://github.com/wtraylor/modular_megafauna_model/issues/9
+[#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10

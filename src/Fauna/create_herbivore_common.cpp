@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Base class for creating herbivore cohorts & individuals.
+ * \brief Base class for creating herbivore cohorts.
  * \copyright ...
  * \date 2019
  */

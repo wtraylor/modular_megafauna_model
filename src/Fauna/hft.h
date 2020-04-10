@@ -35,8 +35,8 @@ typedef std::vector<std::shared_ptr<const Hft> > HftList;
  * \f[
  * x = c * M^e
  * \f]
- * - $c$ = \ref coefficient
- * - $e$ = \ref exponent
+ * - \f$c\f$ = \ref coefficient
+ * - \f$e\f$ = \ref exponent
  */
 struct AllometryParameters {
   /// Constructor.
@@ -51,6 +51,28 @@ struct AllometryParameters {
 
   /// Calculate the result of the formula.
   double calc(const double M) const { return coefficient * pow(M, exponent); }
+};
+
+/// Parameters for an allometric relationship with exponent and one point.
+/**
+ * The allometric relationship is \f$ f(M) = c * M^e \f$, where \f$c\f$ is the
+ * coefficient and \f$e\f$ is the \ref exponent. The coefficient is calculated
+ * from a given point \f$(x|y)\f$ with
+ * \f$x = f(y) = c * y^e \iff c = x * y^{-e} \f$.
+ *
+ * Generally, \f$y\f$ is the body mass of an adult male
+ * (\ref Hft::body_mass_male). This is because males are typically larger than
+ * females. Allometric extrapolating from smaller females to larger males would
+ * be more uncertain than the other way round.
+ *
+ * \see \ref calc_allometry()
+ */
+struct GivenPointAllometry {
+  /// Exponent \f$e\f$ in \f$f(M) = c * M^e\f$.
+  double exponent;
+
+  /// Value \f$f(m)\f$ if \f$m\f$ is \ref Hft::body_mass_male.
+  double value_male_adult;
 };
 
 /// Selector for a function of how to calculate whole-body conductance.
@@ -117,19 +139,35 @@ enum class DigestiveLimit {
 
 /// Algorithm to calculate a herbivore’s daily energy needs.
 enum class ExpenditureComponent {
-  /// Simple exponential expenditure function based on current body mass.
+  /// Only the allometric basal metabolic rate.
   /**
    * \f[
-   * E = c * M^e
+   * BMR = c * M^e
    * \f]
-   * - $E$: Daily energy expenditure [MJ/ind/day]
-   * - $c$: Coefficient (\ref AllometryParameters::coefficient in
-   *   member \ref Hft::expenditure_allometric)
-   * - $M$: Current body mass [kg/ind]
-   * - $e$: Allometric exponent (\ref AllometryParameters::exponent in
-   *   member \ref Hft::expenditure_allometric)
+   * - \f$BMR\f$: Basal metabolic rate [MJ/ind/day]. Fasting expenditure at
+   *   rest in the thermoneutral zone.
+   * - \f$c\f$: Coefficient, derived from
+   *   \ref GivenPointAllometry::value_male_adult in
+   *   \ref Hft::expenditure_basal_rate.
+   * - \f$M\f$: Current body mass [kg/ind]
+   * - \f$e\f$: Allometric exponent (\ref AllometryParameters::exponent in
+   *   member \ref Hft::expenditure_basal_rate)
    */
-  Allometric,
+  BasalMetabolicRate,
+
+  /// Allometric basal metabolic rate with FMR constant multiplier.
+  /**
+   *
+   * \f[
+   * FMR = f * BMR = f * c * M^e
+   * \f]
+   * - \f$FMR\f$: Field metabolic rate [MJ/ind/day]. Total daily energy
+   *   expenditure.
+   * - \f$f\f$: Constant factor to convert from BMR to FMR.
+   *   \ref Hft::expenditure_fmr_multiplier.
+   * - See \ref ExpenditureComponent::BasalMetabolicRate for the other symbols.
+   */
+  FieldMetabolicRate,
 
   /// Formula for field metabolic rate in cattle:
   /// \ref get_expenditure_taylor_1981()
@@ -276,8 +314,6 @@ struct Hft {
   /**
    * Body condition is the proportion of current body fat relative to
    * physiological maximum.
-   * For herbivore individuals, the standard deviation refers to the
-   * whole population. In cohort mode, it refers only to one cohort.
    *
    * \note For juveniles (1st year of life), body fat variation is
    * always zero in order to avoid artificially high death rates if
@@ -289,8 +325,7 @@ struct Hft {
 
   /// Conversion factor from fat mass to net energy [MJ/kg].
   /**
-   * The default value is from Blaxter (1989, p. 52)
-   * \cite blaxter1989energy:
+   * The default value is from Blaxter (1989, p. 52)\cite blaxter1989energy :
    * > For example, in sheep the enthalpy of combustion of the ether
    * > extracted (crude) fat is 39.1 kJ/g.
    */
@@ -367,7 +402,7 @@ struct Hft {
 
   /** @{ \name "digestion": Digestion-related parameters. */
   /// Parameters for \ref DigestiveLimit::Allometric
-  AllometryParameters digestion_allometric = {0.05, 0.76};
+  GivenPointAllometry digestion_allometric = {0.05, 0.75};
 
   /// Factor to change ruminant digestibility for other digestion types.
   /**
@@ -378,7 +413,7 @@ struct Hft {
    */
   double digestion_digestibility_multiplier = 1.0;
 
-  /// Constants i, j, k for \ref DigestionLimit::IlliusGordon1992 (grass only).
+  /// Constants i, j, k for \ref DigestiveLimit::IlliusGordon1992 (grass only).
   /**
    * Shipley et al. (1999)\cite shipley1999predicting derived the parameters i,
    * j, and k from regression analysis with 12 mammalian herbivores (0.05--547
@@ -391,7 +426,7 @@ struct Hft {
    * | k   | 0.080   | 0.077    |
    *
    * \see \ref get_digestive_limit_illius_gordon_1992()
-   * \see \ref DigestionLimit::IlliusGordon1992
+   * \see \ref DigestiveLimit::IlliusGordon1992
    */
   std::array<double, 3> digestion_i_g_1992_ijk = {0.034, 3.565, 0.077};
 
@@ -450,12 +485,28 @@ struct Hft {
   /** @} */
 
   /** @{ \name "expenditure": Energy expenditure parameters. */
-  /// Parameters for \ref ExpenditureComponent::Allometric.
-  AllometryParameters expenditure_allometric = {0.4, 0.75};
+  /// Allometric parameters for basal metabolic rate (BMR).
+  /**
+   * \ref GivenPointAllometry::value_male_adult is daily basal metabolic rate
+   * in MJ/day for an adult male individual (\ref body_mass_male).
+   * The exponent (\ref GivenPointAllometry::exponent) should match the scaling
+   * of intake so that energy input and expenditure are balance for all
+   * possible body masses.
+   * \see \ref ExpenditureComponent::BasalMetabolicRate
+   * \see \ref ExpenditureComponent::FieldMetabolicRate
+   */
+  GivenPointAllometry expenditure_basal_rate = {7.5, 0.75};
 
   /// Energy expenditure components, summing up to actual expenditure.
   std::set<ExpenditureComponent> expenditure_components = {
-      ExpenditureComponent::Allometric};
+      ExpenditureComponent::FieldMetabolicRate};
+
+  /// Constant factor to convert from BMR (basal rate) to FMR (field rate).
+  /**
+   * \see \ref ExpenditureComponent::FieldMetabolicRate
+   * \see \ref expenditure_basal_rate
+   */
+  double expenditure_fmr_multiplier = 2.0;
   /** @} */
 
   /** @{ \name "foraging": Parameters regulating food intake. */

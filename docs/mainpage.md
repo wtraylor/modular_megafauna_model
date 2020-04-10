@@ -25,10 +25,13 @@ Write a test for each one of your new classes!
 Check all of its public methods and see what example test scenarios it has to fulfill.
 Also check if exceptions are thrown correctly.
 
+A scientifically important paradigm of this library is that **no parameters are hard-coded.**
+Any biologically relevant parameter value is subject to uncertainty.
+In order to be included in a sensitivity/uncertainty analysis, the parameter must be in the instruction file.
+
 ## Integration into a Vegetation Model
 
 If you want to introduce the megafauna library to a vegetation model, you should study the code of the demo simulator (`tools/demo_simulator`) and its documentation on the page \ref page_demo_simulator.
-<!--TODO: Add advice on dynamic vs. static library to comply with library license.-->
 
 -------------------------------------------------
 

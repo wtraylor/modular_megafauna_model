@@ -12,6 +12,38 @@
 
 using namespace Fauna;
 
+TEST_CASE("Fauna::calc_allometry()") {
+  // An arbitrary value: the y value for adult male body mass.
+  static const double Y = 1.3;
+
+  // Typical case without error.
+  REQUIRE_NOTHROW(calc_allometry(GivenPointAllometry({0.75, Y}), 10, 8));
+  // Exponent <= 0
+  CHECK_THROWS(calc_allometry(GivenPointAllometry({-0.1, Y}), 10, 10));
+  CHECK_THROWS(calc_allometry(GivenPointAllometry({0, Y}), 10, 10));
+  // Body mass <= 0
+  CHECK_THROWS(calc_allometry(GivenPointAllometry({0.75, Y}), 0, 10));
+  CHECK_THROWS(calc_allometry(GivenPointAllometry({0.75, Y}), 10, 0));
+  CHECK_THROWS(calc_allometry(GivenPointAllometry({0.75, Y}), 10, -5));
+  CHECK_THROWS(calc_allometry(GivenPointAllometry({0.75, Y}), -10, -5));
+
+  // Whatever the adult male body mass and the exponent are, the given y value
+  // will be the result if current body mass equals adult male body mass.
+  CHECK(calc_allometry(GivenPointAllometry({0.73, Y}), 10, 10) == Approx(Y));
+  CHECK(calc_allometry(GivenPointAllometry({0.25, Y}), 8, 8) == Approx(Y));
+  CHECK(calc_allometry(GivenPointAllometry({0.89, Y}), 800, 800) == Approx(Y));
+
+  // Check some arbitrary numbers.
+
+  static const double M = 100;   // [kg] An arbitrary adult male body mass.
+  static const double E = 0.75;  // exponent
+  static const GivenPointAllometry ALLOMETRY = {E, Y};
+  // Calculate the coefficient $c$ in $y = c * M^e$.
+  static const double C = Y / pow(M, E);
+  for (const double m : {0.1, 15.0, 100.0, 132.0, 200.0})
+    CHECK(calc_allometry(ALLOMETRY, M, m) == Approx(C * pow(m, E)));
+}
+
 TEST_CASE("Fauna::GetForageDemands") {
   // constructor exceptions
   CHECK_THROWS(GetForageDemands(NULL, Sex::Male));

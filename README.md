@@ -4,7 +4,7 @@ Modular Megafauna Model
 Overview
 --------
 
-The modular megafauna model (M³ or “Triple-M”) is a dynamic, mechanistic, and process-based abstraction of large herbivore populations through space and time.
+The Modular Megafauna Model (MMM) is a dynamic, mechanistic, and process-based abstraction of large herbivore populations through space and time.
 Herbivores feed, grow, reproduce, and die on a daily simulation cycle.
 The amount of forage as well as relevant environment variables need to be supplied by the calling program, for instance by a dynamic global vegetation model (DGVM).
 
@@ -14,9 +14,6 @@ Likewise, the megafauna model is ignorant of calendar dates, but is only aware o
 As the name suggests, modularity is a primary design goal.
 Processes and model components can be switched on and off, replaced, and expanded.
 Since this C++ library is Free Software, the scientific community is encouraged to use, study, change, and redistribute the source code.
-
-<!--TODO: Is the name “Triple-M” or M³ appropriate?-->
-<!--TODO: Is Free Software applicable after the license is chosen?-->
 
 Repository Structure
 --------------------
@@ -37,7 +34,8 @@ Usage
 The first step in working with the model is to create the documentation and read the introductory pages.
 On the Quickstart page you will find instructions for compiling the source code.
 
-If you don’t want or are unable to compile the documentation, you can also open the file [docs/quickstart.md](docs/quickstart.md) and the other markdown files in `docs/` directly.
+The compiled documentation of the latest release is currently available for download as a ZIP file from Open Science Framework [here](https://osf.io/jzn5a/download).
+As soon as this repository is public, the documentation will be available on [Read the Docs](http://readthedocs.io/) (issue [#22](https://github.com/wtraylor/modular_megafauna_model/issues/22)).
 
 ### Compile the Doxygen Documentation
 
@@ -81,9 +79,10 @@ On the index/main page of the Doxygen documentation you will be directed to the 
 Known Bugs and Issues
 ---------------------
 
-Currently no bugs are known to the author.
-If you discover a bug, please use the issue tracker to report it, or fork this repository, fix the bug, and request a pull into the main repository.
-<!--TODO: link to instruction for GitHub workflow-->
+Known bugs and improvements are collected in the [GitHub issue tracker](https://github.com/wtraylor/modular_megafauna_model/issues/).
+If you discover a new bug, please use the issue tracker to [report](https://github.com/wtraylor/modular_megafauna_model/issues/new) it.
+If you can fix it yourself, fork this repository, fix the bug, and request a pull into the main repository.
+Compare [Understanding the GitHub flow](https://guides.github.com/introduction/flow/).
 
 Authors
 -------

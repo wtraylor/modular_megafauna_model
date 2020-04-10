@@ -9,7 +9,6 @@
 [simulation]
 establishment_interval = 3650 # every 10 years
 forage_distribution    = "Equally"
-habitat_area_km2       = 1.0  # km² per habitat
 herbivore_type         = "Cohort"
 one_hft_per_habitat    = true
 
@@ -83,7 +82,7 @@ length = 30  # days
 start  = 121 # Julian day
 
 [hft.digestion]
-allometric       = { coefficient                = 0.050, exponent = 0.76 }
+allometric       = { fraction_male_adult = 0.05, exponent = 0.75 }
 fixed_fraction   = 0.05 # kgDM per kg body mass
 k_fat            = 0.5
 k_maintenance    = 0.7
@@ -92,11 +91,12 @@ net_energy_model = "GrossEnergyFraction"
 
 [hft.establishment]
 age_range = { first = 1, last = 15 } # years
-density   = 1.0       # ind/km²
+density   = 1.0 # ind/km²
 
 [hft.expenditure]
-allometric = { coefficient = 0.4, exponent = 0.75 }
-components = [ "Allometric" ]
+basal_rate     = { mj_per_day_male_adult = 7.5, exponent = 0.75 }
+components     = [ "FieldMetabolicRate" ]
+fmr_multiplier = 2.0
 
 [hft.foraging]
 diet_composer           = "PureGrazer"

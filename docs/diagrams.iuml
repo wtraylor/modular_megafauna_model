@@ -104,14 +104,9 @@
     interface PopulationInterface
     abstract HerbivoreBase
     HerbivoreInterface  <|-- HerbivoreBase
-    HerbivoreBase       <|-- HerbivoreIndividual
     HerbivoreBase       <|-- HerbivoreCohort
-    PopulationInterface <|-up- IndividualPopulation
     PopulationInterface <|-up- CohortPopulation
-    HerbivoreIndividual "*" <--* "1" IndividualPopulation
     HerbivoreCohort     "*" <--* "1" CohortPopulation
-    HerbivoreIndividual  <..  IndividualPopulation : <<create>>
-    (HerbivoreIndividual, IndividualPopulation) .. CreateHerbivoreIndividual
     HerbivoreCohort      <..  CohortPopulation     : <<create>>
     (HerbivoreCohort, CohortPopulation) .. CreateHerbivoreCohort
   }
@@ -277,7 +272,6 @@ competition      -down-> ingestion
     interface HerbivoreInterface
     abstract HerbivoreBase
     HerbivoreInterface  <|-- HerbivoreBase
-    HerbivoreBase       <|-- HerbivoreIndividual
     HerbivoreBase       <|-- HerbivoreCohort
     HerbivoreInterface  <|-- NewHerbivore
     interface PopulationInterface
@@ -305,12 +299,9 @@ competition      -down-> ingestion
   hide members
   hide methods
   namespace Fauna{
-    CreateHerbivoreIndividual ..> Parameters
-    CreateHerbivoreIndividual ..> Hft
     CreateHerbivoreCohort     ..> Parameters
     CreateHerbivoreCohort     ..> Hft
     CohortPopulation          .up.> Hft
-    IndividualPopulation      .up.> Hft
     abstract HerbivoreBase
     HerbivoreBase             .up.> Hft
     World                     *-down-> Parameters
@@ -327,9 +318,7 @@ competition      -down-> ingestion
   hide methods
   namespace Fauna{
     interface PopulationInterface
-    PopulationInterface <|-- IndividualPopulation
     PopulationInterface <|-- CohortPopulation
-    IndividualPopulation *-- "*" HerbivoreIndividual
     CohortPopulation     *-- "*" HerbivoreCohort
     class SimulationUnit
     SimulationUnit *-- "*" PopulationInterface

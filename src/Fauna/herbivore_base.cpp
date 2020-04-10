@@ -79,7 +79,6 @@ void HerbivoreBase::apply_mortality_factors_today() {
   double mortality_sum = 0.0;
 
   // iterate through all mortality factors.
-  std::set<MortalityFactor>::const_iterator itr;
   for (const auto& itr : get_hft().mortality_factors) {
     if (itr == MortalityFactor::Background) {
       const GetBackgroundMortality background(get_hft().mortality_juvenile_rate,
@@ -152,15 +151,19 @@ void HerbivoreBase::apply_mortality_factors_today() {
 void HerbivoreBase::eat(const ForageMass& kg_per_km2,
                         const Digestibility& digestibility,
                         const ForageMass& N_kg_per_km2) {
-  if (get_ind_per_km2() == 0.0 && kg_per_km2 == 0.0)
+  if (is_dead())
     throw std::logic_error(
         "Fauna::HerbivoreBase::eat() "
-        "This herbivore has no individuals and cannot be fed.");
+        "This herbivore is dead. Don’t call eat() in a dead herbivore.");
+  if (!(N_kg_per_km2 <= kg_per_km2))
+    throw std::invalid_argument(
+        "Fauna::HerbivoreBase::eat() "
+        "Nitrogen content is larger than dry matter for at least one forage "
+        "type. A nitrogen content of >100% is illogical.");
 
   // convert forage from *per km²* to *per individual*
   assert(get_ind_per_km2() != 0.0);
   const ForageMass kg_per_ind = kg_per_km2 / get_ind_per_km2();
-  const ForageMass N_kg_per_ind = N_kg_per_km2 / get_ind_per_km2();
 
   // net energy in the forage per individual [MJ/ind]
   // Divide mass by energy content and set any forage with zero
@@ -185,10 +188,11 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
   get_todays_output().eaten_forage_per_mass += kg_per_ind / get_bodymass();
   get_todays_output().energy_intake_per_ind += mj_per_ind;
   get_todays_output().energy_intake_per_mass += mj_per_ind / get_bodymass();
-  get_todays_output().eaten_nitrogen_per_ind += N_kg_per_ind.sum();
+  get_todays_output().eaten_nitrogen_per_ind +=
+      (10e6 * N_kg_per_km2.sum()) / get_ind_per_km2();
 
   // Ingest the nitrogen
-  nitrogen.ingest(N_kg_per_ind.sum() * get_ind_per_km2());
+  nitrogen.ingest(N_kg_per_km2.sum());
 }
 
 std::shared_ptr<const Hft> HerbivoreBase::check_hft_pointer(
@@ -350,9 +354,15 @@ double HerbivoreBase::get_todays_expenditure() const {
 
   for (const auto& component : get_hft().expenditure_components)
     switch (component) {
-      case (ExpenditureComponent::Allometric): {
-        assert(get_hft().expenditure_allometric.coefficient > 0.0);
-        result += get_hft().expenditure_allometric.calc(get_bodymass());
+      case (ExpenditureComponent::BasalMetabolicRate): {
+        result += calc_allometry(get_hft().expenditure_basal_rate,
+                                 get_hft().body_mass_male, get_bodymass());
+        break;
+      }
+      case (ExpenditureComponent::FieldMetabolicRate): {
+        result += calc_allometry(get_hft().expenditure_basal_rate,
+                                 get_hft().body_mass_male, get_bodymass()) *
+                  get_hft().expenditure_fmr_multiplier;
         break;
       }
       case (ExpenditureComponent::Taylor1981): {
@@ -411,13 +421,13 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
                                           get_hft().reproduction_logistic[1]);
       // get today’s value
       return logistic.get_offspring_density(
-          get_today(), body_condition_gestation.get_average());
+          get_today(), body_condition_gestation.get_first());
     }
     case (ReproductionModel::Linear): {
       const ReproductionLinear linear(breeding_season,
                                       get_hft().reproduction_annual_maximum);
-      return linear.get_offspring_density(
-          get_today(), body_condition_gestation.get_average());
+      return linear.get_offspring_density(get_today(),
+                                          body_condition_gestation.get_first());
     }
     case (ReproductionModel::None): {
       return 0.0;

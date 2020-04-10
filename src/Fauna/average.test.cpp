@@ -30,6 +30,7 @@ TEST_CASE("Fauna::PeriodAverage") {
   PeriodAverage pa(COUNT);
 
   CHECK_THROWS(pa.get_average());
+  CHECK_THROWS(pa.get_first());
 
   const double A = .1;
   const double B = .2;
@@ -39,16 +40,21 @@ TEST_CASE("Fauna::PeriodAverage") {
 
   pa.add_value(A);
   CHECK(pa.get_average() == A);
+  CHECK(pa.get_first() == A);
 
   pa.add_value(B);
   CHECK(pa.get_average() == Approx((A + B) / 2.0));
+  CHECK(pa.get_first() == A);
 
   pa.add_value(C);
   CHECK(pa.get_average() == Approx((A + B + C) / 3.0));
+  CHECK(pa.get_first() == A);
 
   pa.add_value(D);
   CHECK(pa.get_average() == Approx((B + C + D) / 3.0));
+  CHECK(pa.get_first() == B);
 
   pa.add_value(E);
   CHECK(pa.get_average() == Approx((C + D + E) / 3.0));
+  CHECK(pa.get_first() == C);
 }

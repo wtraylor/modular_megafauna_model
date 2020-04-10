@@ -21,7 +21,6 @@ struct HabitatEnvironment;
  * \note While this base class implements the basic output
  * functions, any derived class is responsible to add its
  * own output.
- * \see \ref Fauna::SimulationUnit
  */
 class Habitat {
  public:
