@@ -386,7 +386,7 @@ struct Hft {
 
   /** @{ \name "digestion": Digestion-related parameters. */
   /// Parameters for \ref DigestiveLimit::Allometric
-  GivenPointAllometry digestion_allometric = {0.05, 0.76};
+  GivenPointAllometry digestion_allometric = {0.05, 0.75};
 
   /// Factor to change ruminant digestibility for other digestion types.
   /**
