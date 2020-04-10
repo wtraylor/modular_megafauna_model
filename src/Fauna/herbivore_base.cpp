@@ -354,9 +354,15 @@ double HerbivoreBase::get_todays_expenditure() const {
 
   for (const auto& component : get_hft().expenditure_components)
     switch (component) {
-      case (ExpenditureComponent::Allometric): {
-        result += calc_allometry(get_hft().expenditure_allometric,
+      case (ExpenditureComponent::BasalMetabolicRate): {
+        result += calc_allometry(get_hft().expenditure_basal_rate,
                                  get_hft().body_mass_male, get_bodymass());
+        break;
+      }
+      case (ExpenditureComponent::FieldMetabolicRate): {
+        result += calc_allometry(get_hft().expenditure_basal_rate,
+                                 get_hft().body_mass_male, get_bodymass()) *
+                  get_hft().expenditure_fmr_multiplier;
         break;
       }
       case (ExpenditureComponent::Taylor1981): {

@@ -319,8 +319,12 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     assert(array);
     hft.expenditure_components = {};
     for (const auto& i : *array)
-      if (lowercase(i) == lowercase("Allometric"))
-        hft.expenditure_components.insert(ExpenditureComponent::Allometric);
+      if (lowercase(i) == lowercase("BasalMetabolicRate"))
+        hft.expenditure_components.insert(
+            ExpenditureComponent::BasalMetabolicRate);
+      else if (lowercase(i) == lowercase("FieldMetabolicRate"))
+        hft.expenditure_components.insert(
+            ExpenditureComponent::FieldMetabolicRate);
       else if (lowercase(i) == lowercase("Taylor1981"))
         hft.expenditure_components.insert(ExpenditureComponent::Taylor1981);
       else if (lowercase(i) == lowercase("Thermoregulation"))
@@ -329,9 +333,9 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
       else if (lowercase(i) == lowercase("Zhu2018"))
         hft.expenditure_components.insert(ExpenditureComponent::Zhu2018);
       else
-        throw invalid_option(
-            hft, "expenditure.components", i,
-            {"Allometric", "Taylor1981", "Thermoregulation", "Zhu2018"});
+        throw invalid_option(hft, "expenditure.components", i,
+                             {"BasalMetabolicRate", "FieldMetabolicRate",
+                              "Taylor1981", "Thermoregulation", "Zhu2018"});
     if (table->get_table("expenditure"))
       table->get_table("expenditure")->erase("components");
   }
@@ -496,18 +500,23 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     if (value) hft.digestion_allometric.exponent = *value;
   }
   {
-    const bool mandatory =
-        (hft.expenditure_components.count(ExpenditureComponent::Allometric));
-    const auto value = find_hft_parameter<double>(
-        table, "expenditure.allometric.mj_per_day_male_adult", mandatory);
-    if (value) hft.expenditure_allometric.value_male_adult = *value;
+    const bool mandatory = (hft.expenditure_components.count(
+                                ExpenditureComponent::BasalMetabolicRate) ||
+                            hft.expenditure_components.count(
+                                ExpenditureComponent::FieldMetabolicRate));
+    const auto value1 = find_hft_parameter<double>(
+        table, "expenditure.basal_rate.mj_per_day_male_adult", mandatory);
+    if (value1) hft.expenditure_basal_rate.value_male_adult = *value1;
+    const auto value2 = find_hft_parameter<double>(
+        table, "expenditure.basal_rate.exponent", mandatory);
+    if (value2) hft.expenditure_basal_rate.exponent = *value2;
   }
   {
-    const bool mandatory =
-        (hft.expenditure_components.count(ExpenditureComponent::Allometric));
+    const bool mandatory = hft.expenditure_components.count(
+        ExpenditureComponent::FieldMetabolicRate);
     const auto value = find_hft_parameter<double>(
-        table, "expenditure.allometric.exponent", mandatory);
-    if (value) hft.expenditure_allometric.exponent = *value;
+        table, "expenditure.fmr_multiplier", mandatory);
+    if (value) hft.expenditure_fmr_multiplier = *value;
   }
   {
     const bool mandatory =

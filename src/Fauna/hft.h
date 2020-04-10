@@ -139,20 +139,35 @@ enum class DigestiveLimit {
 
 /// Algorithm to calculate a herbivore’s daily energy needs.
 enum class ExpenditureComponent {
-  /// Simple exponential expenditure function based on current body mass.
+  /// Only the allometric basal metabolic rate.
   /**
    * \f[
-   * E = c * M^e
+   * BMR = c * M^e
    * \f]
-   * - $E$: Daily energy expenditure [MJ/ind/day]
-   * - $c$: Coefficient, derived from
+   * - \f$BMR\f$: Basal metabolic rate [MJ/ind/day]. Fasting expenditure at
+   *   rest in the thermoneutral zone.
+   * - \f$c\f$: Coefficient, derived from
    *   \ref GivenPointAllometry::value_male_adult in
-   *   \ref Hft::expenditure_allometric.
-   * - $M$: Current body mass [kg/ind]
-   * - $e$: Allometric exponent (\ref AllometryParameters::exponent in
-   *   member \ref Hft::expenditure_allometric)
+   *   \ref Hft::expenditure_basal_rate.
+   * - \f$M\f$: Current body mass [kg/ind]
+   * - \f$e\f$: Allometric exponent (\ref AllometryParameters::exponent in
+   *   member \ref Hft::expenditure_basal_rate)
    */
-  Allometric,
+  BasalMetabolicRate,
+
+  /// Allometric basal metabolic rate with FMR constant multiplier.
+  /**
+   *
+   * \f[
+   * FMR = f * BMR = f * c * M^e
+   * \f]
+   * - \f$FMR\f$: Field metabolic rate [MJ/ind/day]. Total daily energy
+   *   expenditure.
+   * - \f$f\f$: Constant factor to convert from BMR to FMR.
+   *   \ref Hft::expenditure_fmr_multiplier.
+   * - See \ref ExpenditureComponent::BasalMetabolicRate for the other symbols.
+   */
+  FieldMetabolicRate,
 
   /// Formula for field metabolic rate in cattle:
   /// \ref get_expenditure_taylor_1981()
@@ -470,12 +485,28 @@ struct Hft {
   /** @} */
 
   /** @{ \name "expenditure": Energy expenditure parameters. */
-  /// Parameters for \ref ExpenditureComponent::Allometric.
-  GivenPointAllometry expenditure_allometric = {10, 0.75};
+  /// Allometric parameters for basal metabolic rate (BMR).
+  /**
+   * \ref GivenPointAllometry::value_male_adult is daily basal metabolic rate
+   * in MJ/day for an adult male individual (\ref body_mass_male).
+   * The exponent (\ref GivenPointAllometry::exponent) should match the scaling
+   * of intake so that energy input and expenditure are balance for all
+   * possible body masses.
+   * \see \ref ExpenditureComponent::BasalMetabolicRate
+   * \see \ref ExpenditureComponent::FieldMetabolicRate
+   */
+  GivenPointAllometry expenditure_basal_rate = {7.5, 0.75};
 
   /// Energy expenditure components, summing up to actual expenditure.
   std::set<ExpenditureComponent> expenditure_components = {
-      ExpenditureComponent::Allometric};
+      ExpenditureComponent::FieldMetabolicRate};
+
+  /// Constant factor to convert from BMR (basal rate) to FMR (field rate).
+  /**
+   * \see \ref ExpenditureComponent::FieldMetabolicRate
+   * \see \ref expenditure_basal_rate
+   */
+  double expenditure_fmr_multiplier = 2.0;
   /** @} */
 
   /** @{ \name "foraging": Parameters regulating food intake. */

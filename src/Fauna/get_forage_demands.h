@@ -21,7 +21,7 @@ enum class Sex;
 /**
  * \param allometry Parameters to define the allometric relationship.
  * \param bodymass_male_adult The body mass of an adult, male animal. See
- * \ref Hft::bodymass_male_adult.
+ * \ref Hft::body_mass_male.
  * \param bodymass Current body mass of the animal for which the value is to be
  * calculated.
  * \throw std::invalid_argument If any given parameter is outside of the

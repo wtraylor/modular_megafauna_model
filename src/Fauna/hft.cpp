@@ -206,13 +206,38 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       is_valid = false;
     }
 
-    if (expenditure_components.count(ExpenditureComponent::Allometric) &&
-        (expenditure_allometric.value_male_adult <= 0.0)) {
-      stream << "Daily expenditure (MJ/day) in an adult male in "
-             << "`expenditure_allometric.value_male_adult` must be a "
-             << "positive number"
-             << " (current value: " << expenditure_allometric.value_male_adult
-             << ")" << std::endl;
+    if (expenditure_components.count(
+            ExpenditureComponent::BasalMetabolicRate) &&
+        expenditure_components.count(
+            ExpenditureComponent::FieldMetabolicRate)) {
+      stream << "Both \"BasalMetabolicRate\" and \"FieldMetabolicRate\" are "
+             << "chosen as expenditure components, but \"FieldMetabolicRate\" "
+             << "already includes the basal metabolic rate." << std::endl;
+      is_valid = false;
+    }
+
+    if (expenditure_components.count(
+            ExpenditureComponent::BasalMetabolicRate) ||
+        expenditure_components.count(
+            ExpenditureComponent::FieldMetabolicRate)) {
+      if (expenditure_basal_rate.value_male_adult <= 0.0) {
+        stream << "Daily expenditure (MJ/day) in an adult male in "
+               << "`expenditure.basal_rate.value_male_adult` must be a "
+               << "positive number"
+               << " (current value: " << expenditure_basal_rate.value_male_adult
+               << ")" << std::endl;
+        is_valid = false;
+      }
+    }
+
+    if (expenditure_components.count(
+            ExpenditureComponent::FieldMetabolicRate) &&
+        expenditure_fmr_multiplier < 1.0) {
+      stream << "The field metabolic rate (FMR) multiplier "
+             << "`expenditure.fmr_multiplier` must be >= 1 because FMR is "
+             << "larger than BMR."
+             << " (current value: " << expenditure_fmr_multiplier << ")"
+             << std::endl;
       is_valid = false;
     }
 
@@ -266,11 +291,11 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
 
     if (digestion_limit == DigestiveLimit::FixedFraction &&
         (digestion_fixed_fraction <= 0.0 || digestion_fixed_fraction >= 1.0)) {
-      stream
-          << "Body mass fraction `digestion.fixed_fraction` must be in "
-             "interval (0,1) if 'FixedFraction' is set as the digestive limit."
-          << " (current value: " << digestion_fixed_fraction << ")"
-          << std::endl;
+      stream << "Body mass fraction `digestion.fixed_fraction` must be in "
+                "interval (0,1) if 'FixedFraction' is set as the digestive "
+                "limit."
+             << " (current value: " << digestion_fixed_fraction << ")"
+             << std::endl;
       is_valid = false;
     }
 

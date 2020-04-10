@@ -94,8 +94,9 @@ age_range = { first = 1, last = 15 } # years
 density   = 1.0 # ind/km²
 
 [hft.expenditure]
-allometric = { mj_per_day_male_adult = 10, exponent = 0.75 }
-components = [ "Allometric" ]
+basal_rate     = { mj_per_day_male_adult = 7.5, exponent = 0.75 }
+components     = [ "FieldMetabolicRate" ]
+fmr_multiplier = 2.0
 
 [hft.foraging]
 diet_composer           = "PureGrazer"
