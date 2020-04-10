@@ -355,8 +355,8 @@ double HerbivoreBase::get_todays_expenditure() const {
   for (const auto& component : get_hft().expenditure_components)
     switch (component) {
       case (ExpenditureComponent::Allometric): {
-        assert(get_hft().expenditure_allometric.coefficient > 0.0);
-        result += get_hft().expenditure_allometric.calc(get_bodymass());
+        result += calc_allometry(get_hft().expenditure_allometric,
+                                 get_hft().body_mass_male, get_bodymass());
         break;
       }
       case (ExpenditureComponent::Taylor1981): {
@@ -420,8 +420,8 @@ double HerbivoreBase::get_todays_offspring_proportion() const {
     case (ReproductionModel::Linear): {
       const ReproductionLinear linear(breeding_season,
                                       get_hft().reproduction_annual_maximum);
-      return linear.get_offspring_density(
-          get_today(), body_condition_gestation.get_first());
+      return linear.get_offspring_density(get_today(),
+                                          body_condition_gestation.get_first());
     }
     case (ReproductionModel::None): {
       return 0.0;

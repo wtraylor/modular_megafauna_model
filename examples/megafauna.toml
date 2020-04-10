@@ -94,7 +94,7 @@ age_range = { first = 1, last = 15 } # years
 density   = 1.0 # ind/km²
 
 [hft.expenditure]
-allometric = { coefficient = 0.4, exponent = 0.75 }
+allometric = { mj_per_day_male_adult = 10, exponent = 0.75 }
 components = [ "Allometric" ]
 
 [hft.foraging]

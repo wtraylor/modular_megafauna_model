@@ -145,8 +145,9 @@ enum class ExpenditureComponent {
    * E = c * M^e
    * \f]
    * - $E$: Daily energy expenditure [MJ/ind/day]
-   * - $c$: Coefficient (\ref AllometryParameters::coefficient in
-   *   member \ref Hft::expenditure_allometric)
+   * - $c$: Coefficient, derived from
+   *   \ref GivenPointAllometry::value_male_adult in
+   *   \ref Hft::expenditure_allometric.
    * - $M$: Current body mass [kg/ind]
    * - $e$: Allometric exponent (\ref AllometryParameters::exponent in
    *   member \ref Hft::expenditure_allometric)
@@ -470,7 +471,7 @@ struct Hft {
 
   /** @{ \name "expenditure": Energy expenditure parameters. */
   /// Parameters for \ref ExpenditureComponent::Allometric.
-  AllometryParameters expenditure_allometric = {0.4, 0.75};
+  GivenPointAllometry expenditure_allometric = {10, 0.75};
 
   /// Energy expenditure components, summing up to actual expenditure.
   std::set<ExpenditureComponent> expenditure_components = {

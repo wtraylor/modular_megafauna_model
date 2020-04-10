@@ -207,11 +207,12 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
     }
 
     if (expenditure_components.count(ExpenditureComponent::Allometric) &&
-        expenditure_allometric.coefficient < 0.0) {
-      stream << "Coefficient for allometric expenditure must not be "
-                "negative. That would result in negative expenditure values. "
-                "Current value: expenditure_allometric_coefficient = "
-             << expenditure_allometric.coefficient << std::endl;
+        (expenditure_allometric.value_male_adult <= 0.0)) {
+      stream << "Daily expenditure (MJ/day) in an adult male in "
+             << "`expenditure_allometric.value_male_adult` must be a "
+             << "positive number"
+             << " (current value: " << expenditure_allometric.value_male_adult
+             << ")" << std::endl;
       is_valid = false;
     }
 
