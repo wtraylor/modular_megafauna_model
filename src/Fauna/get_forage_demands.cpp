@@ -10,6 +10,23 @@
 #include "hft.h"
 using namespace Fauna;
 
+double Fauna::calc_allometry(const GivenPointAllometry& allometry,
+                             const double bodymass_male_adult,
+                             const double bodymass) {
+  if (bodymass <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::calc_allometry() `bodymass` is negative or zero.");
+  if (bodymass_male_adult <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::calc_allometry() `bodymass_male_adult` is negative or zero.");
+  if (allometry.exponent <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::calc_allometry() `allometry.exponent` is negative or zero.");
+  const double c = allometry.value_male_adult *
+                   pow(bodymass_male_adult, -allometry.exponent);
+  return c * pow(bodymass, allometry.exponent);
+}
+
 GetForageDemands::GetForageDemands(std::shared_ptr<const Hft> hft,
                                    const Sex sex)
     : hft(hft),

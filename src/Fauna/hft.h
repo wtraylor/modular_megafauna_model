@@ -53,6 +53,28 @@ struct AllometryParameters {
   double calc(const double M) const { return coefficient * pow(M, exponent); }
 };
 
+/// Parameters for an allometric relationship with exponent and one point.
+/**
+ * The allometric relationship is \f$ f(M) = c * M^e \f$, where \f$c\f$ is the
+ * coefficient and \f$e\f$ is the \ref exponent. The coefficient is calculated
+ * from a given point \f$(x|y)\f$ with
+ * \f$x = f(y) = c * y^e \iff c = x * y^{-e} \f$.
+ *
+ * Generally, \f$y\f$ is the body mass of an adult male
+ * (\ref Hft::body_mass_male). This is because males are typically larger than
+ * females. Allometric extrapolating from smaller females to larger males would
+ * be more uncertain than the other way round.
+ *
+ * \see \ref calc_allometry()
+ */
+struct GivenPointAllometry {
+  /// Exponent \f$e\f$ in \f$f(M) = c * M^e\f$.
+  double exponent;
+
+  /// Value \f$f(m)\f$ if \f$m\f$ is \ref Hft::body_mass_male.
+  double value_male_adult;
+};
+
 /// Selector for a function of how to calculate whole-body conductance.
 /** \see \ref sec_thermoregulation */
 enum class ConductanceModel {
