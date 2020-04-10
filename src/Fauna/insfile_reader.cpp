@@ -486,8 +486,8 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
   {
     const bool mandatory = hft.digestion_limit == DigestiveLimit::Allometric;
     const auto value = find_hft_parameter<double>(
-        table, "digestion.allometric.coefficient", mandatory);
-    if (value) hft.digestion_allometric.coefficient = *value;
+        table, "digestion.allometric.fraction_male_adult", mandatory);
+    if (value) hft.digestion_allometric.value_male_adult = *value;
   }
   {
     const bool mandatory = (hft.digestion_limit == DigestiveLimit::Allometric);

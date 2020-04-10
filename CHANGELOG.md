@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Remove `Fauna::Parameters` from the library’s include interface.
 - The Doxygen documentation of the library’s include interface can be parsed without errors.
 - Reproductive success at parturition is now based on body condition at day of conception. [#10]
+- Scale maximum daily intake (DMI) allometrically from fraction of adult mass. [#8]
+    - Parameter `hft.digestion.allometric.coefficient` changed to `.value_male_adult`.
 
 ### Removed
 - Individual mode. [#7]
@@ -123,4 +125,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [#5]: https://github.com/wtraylor/modular_megafauna_model/issues/5
 [#6]: https://github.com/wtraylor/modular_megafauna_model/issues/6
 [#7]: https://github.com/wtraylor/modular_megafauna_model/issues/7
+[#8]: https://github.com/wtraylor/modular_megafauna_model/issues/8
 [#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10

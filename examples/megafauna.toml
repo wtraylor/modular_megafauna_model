@@ -82,7 +82,7 @@ length = 30  # days
 start  = 121 # Julian day
 
 [hft.digestion]
-allometric       = { coefficient                = 0.050, exponent = 0.76 }
+allometric       = { fraction_male_adult = 0.05, exponent = 0.76 }
 fixed_fraction   = 0.05 # kgDM per kg body mass
 k_fat            = 0.5
 k_maintenance    = 0.7
@@ -91,7 +91,7 @@ net_energy_model = "GrossEnergyFraction"
 
 [hft.establishment]
 age_range = { first = 1, last = 15 } # years
-density   = 1.0       # ind/km²
+density   = 1.0 # ind/km²
 
 [hft.expenditure]
 allometric = { coefficient = 0.4, exponent = 0.75 }

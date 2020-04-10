@@ -253,11 +253,13 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
     }
 
     if (digestion_limit == DigestiveLimit::Allometric &&
-        digestion_allometric.coefficient < 0.0) {
-      stream << "Coefficient in `digestion.allometric` must not be negative "
-                "if 'Allometric' is set as a digestive limit."
-             << " (current value: " << digestion_allometric.coefficient << ")"
-             << std::endl;
+        (digestion_allometric.value_male_adult <= 0.0 ||
+         digestion_allometric.value_male_adult >= 1.0)) {
+      stream << "Dry-matter intake as fraction of body mass in an adult male "
+             << "in `digestion.value_male_adult` must be between "
+             << "in the interval (0,1)."
+             << " (current value: " << digestion_allometric.value_male_adult
+             << ")" << std::endl;
       is_valid = false;
     }
 
