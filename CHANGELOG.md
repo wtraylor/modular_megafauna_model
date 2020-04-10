@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 - Revised and expanded Doxygen page on model description/discussion.
+- Parameter `hft.expenditure.fmr_multiplier`. [#9]
 
 ### Changed
 - Output `eaten_nitrogen_per_ind` is now in milligram, not kilogram, per day and individual.
@@ -15,6 +16,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Reproductive success at parturition is now based on body condition at day of conception. [#10]
 - Scale maximum daily intake (DMI) allometrically from fraction of adult mass. [#8]
     - Parameter `hft.digestion.allometric.coefficient` changed to `.value_male_adult`.
+- Expenditure component `Allometric` is now `BasalMetabolicRate` and `FieldMetabolicRate`. [#9]
+    - Parameter `hft.expenditure.allometric` changed to `.basal_rate`.
 
 ### Removed
 - Individual mode. [#7]
@@ -126,4 +129,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [#6]: https://github.com/wtraylor/modular_megafauna_model/issues/6
 [#7]: https://github.com/wtraylor/modular_megafauna_model/issues/7
 [#8]: https://github.com/wtraylor/modular_megafauna_model/issues/8
+[#9]: https://github.com/wtraylor/modular_megafauna_model/issues/9
 [#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10
