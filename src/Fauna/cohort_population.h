@@ -49,7 +49,14 @@ class CohortPopulation : public PopulationInterface {
   typedef std::list<HerbivoreCohort> List;
 
   /// Add newborn animals to the population either males or females.
-  /** \see \ref create_offspring() */
+  /**
+   * If no newborn cohort (age in years = zero) exists yet, it will be created.
+   * Otherwise, the additional newborns will be **merged** into the existing
+   * newborn cohort. The age in days of the existing cohort will not be
+   * changed.
+   * \see \ref HerbivoreCohort::merge()
+   * \see \ref create_offspring()
+   */
   void create_offspring_by_sex(const Sex sex, double ind_per_km2);
 
   /// Find a cohort in the list.
