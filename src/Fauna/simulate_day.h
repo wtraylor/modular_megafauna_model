@@ -42,11 +42,11 @@ class SimulateDay {
 
   /// Simulate one day.
   /**
-   * - Initiailize habitat.
-   * - Simulate herbivores.
-   * - Feed herbivores.
-   * - Create potential offspring.
-   * - Delete dead herbivores.
+   * 1. Initialize habitat.
+   * 2. Simulate herbivores.
+   * 3. Feed herbivores.
+   * 4. Create potential offspring.
+   * 5. Delete dead herbivores.
    *
    * \param do_herbivores Whether the herbivore objects shall be
    * simulated. Otherwise only the habitat is initialized.
