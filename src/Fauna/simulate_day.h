@@ -50,8 +50,11 @@ class SimulateDay {
    *
    * \param do_herbivores Whether the herbivore objects shall be
    * simulated. Otherwise only the habitat is initialized.
+   * \param establish_as_needed Whether to (re-)establish herbivores in those
+   * populations that are empty. This only has effect if also
+   * `do_herbivores==true`
    */
-  void operator()(const bool do_herbivores);
+  void operator()(const bool do_herbivores, const bool establish_as_needed);
 
  private:  // HELPER FUNCTIONS
   /// Create the offspring counted in \ref total_offspring.

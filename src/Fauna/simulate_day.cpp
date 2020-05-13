@@ -59,7 +59,8 @@ std::map<PopulationInterface*, HerbivoreVector> SimulateDay::get_herbivores(
   return result;
 }
 
-void SimulateDay::operator()(const bool do_herbivores) {
+void SimulateDay::operator()(const bool do_herbivores,
+                             const bool establish_as_needed) {
   if (day_of_year < 0 || day_of_year >= 365)
     throw std::invalid_argument(
         "SimulateDay::operator()() "
@@ -74,6 +75,12 @@ void SimulateDay::operator()(const bool do_herbivores) {
     // the herbivore objects are removed from memory in purge_of_dead()
     // below.
     for (auto& pop : simulation_unit.get_populations()) pop->kill_nonviable();
+
+    if (establish_as_needed) {
+      for (auto& pop : simulation_unit.get_populations())
+        if (pop->get_list().empty()) pop->establish();
+      simulation_unit.set_initial_establishment_done();
+    }
 
     simulate_herbivores();
 
