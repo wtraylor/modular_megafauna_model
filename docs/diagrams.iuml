@@ -210,7 +210,7 @@ hide members
 hide circle
 hide methods
 annotation "Available Forage" as available_forage
-note left: Plant biomass in the patch
+note left: Plant biomass in the habitat
 annotation "Foraging Limit" as foraging_limit
 note left: Potential ingestion
 annotation "Digestive Limit" as digestion_limit
