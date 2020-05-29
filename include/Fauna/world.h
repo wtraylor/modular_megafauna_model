@@ -31,7 +31,7 @@ class WriterInterface;
 /// Mode of the whole simulation program: What is it started for?
 enum class SimMode {
   /// Only check (“lint”) the instruction file, don’t perform simulations.
-  /** \see \ref linter.cpp */
+  /** \see linter.cpp */
   Lint,
   /// Default mode: We want to simulate herbivores.
   Simulate
@@ -51,7 +51,7 @@ class World {
    * implemented.
    */
   World(const std::string instruction_filename,
-        const SimMode linting = SimMode::Simulate);
+        const SimMode mode = SimMode::Simulate);
 
   /// Constructor: Create deactivated `World` object.
   /**
