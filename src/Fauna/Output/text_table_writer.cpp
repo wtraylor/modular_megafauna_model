@@ -112,7 +112,7 @@ void TextTableWriter::start_row(const Datapoint& datapoint,
       break;
     default:
       std::logic_error(
-          "Fauna::TextTableWriter::write_datapoint() Output time interval is "
+          "Fauna::TextTableWriter::start_row() Output time interval is "
           "not implemented.");
   }
   table << datapoint.aggregation_unit;
@@ -246,7 +246,7 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
         break;
       default:
         std::logic_error(
-            "Fauna::TextTableWriter::write_datapoint() Output time interval "
+            "Fauna::TextTableWriter::write_captions() Output time interval "
             "is "
             "not implemented.");
     }
