@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Fixed
 - Herbivores are now only established if the `do_herbivores==true` flag is passed into MMM.
+- Parameter `hft.digestion.i_g_1992_ijk` is not mandatory anymore.
 - Fix compiling errors under GCC 10.1.0 about not finding `std` exception.
 
 ## [0.5.0] - 2020-04-10
