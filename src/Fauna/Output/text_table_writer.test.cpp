@@ -110,12 +110,6 @@ TEST_CASE("Fauna::Output::TextTableWriter ANNUAL", "") {
   REQUIRE(datapoint.data.datapoint_count > 0);
   REQUIRE_NOTHROW(writer.write_datapoint(datapoint));
 
-  SECTION("Error on missing HFT") {
-    // Try to write a second line with a datapoint where an HFT is missing.
-    datapoint.data.hft_data.erase(datapoint.data.hft_data.begin());
-    CHECK_THROWS(writer.write_datapoint(datapoint));
-  }
-
   SECTION("Error on extra HFT") {
     // Try to write a second line with a datapoint where a new HFT suddenly
     // appeared.

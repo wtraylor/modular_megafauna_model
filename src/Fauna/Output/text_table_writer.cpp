@@ -77,12 +77,9 @@ const HerbivoreData* TextTableWriter::get_hft_data(
   assert(datapoint);
   for (const auto& i : datapoint->data.hft_data)
     if (i.first == hft_name) return &i.second;
-  throw std::runtime_error(
-      "Fauna::Output::TextTableWriter::get_hft_data(): "
-      "There is no record for HFT \"" +
-      hft_name +
-      "\" "
-      "in given herbivore data.");
+  // Generate empty record if none exists.
+  static const HerbivoreData empty_object;
+  return &empty_object;
 }
 
 void TextTableWriter::start_row(const Datapoint& datapoint,
@@ -150,15 +147,15 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
     captions_written = true;
   }
 
-  if (data.hft_data.size() != hft_names.size()) {
+  if (data.hft_data.size() > hft_names.size()) {
     std::ostringstream my_names;
     for (const auto& n : hft_names) my_names << n << ", ";
     std::ostringstream found_names;
     for (const auto& d : data.hft_data) found_names << d.first << ", ";
     throw std::runtime_error(
         "Fauna::Output::TextTableWriter::write_datapoint(): "
-        "Number of HFTs in given datapoint differs from number of stored "
-        "HFT names.\n"
+        "The given datapoint contains data on at least one HFT that was not "
+        "passed to TextTableWriter at the time of construction.\n"
         "HFT names stored: " +
         my_names.str() +
         "\n"

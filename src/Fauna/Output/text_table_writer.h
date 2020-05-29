@@ -61,8 +61,8 @@ class TextTableWriter : public WriterInterface {
    *
    * \throw std::logic_error If the \ref OutputInterval is not implemented.
    *
-   * \throw std::runtime_error If `datapoint.data.hft_data` is missing an HFT
-   * or has too many (checked by comparing \ref Fauna::Hft::name).
+   * \throw std::runtime_error If `datapoint.data.hft_data` contains an unknown
+   * HFT (checked by comparing \ref Fauna::Hft::name).
    */
   virtual void write_datapoint(const Datapoint& datapoint);
 
@@ -83,9 +83,11 @@ class TextTableWriter : public WriterInterface {
   /**
    * The return type is a pointer in order to minimize copying memory. It is
    * save as long as `datapoint` is stable.
+   * If there is no data for the given HFT, an empty record is returned.
    * \param datapoint Where the herbivore data is in \ref Datapoint::data.
    * \param hft_name The name of the HFT in \ref Datapoint::data.
-   * \throw std::runtime_error If there is no record for given HFT.
+   * \return Pointer to \ref HerbivoreData in `datapoint` if it exists,
+   * otherwise a pointer to an empty \ref HerbivoreData object.
    * \see \ref HerbivoreInterface::get_output_group() is the “HFT”.
    */
   const HerbivoreData* get_hft_data(const Datapoint* datapoint,
