@@ -26,14 +26,16 @@ compile:
       -DBUILD_DEMO_SIMULATOR=ON
       -DBUILD_DOC=OFF ..
     - make --jobs=6
-      megafauna_unit_tests
       megafauna_demo_simulator
+      megafauna_insfile_linter
+      megafauna_unit_tests
   artifacts:
     paths:
       - build/demo_results.Rmd
       - build/demo_simulation.toml
       - build/megafauna.toml
       - build/megafauna_demo_simulator
+      - build/megafauna_insfile_linter
       - build/megafauna_unit_tests
     expire_in: 20 minutes
 
@@ -68,6 +70,14 @@ unit_tests:
   script:
     - cd build
     - ./megafauna_unit_tests
+
+# Check that the linter works and that the example instruction files are
+# correct.
+linter:
+  stage: test
+  needs: ["compile"]
+  script:
+    - ./build/megafauna_insfile_linter examples/megafauna.toml
 
 memcheck:
   stage: test
@@ -108,7 +118,10 @@ demo_simulation:
   artifacts:
     paths:
       - build/demo_results.Rmd
+      - build/available_forage.tsv
       - build/digestibility.tsv
+      - build/eaten_forage_per_ind.tsv
+      - build/eaten_nitrogen_per_ind.tsv
       - build/mass_density_per_hft.tsv
     expire_in: 20 minutes
 

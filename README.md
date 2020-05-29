@@ -26,7 +26,7 @@ This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pi
 - `include/`: Public API header files.
 - `src/`: Source and (private) header files of the project. Subdirectories correspond to C++ namespaces.
 - `tests/`: Unit tests.
-- `tools/`: A dummy vegetation simulator that integrates the megafauna model.
+- `tools/`: Different helper tools for the developer.
 
 Usage
 -----

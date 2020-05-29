@@ -23,23 +23,25 @@
 
 using namespace Fauna;
 
-World::World(const std::string instruction_filename)
+World::World(const std::string instruction_filename, const SimMode mode)
     : activated(true),
       insfile(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
       world_constructor(new WorldConstructor(insfile.params, get_hfts())),
       output_aggregator(new Output::Aggregator()) {
-  // Create Output::WriterInterface implementation according to selected
-  // setting.
-  switch (get_params().output_format) {
-    case OutputFormat::TextTables:
-      output_writer.reset(new Output::TextTableWriter(
-          get_params().output_interval, get_params().output_text_tables));
-      break;
-    default:
-      std::logic_error(
-          "Fauna::World::World() "
-          "Selected output format parameter is not implemented.");
+  if (mode == SimMode::Simulate) {
+    // Create Output::WriterInterface implementation according to selected
+    // setting.
+    switch (get_params().output_format) {
+      case OutputFormat::TextTables:
+        output_writer.reset(new Output::TextTableWriter(
+            get_params().output_interval, get_params().output_text_tables));
+        break;
+      default:
+        std::logic_error(
+            "Fauna::World::World() "
+            "Selected output format parameter is not implemented.");
+    }
   }
 }
 
@@ -111,8 +113,11 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
       continue;
     }
 
+    // Whether herbivores shall be (re-)established today.
+    bool establish_as_needed = false;
+
     // If there was no initial establishment yet, we may do this now.
-    bool establish_if_needed = !sim_unit.is_initial_establishment_done();
+    if (!sim_unit.is_initial_establishment_done()) establish_as_needed = true;
 
     // If one check interval has passed, we will check if HFTs have died out
     // and need to be re-established.
@@ -121,17 +126,12 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     if (days_since_last_establishment >=
             get_params().herbivore_establish_interval &&
         get_params().herbivore_establish_interval > 0) {
-      establish_if_needed = true;
+      establish_as_needed = true;
       days_since_last_establishment = 0;
     }
 
     // Keep track of the establishment cycle.
-    days_since_last_establishment++;
-
-    // Establish each HFT if it got extinct.
-    if (establish_if_needed)
-      for (auto& pop : sim_unit.get_populations())
-        if (pop->get_list().empty()) pop->establish();
+    if (do_herbivores) days_since_last_establishment++;
 
     // Create function object to delegate all simulations for this day to.
     // TODO: Create function object only once per day and for all simulation
@@ -139,7 +139,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     SimulateDay simulate_day(date.get_julian_day(), sim_unit, feed_herbivores);
 
     // Call the function object.
-    simulate_day(do_herbivores);
+    simulate_day(do_herbivores, establish_as_needed);
 
     // Aggregate output.
     assert(output_aggregator.get() != NULL);

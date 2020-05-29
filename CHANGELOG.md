@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2020-05-29
+
+### Added
+- Executable `megafauna_insfile_linter` for checking if a TOML instruction file is valid.
+
+### Fixed
+- Herbivores are now only established if the `do_herbivores==true` flag is passed into MMM.
+- Parameter `hft.digestion.i_g_1992_ijk` is not mandatory anymore.
+- Fix compiling errors under GCC 10.1.0 about not finding `std` exception.
+
 ## [0.5.0] - 2020-04-10
 
 ### Added
@@ -114,7 +124,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.0...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.1...develop
+[0.5.1]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/wtraylor/modular_megafauna_model/compare/0.3.0...0.3.1

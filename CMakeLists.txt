@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
 project ("Modular Megafauna Model"
-  VERSION 0.5.0
+  VERSION 0.5.1
   DESCRIPTION "A physiological, dynamic herbivore simulator in C++."
   LANGUAGES CXX
   )
@@ -184,6 +184,18 @@ if (BUILD_TESTING)
     COPYONLY
     )
 endif(BUILD_TESTING)
+
+###########################################################################
+###################  INSTRUCTION FILE LINTER  #############################
+###########################################################################
+
+add_executable (megafauna_insfile_linter
+  tools/insfile-linter/linter.cpp
+  )
+target_compile_features (megafauna_insfile_linter PRIVATE cxx_std_11)
+target_link_libraries (megafauna_insfile_linter
+  ModularMegafaunaModel
+  )
 
 ###########################################################################
 ########################  DEMO SIMULATOR  #################################

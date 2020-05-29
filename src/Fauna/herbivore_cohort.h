@@ -75,14 +75,19 @@ class HerbivoreCohort : public HerbivoreBase {
 
   /// Merge another cohort into this one.
   /**
-   * All state variables are averaged between the two cohorts
-   * by the weight of population density.
+   * All state variables are averaged between the two cohorts by the weight of
+   * population density. The age in days (\ref HerbivoreBase::age_days) will
+   * not be changed, which effectively means that the `other` (merged) cohort
+   * will lose the information about its precise age (in days).
+   *
    * \param other The other cohort that is merged into `this`.
    * The density of `other` will be reduced.
    * \throw std::invalid_argument If `fraction` not in [0,1].
    * \throw std::logic_error If the other cohort is not compatible: different
    * age, different HFT, different gross energy, or different sex. See
    * \ref HerbivoreBase::constant_members_match()
+   *
+   * \see \ref CohortPopulation::create_offspring_by_sex()
    */
   void merge(HerbivoreCohort& other);
 

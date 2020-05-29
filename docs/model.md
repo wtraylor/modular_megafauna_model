@@ -62,7 +62,7 @@ Spatial meaning must be given by the outside vegetation model; for example LPJ-G
 Currently, there is no interaction between habitats, that is herbivores cannot move from one to the other.
 Each habitat can be thought of as a little homogeneous capsulated world of forage and herbivores.
 
-![Basic model entities in the Modular Megafauna Model. Aggregation units (disjunct sets of simulation units) are only needed to aggregate output spatially. Cohorts are only one possible implementation of herbivores.](images/model_entities.svg)
+\image html images/model_entities.svg "Basic model entities in the Modular Megafauna Model. Aggregation units (disjunct sets of simulation units) are only needed to aggregate output spatially. Cohorts are only one possible implementation of herbivores."
 
 The simulations run with **daily time steps.** The predecessor model by Adrian Pachzelt \cite pachzelt2013coupling operated on a monthly schedule and was thus much faster.
 However, the Modular Megafauna Model should be applicable on different spatial and temporal scales.
@@ -117,7 +117,7 @@ This is different from the mass of suet and organ fat because the fat tissue als
 The term **lean body mass** is live body mass minus all fat mass (compare quote from Blaxter, 1989 \cite blaxter1989energy in Section \ref sec_fat_as_energy_storage).
 Note that lean body mass includes digesta, hair, antlers, and blood.
 
-![Body composition in the Modular Megafauna Model.](images/body_composition.svg)
+\image html images/body_composition.svg "Body composition in the Modular Megafauna Model."
 
 Calder (1996, p. 14) \cite calder1996function discusses the question of variable ingesta load:
 
@@ -190,7 +190,7 @@ However, the growth curve should be sigmoid, compare Price (1985, pp. 187–190)
 
 ### Energy Budget
 
-![Model of energy budget for a ruminant or hindgut fermenter. Modified after Minson (1990), Fig. 5.1.](images/energy_budget.svg)
+\image html images/energy_budget.svg "Model of energy budget for a ruminant or hindgut fermenter. Modified after Minson (1990), Fig. 5.1."
 
 #### Energy Expenditure
 
@@ -258,7 +258,7 @@ Basal and field metabolic rate and other energy expenditures are directly “pai
 Therefore the efficiency factor \f$k_m\f$ is used to convert from metabolizable energy to net energy.
 Body fat is anabolized from metabolizable forage energy with the efficiency factor \f$k_f\f$.
 
-![Model of energy retention in an herbivore. km and kf denote the slope of the line, i.e. the efficiency of utilizing metabolizable energy. When fed maintenance requirements, the animal will neither gain nor lose weight. Below that point it will starve (i.e. catabolize reserves) and above it will build reserves (i.e. anabolize fat). After McDonald et al. (2010), Fig. 11.5.](images/retention_over_intake.svg)
+\image html images/retention_over_intake.svg "Model of energy retention in an herbivore. km and kf denote the slope of the line, i.e. the efficiency of utilizing metabolizable energy. When fed maintenance requirements, the animal will neither gain nor lose weight. Below that point it will starve (i.e. catabolize reserves) and above it will build reserves (i.e. anabolize fat). After McDonald et al. (2010), Fig. 11.5."
 
 Feeding trials have shown that the net energy coefficient can linearly depend on the metabolizable energy content of the forage (Robbins, 1983, p. 296f; Minson, 1990, p. 93, 155).
 However, this effect seems to be mostly related to very high levels of feeding and by pelleting the feed.
@@ -310,7 +310,7 @@ T_{crit} = T_{core} - \frac{E_{neu}}{C}
 \Phi = C * max(T_{crit} - T_{air}, 0)
 \f]
 
-![](thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms. – Peters 1983, Fig. 5.6")
+\image html thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms. – Peters 1983, Fig. 5.6"
 
 \note
 In its current form, the model only considers costs when temperatures are too low.
@@ -344,7 +344,7 @@ However, they set the *daily digestive limit* as the asymptotic maximum.
 This can successfully create a density dependence effect: when herbivore densities rise and forage becomes scarce, the intake rate *gradually* decreases.
 However, it is not congruent with the original empirical measurement of \f$\beta\f$, which assumes a *short-term* intake rate irrespective of digestive capacity.
 
-![The different types of functional responses. This image is in the Public Domain.](images/functional_response_types.svg)
+\image html images/functional_response_types.svg "The different types of functional responses. This image is in the Public Domain."
 
 Following a seminal publication by Spalinger and Hobbs (1992)\cite spalinger1992mechanisms, a lot of work has been done to model the functional response of grazers mechanistically (e.g.
 Illius and Fitzgibbon 1994\cite illius1994costs;
