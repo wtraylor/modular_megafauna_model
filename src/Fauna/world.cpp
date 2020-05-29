@@ -23,23 +23,25 @@
 
 using namespace Fauna;
 
-World::World(const std::string instruction_filename)
+World::World(const std::string instruction_filename, const SimMode mode)
     : activated(true),
       insfile(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
       world_constructor(new WorldConstructor(insfile.params, get_hfts())),
       output_aggregator(new Output::Aggregator()) {
-  // Create Output::WriterInterface implementation according to selected
-  // setting.
-  switch (get_params().output_format) {
-    case OutputFormat::TextTables:
-      output_writer.reset(new Output::TextTableWriter(
-          get_params().output_interval, get_params().output_text_tables));
-      break;
-    default:
-      std::logic_error(
-          "Fauna::World::World() "
-          "Selected output format parameter is not implemented.");
+  if (mode == SimMode::Simulate) {
+    // Create Output::WriterInterface implementation according to selected
+    // setting.
+    switch (get_params().output_format) {
+      case OutputFormat::TextTables:
+        output_writer.reset(new Output::TextTableWriter(
+            get_params().output_interval, get_params().output_text_tables));
+        break;
+      default:
+        std::logic_error(
+            "Fauna::World::World() "
+            "Selected output format parameter is not implemented.");
+    }
   }
 }
 
