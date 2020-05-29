@@ -9,6 +9,7 @@
 
 #include <array>
 #include <cmath>
+#include <stdexcept>
 #include <numeric>
 #include "Fauna/average.h"
 #include "Fauna/forage_types.h"

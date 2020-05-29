@@ -8,6 +8,7 @@
 #define FAUNA_FORAGING_LIMITS_H
 
 #include <array>
+#include <stdexcept>
 
 namespace Fauna {
 
