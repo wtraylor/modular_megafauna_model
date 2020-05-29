@@ -60,12 +60,14 @@ Output::CombinedData SimulationUnit::get_output() const {
 
   for (auto& pop : get_populations())
     for (auto& herbivore : pop->get_list()) {
-      hft_output[herbivore->get_output_group()].push_back(herbivore->get_todays_output());
+      hft_output[herbivore->get_output_group()].push_back(
+          herbivore->get_todays_output());
     }
 
   for (auto& itr : hft_output) {
     const std::vector<Output::HerbivoreData>& vector = itr.second;
-    result.hft_data[itr.first] = Output::HerbivoreData::create_datapoint(vector);
+    result.hft_data[itr.first] =
+        Output::HerbivoreData::create_datapoint(vector);
   }
 
   // HABITAT
