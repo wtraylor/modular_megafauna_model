@@ -26,8 +26,9 @@ compile:
       -DBUILD_DEMO_SIMULATOR=ON
       -DBUILD_DOC=OFF ..
     - make --jobs=6
-      megafauna_unit_tests
       megafauna_demo_simulator
+      megafauna_insfile_linter
+      megafauna_unit_tests
   artifacts:
     paths:
       - build/demo_results.Rmd
