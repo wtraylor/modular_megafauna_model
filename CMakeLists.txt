@@ -186,6 +186,18 @@ if (BUILD_TESTING)
 endif(BUILD_TESTING)
 
 ###########################################################################
+###################  INSTRUCTION FILE LINTER  #############################
+###########################################################################
+
+add_executable (megafauna_insfile_linter
+  tools/insfile-linter/linter.cpp
+  )
+target_compile_features (megafauna_insfile_linter PRIVATE cxx_std_11)
+target_link_libraries (megafauna_insfile_linter
+  ModularMegafaunaModel
+  )
+
+###########################################################################
 ########################  DEMO SIMULATOR  #################################
 ###########################################################################
 

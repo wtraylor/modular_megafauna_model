@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added
+- Executable `megafauna_insfile_linter` for checking if a TOML instruction file is valid.
+
 ### Fixed
 - Herbivores are now only established if the `do_herbivores==true` flag is passed into MMM.
 - Fix compiling errors under GCC 10.1.0 about not finding `std` exception.

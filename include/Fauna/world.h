@@ -28,6 +28,15 @@ class Aggregator;
 class WriterInterface;
 }  // namespace Output
 
+/// Mode of the whole simulation program: What is it started for?
+enum class SimMode {
+  /// Only check (“lint”) the instruction file, don’t perform simulations.
+  /** \see \ref linter.cpp */
+  Lint,
+  /// Default mode: We want to simulate herbivores.
+  Simulate
+};
+
 /// Central class to construct and own megafauna habitats and populations.
 class World {
  public:
@@ -35,11 +44,14 @@ class World {
   /**
    * \param instruction_filename Path to the instruction file for the megafauna
    * model. It contains global settings and herbivore parameters.
+   * \param mode Whether we are only checking the instruction file or running a
+   * simulation. If set to \ref SimMode::Lint, no files will be created.
    *
    * \throw std::logic_error If a selected instruction file parameter is not
    * implemented.
    */
-  World(const std::string instruction_filename);
+  World(const std::string instruction_filename,
+        const SimMode linting = SimMode::Simulate);
 
   /// Constructor: Create deactivated `World` object.
   /**
