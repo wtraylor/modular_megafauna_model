@@ -33,10 +33,14 @@ World::World(const std::string instruction_filename, const SimMode mode)
     // Create Output::WriterInterface implementation according to selected
     // setting.
     switch (get_params().output_format) {
-      case OutputFormat::TextTables:
+      case OutputFormat::TextTables: {
+        std::set<std::string> hft_names;
+        for (const auto& h : get_hfts()) hft_names.insert(h->name);
         output_writer.reset(new Output::TextTableWriter(
-            get_params().output_interval, get_params().output_text_tables));
+            get_params().output_interval, get_params().output_text_tables,
+            hft_names));
         break;
+      }
       default:
         std::logic_error(
             "Fauna::World::World() "

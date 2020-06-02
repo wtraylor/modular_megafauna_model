@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.2] - 2020-06-02
+
+### Fixed
+- Crash if not all HFTs were established immediately at the start of the start of the simulation.
+
 ## [0.5.1] - 2020-05-29
 
 ### Added
@@ -124,7 +129,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.1...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.2...develop
+[0.5.2]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.3.1...0.4.0

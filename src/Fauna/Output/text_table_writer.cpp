@@ -16,8 +16,9 @@ const char* TextTableWriter::NA_VALUE = "NA";
 const char* TextTableWriter::FILE_EXTENSION = ".tsv";
 
 TextTableWriter::TextTableWriter(const OutputInterval interval,
-                                 const TextTableWriterOptions& options)
-    : interval(interval), options(options) {
+                                 const TextTableWriterOptions& options,
+                                 const std::set<std::string> hft_names)
+    : interval(interval), options(options), hft_names(hft_names) {
   const std::string& dir = options.directory;
 
   create_directories(dir);
@@ -77,12 +78,9 @@ const HerbivoreData* TextTableWriter::get_hft_data(
   assert(datapoint);
   for (const auto& i : datapoint->data.hft_data)
     if (i.first == hft_name) return &i.second;
-  throw std::runtime_error(
-      "Fauna::Output::TextTableWriter::get_hft_data(): "
-      "There is no record for HFT \"" +
-      hft_name +
-      "\" "
-      "in given herbivore data.");
+  // Generate empty record if none exists.
+  static const HerbivoreData empty_object;
+  return &empty_object;
 }
 
 void TextTableWriter::start_row(const Datapoint& datapoint,
@@ -112,7 +110,7 @@ void TextTableWriter::start_row(const Datapoint& datapoint,
       break;
     default:
       std::logic_error(
-          "Fauna::TextTableWriter::write_datapoint() Output time interval is "
+          "Fauna::TextTableWriter::start_row() Output time interval is "
           "not implemented.");
   }
   table << datapoint.aggregation_unit;
@@ -150,15 +148,15 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
     captions_written = true;
   }
 
-  if (data.hft_data.size() != hft_names.size()) {
+  if (data.hft_data.size() > hft_names.size()) {
     std::ostringstream my_names;
     for (const auto& n : hft_names) my_names << n << ", ";
     std::ostringstream found_names;
     for (const auto& d : data.hft_data) found_names << d.first << ", ";
     throw std::runtime_error(
         "Fauna::Output::TextTableWriter::write_datapoint(): "
-        "Number of HFTs in given datapoint differs from number of stored "
-        "HFT names.\n"
+        "The given datapoint contains data on at least one HFT that was not "
+        "passed to TextTableWriter at the time of construction.\n"
         "HFT names stored: " +
         my_names.str() +
         "\n"
@@ -246,7 +244,7 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
         break;
       default:
         std::logic_error(
-            "Fauna::TextTableWriter::write_datapoint() Output time interval "
+            "Fauna::TextTableWriter::write_captions() Output time interval "
             "is "
             "not implemented.");
     }
@@ -266,12 +264,7 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
     eaten_forage_per_ind << FIELD_SEPARATOR << "forage_type";
 
   // Per-HFT Tables
-  // First create the list of of HFT names.
-  for (const auto& i : datapoint.data.hft_data) {
-    const std::string& hft_name = i.first;
-    hft_names.insert(hft_name);
-  }
-  // Now write the HFT names in the distinct and never-changing order.
+  // Write the HFT names in the distinct and never-changing order.
   for (const auto& hft_name : hft_names) {
     if (hft_name.find(' ') != std::string::npos)
       throw std::invalid_argument(
@@ -293,9 +286,7 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << hft_name;
   }
-  // This assertion will fail if there are several HFTs with the same name
-  // (but different pointers) in the `hft_data` map.
-  assert(hft_names.size() == datapoint.data.hft_data.size());
+  assert(hft_names.size() >= datapoint.data.hft_data.size());
 
   for (auto& f : file_streams) *f << std::endl;
 }
