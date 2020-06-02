@@ -53,23 +53,25 @@ TEST_CASE("Fauna::Output::TextTableWriter ANNUAL", "") {
   opt.eaten_forage_per_ind = true;
   opt.mass_density_per_hft = true;
 
+  // We create 4 HFTs, but use only 3. The extra one is to check that an
+  // exception gets thrown if the numbers don’t match up.
+  static const HftList HFTS = create_hfts(4, Parameters());
+  std::set<std::string> hft_names;
+  for (int i = 0; i < 3; i++) hft_names.insert(HFTS[i]->name);
+
   // Constructor with new random output directory.
   opt.directory = generate_output_dir();
   REQUIRE(!directory_exists(opt.directory));
-  TextTableWriter writer(OutputInterval::Annual, opt);
+  TextTableWriter writer(OutputInterval::Annual, opt, hft_names);
   REQUIRE(directory_exists(opt.directory));
   INFO((std::string) "Random output directory: " + opt.directory);
 
   SECTION("File already exists") {
-    CHECK_THROWS(TextTableWriter(OutputInterval::Annual, opt));
+    CHECK_THROWS(TextTableWriter(OutputInterval::Annual, opt, hft_names));
   }
 
   static const int YEAR = 4;
   static const std::string AGG_UNIT = "unit1";
-
-  // We create 4 HFTs, but use only 3. The extra one is to check that an
-  // exception gets thrown if the numbers don’t match up.
-  static const HftList HFTS = create_hfts(4, Parameters());
 
   // Since TextTableWriter sorts the HFT columns by name, we need to make sure
   // that also our test list is sorted the same way.

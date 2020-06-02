@@ -16,8 +16,9 @@ const char* TextTableWriter::NA_VALUE = "NA";
 const char* TextTableWriter::FILE_EXTENSION = ".tsv";
 
 TextTableWriter::TextTableWriter(const OutputInterval interval,
-                                 const TextTableWriterOptions& options)
-    : interval(interval), options(options) {
+                                 const TextTableWriterOptions& options,
+                                 const std::set<std::string> hft_names)
+    : interval(interval), options(options), hft_names(hft_names) {
   const std::string& dir = options.directory;
 
   create_directories(dir);
@@ -263,12 +264,7 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
     eaten_forage_per_ind << FIELD_SEPARATOR << "forage_type";
 
   // Per-HFT Tables
-  // First create the list of of HFT names.
-  for (const auto& i : datapoint.data.hft_data) {
-    const std::string& hft_name = i.first;
-    hft_names.insert(hft_name);
-  }
-  // Now write the HFT names in the distinct and never-changing order.
+  // Write the HFT names in the distinct and never-changing order.
   for (const auto& hft_name : hft_names) {
     if (hft_name.find(' ') != std::string::npos)
       throw std::invalid_argument(
@@ -290,9 +286,7 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << hft_name;
   }
-  // This assertion will fail if there are several HFTs with the same name
-  // (but different pointers) in the `hft_data` map.
-  assert(hft_names.size() == datapoint.data.hft_data.size());
+  assert(hft_names.size() >= datapoint.data.hft_data.size());
 
   for (auto& f : file_streams) *f << std::endl;
 }

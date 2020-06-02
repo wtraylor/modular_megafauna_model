@@ -33,10 +33,12 @@ class TextTableWriter : public WriterInterface {
    * Create all files that are selected in `options` as empty files.
    * \param interval Selector if output is daily/monthly/annual/...
    * \param options Specific user-defined options for this class.
+   * \param hft_names All HFTs in the simulation (see \ref Fauna::Hft::name).
    * \throw std::runtime_error If one of the output files already exists.
    */
   TextTableWriter(const OutputInterval interval,
-                  const TextTableWriterOptions& options);
+                  const TextTableWriterOptions& options,
+                  const std::set<std::string> hft_names);
 
   /// Append spatially & temporally aggregated output data to table files.
   /**
@@ -120,12 +122,7 @@ class TextTableWriter : public WriterInterface {
   std::vector<std::ofstream*> file_streams;
 
   /// List of Hft names (\ref Fauna::Hft::name) in constant order.
-  /**
-   * They get initialized on first write in \ref write_captions().
-   * Note that the order of elements in \ref CombinedData::hft_data is not
-   * predictable because pointers are used as keys.
-   */
-  std::set<std::string> hft_names;
+  const std::set<std::string> hft_names;
 
   /// User-selected utput interval.
   const OutputInterval interval;
