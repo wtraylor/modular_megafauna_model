@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Single values in TOML file can be parsed like a single-element array.
+
 ## [0.5.2] - 2020-06-02
 
 ### Fixed
