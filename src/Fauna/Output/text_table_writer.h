@@ -33,10 +33,12 @@ class TextTableWriter : public WriterInterface {
    * Create all files that are selected in `options` as empty files.
    * \param interval Selector if output is daily/monthly/annual/...
    * \param options Specific user-defined options for this class.
+   * \param hft_names All HFTs in the simulation (see \ref Fauna::Hft::name).
    * \throw std::runtime_error If one of the output files already exists.
    */
   TextTableWriter(const OutputInterval interval,
-                  const TextTableWriterOptions& options);
+                  const TextTableWriterOptions& options,
+                  const std::set<std::string> hft_names);
 
   /// Append spatially & temporally aggregated output data to table files.
   /**
@@ -61,8 +63,8 @@ class TextTableWriter : public WriterInterface {
    *
    * \throw std::logic_error If the \ref OutputInterval is not implemented.
    *
-   * \throw std::runtime_error If `datapoint.data.hft_data` is missing an HFT
-   * or has too many (checked by comparing \ref Fauna::Hft::name).
+   * \throw std::runtime_error If `datapoint.data.hft_data` contains an unknown
+   * HFT (checked by comparing \ref Fauna::Hft::name).
    */
   virtual void write_datapoint(const Datapoint& datapoint);
 
@@ -83,9 +85,11 @@ class TextTableWriter : public WriterInterface {
   /**
    * The return type is a pointer in order to minimize copying memory. It is
    * save as long as `datapoint` is stable.
+   * If there is no data for the given HFT, an empty record is returned.
    * \param datapoint Where the herbivore data is in \ref Datapoint::data.
    * \param hft_name The name of the HFT in \ref Datapoint::data.
-   * \throw std::runtime_error If there is no record for given HFT.
+   * \return Pointer to \ref HerbivoreData in `datapoint` if it exists,
+   * otherwise a pointer to an empty \ref HerbivoreData object.
    * \see \ref HerbivoreInterface::get_output_group() is the “HFT”.
    */
   const HerbivoreData* get_hft_data(const Datapoint* datapoint,
@@ -118,12 +122,7 @@ class TextTableWriter : public WriterInterface {
   std::vector<std::ofstream*> file_streams;
 
   /// List of Hft names (\ref Fauna::Hft::name) in constant order.
-  /**
-   * They get initialized on first write in \ref write_captions().
-   * Note that the order of elements in \ref CombinedData::hft_data is not
-   * predictable because pointers are used as keys.
-   */
-  std::set<std::string> hft_names;
+  const std::set<std::string> hft_names;
 
   /// User-selected utput interval.
   const OutputInterval interval;

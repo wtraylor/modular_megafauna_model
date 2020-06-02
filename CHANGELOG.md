@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2020-06-02
+
+### Fixed
+- Crash if not all HFTs were established immediately at the start of the start of the simulation.
+
 ## [0.5.1] - 2020-05-29
 
 ### Added
