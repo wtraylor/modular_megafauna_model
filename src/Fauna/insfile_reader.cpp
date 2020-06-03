@@ -517,10 +517,11 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         (hft.digestion_limit == DigestiveLimit::IlliusGordon1992);
     const auto value = find_hft_array_parameter<double>(
         table, "digestion.i_g_1992_ijk", mandatory);
-    assert(value);
-    if (value->size() != 3)
-      throw bad_array_size("hft.digestion.i_g_1992_ijk", value->size(), "3");
-    for (int i = 0; i < 3; i++) hft.digestion_i_g_1992_ijk[i] = (*value)[i];
+    if (value) {
+      if (value->size() != 3)
+        throw bad_array_size("hft.digestion.i_g_1992_ijk", value->size(), "3");
+      for (int i = 0; i < 3; i++) hft.digestion_i_g_1992_ijk[i] = (*value)[i];
+    }
   }
   {
     const bool mandatory = (hft.expenditure_components.count(
