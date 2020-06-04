@@ -129,10 +129,11 @@ demo_simulation:
     expire_in: 20 minutes
 
 plot_demo_results:
-  image: r-base:latest
+  image:
+    name: r-base:latest
+    entrypoint: ["Rscript", "-e"] # Execute the scripts in R.
   stage: postprocess
   needs: ["demo_simulation"]
-  # The scripts are executed directly by R (and not by the Bash).
   before_script:
     - install.packages(c("ggplot2", "knitr", "markdown", "tidyr"))
   script:
