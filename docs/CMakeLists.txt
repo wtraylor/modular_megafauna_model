@@ -1,4 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
+set (REQUIRED_DOXYGEN_VERSION 1.8.16)
 
 find_package (LATEX COMPONENTS BIBTEX)
 find_package (Java COMPONENTS Runtime)
@@ -28,12 +29,20 @@ if (DOXYGEN_FOUND)
   set (DOXYGEN_PLANTUML_JAR_PATH "plantuml/plantuml.jar")
   set (DOXYGEN_USE_MDFILE_AS_MAINPAGE "mainpage.md")
 
-  if (DOXYGEN_VERSION VERSION_LESS 1.8.16)
-    message (
-      WARNING "You are using an older version of Doxygen (${DOXYGEN_VERSION}).
-      Perhaps errors will occur. This documentation was tested with Doxygen
-      version 1.8.16."
-      )
+  if (DOXYGEN_VERSION VERSION_LESS ${REQUIRED_DOXYGEN_VERSION})
+    if (STOP_DOXYGEN_ON_WARNING)
+      message (
+        FATAL_ERROR "Your Doxygen version (${DOXYGEN_VERSION}) is too old. In
+        order to compile reliably, use at least version
+        ${REQUIRED_DOXYGEN_VERSION}."
+        )
+    else()
+      message (
+        WARNING "You are using an older version of Doxygen
+        (${DOXYGEN_VERSION}). Perhaps errors will occur. This documentation was
+        tested with Doxygen version ${REQUIRED_DOXYGEN_VERSION}."
+        )
+    endif()
   endif()
 
   if (NOT Java_Runtime_FOUND)
@@ -60,7 +69,6 @@ if (DOXYGEN_FOUND)
   endif ()
 
   doxygen_add_docs (megafauna_docs
-    ../CONTRIBUTING.md
     ../include/
     ../src/
     ../tools/demo_simulator/
