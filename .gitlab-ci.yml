@@ -39,7 +39,7 @@ compile:
     expire_in: 20 minutes
 
 doxygen:
-  image: debian:latest
+  image: ubuntu:latest
   stage: build
   before_script:
     - apt-get update -qq
@@ -64,7 +64,7 @@ doxygen:
       - build/docs/html/
 
 unit_tests:
-  image: debian:latest
+  image: ubuntu:latest
   stage: test
   needs: ["compile"]
   script:
@@ -74,14 +74,14 @@ unit_tests:
 # Check that the linter works and that the example instruction files are
 # correct.
 linter:
-  image: debian:latest
+  image: ubuntu:latest
   stage: test
   needs: ["compile"]
   script:
     - ./build/megafauna_insfile_linter examples/megafauna.toml
 
 memcheck:
-  image: debian:latest
+  image: ubuntu:latest
   stage: test
   needs: ["compile"]
   before_script:
@@ -110,7 +110,7 @@ memcheck:
       - build/memcheck.log
 
 demo_simulation:
-  image: debian:latest
+  image: ubuntu:latest
   stage: test
   needs: ["compile"]
   script:
