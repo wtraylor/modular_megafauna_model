@@ -60,7 +60,6 @@ if (DOXYGEN_FOUND)
   endif ()
 
   doxygen_add_docs (megafauna_docs
-    ../CONTRIBUTING.md
     ../include/
     ../src/
     ../tools/demo_simulator/
