@@ -129,19 +129,19 @@ demo_simulation:
     expire_in: 20 minutes
 
 plot_demo_results:
-  image:
-    name: r-base:latest
-    entrypoint: ["Rscript", "-e"] # Execute the scripts in R.
+  image: r-base:latest
   stage: postprocess
   needs: ["demo_simulation"]
   before_script:
-    - install.packages(c("ggplot2", "knitr", "markdown", "tidyr"))
+    - Rscript -e 'install.packages(c("ggplot2", "knitr", "markdown", "tidyr"))'
   script:
-    - setwd("build")
-    - library(knitr)
-    - library(markdown)
-    - knit('demo_results.Rmd', 'demo_results.md')
-    - markdownToHTML('demo_results.md', 'demo_results.html')"
+    - cd build
+    - Rscript -e
+      "library(knitr);
+      library(markdown);
+      knit('demo_results.Rmd', 'demo_results.md');
+      markdownToHTML('demo_results.md', 'demo_results.html')"
+    - test -f "demo_results.html"
   artifacts:
     paths:
       - build/demo_results.html
