@@ -164,10 +164,19 @@ InsfileReader::find_hft_array_parameter(
   hft_keys_parsed.insert(key);
 
   {
-    const auto value = hft_table->get_qualified_array_of<T>(key);
-    if (value) {
+    // Look for an array of values in the "hft" section.
+    const auto array = hft_table->get_qualified_array_of<T>(key);
+    if (array) {
       remove_qualified_key(hft_table, key);
-      return value;
+      return array;
+    }
+    // Look for a single value in the "hft" section, which will be treated like
+    // an array of one element.
+    const cpptoml::option<T> single = hft_table->get_qualified_as<T>(key);
+    if (single) {
+      remove_qualified_key(hft_table, key);
+      std::vector<T> vec({*single});  // 1-element vector
+      return vec;
     }
   }
 
@@ -177,8 +186,20 @@ InsfileReader::find_hft_array_parameter(
       const auto group_table = get_group_table(g);
       if (!group_table) throw missing_group(name, g);
       {
-        const auto value = group_table->get_qualified_array_of<T>(key);
-        if (value) return value;
+        // Look for an array of values in the "groups" section.
+        const auto array = group_table->get_qualified_array_of<T>(key);
+        if (array) {
+          remove_qualified_key(group_table, key);
+          return array;
+        }
+        // Look for a single value in the "groups" section, which will be
+        // treated like an array of one element.
+        const cpptoml::option<T> single = group_table->get_qualified_as<T>(key);
+        if (single) {
+          remove_qualified_key(group_table, key);
+          std::vector<T> vec({*single});  // 1-element vector
+          return vec;
+        }
       }
     }
 
@@ -496,10 +517,11 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
         (hft.digestion_limit == DigestiveLimit::IlliusGordon1992);
     const auto value = find_hft_array_parameter<double>(
         table, "digestion.i_g_1992_ijk", mandatory);
-    assert(value);
-    if (value->size() != 3)
-      throw bad_array_size("hft.digestion.i_g_1992_ijk", value->size(), "3");
-    for (int i = 0; i < 3; i++) hft.digestion_i_g_1992_ijk[i] = (*value)[i];
+    if (value) {
+      if (value->size() != 3)
+        throw bad_array_size("hft.digestion.i_g_1992_ijk", value->size(), "3");
+      for (int i = 0; i < 3; i++) hft.digestion_i_g_1992_ijk[i] = (*value)[i];
+    }
   }
   {
     const bool mandatory = (hft.expenditure_components.count(

@@ -37,6 +37,10 @@ indent_style = space
 indent_size = 2
 indent_style = space
 
-# TODO:
-#  - Add instruction file
-#  - Add yml file (for gitlab CI)
+[*.{yml,yaml}]
+indent_size = 2
+indent_style = space
+
+[*.toml]
+indent_size = 2
+indent_style = space
