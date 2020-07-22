@@ -133,14 +133,10 @@ plot_demo_results:
   stage: postprocess
   needs: ["demo_simulation"]
   before_script:
-    - Rscript -e 'install.packages(c("ggplot2", "knitr", "markdown", "tidyr"))'
+    - Rscript -e 'install.packages(c("ggplot2", "rmarkdown", "tidyr"))'
   script:
     - cd build
-    - Rscript -e
-      "library(knitr);
-      library(markdown);
-      knit('demo_results.Rmd', 'demo_results.md');
-      markdownToHTML('demo_results.md', 'demo_results.html')"
+    - Rscript -e "rmarkdown::render('demo_results.Rmd')"
     - test -f "demo_results.html"
   artifacts:
     paths:
