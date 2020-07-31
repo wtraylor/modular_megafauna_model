@@ -305,7 +305,11 @@ struct Hft {
   /**
    * The default value is taken from Corbett et al. (1990)
    * \cite corbett1990feeding.
+   *
+   * This value must not be higher than the fat anabolism coefficient,
+   * which is \ref digestion_k_maintenance divided by \ref digestion_k_fat.
    * \see \ref sec_fat_as_energy_storage
+   * \see \ref FatmassEnergyBudget
    */
   double body_fat_catabolism_efficiency = 0.8;
 
