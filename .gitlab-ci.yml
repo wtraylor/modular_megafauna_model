@@ -78,7 +78,10 @@ linter:
   stage: test
   needs: ["compile"]
   script:
+    # Good Files:
     - ./build/megafauna_insfile_linter examples/megafauna.toml
+    # Bad Files:
+    - ! ./build/megafauna_insfile_linter tests/bad_insfiles/catabolism_gt_anabolism.toml
 
 memcheck:
   image: ubuntu:latest
