@@ -145,13 +145,14 @@ std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
   return std::shared_ptr<cpptoml::table>(NULL);  // nothing found
 }
 
-std::shared_ptr<int> InsfileReader::get_integer(const std::string& key) const {
-  auto value = ins->get_qualified_as<int>(key);
+template <class T>
+std::shared_ptr<T> InsfileReader::get_value(const std::string& key) const {
+  auto value = ins->get_qualified_as<T>(key);
   if (value) {
     remove_qualified_key(ins, key);
-    return std::shared_ptr<int>(new int(*value));
+    return std::shared_ptr<T>(new T(*value));
   } else {
-    check_wrong_type<int>(key);
+    check_wrong_type<T>(key);
     return NULL;  // Nothing found.
   }
 }
@@ -821,7 +822,7 @@ void InsfileReader::read_table_simulation() {
   }
   {
     const auto key = "simulation.establishment_interval";
-    auto value = get_integer(key);
+    auto value = get_value<int>(key);
     if (value) params.herbivore_establish_interval = *value;
   }
   {
