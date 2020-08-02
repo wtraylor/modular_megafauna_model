@@ -818,7 +818,7 @@ void InsfileReader::read_table_output_text_tables() {
   }
   {
     const auto key = "output.text_tables.tables";
-    auto value = ins->get_qualified_array_of<std::string>(key);
+    auto value = get_value_array<std::string>(key);
     if (value) {
       for (const auto& s : *value)
         if (lowercase(s) == "available_forage")
@@ -838,7 +838,6 @@ void InsfileReader::read_table_output_text_tables() {
               {"available_forage", "digestibility", "eaten_forage_per_ind",
                "eaten_nitrogen_per_ind", "mass_density_per_hft"});
     }
-    remove_qualified_key(ins, key);
   }
   // Remove the table "output" in order to indicate that it’s been parsed.
   auto table = ins->get_table_qualified("output.text_tables");
