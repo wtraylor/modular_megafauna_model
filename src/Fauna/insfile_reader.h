@@ -191,13 +191,22 @@ class InsfileReader {
   std::shared_ptr<cpptoml::table> get_group_table(
       const std::string& group_name) const;
 
-  /// Retrieve a value from the TOML file.
+  /// Retrieve a single value from the TOML file.
   /**
    * \param key The fully qualified TOML key.
    * \tparam T Expected type of the parameter `key`.
    */
   template <class T>
   std::shared_ptr<T> get_value(const std::string& key) const;
+
+  /// Retrieve a value array from the TOML file.
+  /**
+   * \param key The fully qualified TOML key.
+   * \tparam T Expected type of the array elements.
+   */
+  template <class T>
+  std::shared_ptr<std::vector<T> > get_value_array(
+      const std::string& key) const;
 
   /// Throw an exception if parameter is present, but with wrong type.
   /**

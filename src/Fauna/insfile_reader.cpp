@@ -116,6 +116,8 @@ void InsfileReader::check_wrong_type(const std::string& key) const {
     expected = "integer";
   else if (std::is_same<Expected, std::string>::value)
     expected = "string";
+  else if (std::is_same<Expected, std::vector<std::string> >::value)
+    expected = "array of string";
   // Add more types here if you want to support them.
   assert(expected != "");
 
@@ -182,6 +184,22 @@ template std::shared_ptr<int> InsfileReader::get_value<>(
     const std::string&) const;
 template std::shared_ptr<std::string> InsfileReader::get_value<>(
     const std::string&) const;
+
+template <class T>
+std::shared_ptr<std::vector<T> > InsfileReader::get_value_array(
+    const std::string& key) const {
+  auto value = ins->get_qualified_array_of<T>(key);
+  if (value) {
+    remove_qualified_key(ins, key);
+    return std::shared_ptr<std::vector<T> >(new std::vector<T>(*value));
+  } else {
+    check_wrong_type<std::vector<T> >(key);
+    return NULL;  // Nothing found.
+  }
+}
+// Explicit instantiations of the template function for all supported datatypes:
+template std::shared_ptr<std::vector<std::string> >
+InsfileReader::get_value_array<>(const std::string&) const;
 
 template <class T>
 cpptoml::option<T> InsfileReader::find_hft_parameter(
