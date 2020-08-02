@@ -148,6 +148,21 @@ struct unknown_parameters : public std::runtime_error {
   }
 };
 
+/// Exception that a parameter is not of an expected data type.
+struct wrong_param_type : public std::runtime_error {
+  /// Constructor
+  /**
+   * \param key The fully qualified TOML key.
+   * \param type_expected What `key` is supposed to be.
+   * \param type_found The type of `key` in the given instruction file.
+   */
+  wrong_param_type(const std::string& key, const std::string& type_expected,
+                   const std::string& type_found)
+      : std::runtime_error("The parameter \"" + key + "\" " +
+                           "is of the wrong type. I found type " + type_found +
+                           ", but expected " + type_expected + "."){};
+};
+
 /// Class to read parameters and HFTs from given instruction file.
 class InsfileReader {
  public:
