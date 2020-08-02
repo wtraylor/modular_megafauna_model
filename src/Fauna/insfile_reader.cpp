@@ -725,7 +725,7 @@ void InsfileReader::read_table_forage() {
   auto table = ins->get_table("forage");
   for (const auto& ft : Fauna::FORAGE_TYPES) {
     const auto key = "forage.gross_energy." + get_forage_type_name(ft);
-    auto value = ins->get_qualified_as<double>(key);
+    auto value = get_value<double>(key);
     if (!value) throw missing_parameter(key);
     if (*value < 0)
       throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
@@ -740,7 +740,7 @@ void InsfileReader::read_table_forage() {
 void InsfileReader::read_table_output() {
   {
     const auto key = "output.format";
-    auto value = ins->get_qualified_as<std::string>(key);
+    auto value = get_value<std::string>(key);
     if (value) {
       if (lowercase(*value) == lowercase("TextTables"))
         params.output_format = OutputFormat::TextTables;
@@ -749,11 +749,10 @@ void InsfileReader::read_table_output() {
         throw invalid_option(key, *value, {"TextTables"});
     } else
       throw missing_parameter(key);
-    remove_qualified_key(ins, key);
   }
   {
     const auto key = "output.interval";
-    auto value = ins->get_qualified_as<std::string>(key);
+    auto value = get_value<std::string>(key);
     if (value) {
       if (lowercase(*value) == lowercase("Daily"))
         params.output_interval = OutputInterval::Daily;
@@ -768,7 +767,6 @@ void InsfileReader::read_table_output() {
                              {"Daily", "Monthly", "Decadal", "Annual"});
     } else
       throw missing_parameter(key);
-    remove_qualified_key(ins, key);
   }
   // Remove the table "output" in order to indicate that it’s been parsed.
   auto table = ins->get_table("output");
@@ -778,20 +776,16 @@ void InsfileReader::read_table_output() {
 void InsfileReader::read_table_output_text_tables() {
   {
     const auto key = "output.text_tables.directory";
-    auto value = ins->get_qualified_as<std::string>(key);
-    if (value) {
+    auto value = get_value<std::string>(key);
+    if (value)
       params.output_text_tables.directory = *value;
-    } else
+    else
       throw missing_parameter(key);
-    remove_qualified_key(ins, key);
   }
   {
     const auto key = "output.text_tables.precision";
-    auto value = ins->get_qualified_as<int>(key);
-    if (value) {
-      params.output_text_tables.precision = *value;
-    }
-    remove_qualified_key(ins, key);
+    auto value = get_value<int>(key);
+    if (value) params.output_text_tables.precision = *value;
   }
   {
     const auto key = "output.text_tables.tables";
@@ -825,14 +819,13 @@ void InsfileReader::read_table_output_text_tables() {
 void InsfileReader::read_table_simulation() {
   {
     const auto key = "simulation.forage_distribution";
-    auto value = ins->get_qualified_as<std::string>(key);
+    auto value = get_value<std::string>(key);
     if (value) {
       if (lowercase(*value) == lowercase("Equally"))
         params.forage_distribution = ForageDistributionAlgorithm::Equally;
       // -> Add new forage distribution algorithm here.
       else
         throw invalid_option(key, *value, {"Equally"});
-      remove_qualified_key(ins, key);
     }
   }
   {
@@ -842,23 +835,19 @@ void InsfileReader::read_table_simulation() {
   }
   {
     const auto key = "simulation.herbivore_type";
-    auto value = ins->get_qualified_as<std::string>(key);
+    auto value = get_value<std::string>(key);
     if (value) {
       if (lowercase(*value) == lowercase("Cohort"))
         params.herbivore_type = HerbivoreType::Cohort;
       else
         throw invalid_option(key, *value, {"Cohort"});
-      remove_qualified_key(ins, key);
     } else
       throw missing_parameter(key);
   }
   {
     const auto key = "simulation.one_hft_per_habitat";
-    auto value = ins->get_qualified_as<bool>(key);
-    if (value) {
-      params.one_hft_per_habitat = *value;
-      remove_qualified_key(ins, key);
-    }
+    auto value = get_value<bool>(key);
+    if (value) params.one_hft_per_habitat = *value;
   }
   // Remove the table "simulation" in order to indicate that it’s been parsed.
   auto table = ins->get_table("simulation");
