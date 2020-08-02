@@ -191,6 +191,20 @@ class InsfileReader {
   std::shared_ptr<cpptoml::table> get_group_table(
       const std::string& group_name) const;
 
+  /// Retrieve an integer value from the TOML file.
+  /**
+   */
+  std::shared_ptr<int> get_integer(const std::string& key) const;
+
+  /// Throw an exception if parameter is present, but with wrong type.
+  /**
+   * \param key The fully qualified TOML key.
+   * \tparam Expected Expected type of the parameter `key`.
+   * \throw wrong_param_type If `key` found, but of wrong type.
+   */
+  template <class Expected>
+    void check_wrong_type(const std::string& key) const;
+
   /// Retrieve HFT parameter from HFT table itself or one of its groups.
   /**
    * If the key is not defined in the HFT itself, the groups are checked in the

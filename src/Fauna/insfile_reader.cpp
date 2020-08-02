@@ -104,6 +104,35 @@ InsfileReader::InsfileReader(const std::string filename)
   if (!unknown_elements.empty()) throw unknown_parameters(unknown_elements);
 }
 
+template <class Expected>
+void InsfileReader::check_wrong_type(const std::string& key) const {
+  // User-readable label for the expected type.
+  std::string expected;
+  if (std::is_same<Expected, double>::value)
+    expected = "floating point";
+  else if (std::is_same<Expected, int>::value)
+    expected = "integer";
+  else if (std::is_same<Expected, std::string>::value)
+    expected = "string";
+  // Add more types here if you want to support them.
+  assert(expected != "");
+
+  // Check for each possible type if we can find the parameter with that name
+  // in the TOML file.
+  if (!std::is_same<Expected, double>::value &&
+      ins->get_qualified_as<double>(key))
+    throw wrong_param_type(key, expected, "floating point");
+  if (!std::is_same<Expected, int>::value && ins->get_qualified_as<int>(key))
+    throw wrong_param_type(key, expected, "integer");
+  if (!std::is_same<Expected, std::string>::value &&
+      ins->get_qualified_as<std::string>(key))
+    throw wrong_param_type(key, expected, "string");
+  // Add more types here if you want to support them.
+
+  // If no exception was thrown up to this point, the parameter is not
+  // available with a wrong name.
+}
+
 std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
     const std::string& group_name) const {
   auto group_table_array = ins->get_table_array("group");
@@ -114,6 +143,17 @@ std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
       if (*name == group_name) return group_table;
     }
   return std::shared_ptr<cpptoml::table>(NULL);  // nothing found
+}
+
+std::shared_ptr<int> InsfileReader::get_integer(const std::string& key) const {
+  auto value = ins->get_qualified_as<int>(key);
+  if (value) {
+    remove_qualified_key(ins, key);
+    return std::shared_ptr<int>(new int(*value));
+  } else {
+    check_wrong_type<int>(key);
+    return NULL;  // Nothing found.
+  }
 }
 
 template <class T>
@@ -781,11 +821,8 @@ void InsfileReader::read_table_simulation() {
   }
   {
     const auto key = "simulation.establishment_interval";
-    auto value = ins->get_qualified_as<int>(key);
-    if (value) {
-      params.herbivore_establish_interval = *value;
-      remove_qualified_key(ins, key);
-    }
+    auto value = get_integer(key);
+    if (value) params.herbivore_establish_interval = *value;
   }
   {
     const auto key = "simulation.herbivore_type";
