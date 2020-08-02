@@ -108,7 +108,9 @@ template <class Expected>
 void InsfileReader::check_wrong_type(const std::string& key) const {
   // User-readable label for the expected type.
   std::string expected;
-  if (std::is_same<Expected, double>::value)
+  if (std::is_same<Expected, bool>::value)
+    expected = "boolean";
+  else if (std::is_same<Expected, double>::value)
     expected = "floating point";
   else if (std::is_same<Expected, int>::value)
     expected = "integer";
@@ -119,6 +121,8 @@ void InsfileReader::check_wrong_type(const std::string& key) const {
 
   // Check for each possible type if we can find the parameter with that name
   // in the TOML file.
+  if (!std::is_same<Expected, bool>::value && ins->get_qualified_as<bool>(key))
+    throw wrong_param_type(key, expected, "boolean");
   if (!std::is_same<Expected, double>::value &&
       ins->get_qualified_as<double>(key))
     throw wrong_param_type(key, expected, "floating point");
