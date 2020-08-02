@@ -92,6 +92,7 @@ linter:
     - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_05.toml 2>&1 | grep -iq 'hft\.mortality\.factors.*wrong type'
     - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_06.toml 2>&1 | grep -iq 'simulation\.establishment_interval.*wrong type'
     - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_07.toml 2>&1 | grep -iq 'output\.text_tables\.precision.*wrong type'
+    - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_08.toml 2>&1 | grep -iq 'hft\.body_mass\.female.*wrong type'
 
 memcheck:
   image: ubuntu:latest
