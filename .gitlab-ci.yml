@@ -81,6 +81,9 @@ linter:
     # Good Files:
     - ./build/megafauna_insfile_linter examples/megafauna.toml
     # Bad Files:
+    # These checks could be done with the catch framework, too
+    # (CHECK_THROWS_AS). That would be more flexible than checking for a
+    # specific error message in STDERR.
     - ! ./build/megafauna_insfile_linter tests/bad_insfiles/catabolism_gt_anabolism.toml
     - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_01.toml 2>&1 | grep -iq 'hft\.body_mass\.female.*wrong type'
     - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_02.toml 2>&1 | grep -iq 'hft\.body_mass\.female.*wrong type'
