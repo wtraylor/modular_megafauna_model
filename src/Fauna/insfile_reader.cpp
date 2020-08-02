@@ -119,22 +119,29 @@ void InsfileReader::check_wrong_type(const std::string& key) const {
   // Add more types here if you want to support them.
   assert(expected != "");
 
+  // The wrong datatype found in the TOML file.
+  std::string found;
+
   // Check for each possible type if we can find the parameter with that name
   // in the TOML file.
   if (!std::is_same<Expected, bool>::value && ins->get_qualified_as<bool>(key))
-    throw wrong_param_type(key, expected, "boolean");
+    found = "boolean";
+
   if (!std::is_same<Expected, double>::value &&
       ins->get_qualified_as<double>(key))
-    throw wrong_param_type(key, expected, "floating point");
+    found = "floating point";
+
   if (!std::is_same<Expected, int>::value && ins->get_qualified_as<int>(key))
-    throw wrong_param_type(key, expected, "integer");
-  if (!std::is_same<Expected, std::string>::value &&
-      ins->get_qualified_as<std::string>(key))
-    throw wrong_param_type(key, expected, "string");
+    found = "integer";
+
+  if (!std::is_same<Expected, std::string>::value) {
+    if (ins->get_qualified_as<std::string>(key)) found = "string";
+    if (ins->get_qualified_array_of<std::string>(key))
+      found = "array of string";
+  }
   // Add more types here if you want to support them.
 
-  // If no exception was thrown up to this point, the parameter is not
-  // available with a wrong name.
+  if (found != "") throw wrong_param_type(key, expected, found);
 }
 // Explicit instantiations of the template function for all supported datatypes:
 template void InsfileReader::check_wrong_type<bool>(const std::string&) const;
