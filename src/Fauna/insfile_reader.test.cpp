@@ -11,15 +11,17 @@
 using namespace Fauna;
 
 TEST_CASE("Fauna::InsfileReader") {
-  SECTION("Read example instruction file") {
+  SECTION("Error on non-existant files") {
+    CHECK_THROWS(InsfileReader(""));
+    CHECK_THROWS(InsfileReader("this_file_does_not_exist"));
+  }
+
+  SECTION("Read good example instruction file") {
     // The example instruction file has been copied to the build directory by
     // CMake.
     static const std::string INSFILE = "megafauna.toml";
 
     REQUIRE(file_exists(INSFILE));
-
-    CHECK_THROWS(InsfileReader(""));
-    CHECK_THROWS(InsfileReader("this_file_does_not_exist"));
 
     REQUIRE_NOTHROW(InsfileReader(INSFILE));
 
