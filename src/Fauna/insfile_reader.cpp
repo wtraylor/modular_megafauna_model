@@ -132,6 +132,12 @@ void InsfileReader::check_wrong_type(const std::string& key) const {
   // If no exception was thrown up to this point, the parameter is not
   // available with a wrong name.
 }
+// Explicit instantiations of the template function for all supported datatypes:
+template void InsfileReader::check_wrong_type<bool>(const std::string&) const;
+template void InsfileReader::check_wrong_type<double>(const std::string&) const;
+template void InsfileReader::check_wrong_type<int>(const std::string&) const;
+template void InsfileReader::check_wrong_type<std::string>(
+    const std::string&) const;
 
 std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
     const std::string& group_name) const {
@@ -156,6 +162,15 @@ std::shared_ptr<T> InsfileReader::get_value(const std::string& key) const {
     return NULL;  // Nothing found.
   }
 }
+// Explicit instantiations of the template function for all supported datatypes:
+template std::shared_ptr<bool> InsfileReader::get_value<>(
+    const std::string&) const;
+template std::shared_ptr<double> InsfileReader::get_value<>(
+    const std::string&) const;
+template std::shared_ptr<int> InsfileReader::get_value<>(
+    const std::string&) const;
+template std::shared_ptr<std::string> InsfileReader::get_value<>(
+    const std::string&) const;
 
 template <class T>
 cpptoml::option<T> InsfileReader::find_hft_parameter(

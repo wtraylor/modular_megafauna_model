@@ -199,9 +199,6 @@ class InsfileReader {
   template <class T>
   std::shared_ptr<T> get_value(const std::string& key) const;
 
-  // template<int> std::shared_ptr<int> get_value(const std::string&) const;
-  // template<bool> std::shared_ptr<bool> get_value(const std::string&) const;
-
   /// Throw an exception if parameter is present, but with wrong type.
   /**
    * \param key The fully qualified TOML key.
@@ -209,7 +206,7 @@ class InsfileReader {
    * \throw wrong_param_type If `key` found, but of wrong type.
    */
   template <class Expected>
-    void check_wrong_type(const std::string& key) const;
+  void check_wrong_type(const std::string& key) const;
 
   /// Retrieve HFT parameter from HFT table itself or one of its groups.
   /**
