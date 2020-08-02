@@ -159,7 +159,7 @@ struct wrong_param_type : public std::runtime_error {
   wrong_param_type(const std::string& key, const std::string& type_expected,
                    const std::string& type_found)
       : std::runtime_error("The parameter \"" + key + "\" " +
-                           "is of the wrong type. I found type " + type_found +
+                           "is of a wrong type. I found type " + type_found +
                            ", but expected " + type_expected + "."){};
 };
 
