@@ -1,5 +1,5 @@
 # In this instruction file, the value for hft.expenditure.components is not an
-# array.
+# array of string.
 
 [simulation]
 establishment_interval = 3650 # every 10 years
@@ -58,7 +58,7 @@ density   = 1.0 # ind/km²
 
 [hft.expenditure]
 basal_rate     = { mj_per_day_male_adult = 7.5, exponent = 0.75 }
-components     = "FieldMetabolicRate" # ERROR
+components     = 123 # ERROR
 fmr_multiplier = 2.0
 
 [hft.foraging]

@@ -1,5 +1,5 @@
 # In this instruction file, the value for hft.mortality.factors is not an
-# array.
+# array of string.
 
 [simulation]
 establishment_interval = 3650 # every 10 years
@@ -74,7 +74,7 @@ sexual_maturity          = 3  # years
 
 [hft.mortality]
 adult_rate = 0.1 # 1/year
-factors = "Background" # ERROR
+factors = [ true, false, true ] # ERROR
 juvenile_rate = 0.3 # 1/year
 minimum_density_threshold = 0.5 # fraction of establishment density
 shift_body_condition_for_starvation = true
