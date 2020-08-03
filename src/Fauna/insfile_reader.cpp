@@ -208,7 +208,7 @@ template std::shared_ptr<std::vector<std::string> >
 InsfileReader::get_value_array<>(const std::string&) const;
 
 template <class T>
-cpptoml::option<T> InsfileReader::find_hft_parameter(
+std::shared_ptr<T> InsfileReader::find_hft_parameter(
     const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
     const bool mandatory) {
   assert(hft_table->get_as<std::string>("name"));  // Name must be defined.
@@ -218,11 +218,8 @@ cpptoml::option<T> InsfileReader::find_hft_parameter(
   hft_keys_parsed.insert(key);
 
   {
-    const auto value = hft_table->get_qualified_as<T>(key);
-    if (value) {
-      remove_qualified_key(hft_table, key);
-      return value;
-    }
+    const auto value = get_value<T>(hft_table, key);
+    if (value) return value;
   }
 
   const auto groups = hft_table->get_array_of<std::string>("groups");
@@ -231,7 +228,7 @@ cpptoml::option<T> InsfileReader::find_hft_parameter(
       const auto group_table = get_group_table(g);
       if (!group_table) throw missing_group(name, g);
       {
-        const auto value = group_table->get_qualified_as<T>(key);
+        const auto value = get_value<T>(group_table, key);
         if (value) return value;
       }
     }
@@ -240,7 +237,7 @@ cpptoml::option<T> InsfileReader::find_hft_parameter(
   if (mandatory)
     throw missing_hft_parameter(name, key);
   else
-    return cpptoml::option<T>();  // empty pointer
+    return NULL;
 }
 
 template <class T>

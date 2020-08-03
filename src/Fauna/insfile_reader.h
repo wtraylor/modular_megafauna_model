@@ -236,7 +236,7 @@ class InsfileReader {
    * mandatory, the result is `NULL`.
    */
   template <class T>
-  cpptoml::option<T> find_hft_parameter(
+  std::shared_ptr<T> find_hft_parameter(
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
       const bool mandatory);
 
