@@ -240,7 +240,8 @@ std::shared_ptr<T> InsfileReader::find_hft_parameter(
     if (value) return value;
   }
 
-  const auto groups = hft_table->get_array_of<std::string>("groups");
+  const auto groups =
+      get_value_array<std::string>(hft_table, "groups", GetValueOpt::KeepKey);
   if (groups)
     for (const auto& g : *groups) {
       const auto group_table = get_group_table(g);
@@ -274,7 +275,8 @@ std::shared_ptr<std::vector<T>> InsfileReader::find_hft_array_parameter(
     if (array) return array;
   }
 
-  const auto groups = hft_table->get_array_of<std::string>("groups");
+  const auto groups =
+      get_value_array<std::string>(hft_table, "groups", GetValueOpt::KeepKey);
   if (groups)
     for (const auto& g : *groups) {
       const auto group_table = get_group_table(g);
