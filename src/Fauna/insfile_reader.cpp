@@ -165,10 +165,16 @@ std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
 }
 
 template <class T>
-std::shared_ptr<T> InsfileReader::get_value(const std::string& key) const {
-  auto value = ins->get_qualified_as<T>(key);
+std::shared_ptr<T> InsfileReader::get_value(
+    const std::shared_ptr<cpptoml::table>& table,
+    const std::string& key) const {
+  if (!table)
+    throw std::invalid_argument(
+        "Fauna::InsfileReader::get_value() "
+        "Parameter 'table' is NULL.");
+  auto value = table->get_qualified_as<T>(key);
   if (value) {
-    remove_qualified_key(ins, key);
+    remove_qualified_key(table, key);
     return std::shared_ptr<T>(new T(*value));
   } else {
     check_wrong_type<T>(key);
@@ -177,13 +183,13 @@ std::shared_ptr<T> InsfileReader::get_value(const std::string& key) const {
 }
 // Explicit instantiations of the template function for all supported datatypes:
 template std::shared_ptr<bool> InsfileReader::get_value<>(
-    const std::string&) const;
+    const std::shared_ptr<cpptoml::table>&, const std::string& key) const;
 template std::shared_ptr<double> InsfileReader::get_value<>(
-    const std::string&) const;
+    const std::shared_ptr<cpptoml::table>&, const std::string& key) const;
 template std::shared_ptr<int> InsfileReader::get_value<>(
-    const std::string&) const;
+    const std::shared_ptr<cpptoml::table>&, const std::string& key) const;
 template std::shared_ptr<std::string> InsfileReader::get_value<>(
-    const std::string&) const;
+    const std::shared_ptr<cpptoml::table>&, const std::string& key) const;
 
 template <class T>
 std::shared_ptr<std::vector<T> > InsfileReader::get_value_array(
@@ -754,7 +760,7 @@ void InsfileReader::read_table_forage() {
   auto table = ins->get_table("forage");
   for (const auto& ft : Fauna::FORAGE_TYPES) {
     const auto key = "forage.gross_energy." + get_forage_type_name(ft);
-    auto value = get_value<double>(key);
+    auto value = get_value<double>(ins, key);
     if (!value) throw missing_parameter(key);
     if (*value < 0)
       throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
@@ -769,7 +775,7 @@ void InsfileReader::read_table_forage() {
 void InsfileReader::read_table_output() {
   {
     const auto key = "output.format";
-    auto value = get_value<std::string>(key);
+    auto value = get_value<std::string>(ins, key);
     if (value) {
       if (lowercase(*value) == lowercase("TextTables"))
         params.output_format = OutputFormat::TextTables;
@@ -781,7 +787,7 @@ void InsfileReader::read_table_output() {
   }
   {
     const auto key = "output.interval";
-    auto value = get_value<std::string>(key);
+    auto value = get_value<std::string>(ins, key);
     if (value) {
       if (lowercase(*value) == lowercase("Daily"))
         params.output_interval = OutputInterval::Daily;
@@ -805,7 +811,7 @@ void InsfileReader::read_table_output() {
 void InsfileReader::read_table_output_text_tables() {
   {
     const auto key = "output.text_tables.directory";
-    auto value = get_value<std::string>(key);
+    auto value = get_value<std::string>(ins, key);
     if (value)
       params.output_text_tables.directory = *value;
     else
@@ -813,7 +819,7 @@ void InsfileReader::read_table_output_text_tables() {
   }
   {
     const auto key = "output.text_tables.precision";
-    auto value = get_value<int>(key);
+    auto value = get_value<int>(ins, key);
     if (value) params.output_text_tables.precision = *value;
   }
   {
@@ -847,7 +853,7 @@ void InsfileReader::read_table_output_text_tables() {
 void InsfileReader::read_table_simulation() {
   {
     const auto key = "simulation.forage_distribution";
-    auto value = get_value<std::string>(key);
+    auto value = get_value<std::string>(ins, key);
     if (value) {
       if (lowercase(*value) == lowercase("Equally"))
         params.forage_distribution = ForageDistributionAlgorithm::Equally;
@@ -858,12 +864,12 @@ void InsfileReader::read_table_simulation() {
   }
   {
     const auto key = "simulation.establishment_interval";
-    auto value = get_value<int>(key);
+    auto value = get_value<int>(ins, key);
     if (value) params.herbivore_establish_interval = *value;
   }
   {
     const auto key = "simulation.herbivore_type";
-    auto value = get_value<std::string>(key);
+    auto value = get_value<std::string>(ins, key);
     if (value) {
       if (lowercase(*value) == lowercase("Cohort"))
         params.herbivore_type = HerbivoreType::Cohort;
@@ -874,7 +880,7 @@ void InsfileReader::read_table_simulation() {
   }
   {
     const auto key = "simulation.one_hft_per_habitat";
-    auto value = get_value<bool>(key);
+    auto value = get_value<bool>(ins, key);
     if (value) params.one_hft_per_habitat = *value;
   }
   // Remove the table "simulation" in order to indicate that it’s been parsed.
