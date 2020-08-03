@@ -257,8 +257,7 @@ std::shared_ptr<T> InsfileReader::find_hft_parameter(
 }
 
 template <class T>
-typename cpptoml::array_of_trait<T>::return_type
-InsfileReader::find_hft_array_parameter(
+std::shared_ptr<std::vector<T>> InsfileReader::find_hft_array_parameter(
     const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
     const bool mandatory) {
   assert(hft_table->get_as<std::string>("name"));  // Name must be defined.
@@ -269,19 +268,8 @@ InsfileReader::find_hft_array_parameter(
 
   {
     // Look for an array of values in the "hft" section.
-    const auto array = hft_table->get_qualified_array_of<T>(key);
-    if (array) {
-      remove_qualified_key(hft_table, key);
-      return array;
-    }
-    // Look for a single value in the "hft" section, which will be treated like
-    // an array of one element.
-    const cpptoml::option<T> single = hft_table->get_qualified_as<T>(key);
-    if (single) {
-      remove_qualified_key(hft_table, key);
-      std::vector<T> vec({*single});  // 1-element vector
-      return vec;
-    }
+    const auto array = get_value_array<T>(hft_table, key);
+    if (array) return array;
   }
 
   const auto groups = hft_table->get_array_of<std::string>("groups");
@@ -291,19 +279,9 @@ InsfileReader::find_hft_array_parameter(
       if (!group_table) throw missing_group(name, g);
       {
         // Look for an array of values in the "groups" section.
-        const auto array = group_table->get_qualified_array_of<T>(key);
-        if (array) {
-          remove_qualified_key(group_table, key);
-          return array;
-        }
-        // Look for a single value in the "groups" section, which will be
-        // treated like an array of one element.
-        const cpptoml::option<T> single = group_table->get_qualified_as<T>(key);
-        if (single) {
-          remove_qualified_key(group_table, key);
-          std::vector<T> vec({*single});  // 1-element vector
-          return vec;
-        }
+        const auto array =
+            get_value_array<T>(group_table, key, GetValueOpt::KeepKey);
+        if (array) return array;
       }
     }
 
@@ -311,8 +289,7 @@ InsfileReader::find_hft_array_parameter(
   if (mandatory)
     throw missing_hft_parameter(name, key);
   else {
-    typename cpptoml::array_of_trait<T>::return_type empty;  // empty pointer
-    return empty;
+    return NULL;
   }
 }
 

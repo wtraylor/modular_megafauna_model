@@ -16,7 +16,7 @@ namespace Fauna {
 class Hft;
 
 // Repeat typedef from hft.h
-typedef std::vector<std::shared_ptr<const Hft> > HftList;
+typedef std::vector<std::shared_ptr<const Hft>> HftList;
 
 /// Exception that an array parameter does not have the correct length.
 class bad_array_size : public std::runtime_error {
@@ -231,7 +231,7 @@ class InsfileReader {
    * \throw std::invalid_argument If `table` is NULL.
    */
   template <class T>
-  std::shared_ptr<std::vector<T> > get_value_array(
+  std::shared_ptr<std::vector<T>> get_value_array(
       const std::shared_ptr<cpptoml::table>& table, const std::string& key,
       const GetValueOpt opt = GetValueOpt::RemoveKey) const;
 
@@ -265,7 +265,7 @@ class InsfileReader {
    * \copydoc find_hft_parameter()
    */
   template <class T>
-  typename cpptoml::array_of_trait<T>::return_type find_hft_array_parameter(
+  std::shared_ptr<std::vector<T>> find_hft_array_parameter(
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
       const bool mandatory);
 
