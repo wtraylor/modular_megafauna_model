@@ -137,18 +137,29 @@ void InsfileReader::check_wrong_type(
       table->get_qualified_as<bool>(key))
     found = "boolean";
 
+  if (!std::is_same<Expected, std::vector<bool>>::value &&
+      table->get_qualified_array_of<bool>(key))
+    found = "array of boolean";
+
   if (!std::is_same<Expected, double>::value &&
       table->get_qualified_as<double>(key))
     found = "floating point";
 
+  if (!std::is_same<Expected, std::vector<double>>::value &&
+      table->get_qualified_array_of<double>(key))
+    found = "array of floating point";
+
   if (!std::is_same<Expected, int>::value && table->get_qualified_as<int>(key))
     found = "integer";
+  // Note that CppTOML doesn’t support arrays of integers.
 
-  if (!std::is_same<Expected, std::string>::value) {
-    if (table->get_qualified_as<std::string>(key)) found = "string";
-    if (table->get_qualified_array_of<std::string>(key))
-      found = "array of string";
-  }
+  if (!std::is_same<Expected, std::string>::value &&
+      table->get_qualified_as<std::string>(key))
+    found = "string";
+
+  if (!std::is_same<Expected, std::vector<std::string>>::value &&
+      table->get_qualified_array_of<std::string>(key))
+    found = "array of string";
   // Add more types here if you want to support them.
 
   if (found != "") throw wrong_param_type(key, expected, found);
