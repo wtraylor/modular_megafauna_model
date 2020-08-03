@@ -145,7 +145,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.2...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.3...develop
+[0.5.3]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.4.0...0.5.0
