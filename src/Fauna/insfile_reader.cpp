@@ -197,10 +197,15 @@ template std::shared_ptr<std::string> InsfileReader::get_value<>(
 
 template <class T>
 std::shared_ptr<std::vector<T> > InsfileReader::get_value_array(
-    const std::string& key) const {
-  auto value = ins->get_qualified_array_of<T>(key);
+    const std::shared_ptr<cpptoml::table>& table, const std::string& key,
+    const GetValueOpt opt) const {
+  if (!table)
+    throw std::invalid_argument(
+        "Fauna::InsfileReader::get_value() "
+        "Parameter 'table' is NULL.");
+  auto value = table->get_qualified_array_of<T>(key);
   if (value) {
-    remove_qualified_key(ins, key);
+    if (opt == GetValueOpt::RemoveKey) remove_qualified_key(table, key);
     return std::shared_ptr<std::vector<T> >(new std::vector<T>(*value));
   } else {
     check_wrong_type<std::vector<T> >(key);
@@ -209,7 +214,8 @@ std::shared_ptr<std::vector<T> > InsfileReader::get_value_array(
 }
 // Explicit instantiations of the template function for all supported datatypes:
 template std::shared_ptr<std::vector<std::string> >
-InsfileReader::get_value_array<>(const std::string&) const;
+InsfileReader::get_value_array<>(const std::shared_ptr<cpptoml::table>&,
+                                 const std::string&, const GetValueOpt) const;
 
 template <class T>
 std::shared_ptr<T> InsfileReader::find_hft_parameter(
@@ -825,7 +831,7 @@ void InsfileReader::read_table_output_text_tables() {
   }
   {
     const auto key = "output.text_tables.tables";
-    auto value = get_value_array<std::string>(key);
+    auto value = get_value_array<std::string>(ins, key);
     if (value) {
       for (const auto& s : *value)
         if (lowercase(s) == "available_forage")
