@@ -80,6 +80,7 @@ linter:
   script:
     # Good Files:
     - ./build/megafauna_insfile_linter examples/megafauna.toml
+    - for f in tests/good_insfiles/*.toml; do ./build/megafauna_insfile_linter $f; done
     # Bad Files:
     # These checks could be done with the catch framework, too
     # (CHECK_THROWS_AS). That would be more flexible than checking for a
