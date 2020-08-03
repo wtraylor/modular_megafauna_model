@@ -151,12 +151,6 @@ void InsfileReader::check_wrong_type(const std::string& key) const {
 
   if (found != "") throw wrong_param_type(key, expected, found);
 }
-// Explicit instantiations of the template function for all supported datatypes:
-template void InsfileReader::check_wrong_type<bool>(const std::string&) const;
-template void InsfileReader::check_wrong_type<double>(const std::string&) const;
-template void InsfileReader::check_wrong_type<int>(const std::string&) const;
-template void InsfileReader::check_wrong_type<std::string>(
-    const std::string&) const;
 
 std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
     const std::string& group_name) const {
@@ -187,19 +181,6 @@ std::shared_ptr<T> InsfileReader::get_value(
     return NULL;  // Nothing found.
   }
 }
-// Explicit instantiations of the template function for all supported datatypes:
-template std::shared_ptr<bool> InsfileReader::get_value<>(
-    const std::shared_ptr<cpptoml::table>&, const std::string& key,
-    const GetValueOpt) const;
-template std::shared_ptr<double> InsfileReader::get_value<>(
-    const std::shared_ptr<cpptoml::table>&, const std::string& key,
-    const GetValueOpt) const;
-template std::shared_ptr<int> InsfileReader::get_value<>(
-    const std::shared_ptr<cpptoml::table>&, const std::string& key,
-    const GetValueOpt) const;
-template std::shared_ptr<std::string> InsfileReader::get_value<>(
-    const std::shared_ptr<cpptoml::table>&, const std::string& key,
-    const GetValueOpt) const;
 
 template <class T>
 std::shared_ptr<std::vector<T>> InsfileReader::get_value_array(
@@ -224,10 +205,6 @@ std::shared_ptr<std::vector<T>> InsfileReader::get_value_array(
     }
   }
 }
-// Explicit instantiations of the template function for all supported datatypes:
-template std::shared_ptr<std::vector<std::string>>
-InsfileReader::get_value_array<>(const std::shared_ptr<cpptoml::table>&,
-                                 const std::string&, const GetValueOpt) const;
 
 template <class T>
 std::shared_ptr<T> InsfileReader::find_hft_parameter(
