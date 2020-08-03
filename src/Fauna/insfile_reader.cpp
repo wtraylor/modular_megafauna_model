@@ -112,6 +112,8 @@ void InsfileReader::check_wrong_type(const std::string& key) const {
     expected = "boolean";
   else if (std::is_same<Expected, double>::value)
     expected = "floating point";
+  else if (std::is_same<Expected, std::vector<double>>::value)
+    expected = "array of floating point";
   else if (std::is_same<Expected, int>::value)
     expected = "integer";
   else if (std::is_same<Expected, std::string>::value)
