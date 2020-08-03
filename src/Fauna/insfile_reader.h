@@ -16,7 +16,7 @@ namespace Fauna {
 class Hft;
 
 // Repeat typedef from hft.h
-typedef std::vector<std::shared_ptr<const Hft> > HftList;
+typedef std::vector<std::shared_ptr<const Hft>> HftList;
 
 /// Exception that an array parameter does not have the correct length.
 class bad_array_size : public std::runtime_error {
@@ -148,6 +148,21 @@ struct unknown_parameters : public std::runtime_error {
   }
 };
 
+/// Exception that a parameter is not of an expected data type.
+struct wrong_param_type : public std::runtime_error {
+  /// Constructor
+  /**
+   * \param key The fully qualified TOML key.
+   * \param type_expected What `key` is supposed to be.
+   * \param type_found The type of `key` in the given instruction file.
+   */
+  wrong_param_type(const std::string& key, const std::string& type_expected,
+                   const std::string& type_found)
+      : std::runtime_error("The parameter \"" + key + "\" " +
+                           "is of a wrong type. I found type " + type_found +
+                           ", but expected " + type_expected + "."){};
+};
+
 /// Class to read parameters and HFTs from given instruction file.
 class InsfileReader {
  public:
@@ -176,6 +191,62 @@ class InsfileReader {
   std::shared_ptr<cpptoml::table> get_group_table(
       const std::string& group_name) const;
 
+  /// How to treat a parameter after it has been parsed by \ref get_value().
+  enum class GetValueOpt {
+    /// Remove the parameter with \ref remove_qualified_key().
+    RemoveKey,
+    /// Re-use parameter.
+    KeepKey
+  };
+
+  /// Retrieve a single value from the TOML file.
+  /**
+   * \param table The TOML table to read from. Normally this is just the TOML
+   * file \ref ins, but for table arrays, this is might be one HFT table for
+   * instance.
+   * \param key The TOML key, qualified as a child of `table`.
+   * \param opt Whether to remove with \ref remove_qualified_key() or keep the
+   * key.
+   * \tparam T Expected type of the parameter `key`.
+   * \throw wrong_param_type If `key` is present, but has a value that does not
+   * match the expected type `T`. See \ref check_wrong_type().
+   * \throw std::invalid_argument If `table` is NULL.
+   */
+  template <class T>
+  std::shared_ptr<T> get_value(
+      const std::shared_ptr<cpptoml::table>& table, const std::string& key,
+      const GetValueOpt opt = GetValueOpt::RemoveKey) const;
+
+  /// Retrieve a value array from the TOML file.
+  /**
+   * \param table The TOML table to read from. Normally this is just the TOML
+   * file \ref ins, but for table arrays, this is might be one HFT table for
+   * instance.
+   * \param key The TOML key, qualified as a child of `table`.
+   * \param opt Whether to remove with \ref remove_qualified_key() or keep the
+   * key.
+   * \tparam T Expected type of the parameter `key`.
+   * \throw wrong_param_type If `key` is present, but has a value that does not
+   * match the expected type `T`. See \ref check_wrong_type().
+   * \throw std::invalid_argument If `table` is NULL.
+   */
+  template <class T>
+  std::shared_ptr<std::vector<T>> get_value_array(
+      const std::shared_ptr<cpptoml::table>& table, const std::string& key,
+      const GetValueOpt opt = GetValueOpt::RemoveKey) const;
+
+  /// Throw an exception if parameter is present, but with wrong type.
+  /**
+   * \param table The TOML table to search through. This could be \ref ins or
+   * an HFT table for instance.
+   * \param key The fully qualified TOML key.
+   * \tparam Expected Expected type of the parameter `key`.
+   * \throw wrong_param_type If `key` found, but of wrong type.
+   */
+  template <class Expected>
+  void check_wrong_type(std::shared_ptr<cpptoml::table> table,
+                        const std::string& key) const;
+
   /// Retrieve HFT parameter from HFT table itself or one of its groups.
   /**
    * If the key is not defined in the HFT itself, the groups are checked in the
@@ -188,7 +259,7 @@ class InsfileReader {
    * mandatory, the result is `NULL`.
    */
   template <class T>
-  cpptoml::option<T> find_hft_parameter(
+  std::shared_ptr<T> find_hft_parameter(
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
       const bool mandatory);
 
@@ -197,7 +268,7 @@ class InsfileReader {
    * \copydoc find_hft_parameter()
    */
   template <class T>
-  typename cpptoml::array_of_trait<T>::return_type find_hft_array_parameter(
+  std::shared_ptr<std::vector<T>> find_hft_array_parameter(
       const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
       const bool mandatory);
 

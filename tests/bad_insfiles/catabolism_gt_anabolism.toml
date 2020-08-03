@@ -1,0 +1,76 @@
+# In this instruction file, catabolism efficiency is greater than anabolism efficiency.
+
+[forage]
+gross_energy.grass = 36.725
+[[hft]]
+name = "Mammoth"
+[hft.body_fat]
+birth = 0.4115696
+catabolism_efficiency = 0.5528425
+deviation = 0.6113431
+gross_energy = 364.1792
+maximum = 0.8227413
+maximum_daily_gain = 0
+[hft.body_mass]
+birth = 5
+empty = 0.4508962
+female = 2829
+male = 1113
+[hft.breeding_season]
+length = 291
+start = 136
+[hft.digestion]
+digestibility_multiplier = 0.413907
+fixed_fraction = 0.05
+k_fat = 0.7254348
+k_maintenance = 0.3042055
+limit = "FixedFraction"
+me_coefficient = 0.2770064
+net_energy_model = "GrossEnergyFraction"
+[hft.digestion.allometric]
+exponent = 0.75
+fraction_male_adult = 0.5448779
+[hft.establishment]
+density = 76.02799
+[hft.establishment.age_range]
+first = 1
+last = 15
+[hft.expenditure]
+components = "FieldMetabolicRate"
+fmr_multiplier = 7.989213
+[hft.expenditure.basal_rate]
+exponent = 0.4762075
+mj_per_day_male_adult = 7.5
+[hft.foraging]
+diet_composer = "PureGrazer"
+limits = [ ]
+[hft.life_history]
+lifespan = 133
+physical_maturity_female = 14
+physical_maturity_male = 14
+sexual_maturity = 14
+[hft.mortality]
+adult_rate = 0.5962466
+juvenile_rate = 0.8349691
+minimum_density_threshold = 0.8344379
+shift_body_condition_for_starvation = true
+factors  = [ "Background", "Lifespan", "StarvationIlliusOConnor2000" ]
+[hft.reproduction]
+annual_maximum = 6.874273
+gestation_length = 28
+model = "ConstantMaximum"
+[hft.reproduction.logistic]
+growth_rate = 6.35555
+midpoint = 0.6432982
+[output]
+format = "TextTables"
+interval = "Annual"
+[output.text_tables]
+directory = "."
+precision = 4
+tables = "mass_density_per_hft"
+[simulation]
+establishment_interval = 3076
+forage_distribution = "Equally"
+herbivore_type = "Cohort"
+one_hft_per_habitat = true

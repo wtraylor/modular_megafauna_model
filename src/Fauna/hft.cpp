@@ -148,6 +148,21 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
         stream << "digestion.k_fat is not between 0 and 1"
                << " (current value: " << digestion_k_fat << ")" << std::endl;
         is_valid = false;
+      } else {
+        assert(digestion_k_fat > 0.0);
+        const double anabolism_efficiency =
+            digestion_k_maintenance / digestion_k_fat;
+        if (body_fat_catabolism_efficiency >= anabolism_efficiency) {
+          stream << "body_fat.catabolism_efficiency"
+                 << " (current value: " << body_fat_catabolism_efficiency
+                 << ") "
+                 << "must be less than\nthe anabolism efficiency, which is "
+                 << "digestion.k_maintenance (" << digestion_k_maintenance
+                 << ")\n"
+                 << "divided by digestion.k_fat (" << digestion_k_fat << ")."
+                 << std::endl;
+          is_valid = false;
+        }
       }
       if (digestion_k_maintenance <= 0.0 || digestion_k_maintenance >= 1.0) {
         stream << "digestion.k_maintenance is not between 0 and 1"

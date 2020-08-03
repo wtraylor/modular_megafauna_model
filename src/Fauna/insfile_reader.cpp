@@ -104,20 +104,137 @@ InsfileReader::InsfileReader(const std::string filename)
   if (!unknown_elements.empty()) throw unknown_parameters(unknown_elements);
 }
 
+template <class Expected>
+void InsfileReader::check_wrong_type(
+    const std::shared_ptr<cpptoml::table> table, const std::string& key) const {
+  // User-readable label for the expected type.
+  std::string expected;
+  if (std::is_same<Expected, bool>::value)
+    expected = "boolean";
+  else if (std::is_same<Expected, std::vector<bool>>::value)
+    expected = "array of boolean";
+  else if (std::is_same<Expected, double>::value)
+    expected = "floating point";
+  else if (std::is_same<Expected, std::vector<double>>::value)
+    expected = "array of floating point";
+  else if (std::is_same<Expected, int>::value)
+    expected = "integer";
+  else if (std::is_same<Expected, std::vector<int>>::value)
+    expected = "array of integer";
+  else if (std::is_same<Expected, std::string>::value)
+    expected = "string";
+  else if (std::is_same<Expected, std::vector<std::string>>::value)
+    expected = "array of string";
+  // Add more types here if you want to support them.
+  assert(expected != "");
+
+  // The wrong datatype found in the TOML file.
+  std::string found;
+
+  // Check for each possible type if we can find the parameter with that name
+  // in the TOML file.
+  if (!std::is_same<Expected, bool>::value &&
+      table->get_qualified_as<bool>(key))
+    found = "boolean";
+
+  if (!std::is_same<Expected, std::vector<bool>>::value &&
+      table->get_qualified_array_of<bool>(key))
+    found = "array of boolean";
+
+  if (!std::is_same<Expected, double>::value &&
+      table->get_qualified_as<double>(key))
+    found = "floating point";
+
+  if (!std::is_same<Expected, std::vector<double>>::value &&
+      table->get_qualified_array_of<double>(key))
+    found = "array of floating point";
+
+  if (!std::is_same<Expected, int>::value && table->get_qualified_as<int>(key))
+    found = "integer";
+  // Note that CppTOML doesn’t support arrays of integers.
+
+  if (!std::is_same<Expected, std::string>::value &&
+      table->get_qualified_as<std::string>(key))
+    found = "string";
+
+  if (!std::is_same<Expected, std::vector<std::string>>::value &&
+      table->get_qualified_array_of<std::string>(key))
+    found = "array of string";
+  // Add more types here if you want to support them.
+
+  if (found != "") throw wrong_param_type(key, expected, found);
+}
+
 std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
     const std::string& group_name) const {
   auto group_table_array = ins->get_table_array("group");
-  if (group_table_array)
+  std::set<std::string> names;
+  if (group_table_array) {
+    // Check that there are no two group tables with the same name.
     for (const auto& group_table : *group_table_array) {
       const auto name = group_table->get_as<std::string>("name");
       if (!name) throw missing_parameter("group.name");
+      if (names.count(*name))
+        throw std::runtime_error("HFT group with name \"" + *name +
+                                 "\" is defined twice.");
+      names.insert(*name);
+    }
+
+    // Get the requested group table.
+    for (const auto& group_table : *group_table_array) {
+      const auto name = group_table->get_as<std::string>("name");
+      assert(name);
       if (*name == group_name) return group_table;
     }
+  }
   return std::shared_ptr<cpptoml::table>(NULL);  // nothing found
 }
 
 template <class T>
-cpptoml::option<T> InsfileReader::find_hft_parameter(
+std::shared_ptr<T> InsfileReader::get_value(
+    const std::shared_ptr<cpptoml::table>& table, const std::string& key,
+    const GetValueOpt opt) const {
+  if (!table)
+    throw std::invalid_argument(
+        "Fauna::InsfileReader::get_value() "
+        "Parameter 'table' is NULL.");
+  auto value = table->get_qualified_as<T>(key);
+  if (value) {
+    if (opt == GetValueOpt::RemoveKey) remove_qualified_key(table, key);
+    return std::shared_ptr<T>(new T(*value));
+  } else {
+    check_wrong_type<T>(table, key);
+    return NULL;  // Nothing found.
+  }
+}
+
+template <class T>
+std::shared_ptr<std::vector<T>> InsfileReader::get_value_array(
+    const std::shared_ptr<cpptoml::table>& table, const std::string& key,
+    const GetValueOpt opt) const {
+  if (!table)
+    throw std::invalid_argument(
+        "Fauna::InsfileReader::get_value() "
+        "Parameter 'table' is NULL.");
+  auto value = table->get_qualified_array_of<T>(key);
+  if (value) {
+    if (opt == GetValueOpt::RemoveKey) remove_qualified_key(table, key);
+    return std::shared_ptr<std::vector<T>>(new std::vector<T>(*value));
+  }
+
+  // Look for a single value and treat it as a one-element array.
+  auto single = table->get_qualified_as<T>(key);
+  if (single) {
+    if (opt == GetValueOpt::RemoveKey) remove_qualified_key(table, key);
+    return std::shared_ptr<std::vector<T>>(new std::vector<T>({*single}));
+  }
+
+  check_wrong_type<std::vector<T>>(table, key);
+  return NULL;  // Nothing found.
+}
+
+template <class T>
+std::shared_ptr<T> InsfileReader::find_hft_parameter(
     const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
     const bool mandatory) {
   assert(hft_table->get_as<std::string>("name"));  // Name must be defined.
@@ -127,20 +244,18 @@ cpptoml::option<T> InsfileReader::find_hft_parameter(
   hft_keys_parsed.insert(key);
 
   {
-    const auto value = hft_table->get_qualified_as<T>(key);
-    if (value) {
-      remove_qualified_key(hft_table, key);
-      return value;
-    }
+    const auto value = get_value<T>(hft_table, key);
+    if (value) return value;
   }
 
-  const auto groups = hft_table->get_array_of<std::string>("groups");
+  const auto groups =
+      get_value_array<std::string>(hft_table, "groups", GetValueOpt::KeepKey);
   if (groups)
     for (const auto& g : *groups) {
       const auto group_table = get_group_table(g);
       if (!group_table) throw missing_group(name, g);
       {
-        const auto value = group_table->get_qualified_as<T>(key);
+        const auto value = get_value<T>(group_table, key, GetValueOpt::KeepKey);
         if (value) return value;
       }
     }
@@ -149,12 +264,11 @@ cpptoml::option<T> InsfileReader::find_hft_parameter(
   if (mandatory)
     throw missing_hft_parameter(name, key);
   else
-    return cpptoml::option<T>();  // empty pointer
+    return NULL;
 }
 
 template <class T>
-typename cpptoml::array_of_trait<T>::return_type
-InsfileReader::find_hft_array_parameter(
+std::shared_ptr<std::vector<T>> InsfileReader::find_hft_array_parameter(
     const std::shared_ptr<cpptoml::table>& hft_table, const std::string& key,
     const bool mandatory) {
   assert(hft_table->get_as<std::string>("name"));  // Name must be defined.
@@ -165,41 +279,21 @@ InsfileReader::find_hft_array_parameter(
 
   {
     // Look for an array of values in the "hft" section.
-    const auto array = hft_table->get_qualified_array_of<T>(key);
-    if (array) {
-      remove_qualified_key(hft_table, key);
-      return array;
-    }
-    // Look for a single value in the "hft" section, which will be treated like
-    // an array of one element.
-    const cpptoml::option<T> single = hft_table->get_qualified_as<T>(key);
-    if (single) {
-      remove_qualified_key(hft_table, key);
-      std::vector<T> vec({*single});  // 1-element vector
-      return vec;
-    }
+    const auto array = get_value_array<T>(hft_table, key);
+    if (array) return array;
   }
 
-  const auto groups = hft_table->get_array_of<std::string>("groups");
+  const auto groups =
+      get_value_array<std::string>(hft_table, "groups", GetValueOpt::KeepKey);
   if (groups)
     for (const auto& g : *groups) {
       const auto group_table = get_group_table(g);
       if (!group_table) throw missing_group(name, g);
       {
         // Look for an array of values in the "groups" section.
-        const auto array = group_table->get_qualified_array_of<T>(key);
-        if (array) {
-          remove_qualified_key(group_table, key);
-          return array;
-        }
-        // Look for a single value in the "groups" section, which will be
-        // treated like an array of one element.
-        const cpptoml::option<T> single = group_table->get_qualified_as<T>(key);
-        if (single) {
-          remove_qualified_key(group_table, key);
-          std::vector<T> vec({*single});  // 1-element vector
-          return vec;
-        }
+        const auto array =
+            get_value_array<T>(group_table, key, GetValueOpt::KeepKey);
+        if (array) return array;
       }
     }
 
@@ -207,8 +301,7 @@ InsfileReader::find_hft_array_parameter(
   if (mandatory)
     throw missing_hft_parameter(name, key);
   else {
-    typename cpptoml::array_of_trait<T>::return_type empty;  // empty pointer
-    return empty;
+    return NULL;
   }
 }
 
@@ -669,7 +762,7 @@ void InsfileReader::read_table_forage() {
   auto table = ins->get_table("forage");
   for (const auto& ft : Fauna::FORAGE_TYPES) {
     const auto key = "forage.gross_energy." + get_forage_type_name(ft);
-    auto value = ins->get_qualified_as<double>(key);
+    auto value = get_value<double>(ins, key);
     if (!value) throw missing_parameter(key);
     if (*value < 0)
       throw param_out_of_range(key, std::to_string(*value), "[0,∞)");
@@ -684,7 +777,7 @@ void InsfileReader::read_table_forage() {
 void InsfileReader::read_table_output() {
   {
     const auto key = "output.format";
-    auto value = ins->get_qualified_as<std::string>(key);
+    auto value = get_value<std::string>(ins, key);
     if (value) {
       if (lowercase(*value) == lowercase("TextTables"))
         params.output_format = OutputFormat::TextTables;
@@ -693,11 +786,10 @@ void InsfileReader::read_table_output() {
         throw invalid_option(key, *value, {"TextTables"});
     } else
       throw missing_parameter(key);
-    remove_qualified_key(ins, key);
   }
   {
     const auto key = "output.interval";
-    auto value = ins->get_qualified_as<std::string>(key);
+    auto value = get_value<std::string>(ins, key);
     if (value) {
       if (lowercase(*value) == lowercase("Daily"))
         params.output_interval = OutputInterval::Daily;
@@ -712,7 +804,6 @@ void InsfileReader::read_table_output() {
                              {"Daily", "Monthly", "Decadal", "Annual"});
     } else
       throw missing_parameter(key);
-    remove_qualified_key(ins, key);
   }
   // Remove the table "output" in order to indicate that it’s been parsed.
   auto table = ins->get_table("output");
@@ -722,24 +813,20 @@ void InsfileReader::read_table_output() {
 void InsfileReader::read_table_output_text_tables() {
   {
     const auto key = "output.text_tables.directory";
-    auto value = ins->get_qualified_as<std::string>(key);
-    if (value) {
+    auto value = get_value<std::string>(ins, key);
+    if (value)
       params.output_text_tables.directory = *value;
-    } else
+    else
       throw missing_parameter(key);
-    remove_qualified_key(ins, key);
   }
   {
     const auto key = "output.text_tables.precision";
-    auto value = ins->get_qualified_as<int>(key);
-    if (value) {
-      params.output_text_tables.precision = *value;
-    }
-    remove_qualified_key(ins, key);
+    auto value = get_value<int>(ins, key);
+    if (value) params.output_text_tables.precision = *value;
   }
   {
     const auto key = "output.text_tables.tables";
-    auto value = ins->get_qualified_array_of<std::string>(key);
+    auto value = get_value_array<std::string>(ins, key);
     if (value) {
       for (const auto& s : *value)
         if (lowercase(s) == "available_forage")
@@ -759,7 +846,6 @@ void InsfileReader::read_table_output_text_tables() {
               {"available_forage", "digestibility", "eaten_forage_per_ind",
                "eaten_nitrogen_per_ind", "mass_density_per_hft"});
     }
-    remove_qualified_key(ins, key);
   }
   // Remove the table "output" in order to indicate that it’s been parsed.
   auto table = ins->get_table_qualified("output.text_tables");
@@ -769,43 +855,35 @@ void InsfileReader::read_table_output_text_tables() {
 void InsfileReader::read_table_simulation() {
   {
     const auto key = "simulation.forage_distribution";
-    auto value = ins->get_qualified_as<std::string>(key);
+    auto value = get_value<std::string>(ins, key);
     if (value) {
       if (lowercase(*value) == lowercase("Equally"))
         params.forage_distribution = ForageDistributionAlgorithm::Equally;
       // -> Add new forage distribution algorithm here.
       else
         throw invalid_option(key, *value, {"Equally"});
-      remove_qualified_key(ins, key);
     }
   }
   {
     const auto key = "simulation.establishment_interval";
-    auto value = ins->get_qualified_as<int>(key);
-    if (value) {
-      params.herbivore_establish_interval = *value;
-      remove_qualified_key(ins, key);
-    }
+    auto value = get_value<int>(ins, key);
+    if (value) params.herbivore_establish_interval = *value;
   }
   {
     const auto key = "simulation.herbivore_type";
-    auto value = ins->get_qualified_as<std::string>(key);
+    auto value = get_value<std::string>(ins, key);
     if (value) {
       if (lowercase(*value) == lowercase("Cohort"))
         params.herbivore_type = HerbivoreType::Cohort;
       else
         throw invalid_option(key, *value, {"Cohort"});
-      remove_qualified_key(ins, key);
     } else
       throw missing_parameter(key);
   }
   {
     const auto key = "simulation.one_hft_per_habitat";
-    auto value = ins->get_qualified_as<bool>(key);
-    if (value) {
-      params.one_hft_per_habitat = *value;
-      remove_qualified_key(ins, key);
-    }
+    auto value = get_value<bool>(ins, key);
+    if (value) params.one_hft_per_habitat = *value;
   }
   // Remove the table "simulation" in order to indicate that it’s been parsed.
   auto table = ins->get_table("simulation");

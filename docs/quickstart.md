@@ -48,10 +48,8 @@ You can open and render it in RStudio.
 Alternatively, to produce an HTML file (`demo_results.html`) to open it in a web browser, execute these commands in an R console inside the `build/` directory:
 
 ```r
-library(knitr)
-library(markdown)
-knit("demo_results.Rmd", "demo_results.md")
-markdownToHTML("demo_results.md", "demo_results.html")
+library(rmarkdown)
+render("demo_results.md")
 ```
 
 ## Customize the Instruction File {#sec_customize_the_instruction_file}

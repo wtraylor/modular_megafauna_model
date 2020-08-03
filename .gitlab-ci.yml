@@ -78,7 +78,26 @@ linter:
   stage: test
   needs: ["compile"]
   script:
+    # Good Files:
     - ./build/megafauna_insfile_linter examples/megafauna.toml
+    - for f in tests/good_insfiles/*.toml; do ./build/megafauna_insfile_linter $f; done
+    # Bad Files:
+    # These checks could be done with the catch framework, too
+    # (CHECK_THROWS_AS). That would be more flexible than checking for a
+    # specific error message in STDERR.
+    # Note that commands that expected to fail need to be executed in a
+    # subshell like this: `(command || true)`
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/catabolism_gt_anabolism.toml 2>&1 || true) | tr '\n' ' ' | grep -iq 'body_fat\.catabolism_efficiency.*must be less than the anabolism'
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_01.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_02.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_03.toml 2>&1 || true) | grep -iq 'output\.text_tables\.tables.*wrong type.*expected array of string'
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_04.toml 2>&1 || true) | grep -iq 'expenditure\.components.*wrong type'
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_05.toml 2>&1 || true) | grep -iq 'mortality\.factors.*wrong type'
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_06.toml 2>&1 || true) | grep -iq 'simulation\.establishment_interval.*wrong type'
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_07.toml 2>&1 || true) | grep -iq 'output\.text_tables\.precision.*wrong type'
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_08.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/two_groups_with_same_name.toml 2>&1 || true) | grep -iq 'group.*is defined twice'
+    - (./build/megafauna_insfile_linter tests/bad_insfiles/two_hfts_with_same_name.toml 2>&1 || true) | grep -iq 'HFT.*is defined twice'
 
 memcheck:
   image: ubuntu:latest
@@ -133,14 +152,10 @@ plot_demo_results:
   stage: postprocess
   needs: ["demo_simulation"]
   before_script:
-    - Rscript -e 'install.packages(c("ggplot2", "knitr", "markdown", "tidyr"))'
+    - Rscript -e 'install.packages(c("ggplot2", "rmarkdown", "tidyr"))'
   script:
     - cd build
-    - Rscript -e
-      "library(knitr);
-      library(markdown);
-      knit('demo_results.Rmd', 'demo_results.md');
-      markdownToHTML('demo_results.md', 'demo_results.html')"
+    - Rscript -e "rmarkdown::render('demo_results.Rmd')"
     - test -f "demo_results.html"
   artifacts:
     paths:
