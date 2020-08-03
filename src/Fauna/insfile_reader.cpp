@@ -207,16 +207,17 @@ std::shared_ptr<std::vector<T>> InsfileReader::get_value_array(
   if (value) {
     if (opt == GetValueOpt::RemoveKey) remove_qualified_key(table, key);
     return std::shared_ptr<std::vector<T>>(new std::vector<T>(*value));
-  } else {
-    // Look for a single value and treat it as a one-element array.
-    auto single = get_value<T>(table, key, opt);
-    if (single) {
-      return std::shared_ptr<std::vector<T>>(new std::vector<T>({*single}));
-    } else {
-      check_wrong_type<std::vector<T>>(table, key);
-      return NULL;  // Nothing found.
-    }
   }
+
+  // Look for a single value and treat it as a one-element array.
+  auto single = table->get_qualified_as<T>(key);
+  if (single) {
+    if (opt == GetValueOpt::RemoveKey) remove_qualified_key(table, key);
+    return std::shared_ptr<std::vector<T>>(new std::vector<T>({*single}));
+  }
+
+  check_wrong_type<std::vector<T>>(table, key);
+  return NULL;  // Nothing found.
 }
 
 template <class T>
