@@ -8,7 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Fixed
 - Misleading error message if TOML parameter has wrong type. [#25]
 - Group parameter `expenditure.components` cannot be re-used. [#28]
-- No error if an HFT group is defined twice. [#26]
+- No error if an HFT group is defined twice. [#27]
+- No instruction file check that catabolism must be smaller than anabolism coefficient. [#26]
 
 ## [0.5.3] - 2020-06-05
 
@@ -165,4 +166,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [#9]: https://github.com/wtraylor/modular_megafauna_model/issues/9
 [#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10
 [#25]: https://github.com/wtraylor/modular_megafauna_model/issues/25
+[#26]: https://github.com/wtraylor/modular_megafauna_model/issues/26
 [#28]: https://github.com/wtraylor/modular_megafauna_model/issues/28
