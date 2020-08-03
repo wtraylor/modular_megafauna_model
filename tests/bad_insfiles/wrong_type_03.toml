@@ -1,5 +1,5 @@
 # In this instruction file, the value for output.text_tables.tables is not an
-# array.
+# array of string.
 
 [simulation]
 establishment_interval = 3650 # every 10 years
@@ -17,7 +17,7 @@ interval = "Annual"
 [output.text_tables]
 directory = "."
 precision = 4
-tables = "mass_density_per_hft" # ERROR
+tables = [1, 2, 3] # ERROR
 
 ###############################################################################
 

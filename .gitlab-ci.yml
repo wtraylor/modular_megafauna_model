@@ -88,7 +88,7 @@ linter:
     - ! ./build/megafauna_insfile_linter tests/bad_insfiles/catabolism_gt_anabolism.toml
     - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_01.toml 2>&1 | grep -iq 'hft\.body_mass\.female.*wrong type'
     - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_02.toml 2>&1 | grep -iq 'hft\.body_mass\.female.*wrong type'
-    - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_03.toml 2>&1 | grep -iq 'output\.text_tables\.tables.*wrong type'
+    - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_03.toml 2>&1 | grep -iq 'output\.text_tables\.tables.*wrong type.*expected array of string'
     - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_04.toml 2>&1 | grep -iq 'hft\.expenditure\.components.*wrong type'
     - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_05.toml 2>&1 | grep -iq 'hft\.mortality\.factors.*wrong type'
     - ./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_06.toml 2>&1 | grep -iq 'simulation\.establishment_interval.*wrong type'
