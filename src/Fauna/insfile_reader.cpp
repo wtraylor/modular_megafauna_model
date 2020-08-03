@@ -105,7 +105,8 @@ InsfileReader::InsfileReader(const std::string filename)
 }
 
 template <class Expected>
-void InsfileReader::check_wrong_type(const std::string& key) const {
+void InsfileReader::check_wrong_type(
+    const std::shared_ptr<cpptoml::table> table, const std::string& key) const {
   // User-readable label for the expected type.
   std::string expected;
   if (std::is_same<Expected, bool>::value)
@@ -132,19 +133,20 @@ void InsfileReader::check_wrong_type(const std::string& key) const {
 
   // Check for each possible type if we can find the parameter with that name
   // in the TOML file.
-  if (!std::is_same<Expected, bool>::value && ins->get_qualified_as<bool>(key))
+  if (!std::is_same<Expected, bool>::value &&
+      table->get_qualified_as<bool>(key))
     found = "boolean";
 
   if (!std::is_same<Expected, double>::value &&
-      ins->get_qualified_as<double>(key))
+      table->get_qualified_as<double>(key))
     found = "floating point";
 
-  if (!std::is_same<Expected, int>::value && ins->get_qualified_as<int>(key))
+  if (!std::is_same<Expected, int>::value && table->get_qualified_as<int>(key))
     found = "integer";
 
   if (!std::is_same<Expected, std::string>::value) {
-    if (ins->get_qualified_as<std::string>(key)) found = "string";
-    if (ins->get_qualified_array_of<std::string>(key))
+    if (table->get_qualified_as<std::string>(key)) found = "string";
+    if (table->get_qualified_array_of<std::string>(key))
       found = "array of string";
   }
   // Add more types here if you want to support them.
@@ -177,7 +179,7 @@ std::shared_ptr<T> InsfileReader::get_value(
     if (opt == GetValueOpt::RemoveKey) remove_qualified_key(table, key);
     return std::shared_ptr<T>(new T(*value));
   } else {
-    check_wrong_type<T>(key);
+    check_wrong_type<T>(table, key);
     return NULL;  // Nothing found.
   }
 }
@@ -200,7 +202,7 @@ std::shared_ptr<std::vector<T>> InsfileReader::get_value_array(
     if (single) {
       return std::shared_ptr<std::vector<T>>(new std::vector<T>({*single}));
     } else {
-      check_wrong_type<std::vector<T>>(key);
+      check_wrong_type<std::vector<T>>(table, key);
       return NULL;  // Nothing found.
     }
   }
