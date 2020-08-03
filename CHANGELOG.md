@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Misleading error message if TOML parameter has wrong type. [#25]
+- Group parameter `expenditure.components` cannot be re-used. [#28]
+- No error if an HFT group is defined twice. [#26]
+
 ## [0.5.3] - 2020-06-05
 
 ### Fixed
@@ -137,8 +144,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.3...develop
-[0.5.3]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.2...0.5.3
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.2...develop
 [0.5.2]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.4.0...0.5.0
@@ -158,3 +164,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [#8]: https://github.com/wtraylor/modular_megafauna_model/issues/8
 [#9]: https://github.com/wtraylor/modular_megafauna_model/issues/9
 [#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10
+[#25]: https://github.com/wtraylor/modular_megafauna_model/issues/25
+[#28]: https://github.com/wtraylor/modular_megafauna_model/issues/28

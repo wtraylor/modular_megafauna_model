@@ -168,12 +168,25 @@ void InsfileReader::check_wrong_type(
 std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
     const std::string& group_name) const {
   auto group_table_array = ins->get_table_array("group");
-  if (group_table_array)
+  std::set<std::string> names;
+  if (group_table_array) {
+    // Check that there are no two group tables with the same name.
     for (const auto& group_table : *group_table_array) {
       const auto name = group_table->get_as<std::string>("name");
       if (!name) throw missing_parameter("group.name");
+      if (names.count(*name))
+        throw std::runtime_error("HFT group with name \"" + *name +
+                                 "\" is defined twice.");
+      names.insert(*name);
+    }
+
+    // Get the requested group table.
+    for (const auto& group_table : *group_table_array) {
+      const auto name = group_table->get_as<std::string>("name");
+      assert(name);
       if (*name == group_name) return group_table;
     }
+  }
   return std::shared_ptr<cpptoml::table>(NULL);  // nothing found
 }
 
