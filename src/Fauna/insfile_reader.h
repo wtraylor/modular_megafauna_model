@@ -191,20 +191,31 @@ class InsfileReader {
   std::shared_ptr<cpptoml::table> get_group_table(
       const std::string& group_name) const;
 
+  /// How to treat a parameter after it has been parsed by \ref get_value().
+  enum class GetValueOpt {
+    /// Remove the parameter with \ref remove_qualified_key().
+    RemoveKey,
+    /// Re-use parameter.
+    KeepKey
+  };
+
   /// Retrieve a single value from the TOML file.
   /**
    * \param table The TOML table to read from. Normally this is just the TOML
    * file \ref ins, but for table arrays, this is might be one HFT table for
    * instance.
    * \param key The TOML key, qualified as a child of `table`.
+   * \param opt Whether to remove with \ref remove_qualified_key() or keep the
+   * key.
    * \tparam T Expected type of the parameter `key`.
    * \throw wrong_param_type If `key` is present, but has a value that does not
    * match the expected type `T`. See \ref check_wrong_type().
    * \throw std::invalid_argument If `table` is NULL.
    */
   template <class T>
-  std::shared_ptr<T> get_value(const std::shared_ptr<cpptoml::table>& table,
-                               const std::string& key) const;
+  std::shared_ptr<T> get_value(
+      const std::shared_ptr<cpptoml::table>& table, const std::string& key,
+      const GetValueOpt opt = GetValueOpt::RemoveKey) const;
 
   /// Retrieve a value array from the TOML file.
   /**

@@ -166,15 +166,15 @@ std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
 
 template <class T>
 std::shared_ptr<T> InsfileReader::get_value(
-    const std::shared_ptr<cpptoml::table>& table,
-    const std::string& key) const {
+    const std::shared_ptr<cpptoml::table>& table, const std::string& key,
+    const GetValueOpt opt) const {
   if (!table)
     throw std::invalid_argument(
         "Fauna::InsfileReader::get_value() "
         "Parameter 'table' is NULL.");
   auto value = table->get_qualified_as<T>(key);
   if (value) {
-    remove_qualified_key(table, key);
+    if (opt == GetValueOpt::RemoveKey) remove_qualified_key(table, key);
     return std::shared_ptr<T>(new T(*value));
   } else {
     check_wrong_type<T>(key);
@@ -183,13 +183,17 @@ std::shared_ptr<T> InsfileReader::get_value(
 }
 // Explicit instantiations of the template function for all supported datatypes:
 template std::shared_ptr<bool> InsfileReader::get_value<>(
-    const std::shared_ptr<cpptoml::table>&, const std::string& key) const;
+    const std::shared_ptr<cpptoml::table>&, const std::string& key,
+    const GetValueOpt) const;
 template std::shared_ptr<double> InsfileReader::get_value<>(
-    const std::shared_ptr<cpptoml::table>&, const std::string& key) const;
+    const std::shared_ptr<cpptoml::table>&, const std::string& key,
+    const GetValueOpt) const;
 template std::shared_ptr<int> InsfileReader::get_value<>(
-    const std::shared_ptr<cpptoml::table>&, const std::string& key) const;
+    const std::shared_ptr<cpptoml::table>&, const std::string& key,
+    const GetValueOpt) const;
 template std::shared_ptr<std::string> InsfileReader::get_value<>(
-    const std::shared_ptr<cpptoml::table>&, const std::string& key) const;
+    const std::shared_ptr<cpptoml::table>&, const std::string& key,
+    const GetValueOpt) const;
 
 template <class T>
 std::shared_ptr<std::vector<T> > InsfileReader::get_value_array(
@@ -228,7 +232,7 @@ std::shared_ptr<T> InsfileReader::find_hft_parameter(
       const auto group_table = get_group_table(g);
       if (!group_table) throw missing_group(name, g);
       {
-        const auto value = get_value<T>(group_table, key);
+        const auto value = get_value<T>(group_table, key, GetValueOpt::KeepKey);
         if (value) return value;
       }
     }
