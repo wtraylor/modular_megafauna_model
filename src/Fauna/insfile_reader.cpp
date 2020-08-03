@@ -116,7 +116,7 @@ void InsfileReader::check_wrong_type(const std::string& key) const {
     expected = "integer";
   else if (std::is_same<Expected, std::string>::value)
     expected = "string";
-  else if (std::is_same<Expected, std::vector<std::string> >::value)
+  else if (std::is_same<Expected, std::vector<std::string>>::value)
     expected = "array of string";
   // Add more types here if you want to support them.
   assert(expected != "");
@@ -196,7 +196,7 @@ template std::shared_ptr<std::string> InsfileReader::get_value<>(
     const GetValueOpt) const;
 
 template <class T>
-std::shared_ptr<std::vector<T> > InsfileReader::get_value_array(
+std::shared_ptr<std::vector<T>> InsfileReader::get_value_array(
     const std::shared_ptr<cpptoml::table>& table, const std::string& key,
     const GetValueOpt opt) const {
   if (!table)
@@ -206,14 +206,20 @@ std::shared_ptr<std::vector<T> > InsfileReader::get_value_array(
   auto value = table->get_qualified_array_of<T>(key);
   if (value) {
     if (opt == GetValueOpt::RemoveKey) remove_qualified_key(table, key);
-    return std::shared_ptr<std::vector<T> >(new std::vector<T>(*value));
+    return std::shared_ptr<std::vector<T>>(new std::vector<T>(*value));
   } else {
-    check_wrong_type<std::vector<T> >(key);
-    return NULL;  // Nothing found.
+    // Look for a single value and treat it as a one-element array.
+    auto single = get_value<T>(table, key, opt);
+    if (single) {
+      return std::shared_ptr<std::vector<T>>(new std::vector<T>({*single}));
+    } else {
+      check_wrong_type<std::vector<T>>(key);
+      return NULL;  // Nothing found.
+    }
   }
 }
 // Explicit instantiations of the template function for all supported datatypes:
-template std::shared_ptr<std::vector<std::string> >
+template std::shared_ptr<std::vector<std::string>>
 InsfileReader::get_value_array<>(const std::shared_ptr<cpptoml::table>&,
                                  const std::string&, const GetValueOpt) const;
 
