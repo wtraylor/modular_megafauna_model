@@ -65,7 +65,8 @@ bool LogisticGrass::Parameters::is_valid(std::string& msg) const {
       is_valid = false;
     }
 
-  if (growth_monthly.size() != decay_monthly.size()) {
+  if (growth_monthly.size() != decay_monthly.size() &&
+      growth_monthly.size() != 1 && decay_monthly.size() != 1) {
     stream
         << "Warning: The numbers of monthly values for growth and decay "
            "differ. Because values are recycled, growth and decay will diverge "
