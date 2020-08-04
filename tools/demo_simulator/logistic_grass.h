@@ -6,8 +6,8 @@
  */
 #ifndef FAUNA_DEMO_LOGISTIC_GRASS_H
 #define FAUNA_DEMO_LOGISTIC_GRASS_H
-#include <vector>
 #include <string>
+#include <vector>
 #include "megafauna.h"
 
 namespace Fauna {
@@ -38,8 +38,7 @@ class LogisticGrass {
      */
     std::vector<double> digestibility = {0.5};
 
-    /// \brief Percentage of habitat covered with grass
-    ///        (Foliar Percentage Cover) [frac]
+    /// Percentage of habitat covered with grass (Foliar Perc. Cover) [frac]
     double fpc = 0.1;
 
     /// Proportional daily grass growth rates [day^-1]
@@ -54,8 +53,7 @@ class LogisticGrass {
     /** This should be smaller than \ref saturation */
     double init_mass = 0.0;
 
-    /// \brief Ungrazable grass biomass reserve, inaccessable
-    ///        to herbivores [kgDM/km²]
+    /// Ungrazable grass biomass reserve, inaccessable to herbivores [kgDM/km²]
     /** Owen-Smith (2002) gives value of 20 g/m²*/
     double reserve = 0.1;
 
@@ -92,8 +90,7 @@ class LogisticGrass {
 
  private:
   /// Current forage
-  /** Excluding the reserve
-   * \ref LogisticGrass::Parameters::reserve. */
+  /** Excluding the reserve \ref LogisticGrass::Parameters::reserve. */
   GrassForage forage;
 
   LogisticGrass::Parameters settings;
