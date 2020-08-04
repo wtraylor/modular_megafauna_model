@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Fixed
 - Floating point imprecision. [#29]
+- Too much forage got eaten in one day in the demo simulator. [#29]
 
 ## [0.5.4] - 2020-08-03
 

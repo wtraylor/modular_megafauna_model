@@ -101,9 +101,6 @@ class SimulateDay {
   /// Function object doing the feeding.
   const FeedHerbivores& feed_herbivores;
 
-  /// Available forage in habitat before feeding.
-  const HabitatForage forage_before_feeding;
-
   /// Pointers to all herbivores in the habitat.
   std::map<PopulationInterface*, HerbivoreVector> herbivores;
 
