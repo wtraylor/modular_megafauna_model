@@ -104,7 +104,7 @@ LogisticGrass::LogisticGrass(const LogisticGrass::Parameters& settings)
   if (!settings.is_valid(msg))
     throw std::invalid_argument(
         "FaunaSim::LogisticGrass::LogisticGrass() "
-        "Parameters are not valid: " +
+        "Parameters are not valid:\n" +
         msg);
   // initialize forage
   forage.set_mass(settings.init_mass);
