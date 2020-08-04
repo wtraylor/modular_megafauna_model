@@ -152,7 +152,8 @@ plot_demo_results:
   stage: postprocess
   needs: ["demo_simulation"]
   before_script:
-    - apt-get install pandoc
+    - apt-get update -qq
+    - apt-get install -y -qq pandoc
     - Rscript -e 'install.packages(c("ggplot2", "rmarkdown", "tidyr"))'
   script:
     - cd build
