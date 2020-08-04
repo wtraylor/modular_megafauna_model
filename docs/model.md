@@ -277,7 +277,7 @@ Gross energy content, \f$GE\f$, is user-specified for each forage type.
 Only the digestible fraction of the gross energy in dry matter is counted as digestible energy, \f$DE\f$.
 How much metabolizable energy can be extracted from the digested part of the forage is species-specific and defined by the user as the metabolizable energy coefficient or \f$ME/DE\f$ ratio.
 A user-defined factor, \f$k_m\f$, defines how efficient the metabolizable energy is used to meet net energy needs for maintenance and other activities.
-The factor \f$k_f\f$ denotes the efficiency for converting from \f$ME\f$ to body fat (anabolism), but burning of fat reserves happens without energy loss.
+The factor \f$k_f\f$ denotes the efficiency for converting from \f$ME\f$ to body fat (anabolism).
 The net energy content is given by:
 
 \f[
