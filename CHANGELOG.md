@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Fixed
+- Floating point imprecision. [#29]
+
 ## [0.5.4] - 2020-08-03
 
 ### Fixed
@@ -172,3 +175,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [#25]: https://github.com/wtraylor/modular_megafauna_model/issues/25
 [#26]: https://github.com/wtraylor/modular_megafauna_model/issues/26
 [#28]: https://github.com/wtraylor/modular_megafauna_model/issues/28
+[#29]: https://github.com/wtraylor/modular_megafauna_model/issues/29
