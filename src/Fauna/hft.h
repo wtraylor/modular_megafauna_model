@@ -310,6 +310,7 @@ struct Hft {
    * which is \ref digestion_k_maintenance divided by \ref digestion_k_fat.
    * \see \ref sec_fat_as_energy_storage
    * \see \ref FatmassEnergyBudget
+   * \see \ref sec_energy_content
    */
   double body_fat_catabolism_efficiency = 0.8;
 
