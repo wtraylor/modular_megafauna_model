@@ -48,7 +48,7 @@ initial_mass = 100 # (Owen-Smith 2002)
 # Must be greater than `grass.initial_mass`.
 saturation_mass = 200 # (Owen-Smith 2002)
 
-# Ungrazable grass reserve in g/m².
+# Ungrazeable grass reserve in g/m².
 # Not available to grazers but necessary for regrowth
 ungrazeable_reserve = 20 # (Owen-Smith 2002)
 
