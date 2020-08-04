@@ -23,8 +23,6 @@ SimulateDay::SimulateDay(const int day_of_year, SimulationUnit& simulation_unit,
       excreted_nitrogen(0.0),
       environment(simulation_unit.get_habitat().get_environment()),
       feed_herbivores(feed_herbivores),
-      forage_before_feeding(
-          get_corrected_forage(simulation_unit.get_habitat())),
       herbivores(get_herbivores(simulation_unit.get_populations())),
       simulation_unit(simulation_unit) {}
 
@@ -97,7 +95,9 @@ void SimulateDay::operator()(const bool do_herbivores,
                             itr.second.end());
 
     // FEEDING
-    HabitatForage available_forage = forage_before_feeding;
+    const auto forage_before_feeding =
+        get_corrected_forage(simulation_unit.get_habitat());
+    auto available_forage = forage_before_feeding;
     feed_herbivores(available_forage, all_herbivores);
     // remove the eaten forage
     simulation_unit.get_habitat().remove_eaten_forage(

@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.5] - 2020-08-04
+
+### Fixed
+- Floating point imprecision. [#29]
+- Too much forage got eaten in one day in the demo simulator. [#29]
+
 ## [0.5.4] - 2020-08-03
 
 ### Fixed
@@ -145,7 +151,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.4...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.5...develop
+[0.5.5]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.4...0.5.5
 [0.5.4]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.3...0.5.4
 [0.5.3]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.1...0.5.2
@@ -170,3 +177,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [#25]: https://github.com/wtraylor/modular_megafauna_model/issues/25
 [#26]: https://github.com/wtraylor/modular_megafauna_model/issues/26
 [#28]: https://github.com/wtraylor/modular_megafauna_model/issues/28
+[#29]: https://github.com/wtraylor/modular_megafauna_model/issues/29

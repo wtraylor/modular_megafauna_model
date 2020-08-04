@@ -18,6 +18,14 @@ TEST_CASE("Fauna::ForageValues", "") {
     CHECK_THROWS(ForageValues<ForageValueTag::PositiveAndZero>(NAN));
     CHECK_THROWS(ForageValues<ForageValueTag::PositiveAndZero>(INFINITY));
 
+    // Allow for imprecision
+    const double barely_zero =
+        -ForageValues<ForageValueTag::ZeroToOne>::IMPRECISION_TOLERANCE;
+    REQUIRE(barely_zero < 0.0);
+    CHECK_NOTHROW(ForageValues<ForageValueTag::PositiveAndZero>(barely_zero));
+    CHECK_THROWS(
+        ForageValues<ForageValueTag::PositiveAndZero>(barely_zero * 2.0));
+
     // zero initialization
     ForageValues<ForageValueTag::PositiveAndZero> fv;
     CHECK(fv.sum() == Approx(0.0));
@@ -57,10 +65,31 @@ TEST_CASE("Fauna::ForageValues", "") {
   }
 
   SECTION("zero to one") {
+    // Bad values
     CHECK_THROWS(ForageValues<ForageValueTag::ZeroToOne>(-1.0));
     CHECK_THROWS(ForageValues<ForageValueTag::ZeroToOne>(1.1));
     CHECK_THROWS(ForageValues<ForageValueTag::ZeroToOne>(NAN));
     CHECK_THROWS(ForageValues<ForageValueTag::ZeroToOne>(INFINITY));
+
+    // Good values
+    CHECK_NOTHROW(ForageValues<ForageValueTag::ZeroToOne>(0.1));
+    CHECK_NOTHROW(ForageValues<ForageValueTag::ZeroToOne>(0.9));
+    CHECK_NOTHROW(ForageValues<ForageValueTag::ZeroToOne>(0.0));
+    CHECK_NOTHROW(ForageValues<ForageValueTag::ZeroToOne>(1.0));
+
+    // Allow for imprecision below zero.
+    const double barely_zero =
+        -ForageValues<ForageValueTag::ZeroToOne>::IMPRECISION_TOLERANCE;
+    REQUIRE(barely_zero < 0.0);
+    CHECK_NOTHROW(ForageValues<ForageValueTag::ZeroToOne>(barely_zero));
+    CHECK_THROWS(ForageValues<ForageValueTag::ZeroToOne>(barely_zero * 2.0));
+
+    // Allow for imprecision above one.
+    const double barely_one =
+        1.0 + ForageValues<ForageValueTag::ZeroToOne>::IMPRECISION_TOLERANCE;
+    REQUIRE(barely_one > 1.0);
+    CHECK_NOTHROW(ForageValues<ForageValueTag::ZeroToOne>(barely_one));
+    CHECK_THROWS(ForageValues<ForageValueTag::ZeroToOne>(barely_one * 2.0));
   }
 
   SECTION("Comparison") {

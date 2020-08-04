@@ -9,8 +9,8 @@
 
 #include <array>
 #include <cmath>
-#include <stdexcept>
 #include <numeric>
+#include <stdexcept>
 #include "Fauna/average.h"
 #include "Fauna/forage_types.h"
 
@@ -155,7 +155,7 @@ class ForageValues {
    * \throw std::invalid_argument If `forage_type==ForageType::Inedible`.
    * \throw std::logic_error If `tag` is not implemented.
    */
-  void set(const ForageType forage_type, const double value) {
+  void set(const ForageType forage_type, double value) {
     check_value(value);
     if (forage_type == ForageType::Inedible)
       throw std::invalid_argument((std::string)"ForageValues<> "
@@ -175,7 +175,7 @@ class ForageValues {
    * \throw std::invalid_argument If `forage_type==ForageType::Inedible`.
    * \throw std::logic_error If `tag` is not implemented.
    */
-  void set(const double value) {
+  void set(double value) {
     check_value(value);
     array.fill(value);
   }
@@ -307,22 +307,59 @@ class ForageValues {
     return true;
   }
   /** @} */  // Operator overload
+
+  /// Tolerance range for imprecise floating point results.
+  /**
+   * For example, if no negative values are allowed, a value only *slightly*
+   * below zero could result from an imprecise floating point calculation. This
+   * must be corrected. So a value barely below zero will be corrected to
+   * actual zero.
+   *
+   * Setting the tolerance is an arbitrary decision. In general, ecologically
+   * significant numbers throughout the program should be above 1.0. Therefore
+   * it is important to choose your units carefully. If you encounter errors
+   * that are certainly coming from rounding imprecision, you may try to
+   * increase this tolerance value.
+   * \see \ref check_value()
+   */
+  constexpr static const double IMPRECISION_TOLERANCE = 1e-3;
+
  private:
   /// Forage values for all but \ref ForageType::Inedible.
   std::array<double, 1> array;
 
   /// Helper function to throw exceptions in the `set()` functions.
-  void check_value(const double& value) const {
+  /**
+   * \param value The value to check. It is passed as reference so that it can
+   * be corrected with \ref IMPRECISION_TOLERANCE.
+   */
+  void check_value(double& value) const {
     switch (tag) {
       case ForageValueTag::PositiveAndZero:
-        if (value < 0.0)
-          throw std::invalid_argument(
-              "ForageValues<PositiveAndZero> Value < 0 not allowed.");
+        if (value < 0.0) {
+          // Correct floating point rounding errors.
+          if (value >= -IMPRECISION_TOLERANCE)
+            value = 0.0;
+          else
+            throw std::invalid_argument(
+                "ForageValues<PositiveAndZero> Value < 0 not allowed. "
+                "(value == " +
+                std::to_string(value) + ")");
+        }
         break;
       case ForageValueTag::ZeroToOne:
-        if (value < 0.0 || value > 1.0)
-          throw std::invalid_argument(
-              "ForageValues<ZeroToOne> Value is not in interval [0,1].");
+        if (value < 0.0 || value > 1.0) {
+          // Correct floating point rounding errors.
+          if (value < 0.0 && value >= 0.0 - IMPRECISION_TOLERANCE)
+            value = 0.0;
+          else if (value > 1.0 && value <= 1.0 + IMPRECISION_TOLERANCE)
+            value = 1.0;
+          else
+            throw std::invalid_argument(
+                "ForageValues<ZeroToOne> Value is not in interval [0,1]. "
+                "(value == " +
+                std::to_string(value) + ")");
+        }
         break;
       default:
         throw std::logic_error(

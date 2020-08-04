@@ -47,7 +47,12 @@ void SimpleHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {
   if (new_grass.get_mass() - eaten_forage[ForageType::Grass] < 0.0)
     throw std::logic_error(
         "FaunaSim::SimpleHabitat::remove_eaten_forage() "
-        "Eaten grass exceeds available grass.");
+        "Eaten grass exceeds available grass.\n"
+        "Available: " +
+        std::to_string(grass.get_forage().get_mass()) +
+        " kg/km²\n"
+        "Eaten: " +
+        std::to_string(eaten_forage[ForageType::Grass]) + " kg/km²");
   new_grass.set_mass(new_grass.get_mass() - eaten_forage[ForageType::Grass]);
   grass.set_forage(new_grass);
 }

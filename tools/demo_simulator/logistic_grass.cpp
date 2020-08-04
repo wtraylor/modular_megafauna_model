@@ -65,7 +65,8 @@ bool LogisticGrass::Parameters::is_valid(std::string& msg) const {
       is_valid = false;
     }
 
-  if (growth_monthly.size() != decay_monthly.size()) {
+  if (growth_monthly.size() != decay_monthly.size() &&
+      growth_monthly.size() != 1 && decay_monthly.size() != 1) {
     stream
         << "Warning: The numbers of monthly values for growth and decay "
            "differ. Because values are recycled, growth and decay will diverge "
@@ -103,7 +104,7 @@ LogisticGrass::LogisticGrass(const LogisticGrass::Parameters& settings)
   if (!settings.is_valid(msg))
     throw std::invalid_argument(
         "FaunaSim::LogisticGrass::LogisticGrass() "
-        "Parameters are not valid: " +
+        "Parameters are not valid:\n" +
         msg);
   // initialize forage
   forage.set_mass(settings.init_mass);
@@ -123,7 +124,7 @@ void LogisticGrass::grow_daily(const int day_of_year) {
 
   // Increment simulation month on first day of month.
   // On the very first call, `simulation_month` is incremented from -1 to 0.
-  if (Date(day_of_year,0).get_day_of_month() == 0 || simulation_month == -1)
+  if (Date(day_of_year, 0).get_day_of_month() == 0 || simulation_month == -1)
     simulation_month++;
   assert(simulation_month >= 0);
 
@@ -175,4 +176,3 @@ void LogisticGrass::grow_daily(const int day_of_year) {
 
   forage.set_digestibility(settings.digestibility[digestibility_id]);
 }
-

@@ -269,7 +269,8 @@ bool Framework::run(const std::string insfile_fauna,
         // groups.
         fauna_world->simulate_day(date, do_herbivores);
       } catch (const std::exception& e) {
-        std::cerr << "Exception during herbivore simulation:\n"
+        std::cerr << "\n"  // Linebreak after simulation day counter.
+                  << "Exception during herbivore simulation:\n"
                   << e.what() << std::endl;
         return false;
       }
