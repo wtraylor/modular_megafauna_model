@@ -21,7 +21,9 @@ ForageFraction Fauna::foragevalues_to_foragefractions(
   if (tolerance < 0.0)
     throw std::invalid_argument(
         "Fauna::foragevalues_to_foragefractions() "
-        "Parameter `tolerance` is negative.");
+        "Parameter `tolerance` is negative. "
+        "(value == " +
+        std::to_string(tolerance) + ")");
 
   ForageFraction result;
   for (const auto ft : FORAGE_TYPES) {
@@ -33,7 +35,9 @@ ForageFraction Fauna::foragevalues_to_foragefractions(
         throw std::invalid_argument(
             "Fauna::foragevalues_to_foragefractions() "
             "One forage value exceeds 1.0 and cannot be converted to "
-            "a fraction.");
+            "a fraction:"
+            "values[" +
+            get_forage_type_name(ft) + "] == " + std::to_string(v));
     }
     result.set(ft, v);
   }

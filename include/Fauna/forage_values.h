@@ -9,8 +9,8 @@
 
 #include <array>
 #include <cmath>
-#include <stdexcept>
 #include <numeric>
+#include <stdexcept>
 #include "Fauna/average.h"
 #include "Fauna/forage_types.h"
 
@@ -317,12 +317,16 @@ class ForageValues {
       case ForageValueTag::PositiveAndZero:
         if (value < 0.0)
           throw std::invalid_argument(
-              "ForageValues<PositiveAndZero> Value < 0 not allowed.");
+              "ForageValues<PositiveAndZero> Value < 0 not allowed. "
+              "(value == " +
+              std::to_string(value) + ")");
         break;
       case ForageValueTag::ZeroToOne:
         if (value < 0.0 || value > 1.0)
           throw std::invalid_argument(
-              "ForageValues<ZeroToOne> Value is not in interval [0,1].");
+              "ForageValues<ZeroToOne> Value is not in interval [0,1]. "
+              "(value == " +
+              std::to_string(value) + ")");
         break;
       default:
         throw std::logic_error(
