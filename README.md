@@ -1,3 +1,6 @@
+[![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
+[![REUSE-compliant](figures/reuse-compliant.svg)](https://reuse.software)
+
 Modular Megafauna Model
 =======================
 
