@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-4.0
 -->
 
 [![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
-[![REUSE-compliant](figures/reuse-compliant.svg)][REUSE]
+[![REUSE-compliant](docs/images/reuse-compliant.svg)][REUSE]
 
 [REUSE]: https://reuse.software
 
