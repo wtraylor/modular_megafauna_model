@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Tutor {#page_tutor}
 \brief Instructions how expand the code base for your own needs.
 

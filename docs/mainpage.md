@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 Welcome Page
 ============
 

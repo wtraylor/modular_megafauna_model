@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 [![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
 [![REUSE-compliant](figures/reuse-compliant.svg)](https://reuse.software)
 
@@ -102,6 +108,18 @@ Similar Projects
 
 License
 -------
+
+- This project follows the [REUSE][] standard:
+    - Every file has its copyright/license information either in a comment at the top or in a separate text file with the extension `.license`.
+    - All license texts can be found in the directory `LICENSES/`.
+    - Project information and licenses for Git submodules can be found in the text file `.reuse/dep5`.
+- The Modular Megafauna Model is Free Software under the [GNU Lesser General Public License v3.0 or later][lgpl].
+- The software documentation, the accompanying images, and configuration files are licensed under the [Creative Commons Attribution 4.0 International][cc-by-4.0].
+
+[cc-by-4.0]: https://creativecommons.org/licenses/by/4.0
+[lgpl]: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
+### Third-Party Work
 
 - The [Catch2](https://github.com/catchorg/Catch2) test framework (`tests/catch.hpp`) is licensed under the [Boost Software License](http://www.boost.org/LICENSE_1_0.txt).
 

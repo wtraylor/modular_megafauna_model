@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Contributing to the Codebase
 
 This document is a guide for developers who want to contribute to the megafauna library.
