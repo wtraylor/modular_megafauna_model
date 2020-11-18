@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -13,11 +11,13 @@
    height="5.6116543cm"
    id="svg1901"
    sodipodi:version="0.32"
-   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
    sodipodi:docname="functional_response_types.svg"
    version="1.0"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    viewBox="0 0 595.33931 424.18803">
+  <title
+     id="title1751">Types of Functional Response</title>
   <defs
      id="defs1903">
     <inkscape:perspective
@@ -44,14 +44,14 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
      inkscape:cx="267.98507"
-     inkscape:cy="-27.859603"
+     inkscape:cy="153.96786"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      gridtolerance="10000"
      inkscape:window-width="1676"
-     inkscape:window-height="1011"
+     inkscape:window-height="1002"
      inkscape:window-x="0"
-     inkscape:window-y="18"
+     inkscape:window-y="0"
      showgrid="true"
      inkscape:snap-bbox="true"
      objecttolerance="5"
@@ -60,9 +60,10 @@
      fit-margin-top="0.1"
      fit-margin-bottom="0.1"
      fit-margin-right="0.1"
-     inkscape:window-maximized="0"
+     inkscape:window-maximized="1"
      showguides="true"
-     inkscape:guide-bbox="true">
+     inkscape:guide-bbox="true"
+     inkscape:document-rotation="0">
     <inkscape:grid
        type="xygrid"
        id="grid2460"
@@ -87,8 +88,29 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title>Types of Functional Response</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by/4.0/" />
+        <dc:date>2019</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Wolfgang Traylor, Senckenberg BiK-F</dc:title>
+          </cc:Agent>
+        </dc:creator>
       </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
     </rdf:RDF>
   </metadata>
   <g
