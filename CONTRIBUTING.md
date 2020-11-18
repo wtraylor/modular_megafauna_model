@@ -151,11 +151,13 @@ Ususally the brief description will be the same for a `.h` and its `.cpp` file.
 If it is only one class in the header file, you can also copy the `\brief` description from that class.
 Here is an example:
 
+<!--TODO: REUSE header-->
+
 ```cpp
 /**
  * \file
  * \brief Management classes of herbivore populations.
- * \copyright <TODO: fill in license of the project>
+ * \copyright LGPL-3.0-or-later
  * \date <current year>
  */
 ```

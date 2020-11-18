@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+#
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 cmake_minimum_required (VERSION 3.10)
 project ("Modular Megafauna Model"
   VERSION 0.5.1
