@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Fixed
+- Add licensing information. [#22]
+
 ## [0.5.5] - 2020-08-04
 
 ### Fixed
@@ -182,6 +185,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [#8]: https://github.com/wtraylor/modular_megafauna_model/issues/8
 [#9]: https://github.com/wtraylor/modular_megafauna_model/issues/9
 [#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10
+[#22]: https://github.com/wtraylor/modular_megafauna_model/issues/22
 [#25]: https://github.com/wtraylor/modular_megafauna_model/issues/25
 [#26]: https://github.com/wtraylor/modular_megafauna_model/issues/26
 [#28]: https://github.com/wtraylor/modular_megafauna_model/issues/28
