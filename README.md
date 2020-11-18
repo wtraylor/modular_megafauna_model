@@ -5,7 +5,9 @@ SPDX-License-Identifier: CC-BY-4.0
 -->
 
 [![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
-[![REUSE-compliant](figures/reuse-compliant.svg)](https://reuse.software)
+[![REUSE-compliant](figures/reuse-compliant.svg)][REUSE]
+
+[REUSE]: https://reuse.software
 
 Modular Megafauna Model
 =======================
@@ -33,6 +35,7 @@ This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pi
 - `examples/`: Exemplary instruction files.
 - `external/`: Embedded external projects, which remain unmodified.
 - `include/`: Public API header files.
+- `LICENSES/`: Folder with licenses, compliant with [REUSE][].
 - `src/`: Source and (private) header files of the project. Subdirectories correspond to C++ namespaces.
 - `tests/`: Unit tests.
     - `tests/bad_insfiles/`: Example erroneous example files, each of which should throw an error.
