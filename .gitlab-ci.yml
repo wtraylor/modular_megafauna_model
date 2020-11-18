@@ -17,10 +17,11 @@ variables:
 
 # Check whether the project is REUSE compliant (https://reuse.software).
 check_license:
-  image: fsfe/reuse:latest
+  image:
+    name: fsfe/reuse:latest
+    entrypoint: reuse
   stage: lint
-  script:
-    - lint
+  script: lint
 
 compile:
   image: gcc:latest
