@@ -1,9 +1,9 @@
-/' PlantUML diagrams for the herbivory module.
- ' author: Wolfgang Traylor, Senckenberg BiK-F
- ' date: August 2017
+/'
+ ' SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
  '
- ' PlantUML is free software under the GPL license.
- ' See http://plantuml.com
+ ' SPDX-License-Identifier: CC-BY-4.0
+ '
+ ' PlantUML diagrams for the herbivory module.
  '
  ' Please keep the **alphabetical order** of the diagrams.
  '/
