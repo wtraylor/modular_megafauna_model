@@ -39,6 +39,16 @@ In order to be included in a sensitivity/uncertainty analysis, the parameter mus
 
 If you want to introduce the megafauna library to a vegetation model, you should study the code of the demo simulator (`tools/demo_simulator`) and its documentation on the page \ref page_demo_simulator.
 
+Since the MMM is licensed under the [LGPLv3][LGPL] (or later), you can use it in differently licensed (even proprietary) vegetation models, as long as you …
+
+1. give prominent notice about the megafauna library and its license,
+2. attach the LGPL license, and
+3. convey the library source code.
+
+But see the [LGPL][] § 4 for all the legal details on “Combined Work.”
+
+[LGPL]: https://www.gnu.org/licenses/lgpl-3.0.html
+
 -------------------------------------------------
 
 \copyright <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a> This software documentation is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
