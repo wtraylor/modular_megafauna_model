@@ -3,8 +3,6 @@ Upstream-Name: Modular Megafauna Model (MMM)
 Upstream-Contact: Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
 Source: https://github.com/wtraylor/modular_megafauna_model
 
-# Sample paragraph, commented out:
-#
-# Files: src/*
-# Copyright: $YEAR $NAME <$CONTACT>
-# License: ...
+Files: external/cpptoml/*
+Copyright: 2014 Chase Geigle and CPPToml contributors
+License: MIT
