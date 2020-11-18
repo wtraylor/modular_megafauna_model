@@ -1,0 +1,10 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Modular Megafauna Model (MMM)
+Upstream-Contact: Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+Source: https://github.com/wtraylor/modular_megafauna_model
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...
