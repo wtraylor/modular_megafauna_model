@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Modular Megafauna Model (MMM)
+Upstream-Contact: Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+Source: https://github.com/wtraylor/modular_megafauna_model
+
+Files: external/cpptoml/*
+Copyright: 2014 Chase Geigle and CPPToml contributors
+License: MIT

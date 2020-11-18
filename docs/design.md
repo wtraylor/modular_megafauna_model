@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Software Design {#page_design}
 \brief Notes on the software design of the herbivore model from a programmer’s perspective.
 
@@ -261,7 +267,8 @@ That is a violation of the [Open/Closed Principle](\ref sec_open_closed).
 The user is then responsible to interpret them as invalid or disable their output.
 So far, there is no check of congruency between [parameters](\ref Fauna::Parameters)/[HFT settings](\ref Fauna::Hft) and the selection of output variables in the output module.
 
-------------------------------------------------------------
+-------------------------------------------------
 
+\copyright <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a> This software documentation is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 \author Wolfgang Traylor, Senckenberg BiK-F
 \date 2019

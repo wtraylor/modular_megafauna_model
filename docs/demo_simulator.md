@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Demo Simulator {#page_demo_simulator}
 \brief Introduction to the demo vegetation model that uses the megafauna library.
 
@@ -28,3 +34,9 @@ The “habitat group” corresponds conceptually to the LPJ-GUESS `Gridcell`.
 An example instruction file is provided in `examples/demo_simulation.toml`.
 It is completely separate from the megafauna library instruction file,
 It emulates the scenario of the metaphysiological model by Norman Owen-Smith \cite owensmith2002metaphysiological during growing season.
+
+-------------------------------------------------
+
+\copyright <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a> This software documentation is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+\author Wolfgang Traylor, Senckenberg BiK-F
+\date 2019

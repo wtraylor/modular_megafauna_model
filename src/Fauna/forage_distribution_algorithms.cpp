@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief Different models how to distribute available forage among herbivores.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #include "forage_distribution_algorithms.h"

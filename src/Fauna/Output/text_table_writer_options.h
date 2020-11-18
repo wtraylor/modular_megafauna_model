@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief Options for \ref Fauna::Output::TextTableWriter.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #ifndef FAUNA_OUTPUT_TEXT_TABLE_WRITER_OPTIONS_H

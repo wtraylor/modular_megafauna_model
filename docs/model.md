@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Ecological Model Discussion {#page_model}
 
 \brief Scientific background of the Modular Megafauna Model.
@@ -466,8 +472,8 @@ The units of measurement were primarily chosen in a way to yield numbers broadly
 Floating point operations are most precise then, and the values can be printed in a text output table.
 When post-processing the output, you can convert to your units of choice, e.g. `ind/ha` instead of `ind/km²`.
 
----
+-------------------------------------------------
 
+\copyright <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a> This software documentation is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 \author Wolfgang Traylor, Senckenberg BiK-F
 \date 2019
-\copyright ...
