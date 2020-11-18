@@ -19,9 +19,10 @@ variables:
 check_license:
   image:
     name: fsfe/reuse:latest
-    entrypoint: reuse
+    entrypoint: [""]
   stage: lint
-  script: lint
+  script:
+    - reuse lint
 
 compile:
   image: gcc:latest
