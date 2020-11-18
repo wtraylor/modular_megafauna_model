@@ -165,8 +165,8 @@ The subsystem doesn’t know about the facade.
 	facade ..> subsystem.class3 : <<call>>
 @enduml
 
-------------------------------------------------------------
+-------------------------------------------------
 
+\copyright <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a> This software documentation is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 \author Wolfgang Traylor, Senckenberg BiK-F
 \date 2019
-\copyright ...
