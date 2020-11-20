@@ -1,10 +1,10 @@
+# Demo Simulator {#page_demo_simulator}
 <!--
 SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
 
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
-# Demo Simulator {#page_demo_simulator}
 \brief Introduction to the demo vegetation model that uses the megafauna library.
 
 \tableofcontents

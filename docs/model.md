@@ -1,10 +1,9 @@
+# Ecological Model Discussion {#page_model}
 <!--
 SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
 
 SPDX-License-Identifier: CC-BY-4.0
 -->
-
-# Ecological Model Discussion {#page_model}
 
 \brief Scientific background of the Modular Megafauna Model.
 

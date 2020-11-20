@@ -1,11 +1,10 @@
+Welcome Page
+============
 <!--
 SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
 
 SPDX-License-Identifier: CC-BY-4.0
 -->
-
-Welcome Page
-============
 
 This source code documentation is a guide for users and developers of the megafauna library.
 Before you continue, make sure you have read the `README.md` in the root of this repository in order to gain a general overview.

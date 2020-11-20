@@ -1,10 +1,10 @@
+# Software Design {#page_design}
 <!--
 SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
 
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
-# Software Design {#page_design}
 \brief Notes on the software design of the herbivore model from a programmer’s perspective.
 
 \tableofcontents

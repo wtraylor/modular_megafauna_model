@@ -1,10 +1,10 @@
+# Object-oriented Design Concepts {#page_object_orientation}
 <!--
 SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
 
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
-# Object-oriented Design Concepts {#page_object_orientation}
 \brief Some programming principles and paradigms in object-oriented software engineering.
 
 \tableofcontents

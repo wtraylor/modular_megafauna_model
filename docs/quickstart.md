@@ -1,10 +1,10 @@
+# Quickstart Guide {#page_quickstart}
 <!--
 SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
 
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
-# Quickstart Guide {#page_quickstart}
 \brief How to get the first simulations running.
 
 \tableofcontents
