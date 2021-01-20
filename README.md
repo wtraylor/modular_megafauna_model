@@ -26,6 +26,8 @@ As the name suggests, modularity is a primary design goal.
 Processes and model components can be switched on and off, replaced, and expanded.
 Since this C++ library is Free Software, the scientific community is encouraged to use, study, change, and redistribute the source code.
 
+Come join the MMM user and developer room on Matrix: <https://matrix.to/#/!rnevkLtJTORmvyzFHD:matrix.org?via=matrix.org>
+
 Repository Structure
 --------------------
 

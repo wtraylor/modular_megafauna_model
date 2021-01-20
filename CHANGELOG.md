@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added
+- Invitation to Matrix room in README.
+
 ### Fixed
 - Add licensing information. [#22]
 
