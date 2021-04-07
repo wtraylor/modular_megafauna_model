@@ -67,9 +67,6 @@ void HerbivoreCohort::merge(HerbivoreCohort& other) {
                                   this->get_ind_per_km2(),
                                   other.get_ind_per_km2());
 
-  // Merge nitrogen
-  this->get_nitrogen().merge(other.get_nitrogen());
-
   // sum up density
   this->ind_per_km2 += other.ind_per_km2;
   // Change density in other object

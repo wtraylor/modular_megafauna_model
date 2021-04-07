@@ -375,27 +375,6 @@ When the energy reserves of an animal are exhausted, it will die of starvation.
 Body fat, i.e. lipid in the ingesta-free body, is then zero.
 Different studies have found that the carcasses of large herbivores that have starved to death contain virtually no body fat anymore (Reimers et al., 1982 \cite reimers1982body; Depperschmidt et al., 1987 \cite depperschmidt1987body), but chemical analysis of fat content in carcass samples can be imprecise (Depperschmidt et al., 1987).
 
-### Nitrogen Cycling {#sec_nitrogen_cycling}
-The vegetation model defines the nitrogen content in forage.
-The maximum amount of nitrogen (\f$N_{bound}\f$, kgN/km²) bound in herbivores is comprised of the body tissue and the contents of the digestive tract.
-Any ingested nitrogen is added to the pool of herbivore-bound nitrogen, and the surplus is returned to the vegetation model, which should make it available to plants again.
-
-The amount of nitrogen bound in body tissue is approximated with 3% of live body weight (Robbins 1983\cite robbins1983wildlife); this ignores variation in fat and structural mass.
-Upon death, this amount of nitrogen is also returned to the vegetation model.
-
-The nitrogen of ingesta in stomach and intestines depends on the mean retention time (\f$MRT\f$, hours) and the day’s intake of nitrogen (\f$I_N\f$, kgN/ind/day).
-
-\f[
-  N_{bound} = N_{guts} + N_{body} = I_N * MRT * P + 0.03 * BM * P
-\f]
-
-\f$P\f$ is the population density (ind/km²) and \f$BM\f$ is the body mass (kg/ind).
-Mean retention time in hours is calculated according to Clauss et al. (2007)\cite clauss2007case, Fig. 2:
-
-\f[
-  MRT = 32.8 * BM^{0.07}
-\f]
-
 ### Population Dynamics {#sec_population_dynamics}
 
 #### Population Stability

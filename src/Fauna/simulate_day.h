@@ -86,9 +86,7 @@ class SimulateDay {
   /// Iterate over all \ref herbivores and let them do their simulation.
   /**
    * Call \ref HerbivoreInterface::simulate_day() in each alive herbivore
-   * object. Also collect offspring and excreted nitrogen.
-   * If an herbivore is dead, all its nitrogen will be returned to the
-   * \ref Habitat.
+   * object. Also collect offspring.
    */
   void simulate_herbivores();
 
@@ -98,9 +96,6 @@ class SimulateDay {
 
   /// The current abiotic conditions.
   const HabitatEnvironment environment;
-
-  /// Total nitrogen excreted by herbivores today [kgN/km²].
-  double excreted_nitrogen;
 
   /// Function object doing the feeding.
   const FeedHerbivores& feed_herbivores;

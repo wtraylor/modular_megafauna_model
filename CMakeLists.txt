@@ -78,8 +78,6 @@ set (SOURCE_FILES
   src/Fauna/mortality_factors.h
   src/Fauna/net_energy_models.cpp
   src/Fauna/net_energy_models.h
-  src/Fauna/nitrogen.cpp
-  src/Fauna/nitrogen.h
   src/Fauna/parameters.cpp
   src/Fauna/parameters.h
   src/Fauna/population_interface.cpp
@@ -149,7 +147,6 @@ if (BUILD_TESTING)
     src/Fauna/insfile_reader.test.cpp
     src/Fauna/mortality_factors.test.cpp
     src/Fauna/net_energy_models.test.cpp
-    src/Fauna/nitrogen.test.cpp
     src/Fauna/parameters.test.cpp
     src/Fauna/reproduction_models.test.cpp
     src/Fauna/world.test.cpp

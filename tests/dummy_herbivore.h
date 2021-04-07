@@ -60,8 +60,6 @@ class DummyHerbivore : public HerbivoreInterface {
     offspring = 0.0;
   }
 
-  virtual double take_nitrogen_excreta() { return 0; }
-
  public:
   const ForageMass& get_original_demand() const { return original_demand; }
   void set_demand(const ForageMass& d) { original_demand = actual_demand = d; }

@@ -18,7 +18,6 @@
 #include "get_forage_demands.h"
 #include "herbivore_data.h"
 #include "herbivore_interface.h"
-#include "nitrogen.h"
 
 namespace Fauna {
 
@@ -44,7 +43,6 @@ class HerbivoreBase : public HerbivoreInterface {
   virtual void simulate_day(const int day,
                             const HabitatEnvironment& environment,
                             double& offspring);
-  virtual double take_nitrogen_excreta();
 
  public:
   /// Current age in days.
@@ -221,9 +219,6 @@ class HerbivoreBase : public HerbivoreInterface {
   /// Class-internal read/write access to current output.
   Output::HerbivoreData& get_todays_output() { return current_output; }
 
-  /// Access for derived classes to nitrogen management.
-  NitrogenInHerbivore& get_nitrogen() { return nitrogen; }
-
   /// Check whether the constant member variables match those of another object.
   bool constant_members_match(const HerbivoreBase& other) const {
     return sex == other.sex && hft.get() == other.hft.get() &&
@@ -289,7 +284,6 @@ class HerbivoreBase : public HerbivoreInterface {
   int age_days;
   FatmassEnergyBudget energy_budget;
   HabitatEnvironment environment;  // set in simulate_day()
-  NitrogenInHerbivore nitrogen;
   int today;
   /** @} */  // state variables
 
