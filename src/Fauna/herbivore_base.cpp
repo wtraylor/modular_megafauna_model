@@ -484,7 +484,6 @@ void HerbivoreBase::simulate_day(const int day,
   get_todays_output().reset();
   get_todays_output().age_years = get_age_years();
   get_todays_output().bodyfat = get_bodyfat();
-  get_todays_output().bound_nitrogen = nitrogen.get_unavailable();
   get_todays_output().inddens = get_ind_per_km2();
   get_todays_output().massdens = get_kg_per_km2();
 

@@ -79,8 +79,6 @@ HerbivoreData& HerbivoreData::merge(const HerbivoreData& other,
   }
   this->mortality = mort_intersect;
 
-  bound_nitrogen =
-      average(bound_nitrogen, other.bound_nitrogen, this_weight, this_weight);
   inddens = average(inddens, other.inddens, this_weight, other_weight);
   massdens = average(massdens, other.massdens, this_weight, other_weight);
   offspring = average(offspring, other.offspring, this_weight, other_weight);
@@ -155,7 +153,6 @@ HerbivoreData HerbivoreData::create_datapoint(
     }
 
     // SUM building for per-area and per-habitat variables
-    result.bound_nitrogen += other.bound_nitrogen;
     result.inddens += other.inddens;
     result.massdens += other.massdens;
     result.offspring += other.offspring;
