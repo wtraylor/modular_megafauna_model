@@ -20,6 +20,9 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 ### Fixed
 - Add licensing information. [#22]
 
+### Removed
+- Nitrogen retention by herbivores. The function `Habitat::add_excreted_nitrogen()` has been removed. The vegetation model must now handle recycling of nitrogen itself. This simplifies the code and reduces the number of parameters.
+
 ## [0.5.5] - 2020-08-04
 
 ### Fixed
