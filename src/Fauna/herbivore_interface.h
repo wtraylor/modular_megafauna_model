@@ -107,24 +107,6 @@ struct HerbivoreInterface {
   virtual void simulate_day(const int day,
                             const HabitatEnvironment& environment,
                             double& offspring) = 0;
-
-  /// Get how much nitrogen is excreted, and reset.
-  /**
-   * Through feeding, plant nitrogen is taken up. Any nitrogen that has
-   * been excreted again can be queried with this function. This function
-   * also resets the accumulated nitrogen to zero.
-   * This way, the nitrogen cycle from plant to animal and back is
-   * completely closed.
-   *
-   * If the herbivore is dead, *all* remaining nitrogen in the body
-   * (including tissue) ought to be returned.
-   *
-   * Sidenote: The function name doesn’t start with `get_` because the
-   * function changes the internal state of the object.
-   * \return Excreted nitrogen [kgN/km²] (+ tissue nitrogen if dead).
-   * \see \ref sec_nitrogen_cycling
-   */
-  virtual double take_nitrogen_excreta() = 0;
 };
 
 }  // namespace Fauna

@@ -32,14 +32,6 @@ class Habitat {
   /** Destructor must be virtual in an interface. */
   virtual ~Habitat() {}
 
-  /// Account for nitrogen cycling back to soil (faeces + carcasses).
-  /**
-   * \param kgN_per_km2 Nitrogen deposited in habitat [kgN/km²].
-   * \throw std::invalid_argument If `kgN_per_km2 < 0.0`.
-   * \throw std::logic_error If this object is dead.
-   */
-  virtual void add_excreted_nitrogen(const double kgN_per_km2) = 0;
-
   /// A string identifier for the group of habitats whose output is aggregated.
   /**
    * Suppose the vegetation model works in longitude/latitude grid cells and
@@ -96,6 +88,15 @@ class Habitat {
    * The base class implements only adding the eaten forage
    * to the output. Any derived class should call this (the parent‘s)
    * function and do forage removal afterwards.
+   *
+   * \note It is the vegetation model’s responsibility to recycle nutrients
+   * (e.g. nitrogen). Even though the herbivore model counts the amount of
+   * ingested nitrogen, it does not close the nutrient cycle by returning
+   * nitrogen to the vegetation. The implementation of this function could
+   * directly put eaten nitrogen into the soil, thereby ignoring the (short)
+   * time herbivores retain nitrogen in their digestive tract and their body
+   * tissue.
+   *
    * \param eaten_forage Dry matter leaf forage [kgDM/km²],
    * must not exceed available forage.
    * \throw std::logic_error If `eaten_forage` exceeds
