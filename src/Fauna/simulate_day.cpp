@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief Function object to perform simulations in the herbivore model.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #include "simulate_day.h"
@@ -20,7 +24,6 @@ using namespace Fauna;
 SimulateDay::SimulateDay(const int day_of_year, SimulationUnit& simulation_unit,
                          const FeedHerbivores& feed_herbivores)
     : day_of_year(day_of_year),
-      excreted_nitrogen(0.0),
       environment(simulation_unit.get_habitat().get_environment()),
       feed_herbivores(feed_herbivores),
       herbivores(get_herbivores(simulation_unit.get_populations())),
@@ -69,9 +72,9 @@ void SimulateDay::operator()(const bool do_herbivores,
 
   if (do_herbivores) {
     // Kill herbivore populations below the minimum density threshold here
-    // so that simulate_herbivores() can take the nitrogen back before
-    // the herbivore objects are removed from memory in purge_of_dead()
-    // below.
+    // so that simulate_herbivores() can (potentially) return nutrients from
+    // the dead bodies before the herbivore objects are removed from memory in
+    // purge_of_dead() below.
     for (auto& pop : simulation_unit.get_populations()) pop->kill_nonviable();
 
     if (establish_as_needed) {
@@ -104,8 +107,6 @@ void SimulateDay::operator()(const bool do_herbivores,
         forage_before_feeding.get_mass() - available_forage.get_mass());
   }
 
-  simulation_unit.get_habitat().add_excreted_nitrogen(excreted_nitrogen);
-
   // Now we will change the populations, and the herbivore pointers could
   // become invalid. So we need to delete the pointers to be sure that
   // nobody uses those pointers.
@@ -121,11 +122,9 @@ void SimulateDay::simulate_herbivores() {
   for (auto& itr : herbivores) {
     PopulationInterface* pop = itr.first;
     for (auto& herbivore : itr.second) {
-      // If this herbivore is dead, just take all of its nitrogen and
-      // skip it. The Population object will take care of releasing its
-      // memory.
+      // If this herbivore is dead, just skip it. The Population object will
+      // take care of releasing its memory.
       if (herbivore->is_dead()) {
-        excreted_nitrogen += herbivore->take_nitrogen_excreta();
         continue;
       }
 
@@ -141,9 +140,6 @@ void SimulateDay::simulate_herbivores() {
 
       // Gather the offspring.
       total_offspring[pop] += offspring;
-
-      // Gather nitrogen excreta.
-      excreted_nitrogen += herbivore->take_nitrogen_excreta();
     }
   }
 }

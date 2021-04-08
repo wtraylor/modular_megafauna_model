@@ -1,4 +1,9 @@
 # Ecological Model Discussion {#page_model}
+<!--
+SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
 
 \brief Scientific background of the Modular Megafauna Model.
 
@@ -277,7 +282,7 @@ Gross energy content, \f$GE\f$, is user-specified for each forage type.
 Only the digestible fraction of the gross energy in dry matter is counted as digestible energy, \f$DE\f$.
 How much metabolizable energy can be extracted from the digested part of the forage is species-specific and defined by the user as the metabolizable energy coefficient or \f$ME/DE\f$ ratio.
 A user-defined factor, \f$k_m\f$, defines how efficient the metabolizable energy is used to meet net energy needs for maintenance and other activities.
-The factor \f$k_f\f$ denotes the efficiency for converting from \f$ME\f$ to body fat (anabolism), but burning of fat reserves happens without energy loss.
+The factor \f$k_f\f$ denotes the efficiency for converting from \f$ME\f$ to body fat (anabolism).
 The net energy content is given by:
 
 \f[
@@ -370,27 +375,6 @@ When the energy reserves of an animal are exhausted, it will die of starvation.
 Body fat, i.e. lipid in the ingesta-free body, is then zero.
 Different studies have found that the carcasses of large herbivores that have starved to death contain virtually no body fat anymore (Reimers et al., 1982 \cite reimers1982body; Depperschmidt et al., 1987 \cite depperschmidt1987body), but chemical analysis of fat content in carcass samples can be imprecise (Depperschmidt et al., 1987).
 
-### Nitrogen Cycling {#sec_nitrogen_cycling}
-The vegetation model defines the nitrogen content in forage.
-The maximum amount of nitrogen (\f$N_{bound}\f$, kgN/km²) bound in herbivores is comprised of the body tissue and the contents of the digestive tract.
-Any ingested nitrogen is added to the pool of herbivore-bound nitrogen, and the surplus is returned to the vegetation model, which should make it available to plants again.
-
-The amount of nitrogen bound in body tissue is approximated with 3% of live body weight (Robbins 1983\cite robbins1983wildlife); this ignores variation in fat and structural mass.
-Upon death, this amount of nitrogen is also returned to the vegetation model.
-
-The nitrogen of ingesta in stomach and intestines depends on the mean retention time (\f$MRT\f$, hours) and the day’s intake of nitrogen (\f$I_N\f$, kgN/ind/day).
-
-\f[
-  N_{bound} = N_{guts} + N_{body} = I_N * MRT * P + 0.03 * BM * P
-\f]
-
-\f$P\f$ is the population density (ind/km²) and \f$BM\f$ is the body mass (kg/ind).
-Mean retention time in hours is calculated according to Clauss et al. (2007)\cite clauss2007case, Fig. 2:
-
-\f[
-  MRT = 32.8 * BM^{0.07}
-\f]
-
 ### Population Dynamics {#sec_population_dynamics}
 
 #### Population Stability
@@ -466,8 +450,8 @@ The units of measurement were primarily chosen in a way to yield numbers broadly
 Floating point operations are most precise then, and the values can be printed in a text output table.
 When post-processing the output, you can convert to your units of choice, e.g. `ind/ha` instead of `ind/km²`.
 
----
+-------------------------------------------------
 
+\copyright <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a> This software documentation is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 \author Wolfgang Traylor, Senckenberg BiK-F
 \date 2019
-\copyright ...

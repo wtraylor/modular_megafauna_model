@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
 # This instruction file uses single values that shall be parsed like
 # one-element arrays.
 

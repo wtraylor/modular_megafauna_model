@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+#
+# SPDX-License-Identifier: MIT
+
 #
 # Search for memory leaks in the Modular Megafauna Model using Valgrind.
 #

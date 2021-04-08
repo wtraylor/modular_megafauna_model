@@ -1,3 +1,10 @@
+# SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+#
+# SPDX-License-Identifier: CC0-1.0
+
 /build
 /build/
 valgrind_memcheck.log
+
+# Config for [YouCompleteMe](http://ycm-core.github.io/YouCompleteMe/#intro)
+.ycm_extra_conf.py

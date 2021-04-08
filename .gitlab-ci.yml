@@ -1,4 +1,9 @@
+# SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+#
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 stages:
+  - lint
   - build
   - test
   - postprocess
@@ -9,6 +14,15 @@ variables:
 
 # The documentation and the source code are compiled separately so that the
 # pipeline can continue with the unit tests even if doxygen fails.
+
+# Check whether the project is REUSE compliant (https://reuse.software).
+check_license:
+  image:
+    name: fsfe/reuse:latest
+    entrypoint: [""]
+  stage: lint
+  script:
+    - reuse lint
 
 compile:
   image: gcc:latest

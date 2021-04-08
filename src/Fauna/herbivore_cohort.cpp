@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief Implementation of \ref Fauna::HerbivoreBase as annual cohorts.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #include "herbivore_cohort.h"
@@ -62,9 +66,6 @@ void HerbivoreCohort::merge(HerbivoreCohort& other) {
   this->get_energy_budget().merge(other.get_energy_budget(),
                                   this->get_ind_per_km2(),
                                   other.get_ind_per_km2());
-
-  // Merge nitrogen
-  this->get_nitrogen().merge(other.get_nitrogen());
 
   // sum up density
   this->ind_per_km2 += other.ind_per_km2;

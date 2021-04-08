@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief Read the instruction file with HFTs and global parameters.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #ifndef FAUNA_INSFILE_READER_H

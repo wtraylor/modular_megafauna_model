@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Contributing to the Codebase
 
 This document is a guide for developers who want to contribute to the megafauna library.
@@ -6,22 +12,27 @@ This document is only about *syntax* only.
 
 ## Table of Contents
 
-- [Version Control](#version-control)
-    - [Branches](#branches)
-    - [Release Versioning](#release-versioning)
-    - [Commit Messages](#commit-messages)
-    - [Continuous Integration](#continuous-integration)
-- [Coding Guidelines](#coding-guidelines)
-    - [Repository Structure](#repository-structure)
-    - [Code Format](#code-format)
-        - [Naming Code Elments](#naming-code-elements)
-        - [Ordering](#ordering)
-        - [File Header](#file-header)
-    - [Unit Tests](#unit-tests)
-    - [Code Checkers](#code-checkers)
-    - [Doxygen Documentation](#doxygen-documentation)
-        - [Markdown](#markdown)
-        - [BibTeX Bibliography](#bibtex-bibliography)
+<!-- vim-markdown-toc GFM -->
+
+* [Version Control](#version-control)
+    * [Branches](#branches)
+    * [Release Versioning](#release-versioning)
+    * [Commit Messages](#commit-messages)
+    * [Continuous Integration](#continuous-integration)
+* [Licensing](#licensing)
+* [Coding Guidelines](#coding-guidelines)
+    * [Repository Structure](#repository-structure)
+    * [Code Format](#code-format)
+        * [Naming Code Elements](#naming-code-elements)
+        * [Ordering](#ordering)
+        * [File Header](#file-header)
+    * [Unit Tests](#unit-tests)
+    * [Code Checkers](#code-checkers)
+    * [Doxygen Documentation](#doxygen-documentation)
+        * [Markdown](#markdown)
+        * [BibTeX Bibliography](#bibtex-bibliography)
+
+<!-- vim-markdown-toc -->
 
 ## Version Control
 
@@ -59,6 +70,15 @@ This file works with GitLab Continuous Integration (CI).
 The CI script also runs [Valgrind](https://valgrind.org) memory check.
 With the bash script `tools/run_valgrind_memcheck` you can execute a memory check manually on your local machine.
 **Always make sure contributions to the codebase don’t have memory leaks.**
+
+## Licensing
+- Familiarize yourself with the REUSE standard in this tutorial: <https://reuse.software/tutorial/>
+- When you create a new file, add a REUSE license header with the same license as similar files in the project.
+- When you contribute to a file, add yourself as a copyright holder to the REUSE license header.
+- When you create a commit with Git, use the `-s/--signoff` flag in order to sign the [Developer Certificate of Origin][DCO]. This way you certify that you wrote or otherwise have the right to submit the code you’re contributing to the project.
+    - Just come into the habit of writing `git commit -s`.
+
+[DCO]: https://developercertificate.org/
 
 ## Coding Guidelines
 
@@ -151,11 +171,13 @@ Ususally the brief description will be the same for a `.h` and its `.cpp` file.
 If it is only one class in the header file, you can also copy the `\brief` description from that class.
 Here is an example:
 
+<!--TODO: REUSE header-->
+
 ```cpp
 /**
  * \file
  * \brief Management classes of herbivore populations.
- * \copyright <TODO: fill in license of the project>
+ * \copyright LGPL-3.0-or-later
  * \date <current year>
  */
 ```

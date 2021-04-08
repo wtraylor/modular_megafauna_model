@@ -1,7 +1,27 @@
+<!--
+SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) by Olivier Lacan, and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog][] by Olivier Lacan, and this project adheres to [Semantic Versioning][].
+
+[Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
+[Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
+
+## [0.6.0] - 2021-04-08
+
+### Added
+- Invitation to Matrix room in README.
+
+### Fixed
+- Add licensing information. [#22]
+
+### Removed
+- Nitrogen retention by herbivores. The function `Habitat::add_excreted_nitrogen()` has been removed. The vegetation model must now handle recycling of nitrogen itself. This simplifies the code and reduces the number of parameters. Compare [#15]
 
 ## [0.5.5] - 2020-08-04
 
@@ -151,7 +171,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.5...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.6.0...develop
+[0.6.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.5...0.6.0
 [0.5.5]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.4...0.5.5
 [0.5.4]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.3...0.5.4
 [0.5.3]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.2...0.5.3
@@ -174,6 +195,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 [#8]: https://github.com/wtraylor/modular_megafauna_model/issues/8
 [#9]: https://github.com/wtraylor/modular_megafauna_model/issues/9
 [#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10
+[#15]: https://github.com/wtraylor/modular_megafauna_model/issues/15
+[#22]: https://github.com/wtraylor/modular_megafauna_model/issues/22
 [#25]: https://github.com/wtraylor/modular_megafauna_model/issues/25
 [#26]: https://github.com/wtraylor/modular_megafauna_model/issues/26
 [#28]: https://github.com/wtraylor/modular_megafauna_model/issues/28

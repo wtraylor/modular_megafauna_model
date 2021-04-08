@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief Herbivore output data.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #ifndef FAUNA_OUTPUT_HERBIVORE_DATA_H
@@ -31,9 +35,6 @@ struct HerbivoreData {
 
   //------------------------------------------------------------
   /** @{ \name Per-habitat variables */
-
-  /// Pool of nitrogen bound in the herbivores [kgN/km²]
-  double bound_nitrogen = 0.0;
 
   /// Individual density [ind/km²].
   double inddens = 0.0;
@@ -96,7 +97,6 @@ struct HerbivoreData {
   void reset() {
     age_years = 0.0;
     bodyfat = 0.0;
-    bound_nitrogen = 0.0;
     eaten_forage_per_ind = 0.0;
     eaten_forage_per_mass = 0.0;
     eaten_nitrogen_per_ind = 0.0;

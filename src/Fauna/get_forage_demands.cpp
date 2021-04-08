@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief Helper class to determine how much an herbivore wants to eat.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #include "get_forage_demands.h"

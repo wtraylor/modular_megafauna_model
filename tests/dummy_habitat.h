@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief Habitat implementation for unit tests.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #ifndef TESTS_DUMMY_HABITAT_H
@@ -13,7 +17,6 @@ namespace Fauna {
 /// A dummy habitat that does nothing
 class DummyHabitat : public Habitat {
  public:
-  virtual void add_excreted_nitrogen(const double) {}  // deactivated
   virtual HabitatForage get_available_forage() const { return HabitatForage(); }
   virtual const char* get_aggregation_unit() const { return "global"; }
   virtual HabitatEnvironment get_environment() const {

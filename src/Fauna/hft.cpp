@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief Herbivore Functional Type (HFT) class and its dependents.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #include "hft.h"
@@ -156,7 +160,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
           stream << "body_fat.catabolism_efficiency"
                  << " (current value: " << body_fat_catabolism_efficiency
                  << ") "
-                 << "must be less than\nthe anabolism efficiency, which is "
+                 << "must be less than\nthe anabolism coefficient, which is "
                  << "digestion.k_maintenance (" << digestion_k_maintenance
                  << ")\n"
                  << "divided by digestion.k_fat (" << digestion_k_fat << ")."

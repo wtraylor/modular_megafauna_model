@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief A versatile base class to derive herbivores from.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #include "herbivore_base.h"
@@ -190,9 +194,6 @@ void HerbivoreBase::eat(const ForageMass& kg_per_km2,
   get_todays_output().energy_intake_per_mass += mj_per_ind / get_bodymass();
   get_todays_output().eaten_nitrogen_per_ind +=
       (10e6 * N_kg_per_km2.sum()) / get_ind_per_km2();
-
-  // Ingest the nitrogen
-  nitrogen.ingest(N_kg_per_km2.sum());
 }
 
 std::shared_ptr<const Hft> HerbivoreBase::check_hft_pointer(
@@ -457,9 +458,6 @@ void HerbivoreBase::simulate_day(const int day,
   environment = _environment;
 
   // In the following, we wrote doxygen comments in the function body.
-  /// - Digest last day’s nitrogen (\ref NitrogenInHerbivore::digest_today())
-  nitrogen.digest_today(get_retention_time(get_bodymass()), get_kg_per_km2());
-
   /// - Set current day.
   today = day;
 
@@ -480,7 +478,6 @@ void HerbivoreBase::simulate_day(const int day,
   get_todays_output().reset();
   get_todays_output().age_years = get_age_years();
   get_todays_output().bodyfat = get_bodyfat();
-  get_todays_output().bound_nitrogen = nitrogen.get_unavailable();
   get_todays_output().inddens = get_ind_per_km2();
   get_todays_output().massdens = get_kg_per_km2();
 
@@ -498,11 +495,4 @@ void HerbivoreBase::simulate_day(const int day,
 
   /// - Apply mortality factor.
   apply_mortality_factors_today();
-}
-
-double HerbivoreBase::take_nitrogen_excreta() {
-  if (!is_dead())
-    return nitrogen.reset_excreta();
-  else
-    return nitrogen.reset_total();
 }

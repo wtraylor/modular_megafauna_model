@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+#
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 cmake_minimum_required (VERSION 3.10)
 set (REQUIRED_DOXYGEN_VERSION 1.8.16)
 
@@ -26,7 +30,7 @@ if (DOXYGEN_FOUND)
   set (DOXYGEN_IMAGE_PATH "images")
   set (DOXYGEN_LATEX_BIB_STYLE "ieeetr")
   set (DOXYGEN_PLANTUML_INCLUDE_PATH "./")
-  set (DOXYGEN_PLANTUML_JAR_PATH "plantuml/plantuml.jar")
+  set (DOXYGEN_PLANTUML_JAR_PATH "plantuml.jar")
   set (DOXYGEN_USE_MDFILE_AS_MAINPAGE "mainpage.md")
 
   if (DOXYGEN_VERSION VERSION_LESS ${REQUIRED_DOXYGEN_VERSION})

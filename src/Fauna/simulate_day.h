@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /**
  * \file
  * \brief Function object to perform simulations in the herbivore model.
- * \copyright ...
+ * \copyright LGPL-3.0-or-later
  * \date 2019
  */
 #ifndef FAUNA_SIMULATE_DAY_H
@@ -82,9 +86,7 @@ class SimulateDay {
   /// Iterate over all \ref herbivores and let them do their simulation.
   /**
    * Call \ref HerbivoreInterface::simulate_day() in each alive herbivore
-   * object. Also collect offspring and excreted nitrogen.
-   * If an herbivore is dead, all its nitrogen will be returned to the
-   * \ref Habitat.
+   * object. Also collect offspring.
    */
   void simulate_herbivores();
 
@@ -94,9 +96,6 @@ class SimulateDay {
 
   /// The current abiotic conditions.
   const HabitatEnvironment environment;
-
-  /// Total nitrogen excreted by herbivores today [kgN/km²].
-  double excreted_nitrogen;
 
   /// Function object doing the feeding.
   const FeedHerbivores& feed_herbivores;
