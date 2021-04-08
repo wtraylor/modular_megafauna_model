@@ -21,7 +21,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 - Add licensing information. [#22]
 
 ### Removed
-- Nitrogen retention by herbivores. The function `Habitat::add_excreted_nitrogen()` has been removed. The vegetation model must now handle recycling of nitrogen itself. This simplifies the code and reduces the number of parameters.
+- Nitrogen retention by herbivores. The function `Habitat::add_excreted_nitrogen()` has been removed. The vegetation model must now handle recycling of nitrogen itself. This simplifies the code and reduces the number of parameters. Compare [#15]
 
 ## [0.5.5] - 2020-08-04
 
@@ -194,6 +194,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#8]: https://github.com/wtraylor/modular_megafauna_model/issues/8
 [#9]: https://github.com/wtraylor/modular_megafauna_model/issues/9
 [#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10
+[#15]: https://github.com/wtraylor/modular_megafauna_model/issues/15
 [#22]: https://github.com/wtraylor/modular_megafauna_model/issues/22
 [#25]: https://github.com/wtraylor/modular_megafauna_model/issues/25
 [#26]: https://github.com/wtraylor/modular_megafauna_model/issues/26
