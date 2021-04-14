@@ -184,7 +184,7 @@ class GetStarvationIlliusOConnor2000 {
                     double& new_body_condition) const;
 
  private:
-  double fat_standard_deviation;  // const
+  const double fat_standard_deviation;
   bool shift_body_condition;
 
   /// Function Φ (phi)
