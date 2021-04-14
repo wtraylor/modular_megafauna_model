@@ -32,13 +32,13 @@ void SimpleHabitat::init_day(const int today) {
   assert(simulation_month >= 0);
 
   // Get the vector address for the current air temperature.
-  assert(!settings.air_temp_monthly.empty());
+  assert(!settings.air_temperature.empty());
   const int air_temp_id =
-      simulation_month % settings.air_temp_monthly.size();
+      simulation_month % settings.air_temperature.size();
   assert(air_temp_id >= 0 &&
-         air_temp_id < settings.air_temp_monthly.size());
+         air_temp_id < settings.air_temperature.size());
 
-  air_temperature = settings.air_temp_monthly[air_temp_id];
+  air_temperature = settings.air_temperature[air_temp_id];
 }
 
 void SimpleHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {

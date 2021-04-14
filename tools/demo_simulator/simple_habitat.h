@@ -30,7 +30,7 @@ class SimpleHabitat : public Habitat {
     /// Air temperature [°C] for each month.
     /** When the end of the vector is reached, the values are recycled.
      * A vector of length 12 creates the same behaviour every year. */
-    std::vector<double> air_temp_monthly = {0.0};
+    std::vector<double> air_temperature = {0.0};
   };
 
   /// Constructor with simulation settings.

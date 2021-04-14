@@ -126,8 +126,8 @@ void Framework::read_instruction_file(const std::string filename) {
     const std::string key = "environment.air_temperature";
     const auto value = ins->get_qualified_array_of<double>(key);
     if (value) {
-      params.habitat.air_temp_monthly = *value;
-      for (const auto& i : params.habitat.air_temp_monthly)
+      params.habitat.air_temperature = *value;
+      for (const auto& i : params.habitat.air_temperature)
         if (i <= -273)
           throw std::runtime_error(key +
                                    " must be greater than -273 °C (= 0 K).");
