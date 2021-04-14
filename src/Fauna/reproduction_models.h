@@ -153,8 +153,8 @@ class ReproductionLinear {
                                const double body_condition) const;
 
  private:
-  BreedingSeason breeding_season;  // const
-  double max_annual_increase;      // const
+  const BreedingSeason breeding_season;
+  const double max_annual_increase;
 };
 }  // namespace Fauna
 
