@@ -90,8 +90,8 @@ class ReproductionLogistic {
                                const double body_condition) const;
 
  private:
-  BreedingSeason breeding_season;  // const
-  double max_annual_increase;      // const
+  const BreedingSeason breeding_season;
+  const double max_annual_increase;
   double growth_rate;
   double midpoint;
 };
