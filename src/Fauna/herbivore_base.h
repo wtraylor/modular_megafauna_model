@@ -275,7 +275,7 @@ class HerbivoreBase : public HerbivoreInterface {
  private:
   /// @{ \name Constants
   std::shared_ptr<const Hft> hft;  // pointer to const Hft; initialized first!
-  Sex sex;
+  const Sex sex;
   BreedingSeason breeding_season;
   ForageEnergyContent forage_gross_energy;
   /** @} */  // constants

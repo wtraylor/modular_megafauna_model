@@ -35,11 +35,6 @@ class HerbivoreBaseDummy : public HerbivoreBase {
 
   HerbivoreBaseDummy(const HerbivoreBaseDummy& other)
       : HerbivoreBase(other), ind_per_km2(other.ind_per_km2) {}
-  HerbivoreBaseDummy& operator=(const HerbivoreBaseDummy& rhs) {
-    HerbivoreBase::operator=(rhs);
-    ind_per_km2 = rhs.ind_per_km2;
-    return *this;
-  }
 
  protected:
   virtual void apply_mortality(const double mortality) {
