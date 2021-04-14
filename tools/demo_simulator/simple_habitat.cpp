@@ -16,7 +16,7 @@ using namespace Fauna::Demo;
 
 HabitatEnvironment SimpleHabitat::get_environment() const {
   HabitatEnvironment env;
-  env.snow_depth = snow_depth;
+  env.air_temperature = air_temperature;
   return env;
 }
 
@@ -31,14 +31,14 @@ void SimpleHabitat::init_day(const int today) {
     simulation_month++;
   assert(simulation_month >= 0);
 
-  // Get the vector address for the current snow depth value.
-  assert(!settings.snow_depth_monthly.empty());
-  const int snow_depth_id =
-      simulation_month % settings.snow_depth_monthly.size();
-  assert(snow_depth_id >= 0 &&
-         snow_depth_id < settings.snow_depth_monthly.size());
+  // Get the vector address for the current air temperature.
+  assert(!settings.air_temp_monthly.empty());
+  const int air_temp_id =
+      simulation_month % settings.air_temp_monthly.size();
+  assert(air_temp_id >= 0 &&
+         air_temp_id < settings.air_temp_monthly.size());
 
-  snow_depth = settings.snow_depth_monthly[snow_depth_id];
+  air_temperature = settings.air_temp_monthly[air_temp_id];
 }
 
 void SimpleHabitat::remove_eaten_forage(const ForageMass& eaten_forage) {

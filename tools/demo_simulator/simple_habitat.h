@@ -27,10 +27,10 @@ class SimpleHabitat : public Habitat {
     /// Parameters for logistic grass growth.
     LogisticGrass::Parameters grass;
 
-    /// Snow depth [cm] for each month.
+    /// Air temperature [°C] for each month.
     /** When the end of the vector is reached, the values are recycled.
      * A vector of length 12 creates the same behaviour every year. */
-    std::vector<double> snow_depth_monthly = {0.0};
+    std::vector<double> air_temp_monthly = {0.0};
   };
 
   /// Constructor with simulation settings.
@@ -70,15 +70,15 @@ class SimpleHabitat : public Habitat {
   const std::string aggregation_unit;
   SimpleHabitat::Parameters settings;
 
-  /// Snow depth in cm, as read from \ref Parameters::snow_depth_monthly.
-  double snow_depth = 0.0;
+  /// Air temperature in °C, as read from \ref Parameters::air_temperature.
+  double air_temperature = 0.0;
 
   /// Grass in the habitat
   LogisticGrass grass;
 
   /// The current simulation month, starting with zero.
   /** We need this to address the current value in
-   * \ref Parameters::snow_depth_monthly. */
+   * \ref Parameters::air_temperature. */
   int simulation_month = 0;
 };
 

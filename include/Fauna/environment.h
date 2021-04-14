@@ -16,9 +16,6 @@ namespace Fauna {
 struct HabitatEnvironment {
   /// Ambient air temperature near ground [°C], whole-day average.
   double air_temperature = 20.0;
-
-  /// Depth of snow cover [cm].
-  double snow_depth = 0.0;
 };
 }  // namespace Fauna
 

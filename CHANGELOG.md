@@ -12,6 +12,14 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [Unreleased]
+
+### Fixed
+- Demo simulator has now monthly ambient air temperature.
+
+### Removed
+- Snow depth. It is not used anywhere. [#14]
+
 ## [0.6.0] - 2021-04-08
 
 ### Added
@@ -195,6 +203,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#8]: https://github.com/wtraylor/modular_megafauna_model/issues/8
 [#9]: https://github.com/wtraylor/modular_megafauna_model/issues/9
 [#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10
+[#14]: https://github.com/wtraylor/modular_megafauna_model/issues/14
 [#15]: https://github.com/wtraylor/modular_megafauna_model/issues/15
 [#22]: https://github.com/wtraylor/modular_megafauna_model/issues/22
 [#25]: https://github.com/wtraylor/modular_megafauna_model/issues/25

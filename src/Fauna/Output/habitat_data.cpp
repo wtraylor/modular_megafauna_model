@@ -43,9 +43,9 @@ HabitatData& HabitatData::merge(const HabitatData& other,
   eaten_forage.merge(other.eaten_forage, this_weight, other_weight);
   available_forage.merge(other.available_forage, this_weight, other_weight);
 
-  environment.snow_depth =
-      average(this->environment.snow_depth, other.environment.snow_depth,
-              this_weight, other_weight);
+  environment.air_temperature =
+      average(this->environment.air_temperature,
+              other.environment.air_temperature, this_weight, other_weight);
 
   // ADD NEW VARIABLES HERE
 
