@@ -122,8 +122,8 @@ class ReproductionConstMax {
   double get_offspring_density(const int day_of_year) const;
 
  private:
-  BreedingSeason breeding_season;  // const
-  double annual_increase;          // const
+  const BreedingSeason breeding_season;
+  const double annual_increase;
 };
 
 /// Reproduction rate increases linearly with fat reserves up to maximum.
