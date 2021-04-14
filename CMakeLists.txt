@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+# SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
