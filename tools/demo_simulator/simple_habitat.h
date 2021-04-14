@@ -70,7 +70,8 @@ class SimpleHabitat : public Habitat {
   const std::string aggregation_unit;
   SimpleHabitat::Parameters settings;
 
-  /// Air temperature in °C, as read from \ref Parameters::air_temperature.
+  /// Air temperature in °C, as read from
+  /// \ref SimpleHabitat::Parameters::air_temperature.
   double air_temperature = 0.0;
 
   /// Grass in the habitat
@@ -78,7 +79,7 @@ class SimpleHabitat : public Habitat {
 
   /// The current simulation month, starting with zero.
   /** We need this to address the current value in
-   * \ref Parameters::air_temperature. */
+   * \ref SimpleHabitat::Parameters::air_temperature. */
   int simulation_month = 0;
 };
 
