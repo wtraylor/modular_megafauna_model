@@ -172,10 +172,13 @@ ForageMass GetForageDemands::get_max_foraging() const {
                 digestibility[ForageType::Grass],
                 get_hft().digestion_i_g_1992_ijk));
 
-        // Like Pachzelt et al. (2013), we use the whole-habitat grass density,
-        // not the ‘sward density’.
+        // Pachzelt et al. (2013) simply used the grass density of the whole
+        // patch to calculate the intake rate. That assumes that the grass is
+        // distributed evenly across the patch/habitat. However, if only part
+        // of the patch is covered by grass, the actual density of those
+        // grass-covered areas (“sward”) is higher.
         const double grass_limit_mj = half_max.get_intake_rate(
-            available_forage.grass.get_mass());  // [MJ/day]
+            available_forage.grass.get_sward_density());  // [MJ/day]
 
         double grass_limit_kg;
         if (energy_content[ForageType::Grass] > 0.0)

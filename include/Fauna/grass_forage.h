@@ -20,22 +20,54 @@ class GrassForage : public ForageBase {
  private:
   double fpc;
 
+  /// Maximum imaginable real-world sward density [kgDM/km²].
+  static constexpr double MAX_SWARD_DENSITY = 2e7;  // 20 kgDM/m²
  public:
   /// Constructor with zero values
   GrassForage() : ForageBase(), fpc(0.0) {}
 
   /// Dry matter forage in the area covered by grass [kgDM/km²].
-  /** Note that this is always greater or equal than \ref get_mass() */
+  /**
+   * Note that this is always greater or equal than \ref get_mass()
+   * \throw std::logic_error If the result is greater than
+   * \ref MAX_SWARD_DENSITY. In this case, the \ref fpc value set by the
+   * vegetation model is probably unreasonably low.
+   */
   double get_sward_density() const {
     if (get_fpc() == 0) return 0.0;
     const double sd = get_mass() / get_fpc();
     assert(sd >= 0.0 && sd >= get_mass());
+    // Only throw an error about preposterously high sward density if there is
+    // actually substantial grass in the habitat. Otherwise there might be
+    // spurious erros if both FPC and total grass density are extremely low due
+    // to model artifacts.
+    // The value of 50 gDM/m² (= 5e4 kgDM/km²) is chosen arbitrarily.
+    if (sd > MAX_SWARD_DENSITY && get_mass() > 5e4) {
+      throw std::logic_error(
+          "Fauna::GrassForage::get_sward_density() "
+          "The grass sward density is unreasonably high (" +
+          std::to_string(sd / 1e4) +
+          " gDM/m²). "
+          "This might be because the vegetation model gave an unrealistically "
+          "low FPC value (fraction of habitat covered by grass).\n"
+          "\tFPC = " +
+          std::to_string(get_fpc()) +
+          "\n"
+          "\twhole-habitat grass density = " +
+          std::to_string(get_mass() / 1e4) +
+          " gDM/m²\n"
+          "Please check the vegetation model. Consider hard-setting the FPC "
+          "value to a constant (e.g. 0.8 in grassland) or a minimum (e.g. "
+          "0.1).");
+    }
     return sd;
   }
 
-  /// Foliar percentage cover [fractional].
+  /// Fraction of habitat covered by grass [fractional].
   /**
-   * Grass-covered area as a fraction of the habitat.
+   * Grass-covered area as a fraction of the habitat. (FPC = “foliar projective
+   * cover” might not be the ideal term, but you can interprect the acronym
+   * also as “Fraction of Patch Covered [by grass]”.)
    * \throw std::logic_error If the values of mass and FPC
    * don’t fit together: If mass is zero, FPC must also be zero,
    * and if mass is non-zero, FPC must not be zero.
@@ -81,4 +113,4 @@ class GrassForage : public ForageBase {
   }
 };
 }  // namespace Fauna
-#endif // FAUNA_GRASS_FORAGE_H
+#endif  // FAUNA_GRASS_FORAGE_H

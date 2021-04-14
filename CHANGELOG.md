@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ## [Unreleased]
 
+### Changed
+- Use sward density for `Fauna::HalfMaxIntake` (instead of whole-habitat grass density). This requires the vegetation model to provide correct “FPC” values (fractional area covered by grass in the habitat). [#12]
+
 ### Fixed
 - Demo simulator has now monthly ambient air temperature.
 
@@ -203,6 +206,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#8]: https://github.com/wtraylor/modular_megafauna_model/issues/8
 [#9]: https://github.com/wtraylor/modular_megafauna_model/issues/9
 [#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10
+[#12]: https://github.com/wtraylor/modular_megafauna_model/issues/12
 [#14]: https://github.com/wtraylor/modular_megafauna_model/issues/14
 [#15]: https://github.com/wtraylor/modular_megafauna_model/issues/15
 [#22]: https://github.com/wtraylor/modular_megafauna_model/issues/22

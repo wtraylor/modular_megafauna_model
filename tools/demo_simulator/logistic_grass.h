@@ -42,7 +42,7 @@ class LogisticGrass {
      */
     std::vector<double> digestibility = {0.5};
 
-    /// Percentage of habitat covered with grass (Foliar Perc. Cover) [frac]
+    /// Fraction of habitat/patch covered with grass [frac]
     double fpc = 0.1;
 
     /// Proportional daily grass growth rates [day^-1]
