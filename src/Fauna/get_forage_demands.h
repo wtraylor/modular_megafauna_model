@@ -186,12 +186,9 @@ class GetForageDemands {
    * initial call to \ref init_today(). */
   int get_today() const;
 
-  /// @{ \name Constants
-  std::shared_ptr<const Hft> hft;
-  Sex sex;
-  /** @} */  // constants
+  const std::shared_ptr<const Hft> hft;
+  const Sex sex;
 
-  /// @{ \name State Variables
   HabitatForage available_forage;
   double bodymass;                     /// [kg/ind]
   ForageFraction diet_composition;     /// [frac.] sum = 1.0
@@ -200,7 +197,6 @@ class GetForageDemands {
   double energy_needs;                 /// [MJ/ind]
   ForageMass max_intake;               /// [kgDM/ind/day]
   int today;                           /// 0 = January 1st
-                                       /** @} */
 };
 
 }  // namespace Fauna
