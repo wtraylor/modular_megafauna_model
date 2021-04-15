@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ### Fixed
 - Demo simulator has now monthly ambient air temperature.
+- Replace copyrighted figure `docs/images/thermoregulation.png` with my own. [#32]
 
 ### Removed
 - Snow depth. It is not used anywhere. [#14]
@@ -218,3 +219,4 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#28]: https://github.com/wtraylor/modular_megafauna_model/issues/28
 [#29]: https://github.com/wtraylor/modular_megafauna_model/issues/29
 [#31]: https://github.com/wtraylor/modular_megafauna_model/issues/31
+[#32]: https://github.com/wtraylor/modular_megafauna_model/issues/32
