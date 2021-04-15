@@ -104,7 +104,7 @@ Authors
 
 - Wolfgang Traylor (wolfgang.traylor@senckenberg.de) ![ORCID][orcid-logo] <https://orcid.org/0000-0002-4813-1072>
 
-[orcid-logo]: https://orcid.org/sites/default/files/images/orcid_16x16.gif
+[orcid-logo]: https://info.orcid.org/wp-content/uploads/2020/12/ORCIDiD_icon16x16.png
 
 Similar Projects
 ----------------
