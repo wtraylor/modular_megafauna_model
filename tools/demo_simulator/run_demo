@@ -36,10 +36,7 @@ if ! command -v Rscript >/dev/null >&1; then
 fi
 
 Rscript --vanilla \
-  -e "library(knitr);\
-  library(markdown);\
-  knit('demo_results.Rmd', 'demo_results.md');\
-  markdownToHTML('demo_results.md', 'demo_results.html');"
+  -e "library(rmarkdown); render('demo_results.Rmd')"
 
 echo >&2 'Open the results in your browser:'
 echo >&2 \"$(readlink -f demo_results.html)\"

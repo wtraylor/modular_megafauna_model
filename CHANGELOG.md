@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ### Changed
 - Use sward density for `Fauna::HalfMaxIntake` (instead of whole-habitat grass density). This requires the vegetation model to provide correct “FPC” values (fractional area covered by grass in the habitat). [#12]
+- Use modern `rmarkdown` package to render demo results.
 
 ### Fixed
 - Demo simulator has now monthly ambient air temperature.
