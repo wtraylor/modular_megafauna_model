@@ -14,6 +14,9 @@ You can find all of these manually written pages under “Related Pages” in th
 
 A good first read for users and developers are the \ref page_quickstart and the \ref page_model.
 
+Throughout this documentation you will find diagrams in UML (Unified Modeling Language), mostly class diagrams.
+If you are not familiar with UML at all, consider looking at one of the many introductions you can find online.
+
 ## Contributing
 
 If you are considering to contribute to the source code, make yourself familiar with the \ref page_design as well as the \ref page_object_orientation.
