@@ -19,6 +19,9 @@ namespace Demo {
 
 /// Helper class for performing simple grass growth to test herbivore
 /// functionality
+/**
+ * \image html images/logistic_growth.svg "Logistic growth of demo grass model."
+ */
 class LogisticGrass {
  public:
   /// Settings for grass growth
