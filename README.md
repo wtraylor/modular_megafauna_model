@@ -91,6 +91,10 @@ Hopefully you will find it possible to implement the necessary code changes/exte
 You will need basic skills with Git and C++ (C++11 standard) in order to contribute.
 
 On the index/main page of the Doxygen documentation you will be directed to the resources you need to contribute.
+Please also read through the file [`CONTRIBUTING.md`][].
+
+Note that for running the model, you don’t need to change the source code.
+Most parameters can be set in the instruction file.
 
 Known Bugs and Issues
 ---------------------
