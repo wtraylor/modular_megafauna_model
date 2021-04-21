@@ -19,8 +19,12 @@ The central class running the program is \ref Fauna::Demo::Framework.
 It employs \ref Fauna::World to execute the megafauna simulation.
 
 The class \ref Fauna::Demo::SimpleHabitat implements a very basic vegetation model that can be parametrized with custom parameters in the instruction file.
-The `SimpleHabitat` corresponds to the LPJ-GUESS `Patch`.
 Only this one kind of vegetation model is implemented.
+Grass growth with a logistic growth function:
+
+\image html images/logistic_growth.svg "Logistic growth of demo grass model."
+
+The `SimpleHabitat` class corresponds to the LPJ-GUESS `Patch`.
 
 Each “habitat group” can be considered a list of \ref Fauna::Demo::SimpleHabitat objects.
 The “habitat group” corresponds conceptually to the LPJ-GUESS `Gridcell`.

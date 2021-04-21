@@ -78,6 +78,7 @@ Now open the created file `docs/index.html` in a web browser.
 
 Originally this megafauna model was developed for the dynamic global vegetation model [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/).
 On the Lund subversion server there exists a branch `megafauna` that integrates this library into LPJ-GUESS.
+LPJ-GUESS is proprietary and closed-source.
 Please contact the maintainers of LPJ-GUESS to kindly ask for access.
 
 Other dynamic vegetation models can include the megafauna model as an external library, too.
@@ -90,6 +91,10 @@ Hopefully you will find it possible to implement the necessary code changes/exte
 You will need basic skills with Git and C++ (C++11 standard) in order to contribute.
 
 On the index/main page of the Doxygen documentation you will be directed to the resources you need to contribute.
+Please also read through the file [`CONTRIBUTING.md`][].
+
+Note that for running the model, you don’t need to change the source code.
+Most parameters can be set in the instruction file.
 
 Known Bugs and Issues
 ---------------------
@@ -109,7 +114,10 @@ Authors
 Similar Projects
 ----------------
 
-<!--TODO: Provide a list of references to other mechanistic herbivore models.-->
+- Dangal, Shree R. S., Hanqin Tian, Chaoqun Lu, Wei Ren, Shufen Pan, Jia Yang, Nicola Di Cosmo, and Amy Hessl. 2017. “Integrating Herbivore Population Dynamics into a Global Land Biosphere Model: Plugging Animals into the Earth System.” Journal of Advances in Modeling Earth Systems 9 (8): 2920–45. <https://doi.org/10.1002/2016MS000904>.
+- Illius, A. W., and T. G. O’Connor. 2000. “Resource Heterogeneity and Ungulate Population Dynamics.” Oikos 89 (2): 283–94. <https://doi.org/10.1034/j.1600-0706.2000.890209.x>.
+- Pachzelt, Adrian, Anja Rammig, Steven Higgins, and Thomas Hickler. 2013. “Coupling a Physiological Grazer Population Model with a Generalized Model for Vegetation Dynamics.” Ecological Modelling 263: 92–102. <https://doi.org/http://dx.doi.org/10.1016/j.ecolmodel.2013.04.025>.
+- Zhu, Dan, Philippe Ciais, Jinfeng Chang, Gerhard Krinner, Shushi Peng, Nicolas Viovy, Josep Peñuelas, and Sergey Zimov. 2018. “The Large Mean Body Size of Mammalian Herbivores Explains the Productivity Paradox During the Last Glacial Maximum.” Nature Ecology & Evolution. <https://doi.org/10.1038/s41559-018-0481-y>.
 
 License
 -------
