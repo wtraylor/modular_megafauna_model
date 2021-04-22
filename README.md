@@ -29,6 +29,8 @@ Since this C++ library is Free Software, the scientific community is encouraged 
 
 Come join the MMM user and developer room on Matrix: <https://matrix.to/#/!rnevkLtJTORmvyzFHD:matrix.org?via=matrix.org>
 
+Project documentation: <https://modular-megafauna-model.readthedocs.io/>
+
 Repository Structure
 --------------------
 
@@ -50,10 +52,10 @@ Usage
 The first step in working with the model is to create the documentation and read the introductory pages.
 On the Quickstart page you will find instructions for compiling the source code.
 
-The compiled documentation of the latest release is currently available for download as a ZIP file from Open Science Framework [here](https://osf.io/jzn5a/download).
-As soon as this repository is public, the documentation will be available on [Read the Docs](http://readthedocs.io/) (issue [#22](https://github.com/wtraylor/modular_megafauna_model/issues/22)).
-
 ### Compile the Doxygen Documentation
+
+You can find the automatically compiled documentation of the latest release here:
+<https://modular-megafauna-model.readthedocs.io/>
 
 As a bare minimum, you will need to have [CMake](https://cmake.org) (version 3.10 or higher) and [Doxygen](https://www.doxygen.nl) installed.
 
