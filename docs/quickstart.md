@@ -61,8 +61,10 @@ render("demo_results.md")
 ## Customize the Instruction File {#sec_customize_the_instruction_file}
 
 The Modular Megafauna Model library requires a single instruction file to set general simulation parameters and herbivore (HFT = Herbivore Functional Type) parameters.
-The instruction file is in [TOML v0.5](https://github.com/toml-lang/toml/blob/master/versions/en/toml-v0.5.0.md) format; see there for a description of the syntax.
+The instruction file is in [TOML v0.5][] format; see there for a description of the syntax.
 String parameters are generally case insensitive.
+
+[TOML v0.5]: https://github.com/toml-lang/toml/tree/v0.5.0
 
 All possible options are listed in the example file under `examples/megafauna.toml`.
 You will find all parameters explained in detail in the Doxygen documentation of the two classes \ref Fauna::Parameters and \ref Fauna::Hft.
