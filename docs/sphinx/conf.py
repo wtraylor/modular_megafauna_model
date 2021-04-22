@@ -1,0 +1,15 @@
+# Configuration file for the Sphinx documentation builder.
+#
+# This file only contains a selection of the most common options. For a full
+# list see the documentation:
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
+
+import subprocess
+
+# Go to the repository’s root folder and run Cmake, which then call `doxygen`.
+subprocess.call(
+    'cd ../.. && cmake -DBUILD_DOC=ON . && make megafauna_docs',
+    shell=True
+)
+# CMake + Make have generated the Doxygen documentation in docs/html.
+html_extra_path = ['../html']
