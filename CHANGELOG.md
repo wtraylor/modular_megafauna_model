@@ -169,26 +169,29 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 - Herbivores in cohort and individual mode.
     - Energy expenditure components:
         - Allometric
-        - Based on [Taylor et al. (1981)](http://journals.cambridge.org/article_S0003356100040617)
+        - Based on [Taylor et al. (1981)][]
         - Thermoregulation
     - Diet composer: only grass
     - Reproduction models:
         - Constant annual reproduction rate
-        - Based on [Illius & O’Connor (2000)](http://www.jstor.org/stable/3547323)
+        - Based on [Illius & O’Connor (2000)][]
         - Linear relationship with body condition
     - Mortality factors:
         - Constant annual background mortality
         - Death at end of lifespan
-        - Starvation mortality based on [Illius & O’Connor (2000)](http://www.jstor.org/stable/3547323)
+        - Starvation mortality based on [Illius & O’Connor (2000)][]
         - Starvation at a threshold value of body condition
     - Foraging limits:
-        - Functional response based on [Illius & O’Connor (2000)](http://www.jstor.org/stable/3547323)
+        - Functional response based on [Illius & O’Connor (2000)][]
         - General Holling Type II functional response
-    - Net energy in forage: formula used by [Illius & O’Connor (2000)](http://www.jstor.org/stable/3547323)
+    - Net energy in forage: formula used by [Illius & O’Connor (2000)][]
 - Continuous integration (CI) for GitLab.
 - Output in tab-separated text tables.
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
+
+[Illius & O’Connor (2000)]: <https://doi.org/10.2307/3800911>
+[Taylor et al. (1981)]: <https://doi.org/10.1017/S0003356100040617>
 
 [Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.6.0...develop
 [0.6.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.5...0.6.0
