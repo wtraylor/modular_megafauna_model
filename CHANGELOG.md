@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 ### Added
 - R scripts and LibreOffice document to reproduce figures in `docs/images/`. [#31]
 - Minor additions to docs.
+- Integration for [readthedocs.org](https://readthedocs.org)
+- CI check for Git tag matching version in CMakeLists.txt
 
 ### Changed
 - Use sward density for `Fauna::HalfMaxIntake` (instead of whole-habitat grass density). This requires the vegetation model to provide correct “FPC” values (fractional area covered by grass in the habitat). [#12]

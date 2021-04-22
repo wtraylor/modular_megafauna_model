@@ -4,6 +4,8 @@
 
 cmake_minimum_required (VERSION 3.10)
 project ("Modular Megafauna Model"
+  # This version must match exactly the Git tag!
+  # Compare the "check_version" job in ".gitlab-ci.yml".
   VERSION 0.5.1
   DESCRIPTION "A physiological, dynamic herbivore simulator in C++."
   LANGUAGES CXX
