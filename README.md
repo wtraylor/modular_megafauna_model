@@ -7,6 +7,7 @@ SPDX-License-Identifier: CC-BY-4.0
 [![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
 [![REUSE-compliant](docs/images/reuse-compliant.svg)][REUSE]
 [![Documentation Status](https://readthedocs.org/projects/modular-megafauna-model/badge/?version=latest)](https://modular-megafauna-model.readthedocs.io/en/latest/?badge=latest)
+[![DOI](https://zenodo.org/badge/228426088.svg)](https://zenodo.org/badge/latestdoi/228426088)
 
 [REUSE]: https://reuse.software
 
