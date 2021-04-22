@@ -96,6 +96,8 @@ You will need basic skills with Git and C++ (C++11 standard) in order to contrib
 On the index/main page of the Doxygen documentation you will be directed to the resources you need to contribute.
 Please also read through the file [`CONTRIBUTING.md`][].
 
+Continuous Integration (CI) runs through gitlab.com in this mirror repository: <https://gitlab.com/wtraylor/modular_megafauna_model>
+
 Note that for running the model, you don’t need to change the source code.
 Most parameters can be set in the instruction file.
 
