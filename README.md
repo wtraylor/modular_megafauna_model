@@ -97,6 +97,16 @@ You will need basic skills with Git and C++ (C++11 standard) in order to contrib
 On the index/main page of the Doxygen documentation you will be directed to the resources you need to contribute.
 Please also read through the file [`CONTRIBUTING.md`][].
 
+After contributing something, don’t forget to add your name to:
+
+- the file header in a new line starting with `SPDX-FileCopyrightText: ...` (following the [REUSE][] standard),
+- the “[Authors][#authors]” section in this README, and
+- the list of authors in the citation file [`CITATION.cff`][].
+
+(Note that the authors list in the [Zenodo archive][] is automatically derived from the contributors in the Git history.)
+
+[Zenodo archive]: <https://zenodo.org/badge/latestdoi/228426088>
+
 Continuous Integration (CI) runs through gitlab.com in this mirror repository: <https://gitlab.com/wtraylor/modular_megafauna_model>
 
 Note that for running the model, you don’t need to change the source code.
