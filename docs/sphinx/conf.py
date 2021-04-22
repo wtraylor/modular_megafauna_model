@@ -8,7 +8,7 @@ import subprocess
 
 # Go to the repository’s root folder and run Cmake, which then call `doxygen`.
 subprocess.call(
-    'cd ../.. && cmake -DBUILD_DOC=ON . && make megafauna_docs',
+    'conda install --yes cmake && cd ../.. && cmake -DBUILD_DOC=ON . && make megafauna_docs',
     shell=True
 )
 # CMake + Make have generated the Doxygen documentation in docs/html.
