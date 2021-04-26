@@ -53,7 +53,7 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 
 Each merge into the `master` branch is a release and should have a Git tag.
 
-1. List your changes in `CHANGELOG.md`, following the formatting guidelines there.
+1. List your changes in `CHANGELOG.md`, following the formatting guidelines there. Rename the “Unreleased” section to the to-be-released version in `CHANGELOG.md`.
 2. Set the new version in `CMakeLists.txt` under `VERSION`.
 3. Set the version and the `date-released:` field in `CITATION.cff`. The date format is `YYYY-MM-DD`.
 4. Now do the merge: `git switch master && git merge --no-ff develop`
