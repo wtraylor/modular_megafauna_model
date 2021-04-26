@@ -70,9 +70,11 @@ Each merge into the `master` branch is a release and should have a Git tag.
 8. Check that Zenodo and Read the Docs have received the latest version:
     - Zenodo: <https://doi.org/10.5281/zenodo.4710254>
     - Read the Docs: <https://modular-megafauna-model.readthedocs.io/en/latest/>
-9. Announce the release in the [Matrix channel][].
+9. If applicable: Close the [Milestone][] for this release on GitHub.
+10. Announce the release in the [Matrix channel][].
 
 [Matrix channel]: <https://matrix.to/#/!rnevkLtJTORmvyzFHD:matrix.org?via=matrix.org>
+[Milestone]: <https://github.com/wtraylor/modular_megafauna_model/milestones>
 
 ### Commit Messages
 Follow Chris Beams’ guide for crafting your Git commit messages: [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
