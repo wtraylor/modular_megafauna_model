@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [Unreleased]
+
 ## [1.0.0] - 2021-04-26
 
 ### Added
@@ -193,7 +195,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Illius & O’Connor (2000)]: <https://doi.org/10.2307/3800911>
 [Taylor et al. (1981)]: <https://doi.org/10.1017/S0003356100040617>
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.6.0...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.0...develop
+[1.0.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.6.0...1.0.0
 [0.6.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.5...0.6.0
 [0.5.5]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.4...0.5.5
 [0.5.4]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.3...0.5.4
