@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+// SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
@@ -90,8 +90,8 @@ class ReproductionLogistic {
                                const double body_condition) const;
 
  private:
-  BreedingSeason breeding_season;  // const
-  double max_annual_increase;      // const
+  const BreedingSeason breeding_season;
+  const double max_annual_increase;
   double growth_rate;
   double midpoint;
 };
@@ -122,8 +122,8 @@ class ReproductionConstMax {
   double get_offspring_density(const int day_of_year) const;
 
  private:
-  BreedingSeason breeding_season;  // const
-  double annual_increase;          // const
+  const BreedingSeason breeding_season;
+  const double annual_increase;
 };
 
 /// Reproduction rate increases linearly with fat reserves up to maximum.
@@ -153,8 +153,8 @@ class ReproductionLinear {
                                const double body_condition) const;
 
  private:
-  BreedingSeason breeding_season;  // const
-  double max_annual_increase;      // const
+  const BreedingSeason breeding_season;
+  const double max_annual_increase;
 };
 }  // namespace Fauna
 

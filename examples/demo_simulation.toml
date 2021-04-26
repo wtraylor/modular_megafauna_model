@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+# SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
 #
 # SPDX-License-Identifier: CC0-1.0
 
@@ -19,9 +19,9 @@ habitats_per_group = 2
 
 [environment]
 
-# Snow depth [cm].
+# Monthly mean air temperature [°C].
 # See `grass.daily_decay_rate` for how to use the array.
-snow_depth = [ 40, 40, 10, 0, 0, 0, 0, 0, 0, 0, 10, 20 ]
+air_temperature = [-2 , 2, 7, 12, 18, 23, 26, 25, 20, 13, 6, 0]
 
 [grass]
 
@@ -41,7 +41,7 @@ daily_growth_rate = [ 0.0, 0.0, 0.0, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.0, 0.
 # See `grass.daily_decay_rate` for how to use the array.
 digestibility = [ 0.4, 0.4, 0.4, 0.7, 0.7, 0.7, 0.7, 0.6, 0.5, 0.5, 0.4, 0.4 ]
 
-# Foliar Percentage Cover of the grass.
+# Fraction of the patch/habitat covered by grass.
 fpc = 0.8
 
 # Initial grass biomass in g/m².

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+// SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
@@ -16,9 +16,6 @@ namespace Fauna {
 struct HabitatEnvironment {
   /// Ambient air temperature near ground [°C], whole-day average.
   double air_temperature = 20.0;
-
-  /// Depth of snow cover [cm].
-  double snow_depth = 0.0;
 };
 }  // namespace Fauna
 

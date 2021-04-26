@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+// SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
@@ -144,7 +144,7 @@ class World {
   int days_since_last_establishment;
 
   /// Collects output data per time interval and aggregation unit.
-  std::unique_ptr<Output::Aggregator> output_aggregator;
+  const std::unique_ptr<Output::Aggregator> output_aggregator;
 
   /// Output writer as selected by \ref Parameters::output_format.
   std::unique_ptr<Output::WriterInterface> output_writer;

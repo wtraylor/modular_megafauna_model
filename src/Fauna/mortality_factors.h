@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+// SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
@@ -184,7 +184,7 @@ class GetStarvationIlliusOConnor2000 {
                     double& new_body_condition) const;
 
  private:
-  double fat_standard_deviation;  // const
+  const double fat_standard_deviation;
   bool shift_body_condition;
 
   /// Function Φ (phi)

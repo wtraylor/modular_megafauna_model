@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+// SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
@@ -19,6 +19,9 @@ namespace Demo {
 
 /// Helper class for performing simple grass growth to test herbivore
 /// functionality
+/**
+ * \image html images/logistic_growth.svg "Logistic growth of demo grass model."
+ */
 class LogisticGrass {
  public:
   /// Settings for grass growth
@@ -42,7 +45,7 @@ class LogisticGrass {
      */
     std::vector<double> digestibility = {0.5};
 
-    /// Percentage of habitat covered with grass (Foliar Perc. Cover) [frac]
+    /// Fraction of habitat/patch covered with grass [frac]
     double fpc = 0.1;
 
     /// Proportional daily grass growth rates [day^-1]

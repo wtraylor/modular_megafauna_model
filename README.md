@@ -6,6 +6,8 @@ SPDX-License-Identifier: CC-BY-4.0
 
 [![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
 [![REUSE-compliant](docs/images/reuse-compliant.svg)][REUSE]
+[![Documentation Status](https://readthedocs.org/projects/modular-megafauna-model/badge/?version=latest)](https://modular-megafauna-model.readthedocs.io/en/latest/?badge=latest)
+[![DOI](https://zenodo.org/badge/228426088.svg)](https://zenodo.org/badge/latestdoi/228426088)
 
 [REUSE]: https://reuse.software
 
@@ -28,6 +30,8 @@ Since this C++ library is Free Software, the scientific community is encouraged 
 
 Come join the MMM user and developer room on Matrix: <https://matrix.to/#/!rnevkLtJTORmvyzFHD:matrix.org?via=matrix.org>
 
+Project documentation: <https://modular-megafauna-model.readthedocs.io/>
+
 Repository Structure
 --------------------
 
@@ -49,10 +53,10 @@ Usage
 The first step in working with the model is to create the documentation and read the introductory pages.
 On the Quickstart page you will find instructions for compiling the source code.
 
-The compiled documentation of the latest release is currently available for download as a ZIP file from Open Science Framework [here](https://osf.io/jzn5a/download).
-As soon as this repository is public, the documentation will be available on [Read the Docs](http://readthedocs.io/) (issue [#22](https://github.com/wtraylor/modular_megafauna_model/issues/22)).
-
 ### Compile the Doxygen Documentation
+
+You can find the automatically compiled documentation of the latest release here:
+<https://modular-megafauna-model.readthedocs.io/>
 
 As a bare minimum, you will need to have [CMake](https://cmake.org) (version 3.10 or higher) and [Doxygen](https://www.doxygen.nl) installed.
 
@@ -78,6 +82,7 @@ Now open the created file `docs/index.html` in a web browser.
 
 Originally this megafauna model was developed for the dynamic global vegetation model [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/).
 On the Lund subversion server there exists a branch `megafauna` that integrates this library into LPJ-GUESS.
+LPJ-GUESS is proprietary and closed-source.
 Please contact the maintainers of LPJ-GUESS to kindly ask for access.
 
 Other dynamic vegetation models can include the megafauna model as an external library, too.
@@ -90,6 +95,22 @@ Hopefully you will find it possible to implement the necessary code changes/exte
 You will need basic skills with Git and C++ (C++11 standard) in order to contribute.
 
 On the index/main page of the Doxygen documentation you will be directed to the resources you need to contribute.
+Please also read through the file [`CONTRIBUTING.md`][].
+
+After contributing something, don’t forget to add your name to:
+
+- the file header in a new line starting with `SPDX-FileCopyrightText: ...` (following the [REUSE][] standard),
+- the “[Authors][#authors]” section in this README, and
+- the list of authors in the citation file [`CITATION.cff`][].
+
+(Note that the authors list in the [Zenodo archive][] is automatically derived from the contributors in the Git history.)
+
+[Zenodo archive]: <https://zenodo.org/badge/latestdoi/228426088>
+
+Continuous Integration (CI) runs through gitlab.com in this mirror repository: <https://gitlab.com/wtraylor/modular_megafauna_model>
+
+Note that for running the model, you don’t need to change the source code.
+Most parameters can be set in the instruction file.
 
 Known Bugs and Issues
 ---------------------
@@ -102,14 +123,18 @@ Compare [Understanding the GitHub flow](https://guides.github.com/introduction/f
 Authors
 -------
 
-- Wolfgang Traylor (wolfgang.traylor@senckenberg.de) ![ORCID][orcid-logo] <https://orcid.org/0000-0002-4813-1072>
+- Wolfgang Traylor (wolfgang.traylor@senckenberg.de) ![ORCID][orcid-logo] <https://orcid.org/0000-0002-4813-1072>, Senckenberg Biodiversity and Climate Research Centre ([SBiK-F][])
 
-[orcid-logo]: https://orcid.org/sites/default/files/images/orcid_16x16.gif
+[orcid-logo]: <https://info.orcid.org/wp-content/uploads/2020/12/ORCIDiD_icon16x16.png>
+[SBiK-F]: <https://www.senckenberg.de/en/institutes/sbik-f/>
 
 Similar Projects
 ----------------
 
-<!--TODO: Provide a list of references to other mechanistic herbivore models.-->
+- Dangal, Shree R. S., Hanqin Tian, Chaoqun Lu, Wei Ren, Shufen Pan, Jia Yang, Nicola Di Cosmo, and Amy Hessl. 2017. “Integrating Herbivore Population Dynamics into a Global Land Biosphere Model: Plugging Animals into the Earth System.” Journal of Advances in Modeling Earth Systems 9 (8): 2920–45. <https://doi.org/10.1002/2016MS000904>.
+- Illius, A. W., and T. G. O’Connor. 2000. “Resource Heterogeneity and Ungulate Population Dynamics.” Oikos 89 (2): 283–94. <https://doi.org/10.1034/j.1600-0706.2000.890209.x>.
+- Pachzelt, Adrian, Anja Rammig, Steven Higgins, and Thomas Hickler. 2013. “Coupling a Physiological Grazer Population Model with a Generalized Model for Vegetation Dynamics.” Ecological Modelling 263: 92–102. <https://doi.org/http://dx.doi.org/10.1016/j.ecolmodel.2013.04.025>.
+- Zhu, Dan, Philippe Ciais, Jinfeng Chang, Gerhard Krinner, Shushi Peng, Nicolas Viovy, Josep Peñuelas, and Sergey Zimov. 2018. “The Large Mean Body Size of Mammalian Herbivores Explains the Productivity Paradox During the Last Glacial Maximum.” Nature Ecology & Evolution. <https://doi.org/10.1038/s41559-018-0481-y>.
 
 License
 -------

@@ -42,14 +42,29 @@ This document is only about *syntax* only.
 - If you are new to Git branching, check out this tutorial: [Learn Git Branching](https://learngitbranching.js.org/)
 
 ### Release Versioning
-- This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-- Each merge into the `master` branch is a release and should have a Git tag.
-    - The tag’s name is just the exact version, e.g. “0.1.2”.
-    - The tag’s decription should summarize the introduced changes.
-- Before merging into `master`:
-    - Set the new version in `CMakeLists.txt`.
-    - List your changes in `CHANGELOG.md`, following the formatting guidelines there.
-- If you cite this code in a journal publication, consider getting a DOI for the specific model version you used.
+This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
+
+- The pattern is `MAJOR.MINOR.PATCH`.
+- If the new version cannot read old instruction files anymore or breaks the library interface, increment `MAJOR`.
+- If the new version introduces a new feature, but still interoperates like the old version, increment `MINOR`.
+- If the new version only fixes bugs, extends or amends the documentation or refactors code, increment `PATCH`.
+
+#### CHECKLIST for merging into `master`:
+
+Each merge into the `master` branch is a release and should have a Git tag.
+
+1. List your changes in `CHANGELOG.md`, following the formatting guidelines there. Rename the “Unreleased” section to the to-be-released version in `CHANGELOG.md`.
+2. Set the new version in `CMakeLists.txt` under `VERSION`.
+3. Set the version and the `date-released:` field in `CITATION.cff`. The date format is `YYYY-MM-DD`.
+4. Now do the merge: `git switch master && git merge --no-ff develop`
+5. Create a new release on GitHub, which will trigger [Zenodo](https://zenodo.org) to archive the code and mint a DOI.
+    - The release and the tag description should summarize the changes (which you can copy-paste from `CHANGELOG.md`.
+    - The name of the tag and the release is just the exact version, e.g. `0.1.2`.
+6. Rebase the `develop` branch: `git switch develop && git rebase master`
+7. Your first commit in `develop` resets everything so that it cannot be confused with a released version:
+    - Set `VERSION 0.0.0` in `CMakeLists.txt`.
+    - Set `version: 0.0.0` in `CITATION.cff`, and empty the `date-released:` field.
+    - Prepare the `[Unreleased]` section in `CHANGELOG.md`.
 
 ### Commit Messages
 Follow Chris Beams’ guide for crafting your Git commit messages: [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)

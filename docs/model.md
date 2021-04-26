@@ -315,7 +315,7 @@ T_{crit} = T_{core} - \frac{E_{neu}}{C}
 \Phi = C * max(T_{crit} - T_{air}, 0)
 \f]
 
-\image html thermoregulation.png "Schematic description of the effects of external temperature on the metabolic rate in homeotherms. – Peters 1983, Fig. 5.6"
+\image html thermoregulation.svg "Schematic description of the effects of external temperature on the metabolic rate in homeotherms. After Peters 1983, Fig. 5.6"
 
 \note
 In its current form, the model only considers costs when temperatures are too low.

@@ -12,6 +12,25 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [1.0.0] - 2021-04-26
+
+### Added
+- R scripts and LibreOffice document to reproduce figures in `docs/images/`. [#31]
+- Minor additions to docs.
+- Integration for [readthedocs.org](https://readthedocs.org)
+- CI check for Git tag matching version in CMakeLists.txt
+
+### Changed
+- Use sward density for `Fauna::HalfMaxIntake` (instead of whole-habitat grass density). This requires the vegetation model to provide correct “FPC” values (fractional area covered by grass in the habitat). [#12]
+- Use modern `rmarkdown` package to render demo results.
+
+### Fixed
+- Demo simulator has now monthly ambient air temperature.
+- Replace copyrighted figure `docs/images/thermoregulation.png` with my own. [#32]
+
+### Removed
+- Snow depth. It is not used anywhere. [#14]
+
 ## [0.6.0] - 2021-04-08
 
 ### Added
@@ -150,26 +169,29 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 - Herbivores in cohort and individual mode.
     - Energy expenditure components:
         - Allometric
-        - Based on [Taylor et al. (1981)](http://journals.cambridge.org/article_S0003356100040617)
+        - Based on [Taylor et al. (1981)][]
         - Thermoregulation
     - Diet composer: only grass
     - Reproduction models:
         - Constant annual reproduction rate
-        - Based on [Illius & O’Connor (2000)](http://www.jstor.org/stable/3547323)
+        - Based on [Illius & O’Connor (2000)][]
         - Linear relationship with body condition
     - Mortality factors:
         - Constant annual background mortality
         - Death at end of lifespan
-        - Starvation mortality based on [Illius & O’Connor (2000)](http://www.jstor.org/stable/3547323)
+        - Starvation mortality based on [Illius & O’Connor (2000)][]
         - Starvation at a threshold value of body condition
     - Foraging limits:
-        - Functional response based on [Illius & O’Connor (2000)](http://www.jstor.org/stable/3547323)
+        - Functional response based on [Illius & O’Connor (2000)][]
         - General Holling Type II functional response
-    - Net energy in forage: formula used by [Illius & O’Connor (2000)](http://www.jstor.org/stable/3547323)
+    - Net energy in forage: formula used by [Illius & O’Connor (2000)][]
 - Continuous integration (CI) for GitLab.
 - Output in tab-separated text tables.
 - TOML instruction file reader.
 - Demo simulator with simple logistic grass growth.
+
+[Illius & O’Connor (2000)]: <https://doi.org/10.2307/3800911>
+[Taylor et al. (1981)]: <https://doi.org/10.1017/S0003356100040617>
 
 [Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.6.0...develop
 [0.6.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.5...0.6.0
@@ -195,9 +217,13 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#8]: https://github.com/wtraylor/modular_megafauna_model/issues/8
 [#9]: https://github.com/wtraylor/modular_megafauna_model/issues/9
 [#10]: https://github.com/wtraylor/modular_megafauna_model/issues/10
+[#12]: https://github.com/wtraylor/modular_megafauna_model/issues/12
+[#14]: https://github.com/wtraylor/modular_megafauna_model/issues/14
 [#15]: https://github.com/wtraylor/modular_megafauna_model/issues/15
 [#22]: https://github.com/wtraylor/modular_megafauna_model/issues/22
 [#25]: https://github.com/wtraylor/modular_megafauna_model/issues/25
 [#26]: https://github.com/wtraylor/modular_megafauna_model/issues/26
 [#28]: https://github.com/wtraylor/modular_megafauna_model/issues/28
 [#29]: https://github.com/wtraylor/modular_megafauna_model/issues/29
+[#31]: https://github.com/wtraylor/modular_megafauna_model/issues/31
+[#32]: https://github.com/wtraylor/modular_megafauna_model/issues/32

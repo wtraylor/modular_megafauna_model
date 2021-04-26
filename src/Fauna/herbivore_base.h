@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+// SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
@@ -274,10 +274,11 @@ class HerbivoreBase : public HerbivoreInterface {
 
  private:
   /// @{ \name Constants
-  std::shared_ptr<const Hft> hft;  // pointer to const Hft; initialized first!
-  Sex sex;
-  BreedingSeason breeding_season;
-  ForageEnergyContent forage_gross_energy;
+  // pointer to const Hft; initialized first!
+  const std::shared_ptr<const Hft> hft;
+  const Sex sex;
+  const BreedingSeason breeding_season;
+  const ForageEnergyContent forage_gross_energy;
   /** @} */  // constants
 
   /// @{ \name State Variables

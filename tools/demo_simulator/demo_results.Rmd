@@ -4,10 +4,7 @@ SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# Results from the Megafauna Demo Simulator
-
-Each aggregation unit (habitat group) comprises several habitats.
-Since all habitats have the same properties and there is no stochasticity, the curves from all aggregation units look the same.
+# Modular Megafauna Output
 
 ```{r include = FALSE}
 library(ggplot2)
