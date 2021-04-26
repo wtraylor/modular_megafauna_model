@@ -29,6 +29,9 @@ The `SimpleHabitat` class corresponds to the LPJ-GUESS `Patch`.
 Each “habitat group” can be considered a list of \ref Fauna::Demo::SimpleHabitat objects.
 The “habitat group” corresponds conceptually to the LPJ-GUESS `Gridcell`.
 
+Each aggregation unit (habitat group) comprises several habitats.
+Since all habitats have the same properties and there is no stochasticity, the output from all aggregation units will look the same.
+
 @startuml "Class diagram of the megafauna demo simulator."
 	!include diagrams.iuml!demo_simulator_classes
 @enduml
