@@ -123,9 +123,8 @@ Compare [Understanding the GitHub flow](https://guides.github.com/introduction/f
 Authors
 -------
 
-- Wolfgang Traylor (wolfgang.traylor@senckenberg.de) ![ORCID][orcid-logo] <https://orcid.org/0000-0002-4813-1072>, Senckenberg Biodiversity and Climate Research Centre ([SBiK-F][])
+- Wolfgang Traylor (wolfgang.traylor@senckenberg.de) ![ORCID](docs/images/orcid.png) <https://orcid.org/0000-0002-4813-1072>, Senckenberg Biodiversity and Climate Research Centre ([SBiK-F][])
 
-[orcid-logo]: <https://info.orcid.org/wp-content/uploads/2020/12/ORCIDiD_icon16x16.png>
 [SBiK-F]: <https://www.senckenberg.de/en/institutes/sbik-f/>
 
 Similar Projects
