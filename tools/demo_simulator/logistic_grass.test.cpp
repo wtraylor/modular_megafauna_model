@@ -142,4 +142,3 @@ TEST_CASE("Fauna::Demo::LogisticGrass", "") {
     }
   }
 }
-

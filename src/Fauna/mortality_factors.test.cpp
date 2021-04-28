@@ -130,4 +130,3 @@ TEST_CASE("Fauna::GetStarvationMortalityThreshold", "") {
     CHECK(get_mort(0.06) == 0.0);
   }
 }
-

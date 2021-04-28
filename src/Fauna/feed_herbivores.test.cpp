@@ -170,4 +170,3 @@ TEST_CASE("Fauna::FeedHerbivores") {
     }
   }
 }
-

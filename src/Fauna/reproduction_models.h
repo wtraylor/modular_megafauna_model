@@ -73,8 +73,7 @@ class ReproductionLogistic {
    */
   ReproductionLogistic(BreedingSeason breeding_season,
                        const double max_annual_increase,
-                       const double growth_rate,
-                       const double midpoint);
+                       const double growth_rate, const double midpoint);
 
   /// Get the amount of offspring for one day in the year.
   /**

@@ -13,8 +13,8 @@
 
 #include <cassert>
 #include <stdexcept>
-#include "text_table_writer_options.h"
 #include "forage_values.h"
+#include "text_table_writer_options.h"
 
 namespace Fauna {
 

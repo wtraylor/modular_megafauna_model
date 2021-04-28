@@ -25,6 +25,6 @@ class DummyHabitat : public Habitat {
   int get_day_public() const { return get_day(); }
 };
 
-}
+}  // namespace Fauna
 
-#endif // TESTS_DUMMY_HABITAT_H
+#endif  // TESTS_DUMMY_HABITAT_H
