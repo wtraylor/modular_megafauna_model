@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ## [Unreleased]
 
+### Added
+- Check code format in continuous integration.
+
 ## [1.0.0] - 2021-04-26
 
 ### Added
