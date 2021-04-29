@@ -37,6 +37,8 @@ check_version:
   script:
     - echo "If this fails, check that the Git tag matches VERSION in CMakeLists.txt."
     - test "$CI_COMMIT_TAG" == $(grep "^\s*VERSION" CMakeLists.txt | grep -oP '\d+\.\d+\.\d+.*')
+    - echo "If this fails, check that the Git tag matches version in CITATION.cff"
+    - test "$CI_COMMIT_TAG" == $(grep "^version\s*:" CITATION.cff | grep -oP '\d+\.\d+\.\d+.*')
 
 # Check that all files are correctly formatted according to ".clang-format".
 # Exclude the "external/" directory because they will use different formatting.
