@@ -432,7 +432,7 @@ struct Hft {
   /** @{ \name "digestion": Digestion-related parameters. */
   /// Parameters for \ref DigestiveLimit::Allometric
   /** See documentation in \ref DigestiveLimit::Allometric.*/
-  GivenPointAllometry digestion_allometric = {0.05, -0.25};
+  GivenPointAllometry digestion_allometric = {-0.25, 0.05};
 
   /// Factor to change ruminant digestibility for other digestion types.
   /**
@@ -530,7 +530,7 @@ struct Hft {
    * \see \ref ExpenditureComponent::FieldMetabolicRate
    * \see \ref DigestiveLimit::FixedFraction
    */
-  GivenPointAllometry expenditure_basal_rate = {7.5, 0.75};
+  GivenPointAllometry expenditure_basal_rate = {0.75, 7.5};
 
   /// Energy expenditure components, summing up to actual expenditure.
   std::set<ExpenditureComponent> expenditure_components = {
