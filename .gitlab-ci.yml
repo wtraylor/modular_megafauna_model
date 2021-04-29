@@ -24,10 +24,26 @@ check_license:
   script:
     - reuse lint
 
+# The develop branch should reset the version to "0.0.0" so that there can
+# never be a confusion with a released version. Compare CONTRIBUTING.md.
+check_develop_version:
+  image: ubuntu:latest
+  stage: lint
+  rules:
+    # Only execute on tags that look like a version, e.g.: "0.5.1"
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: always
+  script:
+    - echo "If this fails, check the version is reset to '0.0.0' in CITATION.cff and CMakeLists.txt."
+    - test "0.0.0" == $(grep "^\s*VERSION" CMakeLists.txt | grep -oP '\d+\.\d+\.\d+.*')
+    - test "0.0.0" == $(grep "^version\s*:" CITATION.cff | grep -oP '\d+\.\d+\.\d+.*')
+    - echo "'date-released:' in CITATION.cff should be unset."
+    - grep --silent "^date-released\s*:\s*$" CITATION.cff
+
 # Check that the tag matches the version in the CMakeLists.txt file.
 # If the tag doesn’t match, you will need to change CMakeLists.txt and
 # forcefully move the tag to the corrected commit.
-check_version:
+check_release_version:
   image: ubuntu:latest
   stage: lint
   rules:
