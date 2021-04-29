@@ -23,9 +23,6 @@ double Fauna::calc_allometry(const GivenPointAllometry& allometry,
   if (bodymass_male_adult <= 0.0)
     throw std::invalid_argument(
         "Fauna::calc_allometry() `bodymass_male_adult` is negative or zero.");
-  if (allometry.exponent <= 0.0)
-    throw std::invalid_argument(
-        "Fauna::calc_allometry() `allometry.exponent` is negative or zero.");
   const double c = allometry.value_male_adult *
                    pow(bodymass_male_adult, -allometry.exponent);
   return c * pow(bodymass, allometry.exponent);
@@ -105,20 +102,13 @@ ForageMass GetForageDemands::get_max_digestion() const {
       return get_max_intake_as_total_mass(
           diet_composition, energy_content,
           calc_allometry(get_hft().digestion_allometric,
-                         get_hft().body_mass_male, bodymass));
+                         get_hft().body_mass_male, bodymass) *
+              bodymass);
     }
     case (DigestiveLimit::FixedFraction): {
-      double fraction = get_hft().digestion_fixed_fraction;
-      // If it is a juvenile, we need to scale maximum intake with the
-      // mass-related expenditure. (See doxygen doc of `DL_FIXED_FRACTION` for
-      // details.)
-      const double bodymass_adult = sex == Sex::Male
-                                        ? get_hft().body_mass_male
-                                        : get_hft().body_mass_female;
-      if (bodymass < bodymass_adult)
-        fraction = fraction / pow(bodymass_adult, -0.75) * pow(bodymass, -0.75);
-      return get_max_intake_as_total_mass(diet_composition, energy_content,
-                                          fraction * bodymass);
+      return get_max_intake_as_total_mass(
+          diet_composition, energy_content,
+          get_hft().digestion_fixed_fraction * bodymass);
     }
     case (DigestiveLimit::IlliusGordon1992): {
       // Check that we are only handling grass here. This should be have been

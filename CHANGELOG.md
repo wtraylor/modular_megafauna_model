@@ -14,6 +14,11 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ## [Unreleased]
 
+### Fixed
+- `DigestiveLimit::FixedFraction` scaled like `DigestiveLimit::Allometric`. Fixed fraction is now fixed and not scaling. As a result, the newborns of the example herbivore (`example.toml`) now die if their intake is set to a fixed fraction. Therefore the example uses the allometric limit.
+- The exponent of `Hft::digestion_allometric` was wrong. It was set to the exponent of `Hft::expenditure_basal_rate`, but it must be 1 minus that because the digestion-limited intake is *relative* to body mass.
+- If `DigestiveLimit::Allometric` was used, the calculated intake rates were far too low because the fraction was not multiplied with body mass.
+
 ### Added
 - Check code format in continuous integration.
 
