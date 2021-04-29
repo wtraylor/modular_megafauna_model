@@ -22,9 +22,6 @@ TEST_CASE("Fauna::calc_allometry()") {
 
   // Typical case without error.
   REQUIRE_NOTHROW(calc_allometry(GivenPointAllometry({0.75, Y}), 10, 8));
-  // Exponent <= 0
-  CHECK_THROWS(calc_allometry(GivenPointAllometry({-0.1, Y}), 10, 10));
-  CHECK_THROWS(calc_allometry(GivenPointAllometry({0, Y}), 10, 10));
   // Body mass <= 0
   CHECK_THROWS(calc_allometry(GivenPointAllometry({0.75, Y}), 0, 10));
   CHECK_THROWS(calc_allometry(GivenPointAllometry({0.75, Y}), 10, 0));
