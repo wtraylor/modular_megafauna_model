@@ -44,8 +44,7 @@ This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pi
 - `include/`: Public API header files.
 - `LICENSES/`: Folder with licenses, compliant with [REUSE][].
 - `src/`: Source and (private) header files of the project. Subdirectories correspond to C++ namespaces.
-- `tests/`: Unit tests.
-    - `tests/bad_insfiles/`: Example erroneous example files, each of which should throw an error.
+- `tests/`: Unit tests and test scripts.
 - `tools/`: Different helper tools for the developer.
 
 Usage
