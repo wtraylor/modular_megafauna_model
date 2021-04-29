@@ -12,6 +12,16 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [1.0.1] - 2021-04-29
+
+### Fixed
+- `DigestiveLimit::FixedFraction` scaled like `DigestiveLimit::Allometric`. Fixed fraction is now fixed and not scaling. As a result, the newborns of the example herbivore (`example.toml`) now die if their intake is set to a fixed fraction. Therefore the example uses the allometric limit.
+- The exponent of `Hft::digestion_allometric` was wrong. It was set to the exponent of `Hft::expenditure_basal_rate`, but it must be 1 minus that because the digestion-limited intake is *relative* to body mass.
+- If `DigestiveLimit::Allometric` was used, the calculated intake rates were far too low because the fraction was not multiplied with body mass.
+
+### Added
+- Check code format in continuous integration.
+
 ## [1.0.0] - 2021-04-26
 
 ### Added
@@ -193,7 +203,9 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Illius & O’Connor (2000)]: <https://doi.org/10.2307/3800911>
 [Taylor et al. (1981)]: <https://doi.org/10.1017/S0003356100040617>
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/0.6.0...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.1...develop
+[1.0.1]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.0...1.0.1
+[1.0.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.6.0...1.0.0
 [0.6.0]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.5...0.6.0
 [0.5.5]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.4...0.5.5
 [0.5.4]: https://github.com/wtraylor/modular_megafauna_model/compare/0.5.3...0.5.4

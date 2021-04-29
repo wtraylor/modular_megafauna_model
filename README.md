@@ -7,7 +7,7 @@ SPDX-License-Identifier: CC-BY-4.0
 [![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
 [![REUSE-compliant](docs/images/reuse-compliant.svg)][REUSE]
 [![Documentation Status](https://readthedocs.org/projects/modular-megafauna-model/badge/?version=latest)](https://modular-megafauna-model.readthedocs.io/en/latest/?badge=latest)
-[![DOI](https://zenodo.org/badge/228426088.svg)](https://zenodo.org/badge/latestdoi/228426088)
+[![DOI](docs/images/zenodo_doi.svg)](https://zenodo.org/badge/latestdoi/228426088)
 
 [REUSE]: https://reuse.software
 
@@ -123,9 +123,8 @@ Compare [Understanding the GitHub flow](https://guides.github.com/introduction/f
 Authors
 -------
 
-- Wolfgang Traylor (wolfgang.traylor@senckenberg.de) ![ORCID][orcid-logo] <https://orcid.org/0000-0002-4813-1072>, Senckenberg Biodiversity and Climate Research Centre ([SBiK-F][])
+- Wolfgang Traylor (wolfgang.traylor@senckenberg.de) ![ORCID](docs/images/orcid.png) <https://orcid.org/0000-0002-4813-1072>, Senckenberg Biodiversity and Climate Research Centre ([SBiK-F][])
 
-[orcid-logo]: <https://info.orcid.org/wp-content/uploads/2020/12/ORCIDiD_icon16x16.png>
 [SBiK-F]: <https://www.senckenberg.de/en/institutes/sbik-f/>
 
 Similar Projects

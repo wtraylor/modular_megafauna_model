@@ -33,10 +33,8 @@ void SimpleHabitat::init_day(const int today) {
 
   // Get the vector address for the current air temperature.
   assert(!settings.air_temperature.empty());
-  const int air_temp_id =
-      simulation_month % settings.air_temperature.size();
-  assert(air_temp_id >= 0 &&
-         air_temp_id < settings.air_temperature.size());
+  const int air_temp_id = simulation_month % settings.air_temperature.size();
+  assert(air_temp_id >= 0 && air_temp_id < settings.air_temperature.size());
 
   air_temperature = settings.air_temperature[air_temp_id];
 }

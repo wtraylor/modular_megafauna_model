@@ -32,8 +32,8 @@ double Fauna::get_thermoregulatory_expenditure(const double thermoneutral_rate,
   const double cond_MJ = watts_to_MJ_per_day(conductance);
 
   const double critical_temp = core_temp - thermoneutral_rate / cond_MJ;
-  const double heat_loss = cond_MJ * std::max(critical_temp - ambient_temp,
-      0.0);
+  const double heat_loss =
+      cond_MJ * std::max(critical_temp - ambient_temp, 0.0);
   assert(heat_loss >= 0.0);
   return heat_loss;
 }

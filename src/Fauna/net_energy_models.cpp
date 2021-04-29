@@ -9,4 +9,3 @@
  * \date 2019
  */
 #include "net_energy_models.h"
-

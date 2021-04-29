@@ -104,36 +104,56 @@ enum class DigestiveLimit {
   None,
 
   /// Dry-matter ingestion is limited to a fraction of live herbivore body mass.
-  /** \see Hft::digestion_allometric */
+  /**
+   * The digestion-limited maximum intake,\f$DMI\f$, is a fraction of body
+   * mass, \f$M\f$, and scales allometrically with body mass in a power law
+   * relationship.
+   *
+   * \attention Too long; didn’t read: It makes sense to set the exponent of
+   * \ref Hft::digestion_allometric to the exponent of
+   * \ref Hft::expenditure_basal_rate minus 1.
+   *
+   * \ref Hft::digestion_allometric defines the maximum fractional intake for
+   * adult males, \f$DMI_{ad}\f$, as well as the exponent for the allometric
+   * scaling to other body masses. The allometric scaling relationship takes
+   * the form \f$DMI = a * M^b\f$.
+   *
+   * Scaling maximum intake allometrically can be better than having a fixed
+   * fraction (\ref DigestiveLimit::FixedFraction) for all animals because
+   * younger animals (and female adults) have a lower body mass and thus a
+   * higher metabolic rate per body mass. Therefore they also need a higher
+   * digestive limit. This is important so that young animals are not starving
+   * after birth because their intake is restricted.
+   *
+   * Energy expenditure must be balanced by intake. Let’s take Kleiber’s ¾
+   * power law (Kleiber 1961\cite kleiber1961fire) as an example. Metabolic
+   * rate scales with \f$M^{0.75}\f$, and so the metabolic rate *per body mass*
+   * scales with \f$M^{0.75}/M = M^{-0.25}\f$. The forage intake per body mass
+   * must balance these expenditures. In this case it makes sense to say that
+   * the maximum relative intake (\f$DMI\f$) also scales with \f$M^{-0.25}\f$,
+   * which is the same as saying that the *absolute* intake scales with
+   * \f$M^{0.75}\f$.
+   *
+   * In this example, the (relative) dry-matter intake (DMI) would be:
+   *
+   * \f[
+   * DMI(M) = DMI_{ad} * M_{ad}^{0.25} * M^{-0.25}
+   * \f]
+   *
+   * For nursing newborns, the energy input comes from mother milk, but that is
+   * not considered in this model. Newborns are simulated as if they ate fresh
+   * forage directly. The very high dry-matter intake limit for newborns stands
+   * in place for the energy supply that would come from lactation.
+   *
+   * \image html scale_diglimit.svg "Allometric scaling of digestive limit."
+   *
+   */
   Allometric,
 
   /// Dry-matter ingestion is limited to a fixed fraction of live body mass.
   /**
-   * The parameter \ref Hft::digestion_fixed_fraction (\f$f_{ad}\f$)
-   * defines the maximum daily intake in dry matter as a fraction of
-   * body mass. It applies only to adult animals. Younger animals have a
-   * higher metabolic rate per body mass and thus also need a higher
-   * digestive limit. Since the metabolic rate generally scales roughly
-   * with \f$M^{0.75}\f$ (Kleiber 1961\cite kleiber1961fire), the
-   * metabolic rate *per body mass* scales with \f$M^{-0.25}\f$. It is
-   * assumed that the maximum intake (\f$DMI\f$) for physically immature
-   * animals scales in the same way. This is not necessarily the case
-   * (and also depends on the chosen energy expenditure model), but the
-   * assumption may suffice for the purpose of assuring that juveniles
-   * don’t succumb due to a mismatch between intake and expenditure. The
-   * case of lactation is not considered here, but even newborns are
-   * modelled to eat fresh forage. Hence the increased DMI of juveniles
-   * can be considered a surrogate for the support of a lactating
-   * mother.
-   * \f[
-   * DMI =
-   *   \\begin{cases}
-   *   f_{ad} * M \\text{if adult: } M = M_{ad}\\\\
-   *   f_{ad}*M_{ad}^{-0.75} * M^{-0.75} \\text{if } M < M_{ad}
-   *   \\end{cases}
-   * \f]
-   * \image html scale_diglimit.svg "Scaling of digestive limit for
-   * non-mature animals."
+   * The parameter \ref Hft::digestion_fixed_fraction (\f$f_{ad}\f$) defines
+   * the maximum daily intake in dry matter as a fraction of body mass.
    */
   FixedFraction,
 
@@ -411,7 +431,8 @@ struct Hft {
 
   /** @{ \name "digestion": Digestion-related parameters. */
   /// Parameters for \ref DigestiveLimit::Allometric
-  GivenPointAllometry digestion_allometric = {0.05, 0.75};
+  /** See documentation in \ref DigestiveLimit::Allometric.*/
+  GivenPointAllometry digestion_allometric = {0.05, -0.25};
 
   /// Factor to change ruminant digestibility for other digestion types.
   /**
@@ -441,10 +462,14 @@ struct Hft {
 
   /// Daily dry matter intake per kg body mass for
   /// \ref DigestiveLimit::FixedFraction.
+  /**
+   * This applies to male adults. With \ref DigestiveLimit::FixedFraction, the
+   * fraction is scaled to animals of other (less) body mass.
+   */
   double digestion_fixed_fraction = 0.05;
 
   /// Constraint for maximum daily forage intake.
-  DigestiveLimit digestion_limit = DigestiveLimit::FixedFraction;
+  DigestiveLimit digestion_limit = DigestiveLimit::Allometric;
 
   /// Metabolizable energy coefficient (ME/DE ratio) [fractional].
   /**
@@ -499,10 +524,11 @@ struct Hft {
    * \ref GivenPointAllometry::value_male_adult is daily basal metabolic rate
    * in MJ/day for an adult male individual (\ref body_mass_male).
    * The exponent (\ref GivenPointAllometry::exponent) should match the scaling
-   * of intake so that energy input and expenditure are balance for all
+   * of intake so that energy input and expenditure are balanced for all
    * possible body masses.
    * \see \ref ExpenditureComponent::BasalMetabolicRate
    * \see \ref ExpenditureComponent::FieldMetabolicRate
+   * \see \ref DigestiveLimit::FixedFraction
    */
   GivenPointAllometry expenditure_basal_rate = {7.5, 0.75};
 

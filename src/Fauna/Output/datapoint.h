@@ -42,7 +42,7 @@ struct Datapoint {
   /**
    * \see Fauna::OutputInterval
    */
-  DateInterval interval = DateInterval(Date(0,0), Date(0,0));
+  DateInterval interval = DateInterval(Date(0, 0), Date(0, 0));
 };
 
 }  // namespace Output

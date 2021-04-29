@@ -19,4 +19,3 @@ TEST_CASE("Fauna::SimulationUnit") {
   CHECK_THROWS(SimulationUnit(NULL, new PopulationList()));
   CHECK_THROWS(SimulationUnit(new DummyHabitat(), NULL));
 }
-

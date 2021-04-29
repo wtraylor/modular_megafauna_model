@@ -18,11 +18,11 @@ TEST_CASE("Fauna::DateInterval", "") {
   static const int YEAR = 4;  // arbitrary
 
   SECTION("OutputInterval::extend") {
-    static const Date D0(0,4);
-    static const Date D1(10, 23); // a little ahead
-    static const Date D2(17, 19); // in between
-    static const Date D3(17, 0); // a little before
-    DateInterval interval(D0,D0);
+    static const Date D0(0, 4);
+    static const Date D1(10, 23);  // a little ahead
+    static const Date D2(17, 19);  // in between
+    static const Date D3(17, 0);   // a little before
+    DateInterval interval(D0, D0);
 
     interval.extend(D0);
     CHECK(interval.get_first() == interval.get_last());
@@ -40,7 +40,6 @@ TEST_CASE("Fauna::DateInterval", "") {
     interval.extend(D3);
     CHECK(interval.get_first() == D3);
     CHECK(interval.get_last() == D1);
-
   }
 
   SECTION("OutputInterval::Annual") {

@@ -86,11 +86,11 @@ length = 30  # days
 start  = 121 # Julian day
 
 [hft.digestion]
-allometric       = { fraction_male_adult = 0.05, exponent = 0.75 }
+allometric       = { fraction_male_adult = 0.05, exponent = -0.25 }
 fixed_fraction   = 0.05 # kgDM per kg body mass
 k_fat            = 0.5
 k_maintenance    = 0.7
-limit            = "FixedFraction"
+limit            = "Allometric"
 net_energy_model = "GrossEnergyFraction"
 
 [hft.establishment]

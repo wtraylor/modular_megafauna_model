@@ -53,7 +53,9 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 
 Each merge into the `master` branch is a release and should have a Git tag.
 
-1. List your changes in `CHANGELOG.md`, following the formatting guidelines there. Rename the “Unreleased” section to the to-be-released version in `CHANGELOG.md`.
+1. List your changes in `CHANGELOG.md`, following the formatting guidelines there.
+    - Rename the “Unreleased” section to the to-be-released version in `CHANGELOG.md`.
+    - At the bottom of the file, add the URL for the release, comparing it to the previous version. Orient yourself by the existing link URLs.
 2. Set the new version in `CMakeLists.txt` under `VERSION`.
 3. Set the version and the `date-released:` field in `CITATION.cff`. The date format is `YYYY-MM-DD`.
 4. Now do the merge: `git switch master && git merge --no-ff develop`
@@ -64,7 +66,15 @@ Each merge into the `master` branch is a release and should have a Git tag.
 7. Your first commit in `develop` resets everything so that it cannot be confused with a released version:
     - Set `VERSION 0.0.0` in `CMakeLists.txt`.
     - Set `version: 0.0.0` in `CITATION.cff`, and empty the `date-released:` field.
-    - Prepare the `[Unreleased]` section in `CHANGELOG.md`.
+    - Prepare the `[Unreleased]` section in `CHANGELOG.md`. Update the URL for `[Unreleased]` in the link list of the bottom; it should compare `develop` with the latest release.
+8. Check that Zenodo and Read the Docs have received the latest version:
+    - Zenodo: <https://doi.org/10.5281/zenodo.4710254>
+    - Read the Docs: <https://modular-megafauna-model.readthedocs.io/en/latest/>
+9. If applicable: Close the [Milestone][] for this release on GitHub.
+10. Announce the release in the [Matrix channel][].
+
+[Matrix channel]: <https://matrix.to/#/!rnevkLtJTORmvyzFHD:matrix.org?via=matrix.org>
+[Milestone]: <https://github.com/wtraylor/modular_megafauna_model/milestones>
 
 ### Commit Messages
 Follow Chris Beams’ guide for crafting your Git commit messages: [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)

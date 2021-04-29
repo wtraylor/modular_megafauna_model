@@ -37,4 +37,3 @@ void PopulationInterface::kill_all() {
        itr++)
     (*itr)->kill();
 }
-

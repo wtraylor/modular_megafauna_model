@@ -13,7 +13,7 @@
 
 #include "herbivore_vector.h"
 
-namespace Fauna{
+namespace Fauna {
 /// A container of herbivore objects.
 /**
  * Manages a set of \ref HerbivoreInterface instances. What makes a
@@ -80,6 +80,6 @@ struct PopulationInterface {
   virtual void purge_of_dead() = 0;
 };
 
-}
+}  // namespace Fauna
 
-#endif // FAUNA_POPULATION_INTERFACE_H
+#endif  // FAUNA_POPULATION_INTERFACE_H

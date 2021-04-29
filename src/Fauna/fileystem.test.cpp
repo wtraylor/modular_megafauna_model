@@ -8,9 +8,9 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include <fstream>
 #include "catch.hpp"
 #include "fileystem.h"
-#include <fstream>
 
 using namespace Fauna;
 
@@ -94,4 +94,3 @@ TEST_CASE("Fauna::remove_directory()", "") {
 }
 
 #endif  // __gnu_linux__
-
