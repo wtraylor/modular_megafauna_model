@@ -7,6 +7,7 @@ SPDX-License-Identifier: CC-BY-4.0
 [![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
 [![REUSE-compliant](docs/images/reuse-compliant.svg)][REUSE]
 [![Documentation Status](https://readthedocs.org/projects/modular-megafauna-model/badge/?version=latest)](https://modular-megafauna-model.readthedocs.io/en/latest/?badge=latest)
+[![Pipeline Status](https://gitlab.com/wtraylor/modular_megafauna_model/badges/master/pipeline.svg)](https://gitlab.com/wtraylor/modular_megafauna_model/-/commits/master)
 [![DOI](docs/images/zenodo_doi.svg)](https://zenodo.org/badge/latestdoi/228426088)
 
 [REUSE]: https://reuse.software
