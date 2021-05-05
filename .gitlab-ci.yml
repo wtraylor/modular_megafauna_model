@@ -94,17 +94,12 @@ compile:
       - build/megafauna_unit_tests
     expire_in: 20 minutes
 
+# Compare the Sphinx instructions in "docs/sphinx/conf.py".
 doxygen:
-  image: gcc:latest
+  image: readthedocs/build:latest
   stage: build
   before_script:
-    - apt-get update -qq
-    - apt-get install -y -qq
-      cmake
-      default-jre
-      doxygen
-      graphviz
-      texlive-base
+    - conda install --yes cmake
   script:
     - mkdir --parents build
     - cd build
