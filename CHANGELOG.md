@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ## [Unreleased]
 
+### Changed
+- Increase demo simulation years so we can see some population ups and downs.
+
 ### Fixed
 - The unit tests were broken after the last release.
 - cpptoml wouldn’t compile with latest `g++` (11.1.0).
