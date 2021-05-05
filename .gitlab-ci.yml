@@ -95,11 +95,22 @@ compile:
     expire_in: 20 minutes
 
 # Compare the Sphinx instructions in "docs/sphinx/conf.py".
+# TODO: Currently (2021-05-05), the Docker image "readthedocs/build:latest"
+# (7.0) is based on Ubuntu 18.04. It does not contain the required Doxygen
+# version 1.8.16 yet. As soon as the readthedocs image is properly updated,
+# we should use it here in the CI.
 doxygen:
-  image: readthedocs/build:latest
+  image: ubuntu:latest
   stage: build
   before_script:
-    - conda install --yes cmake
+    - apt-get update -qq
+    - apt-get install -y -qq
+      cmake
+      default-jre
+      doxygen
+      g++
+      graphviz
+      texlive-base
   script:
     - mkdir --parents build
     - cd build
