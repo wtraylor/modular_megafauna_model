@@ -27,7 +27,7 @@ check_license:
 # The develop branch should reset the version to "0.0.0" so that there can
 # never be a confusion with a released version. Compare CONTRIBUTING.md.
 check_develop_version:
-  image: ubuntu:latest
+  image: alpine:latest
   stage: lint
   rules:
     # Only execute on tags that look like a version, e.g.: "0.5.1"
@@ -44,7 +44,7 @@ check_develop_version:
 # If the tag doesn’t match, you will need to change CMakeLists.txt and
 # forcefully move the tag to the corrected commit.
 check_release_version:
-  image: ubuntu:latest
+  image: alpine:latest
   stage: lint
   rules:
     # Only execute on tags that look like a version, e.g.: "0.5.1"
