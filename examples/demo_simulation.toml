@@ -9,7 +9,7 @@
 [general]
 
 # Number of simulation years. [1,∞)
-years = 20
+years = 100
 
 # Number of habitat groups.
 habitat_groups = 2
