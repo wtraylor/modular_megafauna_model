@@ -95,7 +95,7 @@ compile:
     expire_in: 20 minutes
 
 doxygen:
-  image: ubuntu:latest
+  image: gcc:latest
   stage: build
   before_script:
     - apt-get update -qq
@@ -103,7 +103,6 @@ doxygen:
       cmake
       default-jre
       doxygen
-      g++
       graphviz
       texlive-base
   script:
@@ -120,7 +119,7 @@ doxygen:
       - build/docs/html/
 
 unit_tests:
-  image: ubuntu:latest
+  image: gcc:latest
   stage: test
   needs: ["compile"]
   script:
@@ -130,7 +129,7 @@ unit_tests:
 # Check that the linter works and that the example instruction files are
 # correct.
 linter:
-  image: ubuntu:latest
+  image: gcc:latest
   stage: test
   needs: ["compile"]
   script:
@@ -156,7 +155,7 @@ linter:
     - (./build/megafauna_insfile_linter tests/bad_insfiles/two_hfts_with_same_name.toml 2>&1 || true) | grep -iq 'HFT.*is defined twice'
 
 memcheck:
-  image: ubuntu:latest
+  image: gcc:latest
   stage: test
   needs: ["compile"]
   before_script:
@@ -185,7 +184,7 @@ memcheck:
       - build/memcheck.log
 
 demo_simulation:
-  image: ubuntu:latest
+  image: gcc:latest
   stage: test
   needs: ["compile"]
   script:
