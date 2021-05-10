@@ -148,7 +148,6 @@ linter:
     # specific error message in STDERR.
     # Note that commands that expected to fail need to be executed in a
     # subshell like this: `(command || true)`
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/catabolism_gt_anabolism.toml 2>&1 || true) | tr '\n' ' ' | grep -iq 'body_fat\.catabolism_efficiency.*must be less than the anabolism'
     - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_01.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
     - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_02.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
     - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_03.toml 2>&1 || true) | grep -iq 'output\.text_tables\.tables.*wrong type.*expected array of string'
