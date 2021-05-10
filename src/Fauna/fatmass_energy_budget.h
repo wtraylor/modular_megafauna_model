@@ -34,7 +34,6 @@ class FatmassEnergyBudget {
    * multiplied by conversion efficiency.
    * \throw std::invalid_argument If one parameter is <=0.0
    * \throw std::logic_error `initial_fatmass > maximum_fatmass`
-   * \throw std::logic_error `catabolism_coefficient >= anabolism_coefficient`
    */
   FatmassEnergyBudget(const double initial_fatmass,
                       const double maximum_fatmass,

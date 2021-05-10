@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ## [Unreleased]
 
+### Fixed
+- Anabolism efficiency was forced to be lower than catabolism efficiency, but for no apparent reason.
+
 ## [1.0.2] - 2021-05-05
 
 ### Changed

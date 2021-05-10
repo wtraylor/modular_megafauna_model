@@ -1,0 +1,77 @@
+# SPDX-FileCopyrightText: 2021 W. Traylor <wolfgang.traylor@senckenberg.de>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+[forage]
+gross_energy.grass = 17.80497
+[[hft]]
+name = "Mammoth"
+[hft.body_fat]
+birth = 0.2255181
+catabolism_efficiency = 0.8969973
+deviation = 0.1498836
+gross_energy = 39.60677
+maximum = 0.2491841
+maximum_daily_gain = 0
+[hft.body_mass]
+birth = 79
+empty = 0.8447899
+female = 1634
+male = 2901
+[hft.breeding_season]
+length = 16
+start = 130
+[hft.digestion]
+digestibility_multiplier = 0.9252448
+k_fat = 0.6798827
+k_maintenance = 0.6004329
+limit = "Allometric"
+me_coefficient = 0.7887246
+net_energy_model = "GrossEnergyFraction"
+[hft.digestion.allometric]
+exponent = -0.2840395
+fraction_male_adult = 0.01914799
+[hft.establishment]
+density = 2.261742
+[hft.establishment.age_range]
+first = 1
+last = 9
+[hft.expenditure]
+components = "FieldMetabolicRate"
+fmr_multiplier = 2.534487
+[hft.expenditure.basal_rate]
+exponent = 0.7159605
+mj_per_day_male_adult = 7.5
+[hft.foraging]
+diet_composer = "PureGrazer"
+limits = [ ]
+[hft.life_history]
+lifespan = 65
+physical_maturity_female = 34
+physical_maturity_male = 35
+sexual_maturity = 10
+[hft.mortality]
+adult_rate = 0.05970409
+juvenile_rate = 0.2592141
+minimum_density_threshold = 0.1899162
+shift_body_condition_for_starvation = true
+factors  = [ "Background", "Lifespan", "StarvationIlliusOConnor2000" ]
+[hft.reproduction]
+annual_maximum = 0.2273028
+gestation_length = 21
+model = "Logistic"
+[hft.reproduction.logistic]
+growth_rate = 37.19164
+midpoint = 0.4191419
+[output]
+format = "TextTables"
+interval = "Annual"
+[output.text_tables]
+directory = "."
+precision = 4
+tables = "mass_density_per_hft"
+[simulation]
+establishment_interval = 1931
+forage_distribution = "Equally"
+herbivore_type = "Cohort"
+one_hft_per_habitat = true

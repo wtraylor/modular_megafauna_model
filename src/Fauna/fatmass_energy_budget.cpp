@@ -30,10 +30,6 @@ FatmassEnergyBudget::FatmassEnergyBudget(const double initial_fatmass,
     throw std::invalid_argument(
         "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
         "catabolism_coefficient <= 0.0");
-  if (catabolism_coefficient >= anabolism_coefficient)
-    throw std::logic_error(
-        "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
-        "catabolism_coefficient >= anabolism_coefficient");
   if (initial_fatmass < 0.0)
     throw std::invalid_argument(
         "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
