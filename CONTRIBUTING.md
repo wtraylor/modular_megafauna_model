@@ -17,6 +17,7 @@ This document is only about *syntax* only.
 * [Version Control](#version-control)
     * [Branches](#branches)
     * [Release Versioning](#release-versioning)
+        * [Checklist for merging into `master`](#checklist-for-merging-into-master)
     * [Commit Messages](#commit-messages)
     * [Continuous Integration](#continuous-integration)
 * [Licensing](#licensing)
@@ -49,7 +50,7 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 - If the new version introduces a new feature, but still interoperates like the old version, increment `MINOR`.
 - If the new version only fixes bugs, extends or amends the documentation or refactors code, increment `PATCH`.
 
-#### CHECKLIST for merging into `master`:
+#### Checklist for merging into `master`
 
 Each merge into the `master` branch is a release and should have a Git tag.
 
