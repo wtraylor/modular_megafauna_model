@@ -21,10 +21,13 @@ using namespace Fauna;
  * elements: 1) the program name, 2) the path to the TOML instruction file.
  */
 int main(int argc, char* argv[]) {
-  std::cerr << "Welcome to the instruction file linter of the Modular "
-               "Megafauna Model."
-            << std::endl;
   if (argc != 2) {
+    std::cerr << "This is the instruction file linter of the Modular "
+                 "Megafauna Model (MMM)."
+              << std::endl;
+    std::cerr
+        << "Use this program to check if a TOML instruction file is valid."
+        << std::endl;
     std::cerr
         << "Please provide the path to the TOML file as the only argument."
         << std::endl;
