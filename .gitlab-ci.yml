@@ -139,7 +139,7 @@ unit_tests:
 code_coverage:
   image: gcc:latest
   stage: test
-  needs: ["unit_tests"]
+  needs: ["compile"]
   before_script:
     - apt-get update -qq
     - apt-get install -y -qq cmake gcovr
