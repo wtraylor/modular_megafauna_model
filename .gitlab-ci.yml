@@ -132,6 +132,26 @@ unit_tests:
     - cd build
     - ./megafauna_unit_tests
 
+# Test coverage for codecov.io
+# The environment variable "CODECOV_TOKEN" must be provided. Compare:
+# <https://docs.codecov.io/docs/about-the-codecov-bash-uploader#upload-token>
+# <https://docs.gitlab.com/ce/ci/variables/README.html#project-cicd-variables>
+code_coverage:
+  image: gcc:latest
+  stage: test
+  needs: ["unit_tests"]
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq cmake gcovr
+  script:
+    - mkdir --parents build
+    - cd build
+    - cmake -DBUILD_TESTING=ON -DENABLE_COVERAGE=ON -DBUILD_DOC=OFF ..
+    - make --jobs=6 megafauna_unit_tests
+    - ./megafauna_unit_tests
+    - make --jobs=6 gcov
+    - bash <(curl -s https://codecov.io/bash) -X gcov
+
 # Check that the linter works and that the example instruction files are
 # correct.
 linter:
