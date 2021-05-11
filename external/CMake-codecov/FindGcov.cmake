@@ -7,6 +7,8 @@
 #
 # Written by Alexander Haase, alexander.haase@rwth-aachen.de
 #
+# SPDX-FileCopyrightText: 2020 Alexander Haase, alexander.haase@rwth-aachen.de
+# SPDX-License-Identifier: BSD-3-Clause
 
 
 # include required Modules

@@ -152,6 +152,8 @@ License
 
 - The [Catch2](https://github.com/catchorg/Catch2) test framework (`tests/catch.hpp`) is licensed under the [Boost Software License](http://www.boost.org/LICENSE_1_0.txt).
 
+- The [CMake-codecov](https://github.com/RWTH-HPC/CMake-codecov) scripts in `external/CMake-codecov/` are licensed under the BSD-3-Clause License.
+
 - The version of the [PlantUML](http://plantuml.com) file (`docs/plantuml.jar`), which is used to render UML diagrams in the Doxygen documentation, is under the [MIT license](http://opensource.org/licenses/MIT).
 
 - The [cpptoml](https://github.com/skystrife/cpptoml) library (`external/cpptoml/`) is licensed under the [MIT license](http://opensource.org/licenses/MIT).
