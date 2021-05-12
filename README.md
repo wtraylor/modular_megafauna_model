@@ -4,16 +4,17 @@ SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
+Modular Megafauna Model
+=======================
+
 [![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
 [![REUSE-compliant](docs/images/reuse-compliant.svg)][REUSE]
 [![Documentation Status](https://readthedocs.org/projects/modular-megafauna-model/badge/?version=latest)](https://modular-megafauna-model.readthedocs.io/en/latest/?badge=latest)
 [![Pipeline Status](https://gitlab.com/wtraylor/modular_megafauna_model/badges/master/pipeline.svg)](https://gitlab.com/wtraylor/modular_megafauna_model/-/commits/master)
+[![codecov](https://codecov.io/gh/wtraylor/modular_megafauna_model/branch/master/graph/badge.svg)](https://codecov.io/gh/wtraylor/modular_megafauna_model)
 [![DOI](docs/images/zenodo_doi.svg)](https://zenodo.org/badge/latestdoi/228426088)
 
 [REUSE]: https://reuse.software
-
-Modular Megafauna Model
-=======================
 
 Overview
 --------
@@ -151,6 +152,8 @@ License
 ### Third-Party Work
 
 - The [Catch2](https://github.com/catchorg/Catch2) test framework (`tests/catch.hpp`) is licensed under the [Boost Software License](http://www.boost.org/LICENSE_1_0.txt).
+
+- The [CMake-codecov](https://github.com/RWTH-HPC/CMake-codecov) scripts in `external/CMake-codecov/` are licensed under the BSD-3-Clause License.
 
 - The version of the [PlantUML](http://plantuml.com) file (`docs/plantuml.jar`), which is used to render UML diagrams in the Doxygen documentation, is under the [MIT license](http://opensource.org/licenses/MIT).
 

@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ## [Unreleased]
 
+### Added
+- Code coverage badge with [codecov.io](https://codecov.io/gh/wtraylor/modular_megafauna_model/)
+
 ## [1.0.3] - 2021-05-10
 
 ### Fixed
