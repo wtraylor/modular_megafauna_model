@@ -250,6 +250,11 @@ if(BUILD_DEMO_SIMULATOR)
     "${CMAKE_CURRENT_BINARY_DIR}/demo_simulation.toml"
     COPYONLY
     )
+  configure_file (
+    "examples/megafauna.toml"
+    "${CMAKE_CURRENT_BINARY_DIR}/megafauna.toml"
+    COPYONLY
+    )
   file(
     COPY "tools/demo_simulator/run_demo"
     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
