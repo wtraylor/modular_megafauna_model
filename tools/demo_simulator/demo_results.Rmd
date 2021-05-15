@@ -15,7 +15,7 @@ library(tidyr)
 read_generic_table <- function(filename){
   if (!file.exists(filename))
     stop("File does not exist: ", filename)
-  tbl <- read.csv(filename, sep = "\t")
+  tbl <- read.delim(filename)
   # Handle daily output.
   if ("day" %in% colnames(tbl)) {
     tbl$year <- tbl$year + tbl$day/365
