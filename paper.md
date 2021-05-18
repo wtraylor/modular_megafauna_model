@@ -19,6 +19,12 @@ bibliography: paper.bib
 ---
 
 <!--
+SPDX-FileCopyrightText: 2021 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
+<!--
 From the JOSS website (https://joss.readthedocs.io/en/latest/submitting.html):
 
 The paper should be between 250-1000 words.
