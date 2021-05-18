@@ -37,6 +37,37 @@ Your paper should include:
 • A list of key references, including to other software addressing related needs.
 • Mention (if applicable) a representative set of past or ongoing research projects using the software and recent scholarly publications enabled by it.
 • Acknowledgement of any financial support.
-
-
 -->
+
+# Summary
+
+The Modular Megafauna Model (MMM) simulates populations of large, terrestrial herbivores through space and time.
+Herbivores feed, grow, reproduce, and die in daily simulation cycles.
+These lower-level mechanisms let the herbivore numbers dynamically rise and fall.
+The model thus does not prescribe carrying capacity, but instead simulates herbivore densities in a mechanistic, bottom-up approach.
+
+MMM is a C++ library to be coupled with a dynamic vegetation model into a complete ecosystem model.
+The vegetation model provides forage, which the herbivores consume, and information about environmental conditions like air temperature.
+This way, herbivores and vegetation dynamically influence each other, namely through forage removal and nutrient cycling.
+
+Herbivores are simulated in distinct spatial units (so-called habitats), and all calculations are done on a per-area basis.
+That means that MMM itself is not spatially explicit and makes no assumptions about the actual size of the area inhabited by herbivores.
+It is up to the vegetation model to give these spatial units meaning by linking them to spatially explicit entities like grid cells.
+With this flexibility, MMM can be used for studies on different scales, from local to continental.
+
+Modularity is a primary design goal of the library.
+Through the instruction file, users can turn mechanisms on or off and parametrize herbivore species or herbivore functional types.
+There are no hard-coded parameters, but all are exposed in the instruction file.
+The flexible framework allows developers to easily implement new mechanisms, for example a more detailed energy budget model or mortality from hunting or predation.
+In addition, MMM’s modular design makes unit testing easy.
+
+Developing mechanistic ecosystem models is typically an exploratory, iterative process.
+For a specific study, the modeler has to adjust parameters and mechanisms of a given model, either manually or programmatically.
+In this process it is crucial to be able to move step-by-step from a simple to a more complex model design, as necessary.
+While monolithic ecosystem models can easily become “black boxes,” whose the internal mechanisms have grown too complex to be understood intuitively, a modular model is more transparent.
+The modeler can configure the appropriate model complexity for the question at hand and this way learns about which mechanisms are likely driving the real-world ecosystem under study.
+
+Thanks to its modular design and its stable library interface, MMM can stay backward-compatible, and the same codebase can be used for different studies and different vegetation models.
+That benefits reproducibility.
+After bugs have been fixed, previous analyses can easily be reexecuted.
+Simulations can be repeated with other vegetation models in order to understand how their different assumptions impact plant–herbivore dynamics.
