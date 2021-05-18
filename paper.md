@@ -1,5 +1,5 @@
 ---
-title: 'MMM: A C++ library for simulating large herbivore'
+title: 'MMM: A C++ library for simulating large herbivores'
 tags:
   - C++
   - DGVM
