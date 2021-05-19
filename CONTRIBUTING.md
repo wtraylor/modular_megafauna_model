@@ -58,7 +58,9 @@ Each merge into the `master` branch is a release and should have a Git tag.
     - Rename the “Unreleased” section to the to-be-released version in `CHANGELOG.md`.
     - At the bottom of the file, add the URL for the release, comparing it to the previous version. Orient yourself by the existing link URLs.
 2. Set the new version in `CMakeLists.txt` under `VERSION`.
-3. Set the version and the `date-released:` field in `CITATION.cff`. The date format is `YYYY-MM-DD`.
+3. Update metadata files:
+    - Set the version and the `date-released:` field in `CITATION.cff`. The date format is `YYYY-MM-DD`.
+    - Set the `"version":` and `"dateModified":` fields in `codemeta.json`.
 4. Now do the merge: `git switch master && git merge --no-ff develop`
 5. Create a new release on GitHub, which will trigger [Zenodo](https://zenodo.org) to archive the code and mint a DOI.
     - The release and the tag description should summarize the changes (which you can copy-paste from `CHANGELOG.md`.
@@ -67,6 +69,7 @@ Each merge into the `master` branch is a release and should have a Git tag.
 7. Your first commit in `develop` resets everything so that it cannot be confused with a released version:
     - Set `VERSION 0.0.0` in `CMakeLists.txt`.
     - Set `version: 0.0.0` in `CITATION.cff`, and empty the `date-released:` field.
+    - In `codemeta.json` set `"version": "0.0.0"` and `"dateModified": ""`.
     - Prepare the `[Unreleased]` section in `CHANGELOG.md`. Update the URL for `[Unreleased]` in the link list of the bottom; it should compare `develop` with the latest release.
 8. Check that Zenodo and Read the Docs have received the latest version:
     - Zenodo: <https://doi.org/10.5281/zenodo.4710254>
