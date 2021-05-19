@@ -80,3 +80,5 @@ Second, simulations can be repeated with other vegetation models in order to und
 
 At this point, MMM is being used by the author to simulate potential densities of mammoths in the last ice age.
 Here, MMM is coupled with the global dynamic vegetation model LPJ-GUESS [@smith2001representation, @smith2014foundations, @bokeolen2018estimating].
+
+# References
