@@ -41,25 +41,31 @@ Your paper should include:
 
 # Summary
 
-The Modular Megafauna Model (MMM) simulates populations of large, terrestrial herbivores through space and time.
+The Modular Megafauna Model (MMM) simulates populations of large, terrestrial herbivores (“megafauna”) through space and time.
 Herbivores feed, grow, reproduce, and die in daily simulation cycles.
 These lower-level mechanisms let the herbivore numbers dynamically rise and fall.
 The model thus does not prescribe carrying capacity, but instead simulates herbivore densities in a mechanistic, bottom-up approach.
+
+Mechanistic modeling can help us understand the drivers behind real-world population dynamics.
+Bottom-up models can point out which physiological processes are understudied and which lower-level mechanisms appear most important for higher-level population effects [@deangelis2003praise].
+Once a model is sufficiently matured, its predictions can inform nature conservation management—an application that is urgently needed in light of the ongoing defaunation [@dirzo2014defaunation].
+
+The currently implemented model concepts originate in large parts from @pachzelt2013coupling and the earlier works by @illius2000resource and @illius1999scaling.
+While @pachzelt2013coupling coupled herbivores with LPJ-GUESS, later studies have implemented conceptually similar herbivore models with other DGVMs: @dangal2017integrating with DLEM and @zhu2018large with ORCHIDEE.
 
 MMM is a C++ library to be coupled with a dynamic vegetation model into a complete ecosystem model.
 The vegetation model provides forage, which the herbivores consume, and information about environmental conditions like air temperature.
 This way, herbivores and vegetation dynamically influence each other, namely through forage removal and nutrient cycling.
 
-Herbivores are simulated in distinct spatial units (so-called habitats), and all calculations are done on a per-area basis.
+Herbivores are simulated in distinct spatial units, which have no absolute area size because all calculations are done on a per-area basis.
 That means that MMM itself is not spatially explicit and makes no assumptions about the actual size of the area inhabited by herbivores.
 It is up to the vegetation model to give these spatial units meaning by linking them to spatially explicit entities like grid cells.
 With this flexibility, MMM can be used for studies on different scales, from local to continental.
 
 Modularity is a primary design goal of the library.
 Through the instruction file, users can turn mechanisms on or off and parametrize herbivore species or herbivore functional types.
-There are no hard-coded parameters, but all are exposed in the instruction file.
-The flexible framework allows developers to easily implement new mechanisms, for example a more detailed energy budget model or mortality from hunting or predation.
-In addition, MMM’s modular design makes unit testing easy.
+There are no hard-coded parameters; all are exposed in the instruction file.
+MMM’s flexible framework allows developers to easily implement new mechanisms, for example a more detailed energy budget model or mortality from hunting or predation.
 
 Developing mechanistic ecosystem models is typically an exploratory, iterative process.
 For a specific study, the modeler has to adjust parameters and mechanisms of a given model, either manually or programmatically.
@@ -67,7 +73,10 @@ In this process it is crucial to be able to move step-by-step from a simple to a
 While monolithic ecosystem models can easily become “black boxes,” whose the internal mechanisms have grown too complex to be understood intuitively, a modular model is more transparent.
 The modeler can configure the appropriate model complexity for the question at hand and this way learns about which mechanisms are likely driving the real-world ecosystem under study.
 
-Thanks to its modular design and its stable library interface, MMM can stay backward-compatible, and the same codebase can be used for different studies and different vegetation models.
-That benefits reproducibility.
-After bugs have been fixed, previous analyses can easily be reexecuted.
-Simulations can be repeated with other vegetation models in order to understand how their different assumptions impact plant–herbivore dynamics.
+Thanks to its modular design and its stable library interface, MMM can stay backward-compatible in future versions, and the same codebase can be used for different studies and different vegetation models.
+That benefits reproducibility in two ways.
+First, after bugs have been fixed, previous analyses can easily be reexecuted.
+Second, simulations can be repeated with other vegetation models in order to understand how their different assumptions impact plant–herbivore dynamics.
+
+At this point, MMM is being used by the author to simulate potential densities of mammoths in the last ice age.
+Here, MMM is coupled with the global dynamic vegetation model LPJ-GUESS [@smith2001representation, @smith2014foundations, @bokeolen2018estimating].
