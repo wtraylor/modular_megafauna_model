@@ -16,6 +16,7 @@ affiliations:
    index: 1
 date: DAY May 2021 # TODO
 bibliography: paper.bib
+link-citations: true
 ---
 
 <!--
