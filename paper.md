@@ -56,7 +56,7 @@ While @pachzelt2013coupling integrated African herbivores into LPJ-GUESS, a dyna
 To my knowledge, none of these implementations is reusable across different DGVMs, though.
 
 MMM is a C++ library that is supposed to be coupled with a dynamic vegetation model into a complete ecosystem model.
-The vegetation model provides forage, which the herbivores consume, and information about environmental conditions like air temperature.
+The vegetation model provides forage, which the herbivores consume, as well as information about environmental conditions like air temperature.
 This way, herbivores and vegetation dynamically influence each other, namely through forage removal and nutrient cycling.
 
 Herbivores are simulated in distinct spatial units, which have no absolute area size because all calculations are done on a per-area basis.
@@ -67,13 +67,12 @@ With this flexibility, MMM can be used for studies on different scales, from loc
 Modularity is a primary design goal of the library.
 Through the instruction file, users can turn mechanisms on or off and parametrize herbivore species or herbivore functional types.
 There are no hard-coded parameters; all are exposed in the instruction file.
-MMM’s flexible framework allows developers to easily implement new mechanisms, for example a more detailed energy budget model or mortality from hunting or predation.
+MMM’s flexible framework allows developers to integrate new mechanisms, for example a more detailed energy budget model, mortality from hunting and predation, or a new forage type.
 
+While monolithic ecosystem models can easily become “black boxes,” whose the internal mechanisms have grown too complex to be understood intuitively, a modular model is more transparent.
 Developing mechanistic ecosystem models is typically an exploratory, iterative process.
 For a specific study, the modeler has to adjust parameters and mechanisms of a given model, either manually or programmatically.
-In this process it is crucial to be able to move step-by-step from a simple to a more complex model design, as necessary.
-While monolithic ecosystem models can easily become “black boxes,” whose the internal mechanisms have grown too complex to be understood intuitively, a modular model is more transparent.
-The modeler can configure the appropriate model complexity for the question at hand and this way learns about which mechanisms are likely driving the real-world ecosystem under study.
+In this process it is crucial that the modeler can increase model complexity step by step, just enough to represent the mechanisms important for the research question.
 
 Thanks to its modular design and its stable library interface, MMM can stay backward-compatible in future versions, and the same codebase can be used for different studies and different vegetation models.
 That benefits reproducibility in two ways.
@@ -81,7 +80,7 @@ First, after bugs have been fixed, previous analyses can easily be reexecuted.
 Second, simulations can be repeated with other vegetation models in order to understand how their different assumptions impact plant–herbivore dynamics.
 
 At this point, MMM is being used by the author to simulate potential densities of mammoths in the last ice age.
-Here, MMM is coupled with the global dynamic vegetation model LPJ-GUESS [@smith2001representation, @smith2014foundations, @bokeolen2018estimating].
+Here, MMM is coupled with the global dynamic vegetation model LPJ-GUESS [@smith2001representation; @smith2014foundations; @bokeolen2018estimating].
 
 # Acknowledgements
 I thank my PhD supervisor Thomas Hickler and my colleagues Adrian Pachzelt, Matthew Forrest, and Theresa Stratmann for their support in model development and implementation.
