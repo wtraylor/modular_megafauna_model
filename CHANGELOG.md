@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ### Added
 - Code coverage badge with [codecov.io](https://codecov.io/gh/wtraylor/modular_megafauna_model/)
+- Software metadata in [codemeta format](https://codemeta.github.io/)
 
 ### Fixed
 - When configuring CMake with `BUILD_DEMO_SIMULATOR=ON` but `BUILD_TESTING=OFF`, the `megafauna.toml` instruction file was not copied even though `run_demo` needs it.
