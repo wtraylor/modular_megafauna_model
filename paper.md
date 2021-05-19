@@ -12,7 +12,7 @@ authors:
     orcid: 0000-0002-4813-1072
     affiliation: "1"
 affiliations:
- - name: BiK-F, Senckenberg
+ - name: Senckenberg Biodiversity and Climate Research Centre, Frankfurt am Main, Germany
    index: 1
 date: DAY May 2021 # TODO
 bibliography: paper.bib
