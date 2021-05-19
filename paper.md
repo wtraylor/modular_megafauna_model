@@ -48,12 +48,13 @@ The model thus does not prescribe carrying capacity, but instead simulates herbi
 
 Mechanistic modeling can help us understand the drivers behind real-world population dynamics.
 Bottom-up models can point out which physiological processes are understudied and which lower-level mechanisms appear most important for higher-level population effects [@deangelis2003praise].
-Once a model is sufficiently matured, its predictions can inform nature conservation management—an application that is urgently needed in light of the ongoing defaunation [@dirzo2014defaunation].
+Once a model is sufficiently matured, its predictions can inform nature conservation management—an application that is urgently needed in light of ongoing global defaunation [@dirzo2014defaunation].
 
 The currently implemented model concepts originate in large parts from @pachzelt2013coupling and the earlier works by @illius2000resource and @illius1999scaling.
-While @pachzelt2013coupling coupled herbivores with LPJ-GUESS, later studies have implemented conceptually similar herbivore models with other DGVMs: @dangal2017integrating with DLEM and @zhu2018large with ORCHIDEE.
+While @pachzelt2013coupling integrated African herbivores into LPJ-GUESS, a dynamic global vegetation model (DGVM), later studies have implemented conceptually similar herbivore models for other DGVMs: @dangal2017integrating for DLEM and @zhu2018large for ORCHIDEE.
+To my knowledge, none of these implementations is reusable across different DGVMs, though.
 
-MMM is a C++ library to be coupled with a dynamic vegetation model into a complete ecosystem model.
+MMM is a C++ library that is supposed to be coupled with a dynamic vegetation model into a complete ecosystem model.
 The vegetation model provides forage, which the herbivores consume, and information about environmental conditions like air temperature.
 This way, herbivores and vegetation dynamically influence each other, namely through forage removal and nutrient cycling.
 
