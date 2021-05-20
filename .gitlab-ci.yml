@@ -205,7 +205,9 @@ memcheck:
       demo_simulation.toml
       | tee memcheck.log"
     # If the error summary has not zero errors, the grep command will fail.
-    - "! grep --silent 'ERROR SUMMARY: 0 errors' memcheck.log"
+    # Note that the "!" doesn’t work without starting a subshell with
+    # parentheses. Compare <https://stackoverflow.com/a/53753605>.
+    - "(! grep --silent 'ERROR SUMMARY: 0 errors' memcheck.log)"
   artifacts:
     paths:
       - build/memcheck.log
