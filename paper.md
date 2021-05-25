@@ -43,21 +43,34 @@ Your paper should include:
 # Summary
 
 The Modular Megafauna Model (MMM) simulates populations of large, terrestrial herbivores (“megafauna”) through space and time.
-Herbivores feed, grow, reproduce, and die in daily simulation cycles.
-These lower-level mechanisms let the herbivore numbers dynamically rise and fall.
+
+Herbivore cohorts feed, grow, reproduce, and die in daily simulation cycles.
+Based on these physiological processes herbivore numbers rise and fall dynamically.
 The model thus does not prescribe carrying capacity, but instead simulates herbivore densities in a mechanistic, bottom-up approach.
 
+# Statement of Need
+
 Mechanistic modeling can help us understand the drivers behind real-world population dynamics.
-Bottom-up models can point out which physiological processes are understudied and which lower-level mechanisms appear most important for higher-level population effects [@deangelis2003praise].
-Once a model is sufficiently matured, its predictions can inform nature conservation management—an application that is urgently needed in light of ongoing global defaunation [@dirzo2014defaunation].
+Bottom-up models can point out which physiological processes are understudied and which mechanisms appear most important for emerging population effects [@deangelis2003praise].
+Once a model is sufficiently mature, its predictions can inform nature conservation management—an application that is urgently needed in light of ongoing global defaunation [@dirzo2014defaunation].
 
 The currently implemented model concepts originate in large parts from @pachzelt2013coupling and the earlier works by @illius2000resource and @illius1999scaling.
-While @pachzelt2013coupling integrated African herbivores into LPJ-GUESS, a dynamic global vegetation model (DGVM), later studies have implemented conceptually similar herbivore models for other DGVMs: @dangal2017integrating for DLEM and @zhu2018large for ORCHIDEE.
-To my knowledge, none of these implementations is reusable across different DGVMs, though.
+@pachzelt2013coupling integrated African grazers into LPJ-GUESS, a dynamic global vegetation model (DGVM) [@smith2001representation].
+Later studies have implemented conceptually similar grazer models for other DGVMs: @dangal2017integrating for DLEM and @zhu2018large for ORCHIDEE.
+However, to my knowledge, none of these implementations is reusable across different vegetation models.
 
-MMM is a C++ library that is supposed to be coupled with a dynamic vegetation model into a complete ecosystem model.
-The vegetation model provides forage, which the herbivores consume, as well as information about environmental conditions like air temperature.
+At this point, MMM is being used by the author to simulate potential densities of mammoths, steppe bison, and horse in the last ice age.
+Here, MMM is coupled with LPJ-GUESS [@smith2001representation; @smith2014implications], using daily grass growth [@bokeolen2018estimating].
+LPJ-GUESS is proprietary software and not publicly available.
+
+# Features
+
+MMM is a C++ library meant to be coupled with a dynamic vegetation model into a complete ecosystem model.
+Currently, the only forage is grass.
+The vegetation model simulates the amount of available forage, which the herbivores then consume.
+In addition, the vegetation model provides information about environmental conditions like air temperature.
 This way, herbivores and vegetation dynamically influence each other, namely through forage removal and nutrient cycling.
+MMM ships with a very simple vegetation model that demonstrates how the coupling can be implemented.
 
 Herbivores are simulated in distinct spatial units, which have no absolute area size because all calculations are done on a per-area basis.
 That means that MMM itself is not spatially explicit and makes no assumptions about the actual size of the area inhabited by herbivores.
@@ -66,10 +79,11 @@ With this flexibility, MMM can be used for studies on different scales, from loc
 
 Modularity is a primary design goal of the library.
 Through the instruction file, users can turn mechanisms on or off and parametrize herbivore species or herbivore functional types.
-There are no hard-coded parameters; all are exposed in the instruction file.
+Parameters include, for example, body mass, components of energy expenditure, maximum feed intake, background mortality, body fat reserves, etc.
+There are no hard-coded parameters; all can be defined in the instruction file.
 MMM’s flexible framework allows developers to integrate new mechanisms, for example a more detailed energy budget model, mortality from hunting and predation, or a new forage type.
 
-While monolithic ecosystem models can easily become “black boxes,” whose the internal mechanisms have grown too complex to be understood intuitively, a modular model is more transparent.
+While monolithic ecosystem models can easily become “black boxes,” whose internal mechanisms have grown too complex to be understood intuitively, a modular model is more transparent.
 Developing mechanistic ecosystem models is typically an exploratory, iterative process.
 For a specific study, the modeler has to adjust parameters and mechanisms of a given model, either manually or programmatically.
 In this process it is crucial that the modeler can increase model complexity step by step, just enough to represent the mechanisms important for the research question.
@@ -78,9 +92,6 @@ Thanks to its modular design and its stable library interface, MMM can stay back
 That benefits reproducibility in two ways.
 First, after bugs have been fixed, previous analyses can easily be reexecuted.
 Second, simulations can be repeated with other vegetation models in order to understand how their different assumptions impact plant–herbivore dynamics.
-
-At this point, MMM is being used by the author to simulate potential densities of mammoths in the last ice age.
-Here, MMM is coupled with the global dynamic vegetation model LPJ-GUESS [@smith2001representation; @smith2014foundations; @bokeolen2018estimating].
 
 # Acknowledgements
 I thank my PhD supervisor Thomas Hickler and my colleagues Adrian Pachzelt, Matthew Forrest, and Theresa Stratmann for their support in model development and implementation.
