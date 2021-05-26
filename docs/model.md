@@ -291,7 +291,7 @@ NE = ME * k_m = DE * \frac{ME}{DE} * k_m = GE * DMD * \frac{ME}{DE} * k_m
 
 #### Thermoregulation by Conductance {#sec_thermoregulation}
 
-This model of thermoregulation is often called the **Scholander-Irving model** and was published in two seminal papers in 1950: \cite scholander1950adaptation \cite scholander1950heat.
+This model of thermoregulation is often called the **Scholander-Irving model** and was published in two seminal papers in 1950: \cite scholander1950adaptation \cite scholander1950heat.
 The more detailed implementation is taken from Peters (1983) \cite peters1983ecological.
 
 Homeothermic animals have extra energy costs to maintain their body core temperature.
