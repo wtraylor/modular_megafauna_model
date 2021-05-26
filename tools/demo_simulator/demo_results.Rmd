@@ -67,6 +67,14 @@ ggplot(mass.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
     x = "Simulation Year",
     y = "Mean Mass Density [kg/ha]",
     title = "Mass Density per Habitat Group"
+  ) +
+  annotate(
+    geom = "text",
+    x = 0,
+    hjust = 0,
+    y = max(mass.tbl$VALUE),
+    vjust = 0,
+    label = paste("Mean =", round(mean(mass.tbl$VALUE)), "kg/ha")
   )
 ```
 
