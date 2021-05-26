@@ -20,6 +20,48 @@
   <defs
      id="defs2">
     <marker
+       style="overflow:visible;"
+       id="marker1516"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Send"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.3) rotate(180) translate(-2.3,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#dedede;stroke-opacity:1;fill:#dedede;fill-opacity:1"
+         id="path1514" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker1422"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Send"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.2) rotate(180) translate(6,0)"
+         style="fill-rule:evenodd;stroke:#dedede;stroke-width:1pt;stroke-opacity:1;fill:#dedede;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path1082" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="Arrow2Send"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Send"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.3) rotate(180) translate(-2.3,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#dedede;stroke-opacity:1;fill:#dedede;fill-opacity:1"
+         id="path1100" />
+    </marker>
+    <marker
        inkscape:stockid="Arrow1Send"
        orient="auto"
        refY="0"
@@ -198,11 +240,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7071068"
-     inkscape:cx="281.72215"
-     inkscape:cy="341.64981"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="388.13015"
+     inkscape:cy="161.64798"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1916"
      inkscape:window-height="1177"
@@ -284,7 +326,7 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cssc" />
     <path
-       style="opacity:1;fill:none;stroke:#dedede;stroke-width:7.165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker5068)"
+       style="opacity:1;fill:none;stroke:#dedede;stroke-width:7.165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker1516)"
        d="M 200.93558,135.99117 H 363.22572"
        id="path5052"
        inkscape:connector-curvature="0"
@@ -493,10 +535,11 @@
        d="m -110.00722,165.2151 h 17.171193"
        style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2422)" />
     <path
-       style="opacity:1;fill:none;stroke:#dedede;stroke-width:7.165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Send)"
-       d="m 42.493847,239.19137 c 0,0 49.322849,-103.87154 125.720133,-103.20021"
+       style="opacity:1;fill:none;stroke:#dedede;stroke-width:7.16500011;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Send)"
+       d="M 42.185581,239.19138 170.48133,144.20369"
        id="path4830"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
     <rect
        y="230.6358"
        x="21.605827"
@@ -782,10 +825,10 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        id="text5014"
-       transform="translate(-4.2333333,-3.175)"><textPath
+       transform="translate(29.516364,-32.67379)"><textPath
          xlink:href="#path4830"
          startOffset="40.000001%"
-         id="textPath5030">growth curve</textPath></text>
+         id="textPath5030">growth</textPath></text>
     <path
        style="opacity:0.2;fill:none;stroke:#000000;stroke-width:1.465;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2.93, 1.465;stroke-dashoffset:0;stroke-opacity:1"
        d="M 200.93557,80.799796 H 370.15208"
