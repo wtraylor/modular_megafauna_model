@@ -58,7 +58,7 @@ The world of the megafauna model is comprised of **simulation units.**
 Each such unit consists of a **habitat** and the herbivore **populations** inhabiting it.
 The habitat must be implemented by the outside vegetation model.
 Output can be spatially aggregated over several habitats by assigning multiple habitats to the same **aggregation unit.**
-Again, this is done done by the habitat implementation of the vegetation model.
+Again, this is done by the habitat implementation of the vegetation model.
 What kind of **herbivores** populate the world can be defined by the user.
 **Cohorts** are the first herbivore type implemented.
 
