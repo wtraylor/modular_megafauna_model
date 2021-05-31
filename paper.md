@@ -42,7 +42,7 @@ Your paper should include:
 
 # Summary
 
-The Modular Megafauna Model (MMM) simulates populations of large, terrestrial herbivores (“megafauna”) through space and time.
+The Modular Megafauna Model (MMM) simulates populations of large, terrestrial herbivores (megafauna) through space and time.
 
 Herbivore cohorts feed, grow, reproduce, and die in daily simulation cycles.
 Based on these physiological processes herbivore numbers rise and fall dynamically.
@@ -68,20 +68,20 @@ LPJ-GUESS is proprietary software and not publicly available.
 MMM is a C++ library meant to be coupled with a dynamic vegetation model into a complete ecosystem model.
 Currently, the only forage is grass.
 The vegetation model simulates the amount of available forage, which the herbivores then consume.
-In addition, the vegetation model provides information about environmental conditions like air temperature.
+In addition, the vegetation model provides information about environmental conditions, such as air temperature.
 This way, herbivores and vegetation dynamically influence each other, namely through forage removal and nutrient cycling.
 MMM ships with a very simple vegetation model that demonstrates how the coupling can be implemented.
 
 Herbivores are simulated in distinct spatial units, which have no absolute area size because all calculations are done on a per-area basis.
 That means that MMM itself is not spatially explicit and makes no assumptions about the actual size of the area inhabited by herbivores.
-It is up to the vegetation model to give these spatial units meaning by linking them to spatially explicit entities like grid cells.
+It is up to the vegetation model to give these spatial units meaning by linking them to spatially explicit entities, such as grid cells.
 With this flexibility, MMM can be used for studies on different scales, from local to continental.
 
 Modularity is a primary design goal of the library.
 Through the instruction file, users can turn mechanisms on or off and parametrize herbivore species or herbivore functional types.
 Parameters include, for example, body mass, components of energy expenditure, maximum feed intake, background mortality, body fat reserves, etc.
 There are no hard-coded parameters; all can be defined in the instruction file.
-MMM’s flexible framework allows developers to integrate new mechanisms, for example a more detailed energy budget model, mortality from hunting and predation, or a new forage type.
+MMM’s flexible framework allows developers to integrate new mechanisms, such as a more detailed energy budget model, mortality from hunting and predation, or a new forage type.
 
 While monolithic ecosystem models can easily become “black boxes,” whose internal mechanisms have grown too complex to be understood intuitively, a modular model is more transparent.
 Developing mechanistic ecosystem models is typically an exploratory, iterative process.
@@ -89,7 +89,7 @@ For a specific study, the modeler has to adjust parameters and mechanisms of a g
 In this process it is crucial that the modeler can increase model complexity step by step, just enough to represent the mechanisms important for the research question.
 
 Thanks to its modular design and its stable library interface, MMM can stay backward-compatible in future versions, and the same codebase can be used for different studies and different vegetation models.
-That benefits reproducibility in two ways.
+This benefits reproducibility in two ways.
 First, after bugs have been fixed, previous analyses can easily be reexecuted.
 Second, simulations can be repeated with other vegetation models in order to understand how their different assumptions impact plant–herbivore dynamics.
 
