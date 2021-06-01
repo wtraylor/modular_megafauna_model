@@ -325,7 +325,7 @@ The critical parameter for thermoregulatory expenditure is the **whole-body cond
 The conductance can be approximated from the average conductivity and the body surface.
 Conductivity is the inverse of insulation: it is the heat flow per temperature difference per area.
 
-Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ ([Hudson & White 1985](\cite hudson1985bioenergetics)).
+Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ (Hudson & White 1985\cite hudson1985bioenergetics).
 
 #### Foraging {#sec_foraging}
 
