@@ -54,8 +54,8 @@ physical_maturity_female = 14
 physical_maturity_male = 14
 sexual_maturity = 14
 [hft.mortality]
-adult_rate = 0.5962466
-juvenile_rate = 0.8349691
+adult_rate = 0.1
+juvenile_rate = 0.2
 minimum_density_threshold = 0.8344379
 shift_body_condition_for_starvation = true
 factors  = [ "Background", "Lifespan", "StarvationIlliusOConnor2000" ]

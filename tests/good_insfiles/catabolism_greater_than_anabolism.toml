@@ -57,7 +57,7 @@ minimum_density_threshold = 0.1899162
 shift_body_condition_for_starvation = true
 factors  = [ "Background", "Lifespan", "StarvationIlliusOConnor2000" ]
 [hft.reproduction]
-annual_maximum = 0.2273028
+annual_maximum = 0.4
 gestation_length = 21
 model = "Logistic"
 [hft.reproduction.logistic]
