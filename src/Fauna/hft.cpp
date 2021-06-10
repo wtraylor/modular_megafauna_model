@@ -15,6 +15,20 @@
 
 using namespace Fauna;
 
+double GivenPointAllometry::extrapolate(const double bodymass_male_adult,
+                                        const double bodymass) const {
+  if (bodymass <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::GivenPointAllometry::extrapolate() `bodymass` is negative or "
+        "zero.");
+  if (bodymass_male_adult <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::GivenPointAllometry::extrapolate() `bodymass_male_adult` is "
+        "negative or zero.");
+  const double c = value_male_adult * pow(bodymass_male_adult, -exponent);
+  return c * pow(bodymass, exponent);
+}
+
 bool Hft::is_valid(const Parameters& params, std::string& msg) const {
   bool is_valid = true;
 

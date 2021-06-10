@@ -68,8 +68,6 @@ struct AllometryParameters {
  * (\ref Hft::body_mass_male). This is because males are typically larger than
  * females. Allometric extrapolating from smaller females to larger males would
  * be more uncertain than the other way round.
- *
- * \see \ref calc_allometry()
  */
 struct GivenPointAllometry {
   /// Exponent \f$e\f$ in \f$f(M) = c * M^e\f$.
@@ -77,6 +75,17 @@ struct GivenPointAllometry {
 
   /// Value \f$f(m)\f$ if \f$m\f$ is \ref Hft::body_mass_male.
   double value_male_adult;
+
+  /// Calculate the value for a different body mass.
+  /**
+   * \param bodymass_male_adult The body mass of an adult, male animal. See
+   * \ref Hft::body_mass_male.
+   * \param bodymass Current body mass of the animal for which the value is to
+   * be calculated. \throw std::invalid_argument If any given parameter is
+   * outside of the allowed range.
+   */
+  double extrapolate(const double bodymass_male_adult,
+                     const double bodymass) const;
 };
 
 /// Selector for a function of how to calculate whole-body conductance.
