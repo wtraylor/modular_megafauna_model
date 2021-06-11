@@ -1,77 +1,135 @@
-# SPDX-FileCopyrightText: 2021 W. Traylor <wolfgang.traylor@senckenberg.de>
+# SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
 #
 # SPDX-License-Identifier: CC0-1.0
 
+# This instruction file checks that catabolism efficiency can theoretically be
+# higher than anabolism efficiency.
+# Reminder:
+#     anabolism efficiency = k_maintenance / k_fat
+
+[simulation]
+establishment_interval = 3650 # every 10 years
+forage_distribution    = "Equally"
+herbivore_type         = "Cohort"
+one_hft_per_habitat    = true
+
 [forage]
-gross_energy.grass = 17.80497
-[[hft]]
-name = "Mammoth"
-[hft.body_fat]
-birth = 0.2255181
-catabolism_efficiency = 0.8969973
-deviation = 0.1498836
-gross_energy = 39.60677
-maximum = 0.2491841
-maximum_daily_gain = 0
-[hft.body_mass]
-birth = 79
-empty = 0.8447899
-female = 1634
-male = 2901
-[hft.breeding_season]
-length = 16
-start = 130
-[hft.digestion]
-digestibility_multiplier = 0.9252448
-k_fat = 0.6798827
-k_maintenance = 0.6004329
-limit = "Allometric"
-me_coefficient = 0.7887246
-net_energy_model = "GrossEnergyFraction"
-[hft.digestion.allometric]
-exponent = -0.2840395
-fraction_male_adult = 0.01914799
-[hft.establishment]
-density = 2.261742
-[hft.establishment.age_range]
-first = 1
-last = 9
-[hft.expenditure]
-components = "FieldMetabolicRate"
-fmr_multiplier = 2.534487
-[hft.expenditure.basal_rate]
-exponent = 0.7159605
-mj_per_day_male_adult = 7.5
-[hft.foraging]
-diet_composer = "PureGrazer"
-limits = [ ]
-[hft.life_history]
-lifespan = 65
-physical_maturity_female = 34
-physical_maturity_male = 35
-sexual_maturity = 10
-[hft.mortality]
-adult_rate = 0.05970409
-juvenile_rate = 0.2592141
-minimum_density_threshold = 0.1899162
-shift_body_condition_for_starvation = true
-factors  = [ "Background", "Lifespan", "StarvationIlliusOConnor2000" ]
-[hft.reproduction]
-annual_maximum = 0.4
-gestation_length = 21
-model = "Logistic"
-[hft.reproduction.logistic]
-growth_rate = 37.19164
-midpoint = 0.4191419
+gross_energy = { grass = 19.0 } # MJ/kgDM
+
 [output]
 format = "TextTables"
 interval = "Annual"
+
 [output.text_tables]
 directory = "."
 precision = 4
-tables = "mass_density_per_hft"
-[simulation]
-establishment_interval = 1931
-forage_distribution = "Equally"
-herbivore_type = "Cohort"
-one_hft_per_habitat = true
+tables = [
+  "available_forage",
+  "digestibility",
+  "eaten_forage_per_ind",
+  "eaten_nitrogen_per_ind",
+  "mass_density_per_hft"
+]
+
+###############################################################################
+
+[[group]]
+name = "all_hfts"
+
+[group.body_fat]
+birth = 0.2
+# ...
+
+# Add any HFT parameters here, but prefix the tables/sections with "group."
+# instead of "hft.". Any HFT parameter that is not found in the HFT table
+# itself will be taken from the groups the HFT belongs to.
+
+[[group]]
+name = "hindgut_fermenters"
+[group.digestion]
+digestibility_multiplier = 0.9
+me_coefficient           = 0.7
+i_g_1992_ijk             = [0.108, 3.284, 0.080]
+
+[[group]]
+name = "ruminants"
+[group.digestion]
+me_coefficient = 0.8
+i_g_1992_ijk   = [0.034, 3.565, 0.077]
+
+###############################################################################
+
+[[hft]]
+
+name   = "example"
+groups = [ "ruminants", "all_hfts" ] # first overrides last group
+
+[hft.body_fat]
+birth                 = 0.2   # kg/kg
+catabolism_efficiency = 0.8   # fraction
+deviation             = 0.125 # body condition
+gross_energy          = 39.3  # MJ/kg
+maximum               = 0.3   # kg/kg
+maximum_daily_gain    = 0.05  # kg/kg/day
+
+[hft.body_mass]
+birth  = 5    # kg/ind
+empty  = 0.87 # fraction
+female = 50   # kg/ind
+male   = 70   # kg/ind
+
+[hft.breeding_season]
+length = 30  # days
+start  = 121 # Julian day
+
+[hft.digestion]
+allometric       = { fraction_male_adult = 0.05, exponent = -0.25 }
+fixed_fraction   = 0.05 # kgDM per kg body mass
+k_fat            = 0.5
+k_maintenance    = 0.5
+limit            = "Allometric"
+net_energy_model = "GrossEnergyFraction"
+
+[hft.establishment]
+age_range = { first = 1, last = 15 } # years
+density   = 1.0 # ind/km²
+
+[hft.expenditure]
+basal_rate     = { mj_per_day_male_adult = 7.5, exponent = 0.75 }
+components     = [ "FieldMetabolicRate" ]
+fmr_multiplier = 2.0
+
+[hft.foraging]
+diet_composer           = "PureGrazer"
+half_max_intake_density = 20 # gDM/m²
+limits                  = []
+
+[hft.life_history]
+lifespan                 = 16 # years
+physical_maturity_female = 3  # years
+physical_maturity_male   = 3  # years
+sexual_maturity          = 3  # years
+
+[hft.mortality]
+adult_rate = 0.1 # 1/year
+factors = [ "Background", "Lifespan", "StarvationIlliusOConnor2000" ]
+juvenile_rate = 0.3 # 1/year
+minimum_density_threshold = 0.5 # fraction of establishment density
+shift_body_condition_for_starvation = true
+
+[hft.reproduction]
+annual_maximum   = 1.0 # offspring per female per year
+gestation_length = 9   # months
+logistic         = { growth_rate = 15.0, midpoint = 0.3 }
+model            = "ConstantMaximum"
+
+[hft.thermoregulation]
+conductance = "BradleyDeavers1980"
+core_temperature = 38 # °C
+
+###############################################################################
+# You can add more HFTs like so:
+# [[hft]]
+# name = "new_hft"
+# [hft.body_fat]
+# ...
