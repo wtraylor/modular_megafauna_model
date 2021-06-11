@@ -140,11 +140,20 @@ bool Hft::check_intake_vs_expenditure(const Parameters& params,
          body_mass_birth)[ForageType::Grass];
   }
 
+  if (digestion_limit == DigestiveLimit::FixedFraction &&
+      foraging_diet_composer == DietComposer::PureGrazer) {
+    max_intake_male = (energy_content * digestion_fixed_fraction *
+                       body_mass_male)[ForageType::Grass];
+    max_intake_female = (energy_content * digestion_fixed_fraction *
+                         body_mass_female)[ForageType::Grass];
+    max_intake_newborn = (energy_content * digestion_fixed_fraction *
+                          body_mass_birth)[ForageType::Grass];
+  }
+
   valid_male &= max_intake_male > min_exp_male;
   valid_female &= max_intake_female > min_exp_female;
   valid_newborn &= max_intake_newborn > min_exp_newborn;
 
-  // TODO: Other digestive limits
   if (!valid_male || !valid_female || !valid_newborn) {
     msg << "Based on the digestive limit and the energy expenditure, "
            "herbivores will never be able to eat enough forage to meet their "
