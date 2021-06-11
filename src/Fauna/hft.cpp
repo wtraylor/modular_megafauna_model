@@ -95,7 +95,7 @@ bool Hft::check_intake_vs_expenditure(const Parameters& params,
     min_exp_newborn =
         expenditure_basal_rate.extrapolate(body_mass_male, body_mass_birth);
     min_exp_male = expenditure_basal_rate.value_male_adult;
-    min_exp_newborn =
+    min_exp_female =
         expenditure_basal_rate.extrapolate(body_mass_male, body_mass_female);
     // Then add the FMR multiplier.
     if (expenditure_components.count(
