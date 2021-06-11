@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-# In this instruction file, the expenditure is so extremely that that it can
-# never be balanced by intake.
+# In this instruction file, the expenditure is so extremely high that that it
+# can never be balanced by intake.
 
 [simulation]
 establishment_interval = 3650 # every 10 years

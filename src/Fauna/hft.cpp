@@ -86,6 +86,7 @@ bool Hft::check_mortality_vs_reproduction(const Parameters& params,
 bool Hft::check_intake_vs_expenditure(const Parameters& params,
                                       std::ostream& msg) const {
   bool valid_male = true, valid_female = true, valid_newborn = true;
+
   // Minimum expenditure exceeds maximum energy intake
   double min_exp_newborn, min_exp_male, min_exp_female = 0.0;  // MJ/day/ind
   if (expenditure_components.count(ExpenditureComponent::BasalMetabolicRate) ||
@@ -104,6 +105,7 @@ bool Hft::check_intake_vs_expenditure(const Parameters& params,
       min_exp_female *= expenditure_fmr_multiplier;
     }
   }
+
   // Some reasonably high digestibility value, at least for wild forage.
   static const double DIGESTIBILITY = 0.7;
   // Set default energy content to a very high number so that the test won’t
@@ -115,25 +117,35 @@ bool Hft::check_intake_vs_expenditure(const Parameters& params,
         params.forage_gross_energy, Digestibility(DIGESTIBILITY),
         digestion_me_coefficient, digestion_k_maintenance);
   }
+
   if (digestion_limit == DigestiveLimit::Allometric &&
       foraging_diet_composer == DietComposer::PureGrazer) {
     // Male adults
-    if ((energy_content * digestion_allometric.value_male_adult *
-         body_mass_male)[ForageType::Grass] < min_exp_male) {
-      valid_male = false;
-    }
-    // TODO: Females
-    // TODO: Juveniles
+    valid_male &= ((energy_content * digestion_allometric.value_male_adult *
+                    body_mass_male)[ForageType::Grass] < min_exp_male);
+    // Female adults
+    valid_female &=
+        ((energy_content *
+          digestion_allometric.extrapolate(body_mass_male, body_mass_female) *
+          body_mass_female)[ForageType::Grass] < min_exp_female);
+    // Newborns
+    valid_newborn &=
+        ((energy_content *
+          digestion_allometric.extrapolate(body_mass_male, body_fat_birth) *
+          body_mass_birth)[ForageType::Grass] < min_exp_newborn);
   }
+
   // TODO: Other digestive limits
   if (!valid_male || !valid_female || !valid_newborn) {
     msg << "Based on the digestive limit and the energy expenditure, "
            "herbivores will never be able to eat enough forage to meet their "
            "energy needs. (This assumes rich forage with a digestibility of "
         << DIGESTIBILITY * 100 << "%.)" << std::endl;
-    msg << "This affects: " << (!valid_male ? "males " : "")
-        << (!valid_female ? "females " : "")
-        << (!valid_newborn ? "newborns" : "") << std::endl;
+    msg << "This affects: ";
+    if (!valid_male) msg << "males ";
+    if (!valid_female) msg << "females ";
+    if (!valid_newborn) msg << "newborns";
+    msg << std::endl;
   }
   return valid_male && valid_female && valid_newborn;
 }
