@@ -8,8 +8,8 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
-#include "catch.hpp"
 #include "cohort_population.h"
+#include "catch.hpp"
 #include "dummy_hft.h"
 #include "environment.h"
 #include "herbivore_cohort.h"

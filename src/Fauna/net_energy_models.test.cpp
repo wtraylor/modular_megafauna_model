@@ -8,10 +8,10 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "net_energy_models.h"
 #include <sstream>
 #include "catch.hpp"
 #include "hft.h"
-#include "net_energy_models.h"
 #include "parameters.h"
 using namespace Fauna;
 

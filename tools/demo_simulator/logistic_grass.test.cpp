@@ -8,8 +8,8 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
-#include "catch.hpp"
 #include "logistic_grass.h"
+#include "catch.hpp"
 
 using namespace Fauna;
 using namespace Fauna::Demo;

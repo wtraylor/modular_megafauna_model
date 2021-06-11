@@ -8,9 +8,9 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "herbivore_cohort.h"
 #include "catch.hpp"
 #include "dummy_hft.h"
-#include "herbivore_cohort.h"
 #include "parameters.h"
 using namespace Fauna;
 

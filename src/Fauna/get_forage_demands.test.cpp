@@ -8,9 +8,9 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "get_forage_demands.h"
 #include "catch.hpp"
 #include "dummy_hft.h"
-#include "get_forage_demands.h"
 #include "herbivore_base.h"
 #include "parameters.h"
 

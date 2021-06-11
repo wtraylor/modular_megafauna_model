@@ -8,9 +8,9 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "fileystem.h"
 #include <fstream>
 #include "catch.hpp"
-#include "fileystem.h"
 
 using namespace Fauna;
 

@@ -8,10 +8,10 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "insfile_reader.h"
 #include "catch.hpp"
 #include "fileystem.h"
 #include "hft.h"
-#include "insfile_reader.h"
 using namespace Fauna;
 
 TEST_CASE("Fauna::InsfileReader") {
