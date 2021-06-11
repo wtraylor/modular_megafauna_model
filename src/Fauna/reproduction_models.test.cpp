@@ -8,8 +8,8 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
-#include "catch.hpp"
 #include "reproduction_models.h"
+#include "catch.hpp"
 using namespace Fauna;
 
 TEST_CASE("Fauna::ReproductionLogistic", "") {

@@ -8,8 +8,8 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
-#include "catch.hpp"
 #include "combined_data.h"
+#include "catch.hpp"
 #include "dummy_hft.h"
 #include "parameters.h"
 using namespace Fauna;

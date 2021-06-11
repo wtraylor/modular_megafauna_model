@@ -8,6 +8,7 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "world_constructor.h"
 #include "catch.hpp"
 #include "cohort_population.h"
 #include "dummy_habitat.h"
@@ -16,7 +17,6 @@
 #include "population_interface.h"
 #include "population_list.h"
 #include "simulation_unit.h"
-#include "world_constructor.h"
 using namespace Fauna;
 
 TEST_CASE("Fauna::WorldConstructor", "") {

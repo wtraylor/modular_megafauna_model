@@ -8,11 +8,11 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "feed_herbivores.h"
 #include <list>
 #include "catch.hpp"
 #include "dummy_herbivore.h"
 #include "dummy_hft.h"
-#include "feed_herbivores.h"
 #include "forage_distribution_algorithms.h"
 #include "habitat_forage.h"
 #include "hft.h"

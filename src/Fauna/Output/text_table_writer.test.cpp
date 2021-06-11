@@ -8,6 +8,7 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "text_table_writer.h"
 #include <unistd.h>
 #include <cstdio>
 #include <cstdlib>
@@ -19,7 +20,6 @@
 #include "datapoint.h"
 #include "dummy_hft.h"
 #include "fileystem.h"
-#include "text_table_writer.h"
 
 using namespace Fauna;
 using namespace Fauna::Output;

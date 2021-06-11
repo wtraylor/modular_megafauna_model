@@ -8,10 +8,10 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "herbivore_base.h"
 #include "catch.hpp"
 #include "dummy_herbivore_base.h"
 #include "dummy_hft.h"
-#include "herbivore_base.h"
 #include "parameters.h"
 using namespace Fauna;
 

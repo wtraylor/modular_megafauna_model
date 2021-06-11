@@ -8,9 +8,9 @@
  * \copyright LGPL-3.0-or-later
  * \date 2020
  */
+#include "world.h"
 #include "catch.hpp"
 #include "date.h"
-#include "world.h"
 using namespace Fauna;
 
 TEST_CASE("FAUNA::World", "") {

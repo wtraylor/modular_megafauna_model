@@ -8,8 +8,8 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
-#include "catch.hpp"
 #include "expenditure_components.h"
+#include "catch.hpp"
 using namespace Fauna;
 
 TEST_CASE("Fauna::get_expenditure_taylor_1981()") {

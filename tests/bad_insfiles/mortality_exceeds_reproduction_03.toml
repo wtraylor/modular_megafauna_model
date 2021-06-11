@@ -2,10 +2,23 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-# This instruction file checks that catabolism efficiency can theoretically be
-# higher than anabolism efficiency.
-# Reminder:
-#     anabolism efficiency = k_maintenance / k_fat
+# Only females contribute to new offspring, so one female must give birth to
+# more than 2.0 animals that survive until sexual maturity.
+# Over the course of her reproductive lifespan (3--16 years), a female may may
+# give, at a maximum rate, birth to this many animals:
+#  (16-3) * 0.4 = 5.2
+# But that must also consider the chance of the female dying, so we include the
+# annual adult survival rate (0.9) over the course of her reproductive
+# lifespan:
+#   0.4 + 0.4 * 0.9 + 0.4 * 0.9^2 + ... + 0.4 * 0.9^(16-3)
+#   = 0.4 * (1 + 0.9 + 0.9^2 + ... + 0.9^13) = 3.084928
+# Probability of survival of a female mammoth until sexual maturity is a
+# combination of the survival rate of juveniles (0.7) and adults (0.9):
+#   0.7 * 0.9^3 = 0.5103
+# Combining the two, we have the effective (maximum) reproduction rate of one
+# female over her whole lifespan:
+#   0.5103 * 3.084928 = 1.574239
+# That is below the required 2.0, and therefore the population is not viable.
 
 [simulation]
 establishment_interval = 3650 # every 10 years
@@ -86,7 +99,7 @@ start  = 121 # Julian day
 allometric       = { fraction_male_adult = 0.05, exponent = -0.25 }
 fixed_fraction   = 0.05 # kgDM per kg body mass
 k_fat            = 0.5
-k_maintenance    = 0.5
+k_maintenance    = 0.7
 limit            = "Allometric"
 net_energy_model = "GrossEnergyFraction"
 
@@ -118,7 +131,7 @@ minimum_density_threshold = 0.5 # fraction of establishment density
 shift_body_condition_for_starvation = true
 
 [hft.reproduction]
-annual_maximum   = 1.0 # offspring per female per year
+annual_maximum   = 0.4 # ERROR!
 gestation_length = 9   # months
 logistic         = { growth_rate = 15.0, midpoint = 0.3 }
 model            = "ConstantMaximum"

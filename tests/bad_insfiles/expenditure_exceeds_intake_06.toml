@@ -1,9 +1,6 @@
-# SPDX-FileCopyrightText: 2020 Wolfgang Traylor <wolfgang.traylor@senckenberg.de>
+# SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
 #
-# SPDX-License-Identifier: CC-BY-4.0
-
-# This instruction file uses single values that shall be parsed like
-# one-element arrays.
+# SPDX-License-Identifier: CC0-1.0
 
 [simulation]
 establishment_interval = 3650 # every 10 years
@@ -21,9 +18,33 @@ interval = "Annual"
 [output.text_tables]
 directory = "."
 precision = 4
-tables = "digestibility" # SINGLE
+tables = [
+  "available_forage",
+  "digestibility",
+  "eaten_forage_per_ind",
+  "eaten_nitrogen_per_ind",
+  "mass_density_per_hft"
+]
 
 ###############################################################################
+
+[[group]]
+name = "all_hfts"
+
+[group.body_fat]
+birth = 0.2
+# ...
+
+# Add any HFT parameters here, but prefix the tables/sections with "group."
+# instead of "hft.". Any HFT parameter that is not found in the HFT table
+# itself will be taken from the groups the HFT belongs to.
+
+[[group]]
+name = "hindgut_fermenters"
+[group.digestion]
+digestibility_multiplier = 0.9
+me_coefficient           = 0.7
+i_g_1992_ijk             = [0.108, 3.284, 0.080]
 
 [[group]]
 name = "ruminants"
@@ -36,7 +57,7 @@ i_g_1992_ijk   = [0.034, 3.565, 0.077]
 [[hft]]
 
 name   = "example"
-groups = "ruminants" # SINGLE
+groups = [ "ruminants", "all_hfts" ] # first overrides last group
 
 [hft.body_fat]
 birth                 = 0.2   # kg/kg
@@ -57,8 +78,7 @@ length = 30  # days
 start  = 121 # Julian day
 
 [hft.digestion]
-allometric       = { fraction_male_adult = 0.05, exponent = 0.75 }
-fixed_fraction   = 0.10 # kgDM per kg body mass
+fixed_fraction   = 0.1 # kgDM per kg body mass
 k_fat            = 0.5
 k_maintenance    = 0.7
 limit            = "FixedFraction"
@@ -69,7 +89,8 @@ age_range = { first = 1, last = 15 } # years
 density   = 1.0 # ind/km²
 
 [hft.expenditure]
-basal_rate     = { mj_per_day_male_adult = 7.5, exponent = 0.75 }
+basal_rate.mj_per_day_male_adult = 10
+basal_rate.exponent = 0.75
 components     = [ "FieldMetabolicRate" ]
 fmr_multiplier = 2.0
 
@@ -86,13 +107,13 @@ sexual_maturity          = 3  # years
 
 [hft.mortality]
 adult_rate = 0.1 # 1/year
-factors = "Background"
+factors = [ "Background", "Lifespan", "StarvationIlliusOConnor2000" ]
 juvenile_rate = 0.3 # 1/year
 minimum_density_threshold = 0.5 # fraction of establishment density
 shift_body_condition_for_starvation = true
 
 [hft.reproduction]
-annual_maximum   = 1.0 # offspring per female per year
+annual_maximum   = 0.9
 gestation_length = 9   # months
 logistic         = { growth_rate = 15.0, midpoint = 0.3 }
 model            = "ConstantMaximum"
@@ -100,3 +121,10 @@ model            = "ConstantMaximum"
 [hft.thermoregulation]
 conductance = "BradleyDeavers1980"
 core_temperature = 38 # °C
+
+###############################################################################
+# You can add more HFTs like so:
+# [[hft]]
+# name = "new_hft"
+# [hft.body_fat]
+# ...

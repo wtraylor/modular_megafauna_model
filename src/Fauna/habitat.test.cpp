@@ -8,9 +8,9 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "habitat.h"
 #include "catch.hpp"
 #include "dummy_habitat.h"
-#include "habitat.h"
 #include "habitat_data.h"
 using namespace Fauna;
 using namespace Fauna::Output;
