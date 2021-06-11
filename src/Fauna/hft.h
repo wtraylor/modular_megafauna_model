@@ -654,6 +654,15 @@ class Hft {
    */
   bool check_mortality_vs_reproduction(const Parameters& params,
                                        std::ostream& msg) const;
+
+  /// Check if minimum expenditure exceeds maximum energy intake.
+  /**
+   * \param[in] params The global simulation parameters.
+   * \param[out] msg Output stream for warning or error messages for users.
+   * \return true if the object has valid values
+   */
+  bool check_intake_vs_expenditure(const Parameters& params,
+                                   std::ostream& msg) const;
 };
 
 }  // namespace Fauna

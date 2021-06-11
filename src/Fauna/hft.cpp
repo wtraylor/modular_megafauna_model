@@ -83,6 +83,56 @@ bool Hft::check_mortality_vs_reproduction(const Parameters& params,
   return is_valid;
 }
 
+bool Hft::check_intake_vs_expenditure(const Parameters& params,
+                                      std::ostream& msg) const {
+  bool is_valid = true;
+  // Minimum expenditure exceeds maximum energy intake
+  double min_exp_newborn, min_exp_male, min_exp_female = 0.0;  // MJ/day/ind
+  if (expenditure_components.count(ExpenditureComponent::BasalMetabolicRate) ||
+      expenditure_components.count(ExpenditureComponent::FieldMetabolicRate)) {
+    // First calculate only the BMR.
+    min_exp_newborn =
+        expenditure_basal_rate.extrapolate(body_mass_male, body_mass_birth);
+    min_exp_male = expenditure_basal_rate.value_male_adult;
+    min_exp_newborn =
+        expenditure_basal_rate.extrapolate(body_mass_male, body_mass_female);
+    // Then add the FMR multiplier.
+    if (expenditure_components.count(
+            ExpenditureComponent::FieldMetabolicRate)) {
+      min_exp_newborn *= expenditure_fmr_multiplier;
+      min_exp_male *= expenditure_fmr_multiplier;
+      min_exp_female *= expenditure_fmr_multiplier;
+    }
+  }
+  // Some reasonably high digestibility value, at least for wild forage.
+  static const double DIGESTIBILITY = 0.7;
+  // Set default energy content to a very high number so that the test won’t
+  // fail when a new NetEnergyModel is implemented that is not considered
+  // here.
+  ForageEnergyContent energy_content(99999);
+  if (digestion_net_energy_model == NetEnergyModel::GrossEnergyFraction) {
+    energy_content = get_net_energy_from_gross_energy(
+        params.forage_gross_energy, Digestibility(DIGESTIBILITY),
+        digestion_me_coefficient, digestion_k_maintenance);
+  }
+  if (digestion_limit == DigestiveLimit::Allometric &&
+      foraging_diet_composer == DietComposer::PureGrazer) {
+    // Male adults
+    if ((energy_content * digestion_allometric.value_male_adult *
+         body_mass_male)[ForageType::Grass] < min_exp_male) {
+      msg << "Based on the digestive limit and the energy expenditure, male "
+             "adults will never be able to eat enough forage to meet their "
+             "energy needs. (This assumes rich forage with a digestibility of "
+          << DIGESTIBILITY << ".)" << std::endl;
+      is_valid = false;
+    }
+    // TODO: Females
+    // TODO: Juveniles
+  }
+  // TODO: Other digestive limits
+  return is_valid;
+}
+
 bool Hft::is_valid(const Parameters& params, std::string& msg) const {
   bool is_valid = true;
 
@@ -492,54 +542,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
 
     // SANITY CHECK OF PARAMETER COMBINATIONS
     is_valid &= check_mortality_vs_reproduction(params, stream);
-
-    // Minimum expenditure exceeds maximum energy intake
-    double min_exp_newborn, min_exp_male, min_exp_female = 0.0;  // MJ/day/ind
-    if (expenditure_components.count(
-            ExpenditureComponent::BasalMetabolicRate) ||
-        expenditure_components.count(
-            ExpenditureComponent::FieldMetabolicRate)) {
-      // First calculate only the BMR.
-      min_exp_newborn =
-          expenditure_basal_rate.extrapolate(body_mass_male, body_mass_birth);
-      min_exp_male = expenditure_basal_rate.value_male_adult;
-      min_exp_newborn =
-          expenditure_basal_rate.extrapolate(body_mass_male, body_mass_female);
-      // Then add the FMR multiplier.
-      if (expenditure_components.count(
-              ExpenditureComponent::FieldMetabolicRate)) {
-        min_exp_newborn *= expenditure_fmr_multiplier;
-        min_exp_male *= expenditure_fmr_multiplier;
-        min_exp_female *= expenditure_fmr_multiplier;
-      }
-    }
-    // Some reasonably high digestibility value, at least for wild forage.
-    static const double DIGESTIBILITY = 0.7;
-    // Set default energy content to a very high number so that the test won’t
-    // fail when a new NetEnergyModel is implemented that is not considered
-    // here.
-    ForageEnergyContent energy_content(99999);
-    if (digestion_net_energy_model == NetEnergyModel::GrossEnergyFraction) {
-      energy_content = get_net_energy_from_gross_energy(
-          params.forage_gross_energy, Digestibility(DIGESTIBILITY),
-          digestion_me_coefficient, digestion_k_maintenance);
-    }
-    if (digestion_limit == DigestiveLimit::Allometric &&
-        foraging_diet_composer == DietComposer::PureGrazer) {
-      // Male adults
-      if ((energy_content * digestion_allometric.value_male_adult *
-           body_mass_male)[ForageType::Grass] < min_exp_male) {
-        stream << "Based on the digestive limit and the energy expenditure, "
-                  "male adults will never be able to eat enough forage to meet "
-                  "their energy needs. (This assumes rich forage with a "
-                  "digestibility of "
-               << DIGESTIBILITY << ".)" << std::endl;
-        is_valid = false;
-      }
-      // TODO: Females
-      // TODO: Juveniles
-    }
-    // TODO: Other digestive limits
+    is_valid &= check_intake_vs_expenditure(params, stream);
   }
 
   // convert stream to string
