@@ -329,7 +329,7 @@ class ForageValues {
   constexpr static const double IMPRECISION_TOLERANCE = 1e-3;
 
  private:
-  /// Forage values for all but \ref ForageType::Inedible.
+  /// Forage values for all but `ForageType::Inedible`.
   std::array<double, 1> array;
 
   /// Helper function to throw exceptions in the `set()` functions.
