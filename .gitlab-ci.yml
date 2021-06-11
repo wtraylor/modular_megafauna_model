@@ -168,13 +168,18 @@ linter:
   stage: test
   needs: ["compile"]
   script:
-    # Good Files:
+    # GOOD FILES:
     - ./build/megafauna_insfile_linter examples/megafauna.toml
     - for f in tests/good_insfiles/*.toml; do ./build/megafauna_insfile_linter $f; done
-    # Bad Files:
+    # BAD FILES:
     # These checks could be done with the catch framework, too
     # (CHECK_THROWS_AS). That would be more flexible than checking for a
     # specific error message in STDERR.
+    # Check *all* bad instruction files:
+    - for f in tests/bad_insfiles/*.toml;
+        do (! ./build/megafauna_insfile_linter $f);
+      done
+    # Check for specific error messages:
     # Note that commands that expected to fail need to be executed in a
     # subshell like this: `(command || true)`
     - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_01.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
