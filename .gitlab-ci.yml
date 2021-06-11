@@ -61,12 +61,19 @@ check_release_version:
 # Check that all files are correctly formatted according to ".clang-format".
 # Exclude the "external/" directory because they will use different formatting.
 clang-format:
-  image: silkeh/clang:latest
+  image:
+    name: mikedld/clang-format:12-latest # Update this to later clang versions as necessary.
+    entrypoint: [""]
   stage: lint
   script:
+    # We need to use simple BusyBox `find` syntax here.
     - >
       clang-format --dry-run --Werror
-      $(find . -path ./external -prune -false -o \( -iname '*.cpp' -or -iname '*.h' \))
+      $(find src/     -iname '*.cpp' -or -iname '*.h')
+      $(find docs/    -iname '*.cpp' -or -iname '*.h')
+      $(find include/ -iname '*.cpp' -or -iname '*.h')
+      $(find tests/   -iname '*.cpp' -or -iname '*.h')
+      $(find tools/   -iname '*.cpp' -or -iname '*.h')
 
 compile:
   image: gcc:latest
