@@ -89,6 +89,7 @@ bool Hft::check_intake_vs_expenditure(const Parameters& params,
 
   // Minimum expenditure in MJ/day/ind
   double min_exp_newborn = 0, min_exp_male = 0, min_exp_female = 0;
+
   if (expenditure_components.count(ExpenditureComponent::BasalMetabolicRate) ||
       expenditure_components.count(ExpenditureComponent::FieldMetabolicRate)) {
     // First calculate only the BMR.
@@ -118,33 +119,49 @@ bool Hft::check_intake_vs_expenditure(const Parameters& params,
         digestion_me_coefficient, digestion_k_maintenance);
   }
 
+  // Maximum intake in MJ/day/ind
+  double max_intake_male = 99999, max_intake_female = 99999,
+         max_intake_newborn = 99999;
+
   if (digestion_limit == DigestiveLimit::Allometric &&
       foraging_diet_composer == DietComposer::PureGrazer) {
     // Male adults
-    valid_male &= ((energy_content * digestion_allometric.value_male_adult *
-                    body_mass_male)[ForageType::Grass] < min_exp_male);
+    max_intake_male = (energy_content * digestion_allometric.value_male_adult *
+                       body_mass_male)[ForageType::Grass];
     // Female adults
-    valid_female &=
-        ((energy_content *
-          digestion_allometric.extrapolate(body_mass_male, body_mass_female) *
-          body_mass_female)[ForageType::Grass] < min_exp_female);
+    max_intake_female =
+        (energy_content *
+         digestion_allometric.extrapolate(body_mass_male, body_mass_female) *
+         body_mass_female)[ForageType::Grass];
     // Newborns
-    valid_newborn &=
-        ((energy_content *
-          digestion_allometric.extrapolate(body_mass_male, body_fat_birth) *
-          body_mass_birth)[ForageType::Grass] < min_exp_newborn);
+    max_intake_newborn =
+        (energy_content *
+         digestion_allometric.extrapolate(body_mass_male, body_fat_birth) *
+         body_mass_birth)[ForageType::Grass];
   }
+
+  valid_male &= max_intake_male > min_exp_male;
+  valid_female &= max_intake_female > min_exp_female;
+  valid_newborn &= max_intake_newborn > min_exp_newborn;
 
   // TODO: Other digestive limits
   if (!valid_male || !valid_female || !valid_newborn) {
     msg << "Based on the digestive limit and the energy expenditure, "
            "herbivores will never be able to eat enough forage to meet their "
-           "energy needs. (This assumes rich forage with a digestibility of "
-        << DIGESTIBILITY * 100 << "%.)" << std::endl;
-    msg << "This affects: ";
-    if (!valid_male) msg << "males ";
-    if (!valid_female) msg << "females ";
-    if (!valid_newborn) msg << "newborns";
+           "energy needs. This assumes rich forage with a digestibility of "
+        << DIGESTIBILITY * 100 << "%." << std::endl;
+    msg << "This affects: \n";
+    msg << std::fixed;            // Print fixed number of decimal places.
+    msg << std::setprecision(2);  // Print 1 decimal place.
+    if (!valid_male)
+      msg << "\tmales:    min. expenditure = " << min_exp_male << " MJ/day"
+          << " max. intake = " << max_intake_male << " MJ/day\n";
+    if (!valid_female)
+      msg << "\tfemales:  min. expenditure = " << min_exp_female << " MJ/day"
+          << " max. intake = " << max_intake_female << " MJ/day\n";
+    if (!valid_newborn)
+      msg << "\tnewborns: min. expenditure = " << min_exp_newborn << " MJ/day"
+          << " max. intake = " << max_intake_newborn << " MJ/day\n";
     msg << std::endl;
   }
   return valid_male && valid_female && valid_newborn;
