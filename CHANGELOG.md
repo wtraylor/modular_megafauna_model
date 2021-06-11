@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 ### Added
 - Code coverage badge with [codecov.io](https://codecov.io/gh/wtraylor/modular_megafauna_model/)
 - Software metadata in [codemeta format](https://codemeta.github.io/)
+- Add parameter sanity checks: mortality must not exceed reproduction; expenditure must not exceed intake [#45]
 
 ### Fixed
 - When configuring CMake with `BUILD_DEMO_SIMULATOR=ON` but `BUILD_TESTING=OFF`, the `megafauna.toml` instruction file was not copied even though `run_demo` needs it.
@@ -265,3 +266,4 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#29]: https://github.com/wtraylor/modular_megafauna_model/issues/29
 [#31]: https://github.com/wtraylor/modular_megafauna_model/issues/31
 [#32]: https://github.com/wtraylor/modular_megafauna_model/issues/32
+[#45]: https://github.com/wtraylor/modular_megafauna_model/issues/45
