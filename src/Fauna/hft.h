@@ -307,7 +307,8 @@ enum class ReproductionModel {
  * `examples/megafauna.toml`. They must be valid in the context of the
  * global parameters of the instruction file.
  */
-struct Hft {
+class Hft {
+ public:
   /// Check if all variables are okay
   /**
    * \param[in] params The global simulation parameters.
@@ -643,6 +644,16 @@ struct Hft {
   bool operator!=(const Hft& rhs) const { return name != rhs.name; }
   bool operator<(const Hft& rhs) const { return name < rhs.name; }
   /** @} */  // Comparison
+
+ private:
+  /// Check if minimum mortality exceeds maximum reproduction.
+  /**
+   * \param[in] params The global simulation parameters.
+   * \param[out] msg Output stream for warning or error messages for users.
+   * \return true if the object has valid values
+   */
+  bool check_mortality_vs_reproduction(const Parameters& params,
+                                       std::ostream& msg) const;
 };
 
 }  // namespace Fauna

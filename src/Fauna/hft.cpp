@@ -30,6 +30,59 @@ double GivenPointAllometry::extrapolate(const double bodymass_male_adult,
   return c * pow(bodymass, exponent);
 }
 
+bool Hft::check_mortality_vs_reproduction(const Parameters& params,
+                                          std::ostream& msg) const {
+  bool is_valid = true;
+  // Minimum mortality exceeds maximum reproduction
+  // A female must give birth to at least 2.0 animals that will survive until
+  // sexual maturity. Otherwise the population is not able to survive.
+  if ((reproduction_model == ReproductionModel::Logistic ||
+       reproduction_model == ReproductionModel::ConstantMaximum ||
+       reproduction_model == ReproductionModel::Linear) &&
+      (mortality_factors.count(MortalityFactor::Background) &&
+       mortality_factors.count(MortalityFactor::Lifespan))) {
+    // Calculate the number of births a female may give, under ideal
+    // conditions (max. reproductive rate) over the course of her reproductive
+    // life, considering the background adult mortality that is threatening
+    // her.
+    double births_per_female = reproduction_annual_maximum;
+    for (int i = 1; i < (life_history_lifespan - life_history_sexual_maturity);
+         i++) {
+      births_per_female +=
+          reproduction_annual_maximum * pow(1.0 - mortality_adult_rate, i);
+    }
+    assert(births_per_female >= reproduction_annual_maximum);
+    // Calculate the probability of a newborn to survive until (female) sexual
+    // maturity.
+    const double survive_to_reproduce =
+        (1.0 - mortality_juvenile_rate) *
+        pow(1.0 - mortality_adult_rate, life_history_sexual_maturity);
+    // Combining the two yields the effective reproduction rate of a female
+    // over the course of her life.
+    if (births_per_female * survive_to_reproduce < 2.0) {
+      msg << std::fixed;           // Print fixed number of decimal places.
+      msg << std::setprecision(1)  // Print 1 decimal place.
+          << "Background mortality exceeds the maximum possible "
+             "reproduction rate.\n"
+          << "Considering background mortality, a female may give birth "
+             "to at most "
+          << births_per_female
+          << " animals over the course of her life. Their chance of "
+             "surviving until (female) sexual maturity is only "
+          << survive_to_reproduce << ". The product ("
+          << births_per_female * survive_to_reproduce
+          << ") is less than 2, which would be the number of surviving "
+             "offspring a female must produce over the course of her "
+             "life. The population is not viable.\n"
+          << "You can reduce mortality, increase reproduction rate or "
+             "increase the female reproductive lifespan."
+          << std::endl;
+      is_valid = false;
+    }
+  }
+  return is_valid;
+}
+
 bool Hft::is_valid(const Parameters& params, std::string& msg) const {
   bool is_valid = true;
 
@@ -438,54 +491,7 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
     // add more checks in alphabetical order
 
     // SANITY CHECK OF PARAMETER COMBINATIONS
-
-    // Minimum mortality exceeds maximum reproduction
-    // A female must give birth to at least 2.0 animals that will survive until
-    // sexual maturity. Otherwise the population is not able to survive.
-    if ((reproduction_model == ReproductionModel::Logistic ||
-         reproduction_model == ReproductionModel::ConstantMaximum ||
-         reproduction_model == ReproductionModel::Linear) &&
-        (mortality_factors.count(MortalityFactor::Background) &&
-         mortality_factors.count(MortalityFactor::Lifespan))) {
-      // Calculate the number of births a female may give, under ideal
-      // conditions (max. reproductive rate) over the course of her reproductive
-      // life, considering the background adult mortality that is threatening
-      // her.
-      double births_per_female = reproduction_annual_maximum;
-      for (int i = 1;
-           i < (life_history_lifespan - life_history_sexual_maturity); i++) {
-        births_per_female +=
-            reproduction_annual_maximum * pow(1.0 - mortality_adult_rate, i);
-      }
-      assert(births_per_female >= reproduction_annual_maximum);
-      // Calculate the probability of a newborn to survive until (female) sexual
-      // maturity.
-      const double survive_to_reproduce =
-          (1.0 - mortality_juvenile_rate) *
-          pow(1.0 - mortality_adult_rate, life_history_sexual_maturity);
-      // Combining the two yields the effective reproduction rate of a female
-      // over the course of her life.
-      if (births_per_female * survive_to_reproduce < 2.0) {
-        stream << std::fixed;           // Print fixed number of decimal places.
-        stream << std::setprecision(1)  // Print 1 decimal place.
-               << "Background mortality exceeds the maximum possible "
-                  "reproduction rate.\n"
-               << "Considering background mortality, a female may give birth "
-                  "to at most "
-               << births_per_female
-               << " animals over the course of her life. Their chance of "
-                  "surviving until (female) sexual maturity is only "
-               << survive_to_reproduce << ". The product ("
-               << births_per_female * survive_to_reproduce
-               << ") is less than 2, which would be the number of surviving "
-                  "offspring a female must produce over the course of her "
-                  "life. The population is not viable.\n"
-               << "You can reduce mortality, increase reproduction rate or "
-                  "increase the female reproductive lifespan."
-               << std::endl;
-        is_valid = false;
-      }
-    }
+    is_valid &= check_mortality_vs_reproduction(params, stream);
 
     // Minimum expenditure exceeds maximum energy intake
     double min_exp_newborn, min_exp_male, min_exp_female = 0.0;  // MJ/day/ind
