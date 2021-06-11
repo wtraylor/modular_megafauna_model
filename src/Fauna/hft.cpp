@@ -87,8 +87,8 @@ bool Hft::check_intake_vs_expenditure(const Parameters& params,
                                       std::ostream& msg) const {
   bool valid_male = true, valid_female = true, valid_newborn = true;
 
-  // Minimum expenditure exceeds maximum energy intake
-  double min_exp_newborn, min_exp_male, min_exp_female = 0.0;  // MJ/day/ind
+  // Minimum expenditure in MJ/day/ind
+  double min_exp_newborn = 0, min_exp_male = 0, min_exp_female = 0;
   if (expenditure_components.count(ExpenditureComponent::BasalMetabolicRate) ||
       expenditure_components.count(ExpenditureComponent::FieldMetabolicRate)) {
     // First calculate only the BMR.
