@@ -53,7 +53,7 @@ start  = 121 # Julian day
 
 [group.digestion]
 allometric       = { fraction_male_adult = 0.05, exponent = 0.75 }
-fixed_fraction   = 0.05 # kgDM per kg body mass
+fixed_fraction   = 0.1 # kgDM per kg body mass
 k_fat            = 0.5
 k_maintenance    = 0.7
 limit            = "FixedFraction"
