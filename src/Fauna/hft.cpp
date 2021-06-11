@@ -11,6 +11,7 @@
 #include "hft.h"
 #include <iomanip>
 #include <sstream>
+#include "foraging_limits.h"
 #include "net_energy_models.h"
 #include "parameters.h"
 
@@ -148,6 +149,18 @@ bool Hft::check_intake_vs_expenditure(const Parameters& params,
                          body_mass_female)[ForageType::Grass];
     max_intake_newborn = (energy_content * digestion_fixed_fraction *
                           body_mass_birth)[ForageType::Grass];
+  }
+
+  if (digestion_limit == DigestiveLimit::IlliusGordon1992 &&
+      foraging_diet_composer == DietComposer::PureGrazer) {
+    max_intake_male = get_digestive_limit_illius_gordon_1992(
+        body_mass_male, body_mass_male, DIGESTIBILITY, digestion_i_g_1992_ijk);
+    max_intake_female = get_digestive_limit_illius_gordon_1992(
+        body_mass_female, body_mass_female, DIGESTIBILITY,
+        digestion_i_g_1992_ijk);
+    max_intake_newborn = get_digestive_limit_illius_gordon_1992(
+        body_mass_female, body_mass_birth, DIGESTIBILITY,
+        digestion_i_g_1992_ijk);
   }
 
   valid_male &= max_intake_male > min_exp_male;
