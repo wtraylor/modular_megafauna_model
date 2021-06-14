@@ -200,11 +200,11 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
     const HerbivoreData* d = get_hft_data(&datapoint, hft_name);
     assert(d);
     // Add datum for this HFT.
-    if (mass_density_per_hft.is_open())
-      mass_density_per_hft << FIELD_SEPARATOR << d->massdens;
     if (eaten_nitrogen_per_ind.is_open())
       eaten_nitrogen_per_ind << FIELD_SEPARATOR << d->eaten_nitrogen_per_ind;
-    // Add more per-HFT tables here.
+    if (mass_density_per_hft.is_open())
+      mass_density_per_hft << FIELD_SEPARATOR << d->massdens;
+    // -> Add more per-HFT tables here in alphabetical order.
   }
   if (eaten_nitrogen_per_ind.is_open()) eaten_nitrogen_per_ind << std::endl;
   if (mass_density_per_hft.is_open()) mass_density_per_hft << std::endl;
