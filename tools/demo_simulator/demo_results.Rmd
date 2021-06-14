@@ -147,6 +147,7 @@ if ("day" %in% names(available.tbl)) {
 ```
 
 ```{r echo = FALSE}
+julian_month_days <- julian(as.Date(paste(1:12, "1 1970"), "%m %d %Y"))
 if ("day" %in% names(bodyfat.tbl)) {
   bodyfat.tbl %>%
   ggplot(aes(x = day, y = VALUE, color = HFT)) +
@@ -154,9 +155,13 @@ if ("day" %in% names(bodyfat.tbl)) {
     geom_line(aes(group = year), alpha = 5 / length(unique(bodyfat.tbl$year))) +
     facet_wrap(~agg_unit) +
     scale_y_continuous(labels = scales::percent) +
+    scale_x_continuous(
+      labels = month.abb[seq(1, 12, 2)],
+      breaks = julian_month_days[seq(1, 12, 2)]
+    ) +
     expand_limits(y = 0) +
     labs(
-      x = "Julian Day",
+      x = "Month",
       y = "Body Fat [kg/kg]",
       title = "Body Fat",
       caption = "Thick line is the mean"
