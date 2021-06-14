@@ -151,13 +151,22 @@ if ("day" %in% names(bodyfat.tbl)) {
     stat_summary(fun = mean, geom = "line", size = 2) +
     geom_line(aes(group = year), alpha = 5 / length(unique(bodyfat.tbl$year))) +
     facet_wrap(~agg_unit) +
+    scale_y_continuous(labels = scales::percent) +
     expand_limits(y = 0) +
     labs(
       x = "Julian Day",
       y = "Body Fat [kg/kg]",
       title = "Body Fat",
       caption = "Thick line is the mean"
-    )
+    ) +
+  annotate(
+    geom = "text",
+    x = 0,
+    hjust = 0,
+    y = 0,
+    vjust = 0,
+    label = paste0("Mean = ", round(mean(bodyfat.tbl$VALUE) * 100), "%")
+  )
 }
 ```
 
