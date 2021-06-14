@@ -28,6 +28,7 @@ directory = "."
 precision = 4
 tables = [
   "available_forage",
+  "body_fat_by_hft",
   "digestibility",
   "eaten_forage_per_ind",
   "eaten_nitrogen_per_ind",

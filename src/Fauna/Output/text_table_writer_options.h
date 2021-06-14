@@ -45,7 +45,11 @@ struct TextTableWriterOptions {
 
   /** @} */
 
-  /** @{ \name Per-HFT tables: one column per HFT. */
+  /** @{ \name By-HFT tables: one column per HFT. */
+
+  /// Proportional body fat, i.e. fat mass per total body mass [kg/kg].
+  /** \see \ref Fauna::HerbivoreBase::get_bodyfat() */
+  bool body_fat_by_hft = false;
 
   /// Daily consumption of nitrogen by herbivore individuals [mgDM/day/ind].
   /**

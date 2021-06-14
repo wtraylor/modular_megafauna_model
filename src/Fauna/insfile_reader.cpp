@@ -835,6 +835,8 @@ void InsfileReader::read_table_output_text_tables() {
       for (const auto& s : *value)
         if (lowercase(s) == "available_forage")
           params.output_text_tables.available_forage = true;
+        else if (lowercase(s) == "body_fat_by_hft")
+          params.output_text_tables.body_fat_by_hft = true;
         else if (lowercase(s) == "digestibility")
           params.output_text_tables.digestibility = true;
         else if (lowercase(s) == "eaten_forage_per_ind")
@@ -847,8 +849,9 @@ void InsfileReader::read_table_output_text_tables() {
         else
           throw invalid_option(
               key, s,
-              {"available_forage", "digestibility", "eaten_forage_per_ind",
-               "eaten_nitrogen_per_ind", "mass_density_per_hft"});
+              {"available_forage", "body_fat_by_hft", "digestibility",
+               "eaten_forage_per_ind", "eaten_nitrogen_per_ind",
+               "mass_density_per_hft"});
     }
   }
   // Remove the table "output" in order to indicate that it’s been parsed.
