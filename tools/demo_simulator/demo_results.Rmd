@@ -16,27 +16,31 @@ read_generic_table <- function(filename){
   if (!file.exists(filename))
     stop("File does not exist: ", filename)
   tbl <- read.delim(filename)
-  # Handle daily output.
-  if ("day" %in% colnames(tbl)) {
-    tbl$year <- tbl$year + tbl$day/365
-    tbl$day <- NULL
-  }
   return(tbl)
 }
 
 read_per_forage_type_table <- function(filename){
-  read_generic_table(filename) %>%
-    gather(key = forage_type, value = VALUE, -year, -agg_unit)
+  fixed_vars <- c("year", "agg_unit")
+  tbl <- read_generic_table(filename)
+  if ("day" %in% names(tbl))
+    fixed_vars <- c(fixed_vars, "day")
+  gather(tbl, key = forage_type, value = VALUE, !all_of(fixed_vars))
 }
 
 read_per_hft_table <- function(filename){
-  read_generic_table(filename) %>%
-    gather(key = HFT, value = VALUE, -year, -agg_unit)
+  fixed_vars <- c("year", "agg_unit")
+  tbl <- read_generic_table(filename)
+  if ("day" %in% names(tbl))
+    fixed_vars <- c(fixed_vars, "day")
+  gather(tbl, key = HFT, value = VALUE, !all_of(fixed_vars))
 }
 
 read_per_hft_per_forage_table <- function(filename){
-  read_generic_table(filename) %>%
-    gather(key = HFT, value = VALUE, -forage_type, -year, -agg_unit)
+  fixed_vars <- c("year", "agg_unit", "forage_type")
+  tbl <- read_generic_table(filename)
+  if ("day" %in% names(tbl))
+    fixed_vars <- c(fixed_vars, "day")
+  gather(tbl, key = HFT, value = VALUE, !all_of(fixed_vars))
 }
 
 # Read individual tables
@@ -59,7 +63,7 @@ timestep <- abs(unique_years.v[2] - unique_years.v[1])
 ```{r fig.cap = "Mass Density", echo = FALSE}
 # We plot the points not in the beginning of each time step, but in the middle.
 ggplot(mass.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
-  geom_line() +
+  stat_summary(fun = mean, geom = "line") +
   coord_cartesian(xlim = c(min(mass.tbl$year), max(mass.tbl$year) + timestep)) +
   facet_wrap(~agg_unit) +
   expand_limits(y = 0) +
@@ -79,8 +83,11 @@ ggplot(mass.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
 ```
 
 ```{r fig.cap = "Eaten Forage per Individual", echo = FALSE}
-ggplot(eaten.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT, linetype = forage_type)) +
-  geom_line() +
+ggplot(
+  eaten.tbl,
+  aes(x = year + timestep / 2, y = VALUE, color = HFT, linetype = forage_type)
+) +
+  stat_summary(fun = mean, geom = "line") +
   coord_cartesian(xlim = c(min(eaten.tbl$year), max(eaten.tbl$year) + timestep)) +
   facet_wrap(~agg_unit) +
   expand_limits(y = 0) +
@@ -93,8 +100,10 @@ ggplot(eaten.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT, linetype 
 
 ```{r fig.cap = "Eaten Nitrogen", echo = FALSE}
 ggplot(eaten_nitrogen.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
-  geom_line() +
-  coord_cartesian(xlim = c(min(eaten_nitrogen.tbl$year), max(eaten_nitrogen.tbl$year) + timestep)) +
+  stat_summary(fun = mean, geom = "line") +
+  coord_cartesian(
+    xlim = c(min(eaten_nitrogen.tbl$year), max(eaten_nitrogen.tbl$year) + timestep)
+  ) +
   facet_wrap(~agg_unit) +
   expand_limits(y = 0) +
   labs(
@@ -106,7 +115,7 @@ ggplot(eaten_nitrogen.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT))
 
 ```{r fig.cap = "Available Forage", echo = FALSE}
 ggplot(available.tbl, aes(x = year + timestep / 2, y = VALUE, color = forage_type)) +
-  geom_line() +
+  stat_summary(fun = mean, geom = "line") +
   coord_cartesian(xlim = c(min(available.tbl$year), max(available.tbl$year) + timestep)) +
   facet_wrap(~agg_unit) +
   expand_limits(y = 0) +
