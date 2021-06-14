@@ -132,6 +132,7 @@ ggplot(eaten_nitrogen.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT))
 ```
 
 ```{r echo = FALSE}
+# Timeline with annual means
 ggplot(available.tbl, aes(x = year + timestep / 2, y = VALUE, color = forage_type)) +
   stat_summary(fun = mean, geom = "line") +
   coord_cartesian(xlim = c(min(available.tbl$year), max(available.tbl$year) + timestep)) +
@@ -142,6 +143,22 @@ ggplot(available.tbl, aes(x = year + timestep / 2, y = VALUE, color = forage_typ
     y = "Available Forage [kgDM/m²]",
     title = "Edible Forage Available to Herbivores"
   )
+# Seasonal plot
+if ("day" %in% names(available.tbl)) {
+  available.tbl %>%
+  ggplot(aes(x = day, y = VALUE, color = forage_type)) +
+    stat_summary(fun = mean, geom = "line", size = 2) +
+    geom_line(aes(group = year), alpha = 5 / length(unique(available.tbl$year))) +
+    facet_wrap(~agg_unit) +
+    expand_limits(y = 0) +
+    labs(
+      x = "Julian Day",
+      y = "Available Forage [kgDM/m²]",
+      title = "Edible Forage Available to Herbivores",
+      caption = "Thick line is the mean"
+    )
+}
+
 ```
 
 ```{r echo = FALSE}
