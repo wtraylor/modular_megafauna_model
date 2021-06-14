@@ -26,17 +26,17 @@ read_generic_table <- function(filename){
 
 read_per_forage_type_table <- function(filename){
   read_generic_table(filename) %>%
-  gather(key = forage_type, value = VALUE, -year, -agg_unit)
+    gather(key = forage_type, value = VALUE, -year, -agg_unit)
 }
 
 read_per_hft_table <- function(filename){
   read_generic_table(filename) %>%
-  gather(key = HFT, value = VALUE, -year, -agg_unit)
+    gather(key = HFT, value = VALUE, -year, -agg_unit)
 }
 
 read_per_hft_per_forage_table <- function(filename){
   read_generic_table(filename) %>%
-  gather(key = HFT, value = VALUE, -forage_type, -year, -agg_unit)
+    gather(key = HFT, value = VALUE, -forage_type, -year, -agg_unit)
 }
 
 # Read individual tables
