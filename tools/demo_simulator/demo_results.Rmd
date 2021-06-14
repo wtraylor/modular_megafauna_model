@@ -62,7 +62,7 @@ unique_years.v <- sort(unique(mass.tbl$year))
 timestep <- abs(unique_years.v[2] - unique_years.v[1])
 ```
 
-```{r fig.cap = "Mass Density", echo = FALSE}
+```{r echo = FALSE}
 # We plot the points not in the beginning of each time step, but in the middle.
 ggplot(mass.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
   stat_summary(fun = mean, geom = "line") +
@@ -84,7 +84,7 @@ ggplot(mass.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
   )
 ```
 
-```{r fig.cap = "Eaten Forage per Individual", echo = FALSE}
+```{r echo = FALSE}
 # Timeline with annual means
 ggplot(
   eaten.tbl,
@@ -116,7 +116,7 @@ if ("day" %in% names(eaten.tbl)) {
 }
 ```
 
-```{r fig.cap = "Eaten Nitrogen", echo = FALSE}
+```{r echo = FALSE}
 ggplot(eaten_nitrogen.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
   stat_summary(fun = mean, geom = "line") +
   coord_cartesian(
@@ -131,7 +131,7 @@ ggplot(eaten_nitrogen.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT))
   )
 ```
 
-```{r fig.cap = "Available Forage", echo = FALSE}
+```{r echo = FALSE}
 ggplot(available.tbl, aes(x = year + timestep / 2, y = VALUE, color = forage_type)) +
   stat_summary(fun = mean, geom = "line") +
   coord_cartesian(xlim = c(min(available.tbl$year), max(available.tbl$year) + timestep)) +
@@ -144,7 +144,7 @@ ggplot(available.tbl, aes(x = year + timestep / 2, y = VALUE, color = forage_typ
   )
 ```
 
-```{r fig.cap = "Body Fat", echo = FALSE}
+```{r echo = FALSE}
 if ("day" %in% names(bodyfat.tbl)) {
   bodyfat.tbl %>%
   ggplot(aes(x = day, y = VALUE, color = HFT)) +
