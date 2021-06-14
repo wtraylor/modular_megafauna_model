@@ -117,21 +117,6 @@ if ("day" %in% names(eaten.tbl)) {
 ```
 
 ```{r echo = FALSE}
-ggplot(eaten_nitrogen.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
-  stat_summary(fun = mean, geom = "line") +
-  coord_cartesian(
-    xlim = c(min(eaten_nitrogen.tbl$year), max(eaten_nitrogen.tbl$year) + timestep)
-  ) +
-  facet_wrap(~agg_unit) +
-  expand_limits(y = 0) +
-  labs(
-    x = "Simulation Year",
-    y = "Eaten Nitrogen [mgN/ind/day]",
-    title = "Eaten Nitrogen per Individual"
-  )
-```
-
-```{r echo = FALSE}
 # Timeline with annual means
 ggplot(available.tbl, aes(x = year + timestep / 2, y = VALUE, color = forage_type)) +
   stat_summary(fun = mean, geom = "line") +
@@ -185,5 +170,20 @@ if ("day" %in% names(bodyfat.tbl)) {
     label = paste0("Mean = ", round(mean(bodyfat.tbl$VALUE) * 100), "%")
   )
 }
+```
+
+```{r echo = FALSE}
+ggplot(eaten_nitrogen.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
+  stat_summary(fun = mean, geom = "line") +
+  coord_cartesian(
+    xlim = c(min(eaten_nitrogen.tbl$year), max(eaten_nitrogen.tbl$year) + timestep)
+  ) +
+  facet_wrap(~agg_unit) +
+  expand_limits(y = 0) +
+  labs(
+    x = "Simulation Year",
+    y = "Eaten Nitrogen [mgN/ind/day]",
+    title = "Eaten Nitrogen per Individual"
+  )
 ```
 
