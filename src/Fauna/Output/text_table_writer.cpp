@@ -35,11 +35,11 @@ TextTableWriter::TextTableWriter(const OutputInterval interval,
     file_streams.push_back(&available_forage);
     available_forage.open(path);
   }
-  if (options.body_fat_by_hft) {
-    const std::string path = dir + "/body_fat_by_hft" + FILE_EXTENSION;
+  if (options.body_fat) {
+    const std::string path = dir + "/body_fat" + FILE_EXTENSION;
     check_file_exists(path);
-    file_streams.push_back(&body_fat_by_hft);
-    body_fat_by_hft.open(path);
+    file_streams.push_back(&body_fat);
+    body_fat.open(path);
   }
   if (options.digestibility) {
     const std::string path = dir + "/digestibility" + FILE_EXTENSION;
@@ -59,14 +59,19 @@ TextTableWriter::TextTableWriter(const OutputInterval interval,
     file_streams.push_back(&eaten_nitrogen_per_ind);
     eaten_nitrogen_per_ind.open(path);
   }
-  if (options.individual_density_by_hft) {
-    const std::string path =
-        dir + "/individual_density_by_hft" + FILE_EXTENSION;
+  if (options.individual_density) {
+    const std::string path = dir + "/individual_density" + FILE_EXTENSION;
     check_file_exists(path);
-    file_streams.push_back(&individual_density_by_hft);
-    individual_density_by_hft.open(path);
+    file_streams.push_back(&individual_density);
+    individual_density.open(path);
   }
-  if (options.mass_density_per_hft) {
+  if (options.mass_density) {
+    const std::string path = dir + "/mass_density" + FILE_EXTENSION;
+    check_file_exists(path);
+    file_streams.push_back(&mass_density);
+    mass_density.open(path);
+  }
+  if (options.mass_density_per_hft) {  // deprecated
     const std::string path = dir + "/mass_density_per_hft" + FILE_EXTENSION;
     check_file_exists(path);
     file_streams.push_back(&mass_density_per_hft);
@@ -204,32 +209,32 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   // -> Add more tables here in alphabetical order.
 
   // Per-HFT Tables
-  if (body_fat_by_hft.is_open()) start_row(datapoint, body_fat_by_hft);
+  if (body_fat.is_open()) start_row(datapoint, body_fat);
   if (eaten_nitrogen_per_ind.is_open())
     start_row(datapoint, eaten_nitrogen_per_ind);
-  if (individual_density_by_hft.is_open())
-    start_row(datapoint, individual_density_by_hft);
-  if (mass_density_per_hft.is_open())
+  if (individual_density.is_open()) start_row(datapoint, individual_density);
+  if (mass_density.is_open()) start_row(datapoint, mass_density);
+  if (mass_density_per_hft.is_open())  // deprecated
     start_row(datapoint, mass_density_per_hft);
   // Iterate over predefined order of HFTs.
   for (const auto& hft_name : hft_names) {
     const HerbivoreData* d = get_hft_data(&datapoint, hft_name);
     assert(d);
     // Add datum for this HFT.
-    if (body_fat_by_hft.is_open())
-      body_fat_by_hft << FIELD_SEPARATOR << d->bodyfat;
+    if (body_fat.is_open()) body_fat << FIELD_SEPARATOR << d->bodyfat;
     if (eaten_nitrogen_per_ind.is_open())
       eaten_nitrogen_per_ind << FIELD_SEPARATOR << d->eaten_nitrogen_per_ind;
-    if (individual_density_by_hft.is_open())
-      individual_density_by_hft << FIELD_SEPARATOR << d->inddens;
-    if (mass_density_per_hft.is_open())
+    if (individual_density.is_open())
+      individual_density << FIELD_SEPARATOR << d->inddens;
+    if (mass_density.is_open()) mass_density << FIELD_SEPARATOR << d->massdens;
+    if (mass_density_per_hft.is_open())  // deprecated
       mass_density_per_hft << FIELD_SEPARATOR << d->massdens;
     // -> Add more per-HFT tables here in alphabetical order.
   }
-  if (body_fat_by_hft.is_open()) body_fat_by_hft << std::endl;
+  if (body_fat.is_open()) body_fat << std::endl;
   if (eaten_nitrogen_per_ind.is_open()) eaten_nitrogen_per_ind << std::endl;
-  if (individual_density_by_hft.is_open())
-    individual_density_by_hft << std::endl;
+  if (individual_density.is_open()) individual_density << std::endl;
+  if (mass_density.is_open()) mass_density << std::endl;
   if (mass_density_per_hft.is_open()) mass_density_per_hft << std::endl;
   // -> Add more tables here in alphabetical order.
 
@@ -307,15 +312,15 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
           "'");
 
     // -> Add new output files here in alphabetical order.
-    if (body_fat_by_hft.is_open())
-      body_fat_by_hft << FIELD_SEPARATOR << hft_name;
+    if (body_fat.is_open()) body_fat << FIELD_SEPARATOR << hft_name;
     if (eaten_forage_per_ind.is_open())
       eaten_forage_per_ind << FIELD_SEPARATOR << hft_name;
     if (eaten_nitrogen_per_ind.is_open())
       eaten_nitrogen_per_ind << FIELD_SEPARATOR << hft_name;
-    if (individual_density_by_hft.is_open())
-      individual_density_by_hft << FIELD_SEPARATOR << hft_name;
-    if (mass_density_per_hft.is_open())
+    if (individual_density.is_open())
+      individual_density << FIELD_SEPARATOR << hft_name;
+    if (mass_density.is_open()) mass_density << FIELD_SEPARATOR << hft_name;
+    if (mass_density_per_hft.is_open())  // deprecated
       mass_density_per_hft << FIELD_SEPARATOR << hft_name;
   }
   assert(hft_names.size() >= datapoint.data.hft_data.size());

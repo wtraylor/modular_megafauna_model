@@ -835,25 +835,27 @@ void InsfileReader::read_table_output_text_tables() {
       for (const auto& s : *value)
         if (lowercase(s) == "available_forage")
           params.output_text_tables.available_forage = true;
-        else if (lowercase(s) == "body_fat_by_hft")
-          params.output_text_tables.body_fat_by_hft = true;
+        else if (lowercase(s) == "body_fat")
+          params.output_text_tables.body_fat = true;
         else if (lowercase(s) == "digestibility")
           params.output_text_tables.digestibility = true;
         else if (lowercase(s) == "eaten_forage_per_ind")
           params.output_text_tables.eaten_forage_per_ind = true;
         else if (lowercase(s) == "eaten_nitrogen_per_ind")
           params.output_text_tables.eaten_nitrogen_per_ind = true;
-        else if (lowercase(s) == "individual_density_by_hft")
-          params.output_text_tables.individual_density_by_hft = true;
-        else if (lowercase(s) == "mass_density_per_hft")
+        else if (lowercase(s) == "individual_density")
+          params.output_text_tables.individual_density = true;
+        else if (lowercase(s) == "mass_density")
+          params.output_text_tables.mass_density = true;
+        else if (lowercase(s) == "mass_density_per_hft")  // deprecated
           params.output_text_tables.mass_density_per_hft = true;
         // -> Add new output tables here (alphabetical order).
         else
           throw invalid_option(
               key, s,
-              {"available_forage", "body_fat_by_hft", "digestibility",
+              {"available_forage", "body_fat", "digestibility",
                "eaten_forage_per_ind", "eaten_nitrogen_per_ind",
-               "individual_density_by_hft", "mass_density_per_hft"});
+               "individual_density", "mass_density"});
     }
   }
   // Remove the table "output" in order to indicate that it’s been parsed.

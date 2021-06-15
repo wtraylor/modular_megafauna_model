@@ -238,12 +238,12 @@ demo_simulation:
       - build/demo_results.Rmd
         # All output files necessary for plotting demo results:
       - build/available_forage.tsv
-      - build/body_fat_by_hft.tsv
+      - build/body_fat.tsv
       - build/digestibility.tsv
       - build/eaten_forage_per_ind.tsv
       - build/eaten_nitrogen_per_ind.tsv
-      - build/individual_density_by_hft.tsv
-      - build/mass_density_per_hft.tsv
+      - build/individual_density.tsv
+      - build/mass_density.tsv
     expire_in: 20 minutes
 
 plot_demo_results:

@@ -28,7 +28,7 @@ tables = [
   "digestibility",
   "eaten_forage_per_ind",
   "eaten_nitrogen_per_ind",
-  "mass_density_per_hft"
+  "mass_density"
 ]
 
 ###############################################################################

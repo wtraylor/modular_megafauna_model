@@ -28,12 +28,12 @@ directory = "."
 precision = 4
 tables = [
   "available_forage",
-  "body_fat_by_hft",
+  "body_fat",
   "digestibility",
   "eaten_forage_per_ind",
   "eaten_nitrogen_per_ind",
-  "individual_density_by_hft",
-  "mass_density_per_hft"
+  "individual_density",
+  "mass_density"
 ]
 
 ###############################################################################

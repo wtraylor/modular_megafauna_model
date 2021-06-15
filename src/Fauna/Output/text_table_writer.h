@@ -136,12 +136,13 @@ class TextTableWriter : public WriterInterface {
 
   /** @{ \name File Streams */
   std::ofstream available_forage;
-  std::ofstream body_fat_by_hft;
+  std::ofstream body_fat;
   std::ofstream digestibility;
   std::ofstream eaten_forage_per_ind;
   std::ofstream eaten_nitrogen_per_ind;
-  std::ofstream individual_density_by_hft;
-  std::ofstream mass_density_per_hft;
+  std::ofstream individual_density;
+  std::ofstream mass_density;
+  std::ofstream mass_density_per_hft;  // deprecated
   // Add new output variables here (alphabetical order).
   /** @} */  // File Streams
 };
