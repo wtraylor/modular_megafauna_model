@@ -159,31 +159,33 @@ linter:
   stage: test
   needs: ["compile"]
   script:
+    # Create a symbolic link in order to shorten instructions.
+    - ln -s ./build/megafauna_insfile_linter lint
     # GOOD FILES:
-    - ./build/megafauna_insfile_linter examples/megafauna.toml
-    - for f in tests/good_insfiles/*.toml; do ./build/megafauna_insfile_linter $f; done
-    - ./build/megafauna_insfile_linter tests/good_insfiles/legacy_massdensity_per_hft.toml 2>&1 | grep -iq 'mass_density_per_hft.*deprecated'
+    - ./lint examples/megafauna.toml
+    - for f in tests/good_insfiles/*.toml; do ./lint $f; done
+    - ./lint tests/good_insfiles/legacy_massdensity_per_hft.toml 2>&1 | grep -iq 'mass_density_per_hft.*deprecated'
     # BAD FILES:
     # These checks could be done with the catch framework, too
     # (CHECK_THROWS_AS). That would be more flexible than checking for a
     # specific error message in STDERR.
     # Check *all* bad instruction files:
     - for f in tests/bad_insfiles/*.toml;
-        do (! ./build/megafauna_insfile_linter $f);
+        do (! ./lint $f);
       done
     # Check for specific error messages:
     # Note that commands that expected to fail need to be executed in a
     # subshell like this: `(command || true)`
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_01.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_02.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_03.toml 2>&1 || true) | grep -iq 'output\.text_tables\.tables.*wrong type.*expected array of string'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_04.toml 2>&1 || true) | grep -iq 'expenditure\.components.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_05.toml 2>&1 || true) | grep -iq 'mortality\.factors.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_06.toml 2>&1 || true) | grep -iq 'simulation\.establishment_interval.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_07.toml 2>&1 || true) | grep -iq 'output\.text_tables\.precision.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_08.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/two_groups_with_same_name.toml 2>&1 || true) | grep -iq 'group.*is defined twice'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/two_hfts_with_same_name.toml 2>&1 || true) | grep -iq 'HFT.*is defined twice'
+    - (./lint tests/bad_insfiles/wrong_type_01.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_02.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_03.toml 2>&1 || true) | grep -iq 'output\.text_tables\.tables.*wrong type.*expected array of string'
+    - (./lint tests/bad_insfiles/wrong_type_04.toml 2>&1 || true) | grep -iq 'expenditure\.components.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_05.toml 2>&1 || true) | grep -iq 'mortality\.factors.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_06.toml 2>&1 || true) | grep -iq 'simulation\.establishment_interval.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_07.toml 2>&1 || true) | grep -iq 'output\.text_tables\.precision.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_08.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
+    - (./lint tests/bad_insfiles/two_groups_with_same_name.toml 2>&1 || true) | grep -iq 'group.*is defined twice'
+    - (./lint tests/bad_insfiles/two_hfts_with_same_name.toml 2>&1 || true) | grep -iq 'HFT.*is defined twice'
 
 memcheck:
   image: gcc:latest
