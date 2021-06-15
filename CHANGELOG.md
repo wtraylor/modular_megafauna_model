@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 ### Fixed
 - When configuring CMake with `BUILD_DEMO_SIMULATOR=ON` but `BUILD_TESTING=OFF`, the `megafauna.toml` instruction file was not copied even though `run_demo` needs it.
 - Valgrind memory check in CI didn’t fail
+- Doxygen issues with ReadTheDocs [34] [41] [42]
 
 ## [1.0.3] - 2021-05-10
 
@@ -270,6 +271,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#29]: https://github.com/wtraylor/modular_megafauna_model/issues/29
 [#31]: https://github.com/wtraylor/modular_megafauna_model/issues/31
 [#32]: https://github.com/wtraylor/modular_megafauna_model/issues/32
+[#34]: https://github.com/wtraylor/modular_megafauna_model/issues/34
+[#41]: https://github.com/wtraylor/modular_megafauna_model/issues/41
 [#43]: https://github.com/wtraylor/modular_megafauna_model/issues/43
 [#44]: https://github.com/wtraylor/modular_megafauna_model/issues/44
 [#45]: https://github.com/wtraylor/modular_megafauna_model/issues/45
