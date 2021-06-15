@@ -85,7 +85,7 @@ male   = 70   # kg/ind
 
 [hft.breeding_season]
 length = 30  # days
-start  = 121 # Julian day
+start  = "May" # Julian day or month name
 
 [hft.digestion]
 allometric       = { fraction_male_adult = 0.05, exponent = -0.25 }
