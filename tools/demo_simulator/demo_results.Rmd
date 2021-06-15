@@ -57,6 +57,9 @@ eaten_nitrogen.tbl <- read_per_hft_table("eaten_nitrogen_per_ind.tsv")
 mass.tbl <- read_per_hft_table("mass_density_per_hft.tsv")
 mass.tbl$VALUE <- mass.tbl$VALUE / 100 # convert kg/km² to kg/ha
 
+inddens.tbl <- read_per_hft_table("individual_density_by_hft.tsv")
+inddens.tbl$VALUE <- inddens.tbl$VALUE / 100 # convert ind/km² to ind/ha
+
 # `timestep` is the output interval: a day, a year, (roughly) a month, or a decade.
 unique_years.v <- sort(unique(mass.tbl$year))
 timestep <- abs(unique_years.v[2] - unique_years.v[1])
@@ -81,6 +84,30 @@ ggplot(mass.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
     y = max(mass.tbl$VALUE),
     vjust = 0,
     label = paste("Mean =", round(mean(mass.tbl$VALUE)), "kg/ha")
+  )
+```
+
+```{r echo = FALSE}
+# We plot the points not in the beginning of each time step, but in the middle.
+ggplot(inddens.tbl, aes(x = year + timestep / 2, y = VALUE, color = HFT)) +
+  stat_summary(fun = mean, geom = "line") +
+  coord_cartesian(
+    xlim = c(min(inddens.tbl$year), max(inddens.tbl$year) + timestep)
+  ) +
+  facet_wrap(~agg_unit) +
+  expand_limits(y = 0) +
+  labs(
+    x = "Simulation Year",
+    y = "Mean Individual Density [ind/ha]",
+    title = "Individual Density per Habitat Group"
+  ) +
+  annotate(
+    geom = "text",
+    x = 0,
+    hjust = 0,
+    y = max(inddens.tbl$VALUE),
+    vjust = 0,
+    label = paste("Mean =", round(mean(inddens.tbl$VALUE), digits = 2), "ind/ha")
   )
 ```
 
