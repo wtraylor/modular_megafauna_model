@@ -10,6 +10,7 @@
  */
 #include "insfile_reader.h"
 #include <algorithm>
+#include <iostream>
 #include <string>
 #include "forage_types.h"
 #include "hft.h"
@@ -59,8 +60,12 @@ InsfileReader::InsfileReader(const std::string filename)
 
   {
     std::string err_msg;
-    if (!params.is_valid(err_msg))
+    const bool params_valid = params.is_valid(err_msg);
+    if (!params_valid)
       throw std::runtime_error("Parameters are not valid:\n" + err_msg);
+    else if (!err_msg.empty())
+      std::cerr << "Parameters are valid, but there were warnings:\n"
+                << err_msg;
   }
 
   if (params.herbivore_type == HerbivoreType::Cohort) {
@@ -69,9 +74,13 @@ InsfileReader::InsfileReader(const std::string filename)
       for (const auto& hft_table : *hft_table_array) {
         std::shared_ptr<const Hft> new_hft(new Hft(read_hft(hft_table)));
         std::string err_msg;
-        if (!new_hft->is_valid(params, err_msg))
+        const bool hft_valid = new_hft->is_valid(params, err_msg);
+        if (!hft_valid)
           throw std::runtime_error("HFT \"" + new_hft->name +
                                    "\" is not valid:\n" + err_msg);
+        else if (!err_msg.empty())
+          std::cerr << "HFT \"" + new_hft->name +
+                           "\" is valid, but there were warnings:\n" + err_msg;
         // Add HFT to list, but check if HFT with that name already exists.
         for (const auto& hft : hfts) {
           assert(hft.get());
