@@ -55,7 +55,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 TEST_CASE("Fauna::Output::TextTableWriter ANNUAL", "") {
   TextTableWriterOptions opt;
   opt.eaten_forage_per_ind = true;
-  opt.mass_density_per_hft = true;
+  opt.mass_density = true;
 
   // We create 4 HFTs, but use only 3. The extra one is to check that an
   // exception gets thrown if the numbers don’t match up.
@@ -136,20 +136,18 @@ TEST_CASE("Fauna::Output::TextTableWriter ANNUAL", "") {
     CHECK_THROWS(writer.write_datapoint(datapoint));
   }
 
-  // mass_density_per_hft_path
-  SECTION("mass_density_per_hft_path") {
-    const std::string mass_density_per_hft_path =
-        opt.directory + '/' + "mass_density_per_hft" +
-        TextTableWriter::FILE_EXTENSION;
+  SECTION("mass_density_path") {
+    const std::string mass_density_path =
+        opt.directory + '/' + "mass_density" + TextTableWriter::FILE_EXTENSION;
 
-    std::ifstream mass_density_per_hft(mass_density_per_hft_path);
-    REQUIRE(mass_density_per_hft.good());
+    std::ifstream mass_density(mass_density_path);
+    REQUIRE(mass_density.good());
 
     INFO((std::string) "Random output directory: " + opt.directory);
     // Check column captions
     {
       std::string line;
-      REQUIRE(std::getline(mass_density_per_hft, line));
+      REQUIRE(std::getline(mass_density, line));
       std::vector<std::string> fields =
           split(line, TextTableWriter::FIELD_SEPARATOR);
 
@@ -166,7 +164,7 @@ TEST_CASE("Fauna::Output::TextTableWriter ANNUAL", "") {
     // Check tuple
     {
       std::string line;
-      REQUIRE(std::getline(mass_density_per_hft, line));
+      REQUIRE(std::getline(mass_density, line));
 
       std::vector<std::string> fields =
           split(line, TextTableWriter::FIELD_SEPARATOR);

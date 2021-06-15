@@ -45,7 +45,11 @@ struct TextTableWriterOptions {
 
   /** @} */
 
-  /** @{ \name Per-HFT tables: one column per HFT. */
+  /** @{ \name By-HFT tables: one column for each HFT. */
+
+  /// Proportional body fat, i.e. fat mass per total body mass [kg/kg].
+  /** \see \ref Fauna::HerbivoreBase::get_bodyfat() */
+  bool body_fat = false;
 
   /// Daily consumption of nitrogen by herbivore individuals [mgDM/day/ind].
   /**
@@ -56,9 +60,21 @@ struct TextTableWriterOptions {
    */
   bool eaten_nitrogen_per_ind = false;
 
-  /// Herbivore mass density per HFT in kg/km².
+  /// Herbivore individual density by HFT in ind/km².
+  /** \see \ref Fauna::Output::HerbivoreData::inddens */
+  bool individual_density = false;
+
+  /// Herbivore mass density by HFT in kg/km².
   /** \see \ref Fauna::Output::HerbivoreData::massdens */
-  bool mass_density_per_hft = false;
+  bool mass_density = false;
+
+  /**
+   * \copydoc mass_density
+   * \deprecated The name `per_hft` is confusing because in `per_ind` it has a
+   * different meaning, e.g. in \ref eaten_forage_per_ind. Use
+   * \ref mass_density instead.
+   */
+  bool mass_density_per_hft = false;  // DEPRECATED
 
   /** @} */
 

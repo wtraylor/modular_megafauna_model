@@ -2,10 +2,8 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-# This instruction file checks that catabolism efficiency can theoretically be
-# higher than anabolism efficiency.
-# Reminder:
-#     anabolism efficiency = k_maintenance / k_fat
+# This instruction file has the "mass_density_per_hft.tsv" output which is
+# deprecated, but still valid for backward compatibility.
 
 [simulation]
 establishment_interval = 3650 # every 10 years
@@ -24,11 +22,7 @@ interval = "Annual"
 directory = "."
 precision = 4
 tables = [
-  "available_forage",
-  "digestibility",
-  "eaten_forage_per_ind",
-  "eaten_nitrogen_per_ind",
-  "mass_density"
+  "mass_density_per_hft"
 ]
 
 ###############################################################################
@@ -86,7 +80,7 @@ start  = 121 # Julian day
 allometric       = { fraction_male_adult = 0.05, exponent = -0.25 }
 fixed_fraction   = 0.05 # kgDM per kg body mass
 k_fat            = 0.5
-k_maintenance    = 0.5
+k_maintenance    = 0.7
 limit            = "Allometric"
 net_energy_model = "GrossEnergyFraction"
 

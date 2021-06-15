@@ -34,6 +34,12 @@ bool Parameters::is_valid(std::string& messages) const {
              << "This forage type will effectively be deactivated."
              << std::endl;
 
+  if (output_text_tables.mass_density_per_hft)
+    stream
+        << "The option 'mass_density_per_hft' in 'output.text_tables.tables' "
+           "is deprecated. Use 'mass_density' instead."
+        << std::endl;
+
   //------------------------------------------------------------
 
   // convert stream to string

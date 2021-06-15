@@ -10,6 +10,7 @@
  */
 #include "insfile_reader.h"
 #include <algorithm>
+#include <iostream>
 #include <string>
 #include "forage_types.h"
 #include "hft.h"
@@ -59,8 +60,12 @@ InsfileReader::InsfileReader(const std::string filename)
 
   {
     std::string err_msg;
-    if (!params.is_valid(err_msg))
+    const bool params_valid = params.is_valid(err_msg);
+    if (!params_valid)
       throw std::runtime_error("Parameters are not valid:\n" + err_msg);
+    else if (!err_msg.empty())
+      std::cerr << "Parameters are valid, but there were warnings:\n"
+                << err_msg;
   }
 
   if (params.herbivore_type == HerbivoreType::Cohort) {
@@ -69,9 +74,13 @@ InsfileReader::InsfileReader(const std::string filename)
       for (const auto& hft_table : *hft_table_array) {
         std::shared_ptr<const Hft> new_hft(new Hft(read_hft(hft_table)));
         std::string err_msg;
-        if (!new_hft->is_valid(params, err_msg))
+        const bool hft_valid = new_hft->is_valid(params, err_msg);
+        if (!hft_valid)
           throw std::runtime_error("HFT \"" + new_hft->name +
                                    "\" is not valid:\n" + err_msg);
+        else if (!err_msg.empty())
+          std::cerr << "HFT \"" + new_hft->name +
+                           "\" is valid, but there were warnings:\n" + err_msg;
         // Add HFT to list, but check if HFT with that name already exists.
         for (const auto& hft : hfts) {
           assert(hft.get());
@@ -835,20 +844,27 @@ void InsfileReader::read_table_output_text_tables() {
       for (const auto& s : *value)
         if (lowercase(s) == "available_forage")
           params.output_text_tables.available_forage = true;
+        else if (lowercase(s) == "body_fat")
+          params.output_text_tables.body_fat = true;
         else if (lowercase(s) == "digestibility")
           params.output_text_tables.digestibility = true;
         else if (lowercase(s) == "eaten_forage_per_ind")
           params.output_text_tables.eaten_forage_per_ind = true;
         else if (lowercase(s) == "eaten_nitrogen_per_ind")
           params.output_text_tables.eaten_nitrogen_per_ind = true;
-        else if (lowercase(s) == "mass_density_per_hft")
+        else if (lowercase(s) == "individual_density")
+          params.output_text_tables.individual_density = true;
+        else if (lowercase(s) == "mass_density")
+          params.output_text_tables.mass_density = true;
+        else if (lowercase(s) == "mass_density_per_hft")  // deprecated
           params.output_text_tables.mass_density_per_hft = true;
         // -> Add new output tables here (alphabetical order).
         else
           throw invalid_option(
               key, s,
-              {"available_forage", "digestibility", "eaten_forage_per_ind",
-               "eaten_nitrogen_per_ind", "mass_density_per_hft"});
+              {"available_forage", "body_fat", "digestibility",
+               "eaten_forage_per_ind", "eaten_nitrogen_per_ind",
+               "individual_density", "mass_density"});
     }
   }
   // Remove the table "output" in order to indicate that it’s been parsed.
