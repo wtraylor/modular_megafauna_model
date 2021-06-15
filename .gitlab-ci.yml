@@ -236,10 +236,13 @@ demo_simulation:
   artifacts:
     paths:
       - build/demo_results.Rmd
+        # All output files necessary for plotting demo results:
       - build/available_forage.tsv
+      - build/body_fat_by_hft.tsv
       - build/digestibility.tsv
       - build/eaten_forage_per_ind.tsv
       - build/eaten_nitrogen_per_ind.tsv
+      - build/individual_density_by_hft.tsv
       - build/mass_density_per_hft.tsv
     expire_in: 20 minutes
 
