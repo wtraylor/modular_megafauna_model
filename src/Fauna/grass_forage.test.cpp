@@ -8,9 +8,9 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "grass_forage.h"
 #include "average.h"
 #include "catch.hpp"
-#include "grass_forage.h"
 
 using namespace Fauna;
 

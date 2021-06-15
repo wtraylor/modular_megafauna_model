@@ -21,7 +21,7 @@ interval = "Annual"
 [output.text_tables]
 directory = "."
 precision = 4
-tables = ["mass_density_per_hft"]
+tables = ["mass_density"]
 
 ###############################################################################
 

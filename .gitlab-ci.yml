@@ -34,11 +34,11 @@ check_develop_version:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       when: always
   script:
-    - echo "If this fails, check the version is reset to '0.0.0' in CITATION.cff and CMakeLists.txt."
-    - test "0.0.0" == $(grep "^\s*VERSION" CMakeLists.txt | grep -oP '\d+\.\d+\.\d+.*')
     - test "0.0.0" == $(grep "^version\s*:" CITATION.cff | grep -oP '\d+\.\d+\.\d+.*')
-    - echo "'date-released:' in CITATION.cff should be unset."
     - grep --silent "^date-released\s*:\s*$" CITATION.cff
+    - test "0.0.0" == $(grep '"version"' codemeta.json | grep -oP '\d+\.\d+\.\d+')
+    - grep --silent '"dateModified":\s*""' codemeta.json
+    - test "0.0.0" == $(grep "^\s*VERSION" CMakeLists.txt | grep -oP '\d+\.\d+\.\d+.*')
 
 # Check that the tag matches the version in the CMakeLists.txt file.
 # If the tag doesn’t match, you will need to change CMakeLists.txt and
@@ -55,16 +55,25 @@ check_release_version:
     - test "$CI_COMMIT_TAG" == $(grep "^\s*VERSION" CMakeLists.txt | grep -oP '\d+\.\d+\.\d+.*')
     - echo "If this fails, check that the Git tag matches version in CITATION.cff"
     - test "$CI_COMMIT_TAG" == $(grep "^version\s*:" CITATION.cff | grep -oP '\d+\.\d+\.\d+.*')
+    - echo "If this fails, check that the Git tag matches version in codemeta.json."
+    - test "$CI_COMMIT_TAG" == $(grep '"version"' codemeta.json | grep -oP '(?<=")\d+\.\d+\.\d+.*(?=")')
 
 # Check that all files are correctly formatted according to ".clang-format".
 # Exclude the "external/" directory because they will use different formatting.
 clang-format:
-  image: silkeh/clang:latest
+  image:
+    name: mikedld/clang-format:12-latest # Update this to later clang versions as necessary.
+    entrypoint: [""]
   stage: lint
   script:
+    # We need to use simple BusyBox `find` syntax here.
     - >
       clang-format --dry-run --Werror
-      $(find . -path ./external -prune -false -o \( -iname '*.cpp' -or -iname '*.h' \))
+      $(find src/     -iname '*.cpp' -or -iname '*.h')
+      $(find docs/    -iname '*.cpp' -or -iname '*.h')
+      $(find include/ -iname '*.cpp' -or -iname '*.h')
+      $(find tests/   -iname '*.cpp' -or -iname '*.h')
+      $(find tools/   -iname '*.cpp' -or -iname '*.h')
 
 compile:
   image: gcc:latest
@@ -95,22 +104,13 @@ compile:
     expire_in: 20 minutes
 
 # Compare the Sphinx instructions in "docs/sphinx/conf.py".
-# TODO: Currently (2021-05-05), the Docker image "readthedocs/build:latest"
-# (7.0) is based on Ubuntu 18.04. It does not contain the required Doxygen
-# version 1.8.16 yet. As soon as the readthedocs image is properly updated,
-# we should use it here in the CI.
 doxygen:
-  image: ubuntu:latest
+  image: readthedocs/build:latest
   stage: build
   before_script:
-    - apt-get update -qq
-    - apt-get install -y -qq
-      cmake
-      default-jre
-      doxygen
-      g++
-      graphviz
-      texlive-base
+    - conda install --yes cmake
+    - conda install --yes --channel conda-forge doxygen
+    - PATH=$HOME/.conda/bin:$PATH
   script:
     - mkdir --parents build
     - cd build
@@ -132,6 +132,26 @@ unit_tests:
     - cd build
     - ./megafauna_unit_tests
 
+# Test coverage for codecov.io
+# The environment variable "CODECOV_TOKEN" must be provided. Compare:
+# <https://docs.codecov.io/docs/about-the-codecov-bash-uploader#upload-token>
+# <https://docs.gitlab.com/ce/ci/variables/README.html#project-cicd-variables>
+code_coverage:
+  image: gcc:latest
+  stage: test
+  needs: ["compile"]
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq cmake gcovr
+  script:
+    - mkdir --parents build
+    - cd build
+    - cmake -DBUILD_TESTING=ON -DENABLE_COVERAGE=ON -DBUILD_DOC=OFF ..
+    - make --jobs=6 megafauna_unit_tests
+    - ./megafauna_unit_tests
+    - make --jobs=6 gcov
+    - bash <(curl -s https://codecov.io/bash) -X gcov
+
 # Check that the linter works and that the example instruction files are
 # correct.
 linter:
@@ -139,25 +159,36 @@ linter:
   stage: test
   needs: ["compile"]
   script:
-    # Good Files:
-    - ./build/megafauna_insfile_linter examples/megafauna.toml
-    - for f in tests/good_insfiles/*.toml; do ./build/megafauna_insfile_linter $f; done
-    # Bad Files:
+    # Create a symbolic link in order to shorten instructions.
+    - ln -s ./build/megafauna_insfile_linter lint
+    # GOOD FILES:
+    - ./lint examples/megafauna.toml
+    - for f in tests/good_insfiles/*.toml; do ./lint $f; done
+    - ./lint tests/good_insfiles/legacy_massdensity_per_hft.toml 2>&1 | grep -i 'mass_density_per_hft.*deprecated'
+    # BAD FILES:
     # These checks could be done with the catch framework, too
     # (CHECK_THROWS_AS). That would be more flexible than checking for a
     # specific error message in STDERR.
+    # Check *all* bad instruction files:
+    - for f in tests/bad_insfiles/*.toml; do
+        echo;
+        echo $f;
+        (! ./lint $f);
+      done
+    # Check for specific error messages:
     # Note that commands that expected to fail need to be executed in a
     # subshell like this: `(command || true)`
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_01.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_02.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_03.toml 2>&1 || true) | grep -iq 'output\.text_tables\.tables.*wrong type.*expected array of string'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_04.toml 2>&1 || true) | grep -iq 'expenditure\.components.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_05.toml 2>&1 || true) | grep -iq 'mortality\.factors.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_06.toml 2>&1 || true) | grep -iq 'simulation\.establishment_interval.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_07.toml 2>&1 || true) | grep -iq 'output\.text_tables\.precision.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/wrong_type_08.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/two_groups_with_same_name.toml 2>&1 || true) | grep -iq 'group.*is defined twice'
-    - (./build/megafauna_insfile_linter tests/bad_insfiles/two_hfts_with_same_name.toml 2>&1 || true) | grep -iq 'HFT.*is defined twice'
+    - (./lint tests/bad_insfiles/breeding_start_ambiguous.toml 2>&1 || true) | grep -iq 'breeding_season\.start.*ambiguous'
+    - (./lint tests/bad_insfiles/wrong_type_01.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_02.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_03.toml 2>&1 || true) | grep -iq 'output\.text_tables\.tables.*wrong type.*expected array of string'
+    - (./lint tests/bad_insfiles/wrong_type_04.toml 2>&1 || true) | grep -iq 'expenditure\.components.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_05.toml 2>&1 || true) | grep -iq 'mortality\.factors.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_06.toml 2>&1 || true) | grep -iq 'simulation\.establishment_interval.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_07.toml 2>&1 || true) | grep -iq 'output\.text_tables\.precision.*wrong type'
+    - (./lint tests/bad_insfiles/wrong_type_08.toml 2>&1 || true) | grep -iq 'body_mass\.female.*wrong type'
+    - (./lint tests/bad_insfiles/two_groups_with_same_name.toml 2>&1 || true) | grep -iq 'group.*is defined twice'
+    - (./lint tests/bad_insfiles/two_hfts_with_same_name.toml 2>&1 || true) | grep -iq 'HFT.*is defined twice'
 
 memcheck:
   image: gcc:latest
@@ -183,7 +214,9 @@ memcheck:
       demo_simulation.toml
       | tee memcheck.log"
     # If the error summary has not zero errors, the grep command will fail.
-    - "! grep --silent 'ERROR SUMMARY: 0 errors' memcheck.log"
+    # Note that the "!" doesn’t work without starting a subshell with
+    # parentheses. Compare <https://stackoverflow.com/a/53753605>.
+    - "(! grep --silent 'ERROR SUMMARY: 0 errors' memcheck.log)"
   artifacts:
     paths:
       - build/memcheck.log
@@ -200,11 +233,14 @@ demo_simulation:
   artifacts:
     paths:
       - build/demo_results.Rmd
+        # All output files necessary for plotting demo results:
       - build/available_forage.tsv
+      - build/body_fat.tsv
       - build/digestibility.tsv
       - build/eaten_forage_per_ind.tsv
       - build/eaten_nitrogen_per_ind.tsv
-      - build/mass_density_per_hft.tsv
+      - build/individual_density.tsv
+      - build/mass_density.tsv
     expire_in: 20 minutes
 
 plot_demo_results:

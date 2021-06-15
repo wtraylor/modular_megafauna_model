@@ -68,8 +68,6 @@ struct AllometryParameters {
  * (\ref Hft::body_mass_male). This is because males are typically larger than
  * females. Allometric extrapolating from smaller females to larger males would
  * be more uncertain than the other way round.
- *
- * \see \ref calc_allometry()
  */
 struct GivenPointAllometry {
   /// Exponent \f$e\f$ in \f$f(M) = c * M^e\f$.
@@ -77,6 +75,17 @@ struct GivenPointAllometry {
 
   /// Value \f$f(m)\f$ if \f$m\f$ is \ref Hft::body_mass_male.
   double value_male_adult;
+
+  /// Calculate the value for a different body mass.
+  /**
+   * \param bodymass_male_adult The body mass of an adult, male animal. See
+   * \ref Hft::body_mass_male.
+   * \param bodymass Current body mass of the animal for which the value is to
+   * be calculated. \throw std::invalid_argument If any given parameter is
+   * outside of the allowed range.
+   */
+  double extrapolate(const double bodymass_male_adult,
+                     const double bodymass) const;
 };
 
 /// Selector for a function of how to calculate whole-body conductance.
@@ -298,7 +307,8 @@ enum class ReproductionModel {
  * `examples/megafauna.toml`. They must be valid in the context of the
  * global parameters of the instruction file.
  */
-struct Hft {
+class Hft {
+ public:
   /// Check if all variables are okay
   /**
    * \param[in] params The global simulation parameters.
@@ -426,6 +436,11 @@ struct Hft {
   int breeding_season_length = 30;
 
   /// Julian day of the beginning of the breeding season (0=Jan 1st).
+  /**
+   * The instruction file parameter can also be specified as a month name. In
+   * that case the first of the month is the start of the breeding season
+   * (assuming a 365-days year).
+   */
   int breeding_season_start = 121;
   /** @} */
 
@@ -634,6 +649,25 @@ struct Hft {
   bool operator!=(const Hft& rhs) const { return name != rhs.name; }
   bool operator<(const Hft& rhs) const { return name < rhs.name; }
   /** @} */  // Comparison
+
+ private:
+  /// Check if minimum mortality exceeds maximum reproduction.
+  /**
+   * \param[in] params The global simulation parameters.
+   * \param[out] msg Output stream for warning or error messages for users.
+   * \return true if the object has valid values
+   */
+  bool check_mortality_vs_reproduction(const Parameters& params,
+                                       std::ostream& msg) const;
+
+  /// Check if minimum expenditure exceeds maximum energy intake.
+  /**
+   * \param[in] params The global simulation parameters.
+   * \param[out] msg Output stream for warning or error messages for users.
+   * \return true if the object has valid values
+   */
+  bool check_intake_vs_expenditure(const Parameters& params,
+                                   std::ostream& msg) const;
 };
 
 }  // namespace Fauna

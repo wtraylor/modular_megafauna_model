@@ -21,7 +21,20 @@ habitats_per_group = 2
 
 # Monthly mean air temperature [°C].
 # See `grass.daily_decay_rate` for how to use the array.
-air_temperature = [-2 , 2, 7, 12, 18, 23, 26, 25, 20, 13, 6, 0]
+air_temperature = [
+  -2, # Jan
+  2,  # Feb
+  7,  # Mar
+  12, # Apr
+  18, # May
+  23, # Jun
+  26, # Jul
+  25, # Aug
+  20, # Sep
+  13, # Oct
+  6,  # Nov
+  0   # Dec
+]
 
 [grass]
 
@@ -35,11 +48,37 @@ daily_decay_rate = [ 0.005 ]
 # Example: A value of 0.1 means an increase of 10% every day.
 # See `grass.daily_decay_rate` for how to use the array.
 # 0.03 per day = 0.2 per week (Owen-Smith 2002)
-daily_growth_rate = [ 0.0, 0.0, 0.0, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.0, 0.0, 0.0]
+daily_growth_rate = [
+  0.00, # Jan
+  0.00, # Feb
+  0.00, # Mar
+  0.03, # Apr
+  0.03, # May
+  0.03, # Jun
+  0.03, # Jul
+  0.03, # Aug
+  0.03, # Sep
+  0.00, # Oct
+  0.00, # Nov
+  0.00  # Dec
+]
 
 # Fractional grass digestibility (0,1].
 # See `grass.daily_decay_rate` for how to use the array.
-digestibility = [ 0.4, 0.4, 0.4, 0.7, 0.7, 0.7, 0.7, 0.6, 0.5, 0.5, 0.4, 0.4 ]
+digestibility = [
+  0.4, # Jan
+  0.4, # Feb
+  0.4, # Mar
+  0.7, # Apr
+  0.7, # May
+  0.7, # Jun
+  0.7, # Jul
+  0.6, # Aug
+  0.5, # Sep
+  0.5, # Oct
+  0.4, # Nov
+  0.4  # Dec
+]
 
 # Fraction of the patch/habitat covered by grass.
 fpc = 0.8

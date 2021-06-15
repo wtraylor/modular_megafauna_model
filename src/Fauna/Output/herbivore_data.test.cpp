@@ -8,9 +8,9 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "herbivore_data.h"
 #include "catch.hpp"
 #include "dummy_hft.h"
-#include "herbivore_data.h"
 using namespace Fauna;
 using namespace Fauna::Output;
 

@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.10)
 project ("Modular Megafauna Model"
   # This version must match exactly the Git tag!
   # Compare the "check_version" job in ".gitlab-ci.yml".
-  VERSION 1.0.3
+  VERSION 1.1.0
   DESCRIPTION "A physiological, dynamic herbivore simulator in C++."
   LANGUAGES CXX
   )
@@ -117,7 +117,8 @@ target_include_directories (ModularMegafaunaModel
 ##########################  UNIT TESTS  ###################################
 ###########################################################################
 
-include (CTest)  # Automatically sets BUILD_TESTING=ON by default.
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/CMake-codecov"
+  ${CMAKE_MODULE_PATH})
 if (BUILD_TESTING)
   add_executable (megafauna_unit_tests
     ${SOURCE_FILES}
@@ -186,6 +187,19 @@ if (BUILD_TESTING)
     "${CMAKE_CURRENT_BINARY_DIR}/megafauna.toml"
     COPYONLY
     )
+
+  # Code coverage for codecov.io
+  # Compare <https://github.com/RWTH-HPC/CMake-codecov>
+  if(ENABLE_COVERAGE)
+    find_package(codecov)
+    add_coverage(megafauna_unit_tests)
+    coverage_evaluate()
+    # Exclude "external/" folder from coverage
+    list(APPEND LCOV_REMOVE_PATTERNS
+      "'${PROJECT_SOURCE_DIR}/external/*'"
+      "'${PROJECT_SOURCE_DIR}/tests/catch.hpp'"
+      )
+  endif(ENABLE_COVERAGE)
 endif(BUILD_TESTING)
 
 ###########################################################################
@@ -234,6 +248,11 @@ if(BUILD_DEMO_SIMULATOR)
   configure_file (
     "examples/demo_simulation.toml"
     "${CMAKE_CURRENT_BINARY_DIR}/demo_simulation.toml"
+    COPYONLY
+    )
+  configure_file (
+    "examples/megafauna.toml"
+    "${CMAKE_CURRENT_BINARY_DIR}/megafauna.toml"
     COPYONLY
     )
   file(

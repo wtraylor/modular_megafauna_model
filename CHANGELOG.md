@@ -12,6 +12,23 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [1.1.0] - 2021-06-15
+
+### Added
+- Code coverage badge with [codecov.io](https://codecov.io/gh/wtraylor/modular_megafauna_model/)
+- Software metadata in [codemeta format](https://codemeta.github.io/)
+- Add parameter sanity checks: mortality must not exceed reproduction; expenditure must not exceed intake [#45]
+- New text table output: `individual_density` and `body_fat` [#43]
+- The parameter `hft.breeding_season.start` can now take a month name (alternative to the Julian day).
+
+### Changed
+- Rename output file `mass_density_per_hft` to `mass_density` [#44]
+
+### Fixed
+- When configuring CMake with `BUILD_DEMO_SIMULATOR=ON` but `BUILD_TESTING=OFF`, the `megafauna.toml` instruction file was not copied even though `run_demo` needs it.
+- Valgrind memory check in CI didn’t fail
+- Doxygen issues with ReadTheDocs [34] [41] [42]
+
 ## [1.0.3] - 2021-05-10
 
 ### Fixed
@@ -217,7 +234,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Illius & O’Connor (2000)]: <https://doi.org/10.2307/3800911>
 [Taylor et al. (1981)]: <https://doi.org/10.1017/S0003356100040617>
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.3...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.0...develop
+[1.1.0]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.3...1.1.0
 [1.0.3]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.0...1.0.1
@@ -255,3 +273,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#29]: https://github.com/wtraylor/modular_megafauna_model/issues/29
 [#31]: https://github.com/wtraylor/modular_megafauna_model/issues/31
 [#32]: https://github.com/wtraylor/modular_megafauna_model/issues/32
+[#34]: https://github.com/wtraylor/modular_megafauna_model/issues/34
+[#41]: https://github.com/wtraylor/modular_megafauna_model/issues/41
+[#43]: https://github.com/wtraylor/modular_megafauna_model/issues/43
+[#44]: https://github.com/wtraylor/modular_megafauna_model/issues/44
+[#45]: https://github.com/wtraylor/modular_megafauna_model/issues/45

@@ -9,10 +9,185 @@
  * \date 2019
  */
 #include "hft.h"
+#include <iomanip>
 #include <sstream>
+#include "foraging_limits.h"
+#include "net_energy_models.h"
 #include "parameters.h"
 
 using namespace Fauna;
+
+double GivenPointAllometry::extrapolate(const double bodymass_male_adult,
+                                        const double bodymass) const {
+  if (bodymass <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::GivenPointAllometry::extrapolate() `bodymass` is negative or "
+        "zero.");
+  if (bodymass_male_adult <= 0.0)
+    throw std::invalid_argument(
+        "Fauna::GivenPointAllometry::extrapolate() `bodymass_male_adult` is "
+        "negative or zero.");
+  const double c = value_male_adult * pow(bodymass_male_adult, -exponent);
+  return c * pow(bodymass, exponent);
+}
+
+bool Hft::check_mortality_vs_reproduction(const Parameters& params,
+                                          std::ostream& msg) const {
+  bool is_valid = true;
+  // Minimum mortality exceeds maximum reproduction
+  // A female must give birth to at least 2.0 animals that will survive until
+  // sexual maturity. Otherwise the population is not able to survive.
+  if ((reproduction_model == ReproductionModel::Logistic ||
+       reproduction_model == ReproductionModel::ConstantMaximum ||
+       reproduction_model == ReproductionModel::Linear) &&
+      (mortality_factors.count(MortalityFactor::Background) &&
+       mortality_factors.count(MortalityFactor::Lifespan))) {
+    // Calculate the number of births a female may give, under ideal
+    // conditions (max. reproductive rate) over the course of her reproductive
+    // life, considering the background adult mortality that is threatening
+    // her.
+    double births_per_female = reproduction_annual_maximum;
+    for (int i = 1; i < (life_history_lifespan - life_history_sexual_maturity);
+         i++) {
+      births_per_female +=
+          reproduction_annual_maximum * pow(1.0 - mortality_adult_rate, i);
+    }
+    assert(births_per_female >= reproduction_annual_maximum);
+    // Calculate the probability of a newborn to survive until (female) sexual
+    // maturity.
+    const double survive_to_reproduce =
+        (1.0 - mortality_juvenile_rate) *
+        pow(1.0 - mortality_adult_rate, life_history_sexual_maturity);
+    // Combining the two yields the effective reproduction rate of a female
+    // over the course of her life.
+    if (births_per_female * survive_to_reproduce < 2.0) {
+      msg << std::fixed;           // Print fixed number of decimal places.
+      msg << std::setprecision(1)  // Print 1 decimal place.
+          << "Background mortality exceeds the maximum possible "
+             "reproduction rate.\n"
+          << "Considering background mortality, a female may give birth "
+             "to at most "
+          << births_per_female
+          << " animals over the course of her life. Their chance of "
+             "surviving until (female) sexual maturity is only "
+          << survive_to_reproduce << ". The product ("
+          << births_per_female * survive_to_reproduce
+          << ") is less than 2, which would be the number of surviving "
+             "offspring a female must produce over the course of her "
+             "life. The population is not viable.\n"
+          << "You can reduce mortality, increase reproduction rate or "
+             "increase the female reproductive lifespan."
+          << std::endl;
+      is_valid = false;
+    }
+  }
+  return is_valid;
+}
+
+bool Hft::check_intake_vs_expenditure(const Parameters& params,
+                                      std::ostream& msg) const {
+  bool valid_male = true, valid_female = true, valid_newborn = true;
+
+  // Minimum expenditure in MJ/day/ind
+  double min_exp_newborn = 0, min_exp_male = 0, min_exp_female = 0;
+
+  if (expenditure_components.count(ExpenditureComponent::BasalMetabolicRate) ||
+      expenditure_components.count(ExpenditureComponent::FieldMetabolicRate)) {
+    // First calculate only the BMR.
+    min_exp_newborn =
+        expenditure_basal_rate.extrapolate(body_mass_male, body_mass_birth);
+    min_exp_male = expenditure_basal_rate.value_male_adult;
+    min_exp_female =
+        expenditure_basal_rate.extrapolate(body_mass_male, body_mass_female);
+    // Then add the FMR multiplier.
+    if (expenditure_components.count(
+            ExpenditureComponent::FieldMetabolicRate)) {
+      min_exp_newborn *= expenditure_fmr_multiplier;
+      min_exp_male *= expenditure_fmr_multiplier;
+      min_exp_female *= expenditure_fmr_multiplier;
+    }
+  }
+
+  // Some reasonably high digestibility value, at least for wild forage.
+  static const double DIGESTIBILITY = 0.7;
+  // Set default energy content to a very high number so that the test won’t
+  // fail when a new NetEnergyModel is implemented that is not considered
+  // here.
+  ForageEnergyContent energy_content(99999);
+  if (digestion_net_energy_model == NetEnergyModel::GrossEnergyFraction) {
+    energy_content = get_net_energy_from_gross_energy(
+        params.forage_gross_energy, Digestibility(DIGESTIBILITY),
+        digestion_me_coefficient, digestion_k_maintenance);
+  }
+
+  // Maximum intake in MJ/day/ind
+  double max_intake_male = 99999, max_intake_female = 99999,
+         max_intake_newborn = 99999;
+
+  if (digestion_limit == DigestiveLimit::Allometric &&
+      foraging_diet_composer == DietComposer::PureGrazer) {
+    // Male adults
+    max_intake_male = (energy_content * digestion_allometric.value_male_adult *
+                       body_mass_male)[ForageType::Grass];
+    // Female adults
+    max_intake_female =
+        (energy_content *
+         digestion_allometric.extrapolate(body_mass_male, body_mass_female) *
+         body_mass_female)[ForageType::Grass];
+    // Newborns
+    max_intake_newborn =
+        (energy_content *
+         digestion_allometric.extrapolate(body_mass_male, body_fat_birth) *
+         body_mass_birth)[ForageType::Grass];
+  }
+
+  if (digestion_limit == DigestiveLimit::FixedFraction &&
+      foraging_diet_composer == DietComposer::PureGrazer) {
+    max_intake_male = (energy_content * digestion_fixed_fraction *
+                       body_mass_male)[ForageType::Grass];
+    max_intake_female = (energy_content * digestion_fixed_fraction *
+                         body_mass_female)[ForageType::Grass];
+    max_intake_newborn = (energy_content * digestion_fixed_fraction *
+                          body_mass_birth)[ForageType::Grass];
+  }
+
+  if (digestion_limit == DigestiveLimit::IlliusGordon1992 &&
+      foraging_diet_composer == DietComposer::PureGrazer) {
+    max_intake_male = get_digestive_limit_illius_gordon_1992(
+        body_mass_male, body_mass_male, DIGESTIBILITY, digestion_i_g_1992_ijk);
+    max_intake_female = get_digestive_limit_illius_gordon_1992(
+        body_mass_female, body_mass_female, DIGESTIBILITY,
+        digestion_i_g_1992_ijk);
+    max_intake_newborn = get_digestive_limit_illius_gordon_1992(
+        body_mass_female, body_mass_birth, DIGESTIBILITY,
+        digestion_i_g_1992_ijk);
+  }
+
+  valid_male &= max_intake_male > min_exp_male;
+  valid_female &= max_intake_female > min_exp_female;
+  valid_newborn &= max_intake_newborn > min_exp_newborn;
+
+  if (!valid_male || !valid_female || !valid_newborn) {
+    msg << "Based on the digestive limit and the energy expenditure, "
+           "herbivores will never be able to eat enough forage to meet their "
+           "energy needs. This assumes rich forage with a digestibility of "
+        << DIGESTIBILITY * 100 << "%." << std::endl;
+    msg << "This affects: \n";
+    msg << std::fixed;            // Print fixed number of decimal places.
+    msg << std::setprecision(2);  // Print 1 decimal place.
+    if (!valid_male)
+      msg << "\tmales:    min. expenditure = " << min_exp_male << " MJ/day"
+          << " max. intake = " << max_intake_male << " MJ/day\n";
+    if (!valid_female)
+      msg << "\tfemales:  min. expenditure = " << min_exp_female << " MJ/day"
+          << " max. intake = " << max_intake_female << " MJ/day\n";
+    if (!valid_newborn)
+      msg << "\tnewborns: min. expenditure = " << min_exp_newborn << " MJ/day"
+          << " max. intake = " << max_intake_newborn << " MJ/day\n";
+    msg << std::endl;
+  }
+  return valid_male && valid_female && valid_newborn;
+}
 
 bool Hft::is_valid(const Parameters& params, std::string& msg) const {
   bool is_valid = true;
@@ -420,6 +595,10 @@ bool Hft::is_valid(const Parameters& params, std::string& msg) const {
       }
     }
     // add more checks in alphabetical order
+
+    // SANITY CHECK OF PARAMETER COMBINATIONS
+    is_valid &= check_mortality_vs_reproduction(params, stream);
+    is_valid &= check_intake_vs_expenditure(params, stream);
   }
 
   // convert stream to string

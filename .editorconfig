@@ -48,3 +48,9 @@ indent_style = space
 [*.toml]
 indent_size = 2
 indent_style = space
+
+# From the codemeta.json generator:
+# https://codemeta.github.io/codemeta-generator/
+[*.json]
+indent_size = 4
+indent_style = space

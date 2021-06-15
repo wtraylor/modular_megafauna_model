@@ -8,8 +8,8 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
-#include "catch.hpp"
 #include "date_interval.h"
+#include "catch.hpp"
 #include "parameters.h"
 
 using namespace Fauna;

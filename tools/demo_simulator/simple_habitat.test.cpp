@@ -8,10 +8,10 @@
  * \copyright LGPL-3.0-or-later
  * \date 2019
  */
+#include "simple_habitat.h"
 #include "catch.hpp"
 #include "parameters.h"
 #include "population_list.h"
-#include "simple_habitat.h"
 
 using namespace Fauna;
 using namespace Fauna::Demo;

@@ -58,7 +58,7 @@ The world of the megafauna model is comprised of **simulation units.**
 Each such unit consists of a **habitat** and the herbivore **populations** inhabiting it.
 The habitat must be implemented by the outside vegetation model.
 Output can be spatially aggregated over several habitats by assigning multiple habitats to the same **aggregation unit.**
-Again, this is done done by the habitat implementation of the vegetation model.
+Again, this is done by the habitat implementation of the vegetation model.
 What kind of **herbivores** populate the world can be defined by the user.
 **Cohorts** are the first herbivore type implemented.
 
@@ -291,7 +291,7 @@ NE = ME * k_m = DE * \frac{ME}{DE} * k_m = GE * DMD * \frac{ME}{DE} * k_m
 
 #### Thermoregulation by Conductance {#sec_thermoregulation}
 
-This model of thermoregulation is often called the **Scholander-Irving model** and was published in two seminal papers in 1950: \cite scholander1950adaptation \cite scholander1950heat.
+This model of thermoregulation is often called the **Scholander-Irving model** and was published in two seminal papers in 1950: Scholander et al. (1950a) \cite scholander1950adaptation and Scholander et al. (1950b) \cite scholander1950heat.
 The more detailed implementation is taken from Peters (1983) \cite peters1983ecological.
 
 Homeothermic animals have extra energy costs to maintain their body core temperature.
@@ -325,7 +325,7 @@ The critical parameter for thermoregulatory expenditure is the **whole-body cond
 The conductance can be approximated from the average conductivity and the body surface.
 Conductivity is the inverse of insulation: it is the heat flow per temperature difference per area.
 
-Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ ([Hudson & White 1985](\cite hudson1985bioenergetics)).
+Body surface in m² scales roughly as \f$0.09*BM^{0.66}\f$ (Hudson & White 1985\cite hudson1985bioenergetics).
 
 #### Foraging {#sec_foraging}
 
