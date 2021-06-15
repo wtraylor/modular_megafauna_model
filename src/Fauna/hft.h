@@ -436,6 +436,11 @@ class Hft {
   int breeding_season_length = 30;
 
   /// Julian day of the beginning of the breeding season (0=Jan 1st).
+  /**
+   * The instruction file parameter can also be specified as a month name. In
+   * that case the first of the month is the start of the breeding season
+   * (assuming a 365-days year).
+   */
   int breeding_season_start = 121;
   /** @} */
 

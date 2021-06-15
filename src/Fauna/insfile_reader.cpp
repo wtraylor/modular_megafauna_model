@@ -175,7 +175,14 @@ void InsfileReader::check_wrong_type(
     found = "array of string";
   // Add more types here if you want to support them.
 
-  if (found != "") throw wrong_param_type(key, expected, found);
+  // Exceptions: Parameters that can be specified in different types.
+  bool exempt = false;  // Whether this parameter is an exeception.
+  if (key == "breeding_season.start") {
+    exempt = (expected == "integer" && found == "string") ||
+             (expected == "string" && found == "integer");
+  }
+
+  if (found != "" && !exempt) throw wrong_param_type(key, expected, found);
 }
 
 std::shared_ptr<cpptoml::table> InsfileReader::get_group_table(
@@ -594,10 +601,51 @@ Hft InsfileReader::read_hft(const std::shared_ptr<cpptoml::table>& table) {
     if (value) hft.breeding_season_length = *value;
   }
   {
+    const std::string key = "breeding_season.start";
     const bool mandatory = (hft.reproduction_model != ReproductionModel::None);
-    const auto value =
-        find_hft_parameter<int>(table, "breeding_season.start", mandatory);
-    if (value) hft.breeding_season_start = *value;
+    // Either an integer (Julian day) or a month name is allowed. We first
+    // check if one of them is defined with mandatory==false.
+    const auto month_name = find_hft_parameter<std::string>(table, key, false);
+    const auto julian_day = find_hft_parameter<int>(table, key, false);
+    const std::string hft_name = *table->get_as<std::string>("name");
+    if (mandatory && !month_name && !julian_day)
+      throw missing_hft_parameter(hft_name, key);
+    if (month_name && julian_day)
+      throw ambiguous_param_type(key, hft_name, *month_name,
+                                 std::to_string(*julian_day));
+    if (julian_day) hft.breeding_season_start = *julian_day;
+    // We assume 365 days in the year, for simplicity.
+    if (month_name) {
+      if (lowercase(*month_name) == "january")
+        hft.breeding_season_start = 0;
+      else if (lowercase(*month_name) == "february")
+        hft.breeding_season_start = 31;
+      else if (lowercase(*month_name) == "march")
+        hft.breeding_season_start = 59;
+      else if (lowercase(*month_name) == "april")
+        hft.breeding_season_start = 90;
+      else if (lowercase(*month_name) == "may")
+        hft.breeding_season_start = 120;
+      else if (lowercase(*month_name) == "june")
+        hft.breeding_season_start = 151;
+      else if (lowercase(*month_name) == "july")
+        hft.breeding_season_start = 181;
+      else if (lowercase(*month_name) == "august")
+        hft.breeding_season_start = 212;
+      else if (lowercase(*month_name) == "september")
+        hft.breeding_season_start = 243;
+      else if (lowercase(*month_name) == "october")
+        hft.breeding_season_start = 273;
+      else if (lowercase(*month_name) == "november")
+        hft.breeding_season_start = 304;
+      else if (lowercase(*month_name) == "december")
+        hft.breeding_season_start = 334;
+      else
+        throw invalid_option(
+            hft, key, *month_name,
+            {"January", "February", "March", "April", "May", "June", "July",
+             "August", "September", "October", "November", "December"});
+    }
   }
   {
     const bool mandatory =

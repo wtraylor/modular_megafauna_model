@@ -37,8 +37,8 @@ class ambiguous_param_type : public std::runtime_error {
       : std::runtime_error(
             "Parameter '" + key + +"' " +
             (hft == "" ? "of HFT '" + hft + "' " : "") +
-            "is ambiguous: there is '" + value1 + "' or '" + value2 +
-            "'. The reason might be that the parameter can take two different "
+            "is ambiguous: there is '" + value1 + "' or '" + value2 + "'. " +
+            "The reason might be that the parameter can take two different "
             "types and has then been defined twice."){};
 };
 
