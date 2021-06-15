@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 - Software metadata in [codemeta format](https://codemeta.github.io/)
 - Add parameter sanity checks: mortality must not exceed reproduction; expenditure must not exceed intake [#45]
 - New text table output: `individual_density` and `body_fat` [#43]
+- The parameter `hft.breeding_season.start` can now take a month name (alternative to the Julian day).
 
 ### Changed
 - Rename output file `mass_density_per_hft` to `mass_density` [#44]

@@ -22,6 +22,26 @@ class Hft;
 // Repeat typedef from hft.h
 typedef std::vector<std::shared_ptr<const Hft>> HftList;
 
+/// Exception that a parameter can be interpreted in multiple ways.
+class ambiguous_param_type : public std::runtime_error {
+ public:
+  /// Constructor
+  /**
+   * \param key The fully qualified TOML key.
+   * \param hft Pointer to HFT name. Leave blank if it’s not an HFT parameter.
+   * \param value1 One defined value.
+   * \param value2 The other defined value.
+   */
+  ambiguous_param_type(const std::string& key, const std::string& hft,
+                       const std::string& value1, const std::string& value2)
+      : std::runtime_error(
+            "Parameter '" + key + +"' " +
+            (hft == "" ? "of HFT '" + hft + "' " : "") +
+            "is ambiguous: there is '" + value1 + "' or '" + value2 + "'. " +
+            "The reason might be that the parameter can take two different "
+            "types and has then been defined twice."){};
+};
+
 /// Exception that an array parameter does not have the correct length.
 class bad_array_size : public std::runtime_error {
  public:

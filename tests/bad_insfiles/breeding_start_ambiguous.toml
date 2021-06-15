@@ -2,13 +2,8 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-###############################################################################
-#        Example instruction file for the Modular Megafauna Model
-#        ========================================================
-#
-# Please read the Doxygen documentation to learn how to use this instruction
-# file.
-###############################################################################
+# In this instruction file the HFT parameter 'breeding_season.start' is
+# ambiguous because it has been defined twice with differing types.
 
 [simulation]
 establishment_interval = 3650 # every 10 years
@@ -40,6 +35,7 @@ tables = [
 
 [[group]]
 name = "all_hfts"
+breeding_season.start  = "May" # ERROR!
 
 [group.body_fat]
 birth = 0.2
@@ -85,7 +81,7 @@ male   = 70   # kg/ind
 
 [hft.breeding_season]
 length = 30  # days
-start  = "May" # Julian day or month name
+start  = 120 # ERROR!
 
 [hft.digestion]
 allometric       = { fraction_male_adult = 0.05, exponent = -0.25 }
