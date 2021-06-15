@@ -843,6 +843,8 @@ void InsfileReader::read_table_output_text_tables() {
           params.output_text_tables.eaten_forage_per_ind = true;
         else if (lowercase(s) == "eaten_nitrogen_per_ind")
           params.output_text_tables.eaten_nitrogen_per_ind = true;
+        else if (lowercase(s) == "individual_density_by_hft")
+          params.output_text_tables.individual_density_by_hft = true;
         else if (lowercase(s) == "mass_density_per_hft")
           params.output_text_tables.mass_density_per_hft = true;
         // -> Add new output tables here (alphabetical order).
@@ -851,7 +853,7 @@ void InsfileReader::read_table_output_text_tables() {
               key, s,
               {"available_forage", "body_fat_by_hft", "digestibility",
                "eaten_forage_per_ind", "eaten_nitrogen_per_ind",
-               "mass_density_per_hft"});
+               "individual_density_by_hft", "mass_density_per_hft"});
     }
   }
   // Remove the table "output" in order to indicate that it’s been parsed.

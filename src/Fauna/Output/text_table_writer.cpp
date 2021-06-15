@@ -59,6 +59,13 @@ TextTableWriter::TextTableWriter(const OutputInterval interval,
     file_streams.push_back(&eaten_nitrogen_per_ind);
     eaten_nitrogen_per_ind.open(path);
   }
+  if (options.individual_density_by_hft) {
+    const std::string path =
+        dir + "/individual_density_by_hft" + FILE_EXTENSION;
+    check_file_exists(path);
+    file_streams.push_back(&individual_density_by_hft);
+    individual_density_by_hft.open(path);
+  }
   if (options.mass_density_per_hft) {
     const std::string path = dir + "/mass_density_per_hft" + FILE_EXTENSION;
     check_file_exists(path);
@@ -200,6 +207,8 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
   if (body_fat_by_hft.is_open()) start_row(datapoint, body_fat_by_hft);
   if (eaten_nitrogen_per_ind.is_open())
     start_row(datapoint, eaten_nitrogen_per_ind);
+  if (individual_density_by_hft.is_open())
+    start_row(datapoint, individual_density_by_hft);
   if (mass_density_per_hft.is_open())
     start_row(datapoint, mass_density_per_hft);
   // Iterate over predefined order of HFTs.
@@ -211,12 +220,16 @@ void TextTableWriter::write_datapoint(const Datapoint& datapoint) {
       body_fat_by_hft << FIELD_SEPARATOR << d->bodyfat;
     if (eaten_nitrogen_per_ind.is_open())
       eaten_nitrogen_per_ind << FIELD_SEPARATOR << d->eaten_nitrogen_per_ind;
+    if (individual_density_by_hft.is_open())
+      individual_density_by_hft << FIELD_SEPARATOR << d->inddens;
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << d->massdens;
     // -> Add more per-HFT tables here in alphabetical order.
   }
   if (body_fat_by_hft.is_open()) body_fat_by_hft << std::endl;
   if (eaten_nitrogen_per_ind.is_open()) eaten_nitrogen_per_ind << std::endl;
+  if (individual_density_by_hft.is_open())
+    individual_density_by_hft << std::endl;
   if (mass_density_per_hft.is_open()) mass_density_per_hft << std::endl;
   // -> Add more tables here in alphabetical order.
 
@@ -300,6 +313,8 @@ void TextTableWriter::write_captions(const Datapoint& datapoint) {
       eaten_forage_per_ind << FIELD_SEPARATOR << hft_name;
     if (eaten_nitrogen_per_ind.is_open())
       eaten_nitrogen_per_ind << FIELD_SEPARATOR << hft_name;
+    if (individual_density_by_hft.is_open())
+      individual_density_by_hft << FIELD_SEPARATOR << hft_name;
     if (mass_density_per_hft.is_open())
       mass_density_per_hft << FIELD_SEPARATOR << hft_name;
   }

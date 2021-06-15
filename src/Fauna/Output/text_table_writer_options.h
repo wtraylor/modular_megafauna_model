@@ -60,7 +60,11 @@ struct TextTableWriterOptions {
    */
   bool eaten_nitrogen_per_ind = false;
 
-  /// Herbivore mass density per HFT in kg/km².
+  /// Herbivore individual density by HFT in ind/km².
+  /** \see \ref Fauna::Output::HerbivoreData::inddens */
+  bool individual_density_by_hft = false;
+
+  /// Herbivore mass density by HFT in kg/km².
   /** \see \ref Fauna::Output::HerbivoreData::massdens */
   bool mass_density_per_hft = false;
 

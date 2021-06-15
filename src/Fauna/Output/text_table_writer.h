@@ -140,6 +140,7 @@ class TextTableWriter : public WriterInterface {
   std::ofstream digestibility;
   std::ofstream eaten_forage_per_ind;
   std::ofstream eaten_nitrogen_per_ind;
+  std::ofstream individual_density_by_hft;
   std::ofstream mass_density_per_hft;
   // Add new output variables here (alphabetical order).
   /** @} */  // File Streams
