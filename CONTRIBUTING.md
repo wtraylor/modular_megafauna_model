@@ -65,7 +65,7 @@ Each merge into the `master` branch is a release and should have a Git tag.
 5. Create a new release on GitHub, which will trigger [Zenodo](https://zenodo.org) to archive the code and mint a DOI.
     - The release and the tag description should summarize the changes (which you can copy-paste from `CHANGELOG.md`.
     - The name of the tag and the release is just the exact version, e.g. `0.1.2`.
-6. Rebase the `develop` branch: `git switch develop && git rebase master`
+6. Fast-forward the `develop` branch: `git switch develop && git merge --ff master`
 7. Your first commit in `develop` resets everything so that it cannot be confused with a released version:
     - Set `VERSION 0.0.0` in `CMakeLists.txt`.
     - Set `version: 0.0.0` in `CITATION.cff`, and empty the `date-released:` field.
