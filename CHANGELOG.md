@@ -29,7 +29,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 ### Fixed
 - When configuring CMake with `BUILD_DEMO_SIMULATOR=ON` but `BUILD_TESTING=OFF`, the `megafauna.toml` instruction file was not copied even though `run_demo` needs it.
 - Valgrind memory check in CI didn’t fail
-- Doxygen issues with ReadTheDocs [34] [41] [42]
+- Doxygen issues with ReadTheDocs [#34] [#41] [#42]
 
 ## [1.0.3] - 2021-05-10
 
