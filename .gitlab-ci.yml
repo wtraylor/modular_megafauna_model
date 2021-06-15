@@ -171,6 +171,7 @@ linter:
     # GOOD FILES:
     - ./build/megafauna_insfile_linter examples/megafauna.toml
     - for f in tests/good_insfiles/*.toml; do ./build/megafauna_insfile_linter $f; done
+    - ./build/megafauna_insfile_linter tests/good_insfiles/legacy_massdensity_per_hft.toml 2>&1 | grep -iq 'mass_density_per_hft.*deprecated'
     # BAD FILES:
     # These checks could be done with the catch framework, too
     # (CHECK_THROWS_AS). That would be more flexible than checking for a
