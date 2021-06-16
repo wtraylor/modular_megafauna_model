@@ -31,6 +31,10 @@ struct CombinedData {
   HabitatData habitat_data;
 
   /// Herbivore output data aggregated by output group.
+  /**
+   * An “output group” is typically an HFT.
+   * \see \ref HerbivoreInterface::get_output_group()
+   */
   std::map<const std::string, HerbivoreData> hft_data;
 
   /// Merge other data into this object.
