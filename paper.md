@@ -52,7 +52,7 @@ The model thus does not prescribe carrying capacity, but instead simulates herbi
 
 Mechanistic modeling can help us understand the drivers behind real-world population dynamics.
 Bottom-up models can point out which physiological processes are understudied and which mechanisms appear most important for emerging population effects [@deangelis2003praise].
-Once a model is sufficiently mature, its predictions can inform nature conservation management—an application that is urgently needed in light of ongoing global defaunation [@dirzo2014defaunation].
+Once a model is sufficiently mature, its predictions can inform nature conservation management—an application that could prove useful in light of ongoing global defaunation [@dirzo2014defaunation].
 
 The currently implemented model concepts originate in large parts from @pachzelt2013coupling and the earlier works by @illius2000resource and @illius1999scaling.
 @pachzelt2013coupling integrated African grazers into LPJ-GUESS, a dynamic global vegetation model (DGVM) [@smith2001representation].
