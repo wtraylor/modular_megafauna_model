@@ -186,9 +186,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
 
   // Write output when it’s ready.
   assert(output_writer.get() != NULL);
-  assert(last_date.get() != NULL);
-  bool is_first_simulation_day = (date == *last_date);
-  if (!is_first_simulation_day &&
+  if (!sim_units.empty() &&
       output_aggregator->get_interval().matches_output_interval(
           get_params().output_interval))
     for (const auto& datapoint : output_aggregator->retrieve())
