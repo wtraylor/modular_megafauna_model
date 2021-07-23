@@ -108,6 +108,13 @@ class World {
    */
   const Parameters& get_params() const;
 
+  /// List of all the simulation units in the world.
+  /**
+   * This is read-only. Unit tests can use it to check if
+   * \ref create_simulation_unit() works.
+   */
+  const std::list<SimulationUnit>& get_sim_units() const { return sim_units; }
+
   /// Whether this \ref World object has been created with an instruction file.
   const bool is_activated() const { return activated; }
 
