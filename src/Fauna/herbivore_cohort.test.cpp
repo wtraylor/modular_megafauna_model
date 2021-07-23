@@ -57,15 +57,15 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
     HerbivoreCohort cohort(AGE, BC, hft, Sex::Male, DENS, GE);
 
     SECTION("exceptions") {
-      SECTION("wrong age") {  // wrong age
+      SECTION("wrong age") {
         HerbivoreCohort other(AGE + 365, BC, hft, Sex::Male, DENS, GE);
         CHECK_THROWS(cohort.merge(other));
       }
-      SECTION("wrong sex") {  // wrong sex
+      SECTION("wrong sex") {
         HerbivoreCohort other(AGE, BC, hft, Sex::Female, DENS, GE);
         CHECK_THROWS(cohort.merge(other));
       }
-      SECTION("wrong HFT") {  // wrong HFT
+      SECTION("wrong HFT") {
         std::shared_ptr<Hft> hft2(new Hft);  // generate default Hft object
         hft2->name = "other_hft";
         REQUIRE(hft2.get() != hft.get());
