@@ -30,6 +30,7 @@ TEST_CASE("Fauna::WorldConstructor", "") {
 
   SECTION("create_populations() for several HFTs") {
     REQUIRE(params->herbivore_type == HerbivoreType::Cohort);
+    REQUIRE(params->one_hft_per_habitat == false);
     PopulationList* pops = world_cons.create_populations();
     REQUIRE(pops != NULL);
     // Check that there is one population per HFT.
