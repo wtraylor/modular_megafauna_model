@@ -18,7 +18,7 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
   // PREPARE SETTINGS
   Parameters params;
   REQUIRE(params.is_valid());
-  std::shared_ptr<Hft> hft(std::make_shared<Hft>(*create_hfts(1, params)[0]));
+  std::shared_ptr<Hft> hft(new Hft);
   REQUIRE(hft->is_valid(params));
 
   static const auto GE = Parameters().forage_gross_energy;
@@ -66,8 +66,8 @@ TEST_CASE("Fauna::HerbivoreCohort", "") {
         CHECK_THROWS(cohort.merge(other));
       }
       SECTION("wrong HFT") {  // wrong HFT
-        std::shared_ptr<Hft> hft2(
-            std::make_shared<Hft>(*create_hfts(2, params)[1]));
+        std::shared_ptr<Hft> hft2(new Hft);  // generate default Hft object
+        hft2->name = "other_hft";
         REQUIRE(hft2.get() != hft.get());
         REQUIRE(*hft2 != *hft);
         HerbivoreCohort other(AGE, BC, hft2, Sex::Male, DENS, GE);

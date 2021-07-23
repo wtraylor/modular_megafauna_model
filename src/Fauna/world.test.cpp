@@ -25,23 +25,19 @@ TEST_CASE("FAUNA::World", "") {
     CHECK_NOTHROW(w.simulate_day(Date(1, 2), false));
   }
 
+  static const std::shared_ptr<const Parameters> PARAMS(new Parameters);
+  static const std::shared_ptr<const HftList> HFTLIST(create_hfts(3, *PARAMS));
   SECTION("Unit test constructor") {
     CHECK_THROWS(World(NULL, NULL));
-    const std::shared_ptr<const Parameters> params(new Parameters);
-    CHECK_THROWS(World(params, NULL));
-    static const HftList hftlist = create_hfts(3, *params);
-    static const auto hftlist_ptr = std::shared_ptr<const HftList>(&hftlist);
-    CHECK_THROWS(World(NULL, hftlist_ptr));
-    CHECK_NOTHROW(World(params, hftlist_ptr));
-    REQUIRE(World(params, hftlist_ptr).is_activated());
-    REQUIRE(World(params, hftlist_ptr).get_sim_units().empty());
+    CHECK_THROWS(World(PARAMS, NULL));
+    CHECK_THROWS(World(NULL, HFTLIST));
+    CHECK_NOTHROW(World(PARAMS, HFTLIST));
+    REQUIRE(World(PARAMS, HFTLIST).is_activated());
+    REQUIRE(World(PARAMS, HFTLIST).get_sim_units().empty());
   }
 
   SECTION("simulate_day()") {
-    const std::shared_ptr<const Parameters> params(new Parameters);
-    static const HftList hftlist = create_hfts(2, *params);
-    static const auto hftlist_ptr = std::shared_ptr<const HftList>(&hftlist);
-    World world(params, hftlist_ptr);
+    World world(PARAMS, HFTLIST);
     world.simulate_day(Date(0, 0), true);
     // Run for some days
     CHECK_NOTHROW(world.simulate_day(Date(1, 0), true));

@@ -24,7 +24,7 @@ TEST_CASE("Fauna::WorldConstructor", "") {
   REQUIRE(params->is_valid());
 
   // prepare HFT list
-  HftList hftlist = create_hfts(3, *params);
+  HftList hftlist = *create_hfts(3, *params);
 
   SECTION("create_populations() for several HFTs in one habitat") {
     REQUIRE(params->herbivore_type == HerbivoreType::Cohort);
