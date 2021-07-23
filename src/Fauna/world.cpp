@@ -38,7 +38,7 @@ Output::WriterInterface* World::construct_output_writer() const {
     }
       // Construct your new output writer here.
     default:
-      std::logic_error(
+      throw std::logic_error(
           "Fauna::World::World() "
           "Selected output format parameter is not implemented.");
   }
