@@ -73,8 +73,14 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
         "World::create_simulation_unit(): Pointer to habitat is NULL.");
   if (!activated) return;
 
-  // TODO: pass counter to create_populations()
-  PopulationList* populations = world_constructor->create_populations(0);
+  int habitat_ctr = 0;
+  // Find the number of habitats already created in this aggregation unit.
+  for (const auto& sim_unit : sim_units)
+    if (sim_unit.get_habitat().get_aggregation_unit() ==
+        habitat->get_aggregation_unit())
+      habitat_ctr++;
+  PopulationList* populations =
+      world_constructor->create_populations(habitat_ctr);
   assert(populations);
 
   // Use emplace_back() instead of push_back() to directly construct the new

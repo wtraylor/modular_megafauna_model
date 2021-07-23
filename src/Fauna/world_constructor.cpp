@@ -35,15 +35,29 @@ PopulationList* WorldConstructor::create_populations(
     const unsigned int habitat_ctr_in_agg_unit) const {
   PopulationList* plist = new PopulationList();
 
+  assert(!get_hftlist().empty());
+
   if (get_params().herbivore_type == HerbivoreType::Cohort) {
-    // Create one population per HFT.
-    for (const auto& hft_ptr : get_hftlist())
-      plist->emplace_back(
-          new CohortPopulation(CreateHerbivoreCohort(hft_ptr, params)));
+    if (get_params().one_hft_per_habitat) {
+      // Create only one HFT, i.e. one population.
+      const int hft_idx = habitat_ctr_in_agg_unit % get_hftlist().size();
+      assert(hft_idx >= 0);
+      assert(hft_idx < get_hftlist().size());
+      plist->emplace_back(new CohortPopulation(
+          CreateHerbivoreCohort(get_hftlist()[hft_idx], params)));
+      assert(plist->size() == 1);
+    } else {
+      // Create one population for every HFT.
+      for (const auto& hft_ptr : get_hftlist())
+        plist->emplace_back(
+            new CohortPopulation(CreateHerbivoreCohort(hft_ptr, params)));
+      assert(plist->size() == get_hftlist().size());
+    }
   } else
     throw std::logic_error(
         "WorldConstructor::create_population(): unknown herbivore type");
 
   assert(plist != NULL);
+  assert(!plist->empty());
   return plist;
 }
