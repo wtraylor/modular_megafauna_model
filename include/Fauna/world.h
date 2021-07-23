@@ -57,6 +57,19 @@ class World {
   World(const std::string instruction_filename,
         const SimMode mode = SimMode::Simulate);
 
+  /// Constructor for unit tests
+  /**
+   * \warning This function may be changed in the future depending on the needs
+   * of unit tests.
+   * \param params Global simulation parameters that would normally be parsed
+   * from the instruction file.
+   * \param hftlist HFT parameters that would normally be parsed from the
+   * instruction file.
+   * \throw std::invalid_argument If either of the shared pointers is NULL.
+   */
+  World(const std::shared_ptr<const Parameters> params,
+        const std::shared_ptr<const HftList> hftlist);
+
   /// Constructor: Create deactivated `World` object.
   /**
    * Even if the megafauna model should be completely deactivated, there might
