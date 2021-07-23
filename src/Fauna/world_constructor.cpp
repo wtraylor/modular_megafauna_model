@@ -31,7 +31,8 @@ DistributeForage* WorldConstructor::create_distribute_forage() const {
   };
 }
 
-PopulationList* WorldConstructor::create_populations() const {
+PopulationList* WorldConstructor::create_populations(
+    const unsigned int habitat_ctr_in_agg_unit) const {
   PopulationList* plist = new PopulationList();
 
   if (get_params().herbivore_type == HerbivoreType::Cohort) {
