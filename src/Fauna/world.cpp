@@ -27,33 +27,41 @@
 
 using namespace Fauna;
 
+Output::WriterInterface* World::construct_output_writer() const {
+  switch (get_params().output_format) {
+    case OutputFormat::TextTables: {
+      std::set<std::string> hft_names;
+      for (const auto& h : get_hfts()) hft_names.insert(h->name);
+      return new Output::TextTableWriter(get_params().output_interval,
+                                         get_params().output_text_tables,
+                                         hft_names);
+    }
+      // Construct your new output writer here.
+    default:
+      std::logic_error(
+          "Fauna::World::World() "
+          "Selected output format parameter is not implemented.");
+  }
+}
+
 World::World(const std::string instruction_filename, const SimMode mode)
     : activated(true),
       insfile(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
-      world_constructor(new WorldConstructor(insfile.params, get_hfts())),
-      output_aggregator(new Output::Aggregator()) {
-  if (mode == SimMode::Simulate) {
-    // Create Output::WriterInterface implementation according to selected
-    // setting.
-    switch (get_params().output_format) {
-      case OutputFormat::TextTables: {
-        std::set<std::string> hft_names;
-        for (const auto& h : get_hfts()) hft_names.insert(h->name);
-        output_writer.reset(new Output::TextTableWriter(
-            get_params().output_interval, get_params().output_text_tables,
-            hft_names));
-        break;
-      }
-      default:
-        std::logic_error(
-            "Fauna::World::World() "
-            "Selected output format parameter is not implemented.");
-    }
-  }
-}
+      output_aggregator(new Output::Aggregator()),
+      output_writer(construct_output_writer()),
+      world_constructor(new WorldConstructor(insfile.params, get_hfts())) {}
 
 World::World() : activated(false) {}
+
+World::World(const std::shared_ptr<const Parameters> params,
+             const std::shared_ptr<const HftList> hftlist)
+    : activated(true),
+      insfile({hftlist, params}),
+      days_since_last_establishment(get_params().herbivore_establish_interval),
+      output_aggregator(new Output::Aggregator()),
+      output_writer(construct_output_writer()),
+      world_constructor(new WorldConstructor(insfile.params, get_hfts())) {}
 
 // The destructor must be implemented here in the source file, where the
 // forward-declared types are complete.
@@ -74,7 +82,7 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
   sim_units.emplace_back(habitat, populations);
 }
 
-const HftList& World::get_hfts() {
+const HftList& World::get_hfts() const {
   assert(insfile.hftlist.get());
   return *(insfile.hftlist);
 }

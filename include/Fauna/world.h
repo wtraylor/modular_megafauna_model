@@ -115,7 +115,7 @@ class World {
    */
   const std::list<SimulationUnit>& get_sim_units() const { return sim_units; }
 
-  /// Whether this \ref World object has been created with an instruction file.
+  /// Whether this \ref World object has been created with parameters and HFTs.
   const bool is_activated() const { return activated; }
 
   /// Iterate through all simulation units and perform simulation for this day.
@@ -139,7 +139,15 @@ class World {
 
  private:
   /// Get the immutable list of herbivore functional types.
-  const HftList& get_hfts();
+  const HftList& get_hfts() const;
+
+  /// Create \ref Output::WriterInterface implementation according to params.
+  /**
+   * \throw std::logic_error If \ref Parameters::output_format is not
+   * implemented.
+   * \see \ref output_writer
+   */
+  Output::WriterInterface* construct_output_writer() const;
 
   /// Whether the whole model is active or not.
   const bool activated;
