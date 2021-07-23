@@ -116,6 +116,20 @@ World::InsfileContent World::read_instruction_file(
 
 void World::simulate_day(const Date& date, const bool do_herbivores) {
   if (!activated) return;
+
+  // On the first simulation day, initialize the last_date member variable.
+  if (!last_date)
+    last_date.reset(new Date(date));
+  else if (!last_date->is_successive(date))
+    throw std::logic_error(
+        "Fauna::World::simulate_day() "
+        "Simulation dates did not come in consecutively.\n"
+        "In the last call I received Julian day " +
+        std::to_string(last_date->get_julian_day()) + " in year " +
+        std::to_string(last_date->get_year()) + ".\n" +
+        "Now I received Julian day " + std::to_string(date.get_julian_day()) +
+        " in year " + std::to_string(date.get_year()));
+
   // Create one function object to feed all herbivores.
   const FeedHerbivores feed_herbivores(
       world_constructor->create_distribute_forage());

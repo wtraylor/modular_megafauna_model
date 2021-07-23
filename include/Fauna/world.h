@@ -171,6 +171,13 @@ class World {
   /// Number of days since extinct populations were re-established.
   int days_since_last_establishment;
 
+  /// The date from the last call to \ref simulate_day()
+  /**
+   * This is to check that the simulation days are coming in correctly from the
+   * vegetation/host model.
+   */
+  std::unique_ptr<Fauna::Date> last_date;
+
   /// Collects output data per time interval and aggregation unit.
   const std::unique_ptr<Output::Aggregator> output_aggregator;
 
