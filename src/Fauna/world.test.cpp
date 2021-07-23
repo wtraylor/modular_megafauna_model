@@ -45,11 +45,8 @@ TEST_CASE("FAUNA::World", "") {
     world.simulate_day(Date(0, 0), true);
     // Run for some days
     CHECK_NOTHROW(world.simulate_day(Date(1, 0), true));
-    world.simulate_day(Date(1, 0), true);
     CHECK_NOTHROW(world.simulate_day(Date(2, 0), true));
-    world.simulate_day(Date(2, 0), true);
     CHECK_NOTHROW(world.simulate_day(Date(3, 0), true));
-    world.simulate_day(Date(3, 0), true);
     // Try to simulate the same day again.
     CHECK_THROWS(world.simulate_day(Date(3, 0), true));
     // Try to simulate the previous day again
@@ -63,11 +60,9 @@ TEST_CASE("FAUNA::World", "") {
 
     // Check that the year boundary works.
     for (int day = 4; day < 365; day++)
-      world.simulate_day(Date(day, 0), true);
+      CHECK_NOTHROW(world.simulate_day(Date(day, 0), true));
     CHECK_NOTHROW(world.simulate_day(Date(0, 1), true));
-    world.simulate_day(Date(0, 1), true);
     CHECK_NOTHROW(world.simulate_day(Date(1, 1), true));
-    world.simulate_day(Date(1, 1), true);
     CHECK_NOTHROW(world.simulate_day(Date(2, 1), true));
   }
 }
