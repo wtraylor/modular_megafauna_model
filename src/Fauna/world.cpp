@@ -121,10 +121,9 @@ World::InsfileContent World::read_instruction_file(
 void World::simulate_day(const Date& date, const bool do_herbivores) {
   if (!activated) return;
 
-  // On the first simulation day, initialize the last_date member variable.
-  if (!last_date)
-    last_date.reset(new Date(date));
-  else if (!last_date->is_successive(date))
+  // Check if `date` follows `last_date`, but only if `last_date` has already
+  // been initialized (which happens on the first call.
+  if (last_date && !last_date->is_successive(date))
     throw std::logic_error(
         "Fauna::World::simulate_day() "
         "Simulation dates did not come in consecutively.\n"
@@ -191,4 +190,6 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
           get_params().output_interval))
     for (const auto& datapoint : output_aggregator->retrieve())
       output_writer->write_datapoint(datapoint);
+
+  last_date.reset(new Date(date));
 }
