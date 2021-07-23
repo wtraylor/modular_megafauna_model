@@ -83,6 +83,10 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
 }
 
 const HftList& World::get_hfts() const {
+  if (!insfile.hftlist)
+    throw std::logic_error(
+        "Fauna::World::get_hfts() "
+        "The member variable insfile.hftlist is not set.");
   assert(insfile.hftlist.get());
   return *(insfile.hftlist);
 }
