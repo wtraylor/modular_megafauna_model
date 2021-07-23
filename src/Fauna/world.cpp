@@ -130,7 +130,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
   // Check if `date` follows `last_date`, but only if `last_date` has already
   // been initialized (which happens on the first call.
   if (last_date && !last_date->is_successive(date))
-    throw std::logic_error(
+    throw std::invalid_argument(
         "Fauna::World::simulate_day() "
         "Simulation dates did not come in consecutively.\n"
         "In the last call I received Julian day " +

@@ -132,8 +132,8 @@ class World {
    * \param date The current simulation day.
    * \param do_herbivores Whether to perform herbivore simulations. If false,
    * only the output data of the habitats are updated.
-   * \throw std::logic_error If `date` has not been correctly incremented by one
-   * day since the last call.
+   * \throw std::invalid_argument If `date` has not been correctly incremented
+   * by one day since the last call.
    */
   void simulate_day(const Date& date, const bool do_herbivores);
 
