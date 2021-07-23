@@ -33,5 +33,6 @@ TEST_CASE("FAUNA::World", "") {
     static const auto hftlist_ptr = std::shared_ptr<const HftList>(&hftlist);
     CHECK_THROWS(World(NULL, hftlist_ptr));
     CHECK_NOTHROW(World(params, hftlist_ptr));
+    REQUIRE(World(params, hftlist_ptr).is_activated());
   }
 }
