@@ -11,6 +11,7 @@
 #include "world.h"
 #include "catch.hpp"
 #include "date.h"
+#include "dummy_habitat.h"
 #include "dummy_hft.h"
 #include "parameters.h"
 using namespace Fauna;
@@ -60,5 +61,98 @@ TEST_CASE("FAUNA::World", "") {
     CHECK_NOTHROW(world.simulate_day(Date(0, 1), true));
     CHECK_NOTHROW(world.simulate_day(Date(1, 1), true));
     CHECK_NOTHROW(world.simulate_day(Date(2, 1), true));
+  }
+
+  SECTION("Habitat count as multiple of HFT count") {
+    std::shared_ptr<Parameters> params(new Parameters);
+    params->one_hft_per_habitat = true;
+    World world(params, HFTLIST);
+
+    REQUIRE(HFTLIST->size() > 1);
+
+    SECTION("Habitat count == 0") {
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+    }
+
+    SECTION("Habitat count == HFT count") {
+      // Create 3 aggregation units with one habitat for each HFT.
+      for (int i = 0; i < HFTLIST->size(); i++) {
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("1")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("2")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("3")));
+      }
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+    }
+
+    SECTION("Habitat count == 2 * HFT count") {
+      // Create 3 aggregation units with 2 habitats for each HFT.
+      for (int i = 0; i < 2 * HFTLIST->size(); i++) {
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("1")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("2")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("3")));
+      }
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+    }
+
+    SECTION("Habitat count == 3 * HFT count") {
+      // Create 3 aggregation units with 3 habitats for each HFT.
+      for (int i = 0; i < 3 * HFTLIST->size(); i++) {
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("1")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("2")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("3")));
+      }
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+    }
+
+    SECTION("Habitat count == 1") {
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
+    }
+
+    SECTION("Habitat count == HFT count - 1") {
+      for (int i = 0; i < HFTLIST->size() - 1; i++) {
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("1")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("2")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("3")));
+      }
+      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
+    }
+
+    SECTION("Habitat count == HFT count + 1") {
+      for (int i = 0; i < HFTLIST->size() + 1; i++) {
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("1")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("2")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("3")));
+      }
+      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
+    }
+
+    SECTION("Habitat count == 2 * HFT count - 1") {
+      for (int i = 0; i < 2 * HFTLIST->size() - 1; i++) {
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("1")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("2")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("3")));
+      }
+      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
+    }
   }
 }
