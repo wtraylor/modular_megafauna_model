@@ -85,6 +85,16 @@ struct Parameters {
   HerbivoreType herbivore_type = HerbivoreType::Cohort;
 
   /// Whether to allow only herbivores of one HFT in each habitat.
+  /**
+   * If this is activated, the habitats in each aggregation unit must be an
+   * integer multiple of the number of HFTs. For instance, with LPJ-GUESS that
+   * means that `npatch`, i.e. the number of patches (=habitats) per grid cell
+   * (=aggregation unit) must be a multiple of the number of HFTs. If there are
+   * 3 HFTs, `npatch` can take the value of 3, 6, 9, 12, etc.
+   *
+   * This rule is important because the aggregated output would otherwise not
+   * be comparable between aggregation units.
+   */
   bool one_hft_per_habitat = false;
   /** @} */
 

@@ -24,8 +24,8 @@ TEST_CASE("Fauna::CohortPopulation", "") {
   std::shared_ptr<Parameters> params(new Parameters());
   REQUIRE(params->is_valid());
 
-  // Prepare HFT by copying the dummy and modifying it.
-  auto hft = std::shared_ptr<Hft>(new Hft(*create_hfts(1, *params)[0]));
+  // Prepare HFT by constructing the default and modifying it.
+  std::shared_ptr<Hft> hft(new Hft);
   hft->establishment_density = 10.0;  // [ind/km²]
   hft->mortality_factors.clear();     // immortal herbivores
   REQUIRE(hft->is_valid(*params));

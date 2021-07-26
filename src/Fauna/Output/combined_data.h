@@ -31,6 +31,10 @@ struct CombinedData {
   HabitatData habitat_data;
 
   /// Herbivore output data aggregated by output group.
+  /**
+   * An “output group” is typically an HFT.
+   * \see \ref HerbivoreInterface::get_output_group()
+   */
   std::map<const std::string, HerbivoreData> hft_data;
 
   /// Merge other data into this object.
@@ -39,11 +43,11 @@ struct CombinedData {
    * \ref datapoint_count is used to weigh the values in
    * average-building.
    *
-   * For herbivore data (\ref hft_data), the merge routine creates an
-   * empty \ref HerbivoreData object as a ‘stub’ if it the HFT is found
-   * in one of the merge partners, but not in the other one. This way,
-   * the averages are built correctly across habitats even if in one
-   * habitat, there are no herbivores of one type.
+   * For herbivore data (\ref hft_data), the merge routine creates an empty
+   * \ref HerbivoreData object as a ‘stub’ if the HFT is found in one of the
+   * merge partners, but not in the other one. This way, the averages are built
+   * correctly across habitats even if in one habitat, there are no herbivores
+   * of one type.
    *
    * This does no calculations if the partners are the same object, or
    * \ref datapoint_count is zero in one of the two objects.

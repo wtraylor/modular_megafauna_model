@@ -12,6 +12,11 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [1.1.1] - 2021-07-26
+
+### Fixed
+- Implement `simulation.one_hft_per_habitat` option
+
 ## [1.1.0] - 2021-06-15
 
 ### Added
@@ -27,7 +32,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 ### Fixed
 - When configuring CMake with `BUILD_DEMO_SIMULATOR=ON` but `BUILD_TESTING=OFF`, the `megafauna.toml` instruction file was not copied even though `run_demo` needs it.
 - Valgrind memory check in CI didn’t fail
-- Doxygen issues with ReadTheDocs [34] [41] [42]
+- Doxygen issues with ReadTheDocs [#34] [#41] [#42]
 
 ## [1.0.3] - 2021-05-10
 
@@ -235,6 +240,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Taylor et al. (1981)]: <https://doi.org/10.1017/S0003356100040617>
 
 [Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.0...develop
+[1.1.1]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.0...1.1.0
 [1.1.0]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.3...1.1.0
 [1.0.3]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.1...1.0.2

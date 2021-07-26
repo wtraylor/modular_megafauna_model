@@ -22,7 +22,7 @@ TEST_CASE("Fauna::HerbivoreBase", "") {
   // PREPARE SETTINGS
   Parameters params;
   REQUIRE(params.is_valid());
-  auto hft = create_hfts(1, params)[0];
+  std::shared_ptr<Hft> hft(new Hft);
   REQUIRE(hft->is_valid(params));
 
   // Let’s throw some exceptions

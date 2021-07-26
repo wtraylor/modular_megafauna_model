@@ -10,9 +10,9 @@ authors:
     affiliation: Senckenberg Biodiversity and Climate Research Centre
     orcid: https://orcid.org/0000-0003-4925-7248
 title: "Modular Megafauna Model"
-version: 1.1.0
+version: 1.1.1
 # This DOI represents all versions, and will always resolve to the latest one.
 doi: 10.5281/zenodo.4710254
-date-released: 2021-06-15
+date-released: 2021-07-26
 license: LGPL-3.0-or-later
 repository-code: https://github.com/wtraylor/modular_megafauna_model

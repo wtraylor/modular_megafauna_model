@@ -14,7 +14,7 @@
 establishment_interval = 3650 # every 10 years
 forage_distribution    = "Equally"
 herbivore_type         = "Cohort"
-one_hft_per_habitat    = true
+one_hft_per_habitat    = false
 
 [forage]
 gross_energy = { grass = 19.0 } # MJ/kgDM

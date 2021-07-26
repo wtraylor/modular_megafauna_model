@@ -17,12 +17,17 @@ namespace Fauna {
 /// A dummy habitat that does nothing
 class DummyHabitat : public Habitat {
  public:
+  DummyHabitat(const std::string agg_unit = "global")
+      : aggregation_unit(agg_unit) {}
   virtual HabitatForage get_available_forage() const { return HabitatForage(); }
-  virtual const char* get_aggregation_unit() const { return "global"; }
+  virtual const char* get_aggregation_unit() const {
+    return aggregation_unit.c_str();
+  }
   virtual HabitatEnvironment get_environment() const {
     return HabitatEnvironment();
   }
   int get_day_public() const { return get_day(); }
+  const std::string aggregation_unit;
 };
 
 }  // namespace Fauna

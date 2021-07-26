@@ -63,6 +63,9 @@ inddens.tbl$VALUE <- inddens.tbl$VALUE / 100 # convert ind/km² to ind/ha
 # `timestep` is the output interval: a day, a year, (roughly) a month, or a decade.
 unique_years.v <- sort(unique(mass.tbl$year))
 timestep <- abs(unique_years.v[2] - unique_years.v[1])
+
+# The first of each month as Julian day: for drawing month axis labels.
+julian_month_days <- julian(as.Date(paste(1:12, "1 1970"), "%m %d %Y"))
 ```
 
 ```{r echo = FALSE}
@@ -134,8 +137,12 @@ if ("day" %in% names(eaten.tbl)) {
     geom_line(aes(group = year), alpha = 5 / length(unique(eaten.tbl$year))) +
     facet_wrap(~agg_unit) +
     expand_limits(y = 0) +
+    scale_x_continuous(
+      labels = month.abb[seq(1, 12, 2)],
+      breaks = julian_month_days[seq(1, 12, 2)]
+    ) +
     labs(
-      x = "Julian Day",
+      x = "Month",
       y = "Eaten Forage per Individual [kgDM/ind/day]",
       title = "Eaten Forage per Individual",
       caption = "Thick line is the mean"
@@ -174,7 +181,6 @@ if ("day" %in% names(available.tbl)) {
 ```
 
 ```{r echo = FALSE}
-julian_month_days <- julian(as.Date(paste(1:12, "1 1970"), "%m %d %Y"))
 if ("day" %in% names(bodyfat.tbl)) {
   bodyfat.tbl %>%
   ggplot(aes(x = day, y = VALUE, color = HFT)) +
