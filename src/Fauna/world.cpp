@@ -49,7 +49,7 @@ World::World(const std::string instruction_filename, const SimMode mode)
       insfile(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
       output_aggregator(new Output::Aggregator()),
-      output_writer(construct_output_writer()),
+      output_writer(mode == SimMode::Lint ? NULL : construct_output_writer()),
       world_constructor(new WorldConstructor(insfile.params, get_hfts())) {}
 
 World::World() : activated(false) {}
