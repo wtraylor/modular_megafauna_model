@@ -24,16 +24,16 @@ TEST_CASE("Fauna::WorldConstructor", "") {
   REQUIRE(params->is_valid());
 
   // prepare HFT list
-  HftList hftlist = create_hfts(3, *params);
+  static const HftList HFTLIST = *create_hfts(3, *params);
 
-  WorldConstructor world_cons(params, hftlist);
-
-  SECTION("create_populations() for several HFTs") {
+  SECTION("create_populations() for several HFTs in one habitat") {
     REQUIRE(params->herbivore_type == HerbivoreType::Cohort);
-    PopulationList* pops = world_cons.create_populations();
+    REQUIRE(params->one_hft_per_habitat == false);
+    WorldConstructor world_cons(params, HFTLIST);
+    PopulationList* pops = world_cons.create_populations(0);
     REQUIRE(pops != NULL);
     // Check that there is one population per HFT.
-    for (auto& hft : hftlist) {
+    for (auto& hft : HFTLIST) {
       bool hft_found = false;
       for (auto& pop : *pops) {
         REQUIRE(pop);
@@ -46,10 +46,30 @@ TEST_CASE("Fauna::WorldConstructor", "") {
     }
   }
 
-  SECTION("create_populations() for one HFT") {
+  SECTION("create_populations() for one HFT per habitat") {
     REQUIRE(params->herbivore_type == HerbivoreType::Cohort);
-    const auto hft = hftlist[0];
-    PopulationList* pops = world_cons.create_populations();
+    params->one_hft_per_habitat = true;
+    WorldConstructor world_cons(params, HFTLIST);
+    for (int i = 0; i < 3 * HFTLIST.size(); i++) {
+      const PopulationList* pops = world_cons.create_populations(i);
+      REQUIRE(pops != NULL);
+      REQUIRE(pops->size() == 1);  // Only 1 HFT per habitat!
+      // Check that the *right* HFT is in the populations list.
+      const CohortPopulation* pop = (CohortPopulation*)(pops->front().get());
+      const Hft& found_hft = pop->get_hft();
+      const int hft_index = i % HFTLIST.size();
+      REQUIRE(hft_index >= 0);
+      REQUIRE(hft_index < HFTLIST.size());
+      const Hft& right_hft = *HFTLIST[hft_index];
+      REQUIRE(found_hft == right_hft);
+    }
+  }
+
+  SECTION("create_populations() for one HFT") {
+    WorldConstructor world_cons(params, HFTLIST);
+    REQUIRE(params->herbivore_type == HerbivoreType::Cohort);
+    const auto hft = HFTLIST[0];
+    const PopulationList* pops = world_cons.create_populations(0);
     REQUIRE(pops != NULL);
     // Check that the CohortPopulation is of the given HFT.
     CHECK(&((CohortPopulation*)pops->begin()->get())->get_hft() == hft.get());

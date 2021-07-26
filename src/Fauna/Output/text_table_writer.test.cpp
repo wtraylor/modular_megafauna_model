@@ -59,7 +59,7 @@ TEST_CASE("Fauna::Output::TextTableWriter ANNUAL", "") {
 
   // We create 4 HFTs, but use only 3. The extra one is to check that an
   // exception gets thrown if the numbers don’t match up.
-  static const HftList HFTS = create_hfts(4, Parameters());
+  static const HftList HFTS = *create_hfts(4, Parameters());
   std::set<std::string> hft_names;
   for (int i = 0; i < 3; i++) hft_names.insert(HFTS[i]->name);
 

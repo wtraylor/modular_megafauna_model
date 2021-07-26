@@ -57,6 +57,19 @@ class World {
   World(const std::string instruction_filename,
         const SimMode mode = SimMode::Simulate);
 
+  /// Constructor for unit tests
+  /**
+   * \warning This function may be changed in the future depending on the needs
+   * of unit tests.
+   * \param params Global simulation parameters that would normally be parsed
+   * from the instruction file.
+   * \param hftlist HFT parameters that would normally be parsed from the
+   * instruction file.
+   * \throw std::invalid_argument If either of the shared pointers is NULL.
+   */
+  World(const std::shared_ptr<const Parameters> params,
+        const std::shared_ptr<const HftList> hftlist);
+
   /// Constructor: Create deactivated `World` object.
   /**
    * Even if the megafauna model should be completely deactivated, there might
@@ -95,7 +108,14 @@ class World {
    */
   const Parameters& get_params() const;
 
-  /// Whether this \ref World object has been created with an instruction file.
+  /// List of all the simulation units in the world.
+  /**
+   * This is read-only. Unit tests can use it to check if
+   * \ref create_simulation_unit() works.
+   */
+  const std::list<SimulationUnit>& get_sim_units() const { return sim_units; }
+
+  /// Whether this \ref World object has been created with parameters and HFTs.
   const bool is_activated() const { return activated; }
 
   /// Iterate through all simulation units and perform simulation for this day.
@@ -112,17 +132,52 @@ class World {
    * \param date The current simulation day.
    * \param do_herbivores Whether to perform herbivore simulations. If false,
    * only the output data of the habitats are updated.
-   * \throw std::logic_error If `date` has not been correctly incremented by one
-   * day since the last call.
+   * \throw std::invalid_argument If `date` has not been correctly incremented
+   * by one day since the last call.
+   * \throw logic_error If \ref Parameters::one_hft_per_habitat, but for at
+   * least one aggregation unit (\ref Habitat::get_aggregation_unit()) the
+   * number of associated habitats is not an integer multiple of the number of
+   * HFTs.
+   * \throw logic_error If the aggregation units
+   * (\ref Habitat::get_aggregation_unit()) created with
+   * \ref create_simulation_unit() do not all have the same number of habitats
+   * each. It would bias the output if the means for each aggregation unit
+   * would have different “sample counts.”
    */
   void simulate_day(const Date& date, const bool do_herbivores);
 
  private:
+  /// Get the number of habitats per aggregation unit.
+  /**
+   * \throw std::logic_error If the number of habitats differs between
+   * aggregation units.
+   * \see \ref Parameters::one_hft_per_habitat
+   */
+  int get_habitat_count_per_agg_unit() const;
+
   /// Get the immutable list of herbivore functional types.
-  const HftList& get_hfts();
+  const HftList& get_hfts() const;
+
+  /// Create \ref Output::WriterInterface implementation according to params.
+  /**
+   * \throw std::logic_error If \ref Parameters::output_format is not
+   * implemented.
+   * \see \ref output_writer
+   */
+  Output::WriterInterface* construct_output_writer() const;
 
   /// Whether the whole model is active or not.
   const bool activated;
+
+  /// Whether the habitat counts per aggregation unit have been checked.
+  /**
+   * By setting this variable, we don’t need to check on every call of
+   * \ref simulate_day(), which might save some calculations. Instead, habitat
+   * counts are only checked when they have changed through
+   * \ref create_simulation_unit().
+   * \see \ref get_habitat_count_per_agg_unit()
+   */
+  bool simulation_units_checked = false;
 
   /// All simulation instructions from the TOML instruction file.
   /**
@@ -142,6 +197,13 @@ class World {
 
   /// Number of days since extinct populations were re-established.
   int days_since_last_establishment;
+
+  /// The date from the last call to \ref simulate_day()
+  /**
+   * This is to check that the simulation days are coming in correctly from the
+   * vegetation/host model.
+   */
+  std::unique_ptr<Fauna::Date> last_date;
 
   /// Collects output data per time interval and aggregation unit.
   const std::unique_ptr<Output::Aggregator> output_aggregator;

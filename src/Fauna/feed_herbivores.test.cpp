@@ -23,7 +23,7 @@ TEST_CASE("Fauna::FeedHerbivores") {
   CHECK_THROWS(FeedHerbivores(NULL));
 
   // create objects
-  const HftList HFTS = create_hfts(3, Parameters());
+  const HftList HFTS = *create_hfts(3, Parameters());
   const double DENS = 1.0;  // irrelevant in this test
   FeedHerbivores feed(new DistributeForageEqually());
 

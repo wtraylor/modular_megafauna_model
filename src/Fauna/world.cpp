@@ -27,33 +27,41 @@
 
 using namespace Fauna;
 
+Output::WriterInterface* World::construct_output_writer() const {
+  switch (get_params().output_format) {
+    case OutputFormat::TextTables: {
+      std::set<std::string> hft_names;
+      for (const auto& h : get_hfts()) hft_names.insert(h->name);
+      return new Output::TextTableWriter(get_params().output_interval,
+                                         get_params().output_text_tables,
+                                         hft_names);
+    }
+      // Construct your new output writer here.
+    default:
+      throw std::logic_error(
+          "Fauna::World::World() "
+          "Selected output format parameter is not implemented.");
+  }
+}
+
 World::World(const std::string instruction_filename, const SimMode mode)
     : activated(true),
       insfile(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
-      world_constructor(new WorldConstructor(insfile.params, get_hfts())),
-      output_aggregator(new Output::Aggregator()) {
-  if (mode == SimMode::Simulate) {
-    // Create Output::WriterInterface implementation according to selected
-    // setting.
-    switch (get_params().output_format) {
-      case OutputFormat::TextTables: {
-        std::set<std::string> hft_names;
-        for (const auto& h : get_hfts()) hft_names.insert(h->name);
-        output_writer.reset(new Output::TextTableWriter(
-            get_params().output_interval, get_params().output_text_tables,
-            hft_names));
-        break;
-      }
-      default:
-        std::logic_error(
-            "Fauna::World::World() "
-            "Selected output format parameter is not implemented.");
-    }
-  }
-}
+      output_aggregator(new Output::Aggregator()),
+      output_writer(mode == SimMode::Lint ? NULL : construct_output_writer()),
+      world_constructor(new WorldConstructor(insfile.params, get_hfts())) {}
 
 World::World() : activated(false) {}
+
+World::World(const std::shared_ptr<const Parameters> params,
+             const std::shared_ptr<const HftList> hftlist)
+    : activated(true),
+      insfile({hftlist, params}),
+      days_since_last_establishment(get_params().herbivore_establish_interval),
+      output_aggregator(new Output::Aggregator()),
+      output_writer(construct_output_writer()),
+      world_constructor(new WorldConstructor(insfile.params, get_hfts())) {}
 
 // The destructor must be implemented here in the source file, where the
 // forward-declared types are complete.
@@ -65,15 +73,28 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
         "World::create_simulation_unit(): Pointer to habitat is NULL.");
   if (!activated) return;
 
-  PopulationList* populations = world_constructor->create_populations();
+  int habitat_ctr = 0;
+  // Find the number of habitats already created in this aggregation unit.
+  for (const auto& sim_unit : sim_units)
+    if (sim_unit.get_habitat().get_aggregation_unit() ==
+        habitat->get_aggregation_unit())
+      habitat_ctr++;
+  PopulationList* populations =
+      world_constructor->create_populations(habitat_ctr);
   assert(populations);
 
   // Use emplace_back() instead of push_back() to directly construct the new
   // SimulationUnit object without copy.
   sim_units.emplace_back(habitat, populations);
+
+  simulation_units_checked = false;
 }
 
-const HftList& World::get_hfts() {
+const HftList& World::get_hfts() const {
+  if (!insfile.hftlist)
+    throw std::logic_error(
+        "Fauna::World::get_hfts() "
+        "The member variable insfile.hftlist is not set.");
   assert(insfile.hftlist.get());
   return *(insfile.hftlist);
 }
@@ -92,6 +113,43 @@ const Parameters& World::get_params() const {
   return *(insfile.params);
 }
 
+int World::get_habitat_count_per_agg_unit() const {
+  // Habitat count for each aggregation unit.
+  std::unordered_map<std::string, int> hab_counts;
+  for (const auto& sim_unit : get_sim_units()) {
+    auto& map_entry = hab_counts[sim_unit.get_habitat().get_aggregation_unit()];
+    if (map_entry == 0)
+      map_entry = 1;
+    else
+      map_entry++;
+  }
+
+  if (hab_counts.empty()) return 0;
+
+  // Use the first habitat count as (preliminary) result.
+  const int result = hab_counts.begin()->second;
+
+  // Check that they all have the same habitat count.
+  std::string msg;
+  bool counts_differ = false;
+  for (const auto& itr : hab_counts) {
+    const std::string& agg_unit = itr.first;
+    const int count = itr.second;
+    if (count != result) {
+      counts_differ = true;
+      msg += "\t\"" + agg_unit + "\": " + std::to_string(count) + " habitats\n";
+    }
+  }
+  if (counts_differ)
+    throw std::logic_error(
+        "Fauna::World::get_habitat_count_per_agg_unit() "
+        "The number of habitats is not the same in all aggregation units."
+        "These are the aggregation units that differ from the expected number "
+        "of habitats (" +
+        std::to_string(result) + "):\n" + msg);
+  return result;
+}
+
 World::InsfileContent World::read_instruction_file(
     const std::string& filename) {
   try {
@@ -107,6 +165,36 @@ World::InsfileContent World::read_instruction_file(
 
 void World::simulate_day(const Date& date, const bool do_herbivores) {
   if (!activated) return;
+
+  // Sanity checks for simulation units
+  if (!simulation_units_checked) {
+    // Count the number of habitats in any case to throw an exception if they
+    // differ. Compare the habitat count against HFT count only if necessary.
+    const int habitat_count = get_habitat_count_per_agg_unit();
+    if (get_params().one_hft_per_habitat &&
+        (habitat_count % get_hfts().size() != 0))
+      throw std::logic_error(
+          "Fauna::World::simulate_day() "
+          "If simulation.one_hft_per_habitat == true, the number of habitats "
+          "in each aggregation unit must be a multiple of HFT count. I found " +
+          std::to_string(habitat_count) +
+          " habitats per aggregation unit, and there are " +
+          std::to_string(get_hfts().size()) + " HFTs.");
+  }
+  simulation_units_checked = true;
+
+  // Check if `date` follows `last_date`, but only if `last_date` has already
+  // been initialized (which happens on the first call.
+  if (last_date && !last_date->is_successive(date))
+    throw std::invalid_argument(
+        "Fauna::World::simulate_day() "
+        "Simulation dates did not come in consecutively.\n"
+        "In the last call I received Julian day " +
+        std::to_string(last_date->get_julian_day()) + " in year " +
+        std::to_string(last_date->get_year()) + ".\n" +
+        "Now I received Julian day " + std::to_string(date.get_julian_day()) +
+        " in year " + std::to_string(date.get_year()));
+
   // Create one function object to feed all herbivores.
   const FeedHerbivores feed_herbivores(
       world_constructor->create_distribute_forage());
@@ -159,8 +247,11 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
 
   // Write output when it’s ready.
   assert(output_writer.get() != NULL);
-  if (output_aggregator->get_interval().matches_output_interval(
+  if (!sim_units.empty() &&
+      output_aggregator->get_interval().matches_output_interval(
           get_params().output_interval))
     for (const auto& datapoint : output_aggregator->retrieve())
       output_writer->write_datapoint(datapoint);
+
+  last_date.reset(new Date(date));
 }

@@ -32,7 +32,7 @@ TEST_CASE("Fauna::Output::CombinedData") {
 
   // create some herbivore data
 
-  const HftList hfts = create_hfts(2, Parameters());
+  const HftList hfts = *create_hfts(2, Parameters());
   REQUIRE(hfts.size() == 2);
 
   HerbivoreData h1, h2;  // HFT 0
