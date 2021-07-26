@@ -86,6 +86,8 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
   // Use emplace_back() instead of push_back() to directly construct the new
   // SimulationUnit object without copy.
   sim_units.emplace_back(habitat, populations);
+
+  simulation_units_checked = false;
 }
 
 const HftList& World::get_hfts() const {
@@ -111,6 +113,43 @@ const Parameters& World::get_params() const {
   return *(insfile.params);
 }
 
+int World::get_habitat_count_per_agg_unit() const {
+  // Habitat count for each aggregation unit.
+  std::unordered_map<std::string, int> hab_counts;
+  for (const auto& sim_unit : get_sim_units()) {
+    auto& map_entry = hab_counts[sim_unit.get_habitat().get_aggregation_unit()];
+    if (map_entry == 0)
+      map_entry = 1;
+    else
+      map_entry++;
+  }
+
+  if (hab_counts.empty()) return 0;
+
+  // Use the first habitat count as (preliminary) result.
+  const int result = hab_counts.begin()->second;
+
+  // Check that they all have the same habitat count.
+  std::string msg;
+  bool counts_differ = false;
+  for (const auto& itr : hab_counts) {
+    const std::string& agg_unit = itr.first;
+    const int count = itr.second;
+    if (count != result) {
+      counts_differ = true;
+      msg += "\t\"" + agg_unit + "\": " + std::to_string(count) + " habitats\n";
+    }
+  }
+  if (counts_differ)
+    throw std::logic_error(
+        "Fauna::World::get_habitat_count_per_agg_unit() "
+        "The number of habitats is not the same in all aggregation units."
+        "These are the aggregation units that differ from the expected number "
+        "of habitats (" +
+        std::to_string(result) + "):\n" + msg);
+  return result;
+}
+
 World::InsfileContent World::read_instruction_file(
     const std::string& filename) {
   try {
@@ -126,6 +165,23 @@ World::InsfileContent World::read_instruction_file(
 
 void World::simulate_day(const Date& date, const bool do_herbivores) {
   if (!activated) return;
+
+  // Sanity checks for simulation units
+  if (!simulation_units_checked) {
+    // Count the number of habitats in any case to throw an exception if they
+    // differ. Compare the habitat count against HFT count only if necessary.
+    const int habitat_count = get_habitat_count_per_agg_unit();
+    if (get_params().one_hft_per_habitat &&
+        (habitat_count % get_hfts().size() != 0))
+      throw std::logic_error(
+          "Fauna::World::simulate_day() "
+          "If simulation.one_hft_per_habitat == true, the number of habitats "
+          "in each aggregation unit must be a multiple of HFT count. I found " +
+          std::to_string(habitat_count) +
+          " habitats per aggregation unit, and there are " +
+          std::to_string(get_hfts().size()) + " HFTs.");
+  }
+  simulation_units_checked = true;
 
   // Check if `date` follows `last_date`, but only if `last_date` has already
   // been initialized (which happens on the first call.

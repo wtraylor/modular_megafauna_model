@@ -134,10 +134,27 @@ class World {
    * only the output data of the habitats are updated.
    * \throw std::invalid_argument If `date` has not been correctly incremented
    * by one day since the last call.
+   * \throw logic_error If \ref Parameters::one_hft_per_habitat, but for at
+   * least one aggregation unit (\ref Habitat::get_aggregation_unit()) the
+   * number of associated habitats is not an integer multiple of the number of
+   * HFTs.
+   * \throw logic_error If the aggregation units
+   * (\ref Habitat::get_aggregation_unit()) created with
+   * \ref create_simulation_unit() do not all have the same number of habitats
+   * each. It would bias the output if the means for each aggregation unit
+   * would have different “sample counts.”
    */
   void simulate_day(const Date& date, const bool do_herbivores);
 
  private:
+  /// Get the number of habitats per aggregation unit.
+  /**
+   * \throw std::logic_error If the number of habitats differs between
+   * aggregation units.
+   * \see \ref Parameters::one_hft_per_habitat
+   */
+  int get_habitat_count_per_agg_unit() const;
+
   /// Get the immutable list of herbivore functional types.
   const HftList& get_hfts() const;
 
@@ -151,6 +168,16 @@ class World {
 
   /// Whether the whole model is active or not.
   const bool activated;
+
+  /// Whether the habitat counts per aggregation unit have been checked.
+  /**
+   * By setting this variable, we don’t need to check on every call of
+   * \ref simulate_day(), which might save some calculations. Instead, habitat
+   * counts are only checked when they have changed through
+   * \ref create_simulation_unit().
+   * \see \ref get_habitat_count_per_agg_unit()
+   */
+  bool simulation_units_checked = false;
 
   /// All simulation instructions from the TOML instruction file.
   /**
