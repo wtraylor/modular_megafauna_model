@@ -68,7 +68,7 @@ class SimpleHabitat : public Habitat {
 
  private:
   const std::string aggregation_unit;
-  SimpleHabitat::Parameters settings;
+  const SimpleHabitat::Parameters settings;
 
   /// Air temperature in °C, as read from
   /// \ref SimpleHabitat::Parameters::air_temperature.

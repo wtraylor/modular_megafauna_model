@@ -12,6 +12,15 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [1.1.2] - 2021-07-27
+
+### Added
+- `demo_results.Rmd` now only tries to plot those files that are available [#39]
+
+### Fixed
+- Allow `simulation.one_hft_per_habitat` only for `herbivore_type = "Cohort"`
+- Issue that only one HFT got created and outputted if `simulation.one_hft_per_habitat = true`
+
 ## [1.1.1] - 2021-07-26
 
 ### Fixed
@@ -239,8 +248,9 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Illius & O’Connor (2000)]: <https://doi.org/10.2307/3800911>
 [Taylor et al. (1981)]: <https://doi.org/10.1017/S0003356100040617>
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.0...develop
-[1.1.1]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.0...1.1.0
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.2...develop
+[1.1.2]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.1...1.1.2
+[1.1.1]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.3...1.1.0
 [1.0.3]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.1...1.0.2
@@ -280,6 +290,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#31]: https://github.com/wtraylor/modular_megafauna_model/issues/31
 [#32]: https://github.com/wtraylor/modular_megafauna_model/issues/32
 [#34]: https://github.com/wtraylor/modular_megafauna_model/issues/34
+[#39]: https://github.com/wtraylor/modular_megafauna_model/issues/39
 [#41]: https://github.com/wtraylor/modular_megafauna_model/issues/41
 [#43]: https://github.com/wtraylor/modular_megafauna_model/issues/43
 [#44]: https://github.com/wtraylor/modular_megafauna_model/issues/44

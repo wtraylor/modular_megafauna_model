@@ -22,6 +22,13 @@ bool Parameters::is_valid(std::string& messages) const {
   //------------------------------------------------------------
   // add new checks in alphabetical order
 
+  if (one_hft_per_habitat && (herbivore_type != HerbivoreType::Cohort)) {
+    stream << "'simulation.one_hft_per_habitat' is only defined for "
+              "'simulation.herbivore_type = \"cohort\"'."
+           << std::endl;
+    is_valid = false;
+  }
+
   if (herbivore_establish_interval < 0) {
     stream << "herbivore_establish_interval must be >=0" << std::endl;
     is_valid = false;

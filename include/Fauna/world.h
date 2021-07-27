@@ -70,14 +70,6 @@ class World {
   World(const std::shared_ptr<const Parameters> params,
         const std::shared_ptr<const HftList> hftlist);
 
-  /// Constructor: Create deactivated `World` object.
-  /**
-   * Even if the megafauna model should be completely deactivated, there might
-   * be a need to create a "dummy" \ref World instance. An object created with
-   * this constructor will not simulate anything.
-   */
-  World();
-
   /// Default destructor.
   ~World();
 
@@ -114,9 +106,6 @@ class World {
    * \ref create_simulation_unit() works.
    */
   const std::list<SimulationUnit>& get_sim_units() const { return sim_units; }
-
-  /// Whether this \ref World object has been created with parameters and HFTs.
-  const bool is_activated() const { return activated; }
 
   /// Iterate through all simulation units and perform simulation for this day.
   /**
@@ -166,8 +155,8 @@ class World {
    */
   Output::WriterInterface* construct_output_writer() const;
 
-  /// Whether the whole model is active or not.
-  const bool activated;
+  /// Whether this object is going to simulate or just lint an instruction file.
+  const SimMode mode = SimMode::Simulate;
 
   /// Whether the habitat counts per aggregation unit have been checked.
   /**
