@@ -75,10 +75,12 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
 
   int habitat_ctr = 0;
   // Find the number of habitats already created in this aggregation unit.
-  for (const auto& sim_unit : sim_units)
-    if (sim_unit.get_habitat().get_aggregation_unit() ==
-        habitat->get_aggregation_unit())
-      habitat_ctr++;
+  const std::string this_agg_unit(habitat->get_aggregation_unit());
+  for (const auto& sim_unit : sim_units) {
+    const std::string existing_agg_unit(
+        sim_unit.get_habitat().get_aggregation_unit());
+    if (this_agg_unit == existing_agg_unit) habitat_ctr++;
+  }
   PopulationList* populations =
       world_constructor->create_populations(habitat_ctr);
   assert(populations);
