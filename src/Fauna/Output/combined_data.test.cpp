@@ -69,6 +69,7 @@ TEST_CASE("Fauna::Output::CombinedData") {
     // merge with equal weight
     c1.datapoint_count = c2.datapoint_count = 3;
 
+    // Merge c2 into c1. The HFTs in c2 are a *subset* of those in c1.
     c1.merge(c2);
 
     CHECK(c1.datapoint_count == 6);
@@ -87,6 +88,33 @@ TEST_CASE("Fauna::Output::CombinedData") {
     CHECK(c1.hft_data[hfts[1].get()->name].inddens ==
           Approx((0.0 + 3.0) / 2.0));  // normal average
     CHECK(c1.hft_data[hfts[1].get()->name].expenditure ==
+          Approx(3.0));  // weighted by inddens, but only one data point
+  }
+
+  // This is the same as before, but merging the other way round.
+  SECTION("merge() and create new HFT record") {
+    // merge with equal weight
+    c1.datapoint_count = c2.datapoint_count = 3;
+
+    // Merge c1 into c2. Now there is one new HFT coming from c1.
+    c2.merge(c1);
+
+    CHECK(c2.datapoint_count == 6);
+
+    CHECK(c2.habitat_data.available_forage.grass.get_mass() == Approx(1.5));
+    // c1 now has data for both HFTs
+    REQUIRE(c2.hft_data.size() == 2);
+    // in HFT 0, two datapoints are merged
+    CHECK(c2.hft_data[hfts[0].get()->name].inddens ==
+          Approx((1.0 + 2.0) / 2.0));  // normal average
+    CHECK(
+        c2.hft_data[hfts[0].get()->name].expenditure ==
+        Approx((1.0 * 1.0 + 2.0 * 2.0) / (1.0 + 2.0)));  // weighted by inddens
+
+    // in HFT 1, one datapoint is merged with zero values
+    CHECK(c2.hft_data[hfts[1].get()->name].inddens ==
+          Approx((0.0 + 3.0) / 2.0));  // normal average
+    CHECK(c2.hft_data[hfts[1].get()->name].expenditure ==
           Approx(3.0));  // weighted by inddens, but only one data point
   }
 

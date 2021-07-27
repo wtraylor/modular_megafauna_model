@@ -17,6 +17,10 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 ### Added
 - `demo_results.Rmd` now only tries to plot those files that are available [#39]
 
+### Fixed
+- Allow `simulation.one_hft_per_habitat` only for `herbivore_type = "Cohort"`
+- Issue that only one HFT got created and outputted if `simulation.one_hft_per_habitat = true`
+
 ## [1.1.1] - 2021-07-26
 
 ### Fixed

@@ -45,23 +45,27 @@ Output::WriterInterface* World::construct_output_writer() const {
 }
 
 World::World(const std::string instruction_filename, const SimMode mode)
-    : activated(true),
+    : mode(mode),
       insfile(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
       output_aggregator(new Output::Aggregator()),
       output_writer(mode == SimMode::Lint ? NULL : construct_output_writer()),
       world_constructor(new WorldConstructor(insfile.params, get_hfts())) {}
 
-World::World() : activated(false) {}
-
 World::World(const std::shared_ptr<const Parameters> params,
              const std::shared_ptr<const HftList> hftlist)
-    : activated(true),
-      insfile({hftlist, params}),
+    : insfile({hftlist, params}),
       days_since_last_establishment(get_params().herbivore_establish_interval),
       output_aggregator(new Output::Aggregator()),
       output_writer(construct_output_writer()),
-      world_constructor(new WorldConstructor(insfile.params, get_hfts())) {}
+      world_constructor(new WorldConstructor(insfile.params, get_hfts())) {
+  if (params.get() == NULL)
+    throw std::invalid_argument(
+        "Fauna::World::World() The argument 'params' is NULL.");
+  if (hftlist.get() == NULL)
+    throw std::invalid_argument(
+        "Fauna::World::World() The argument 'hftlist' is NULL.");
+}
 
 // The destructor must be implemented here in the source file, where the
 // forward-declared types are complete.
@@ -71,14 +75,16 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
   if (habitat == NULL)
     throw std::invalid_argument(
         "World::create_simulation_unit(): Pointer to habitat is NULL.");
-  if (!activated) return;
+  if (mode != SimMode::Simulate) return;
 
   int habitat_ctr = 0;
   // Find the number of habitats already created in this aggregation unit.
-  for (const auto& sim_unit : sim_units)
-    if (sim_unit.get_habitat().get_aggregation_unit() ==
-        habitat->get_aggregation_unit())
-      habitat_ctr++;
+  const std::string this_agg_unit(habitat->get_aggregation_unit());
+  for (const auto& sim_unit : sim_units) {
+    const std::string existing_agg_unit(
+        sim_unit.get_habitat().get_aggregation_unit());
+    if (this_agg_unit == existing_agg_unit) habitat_ctr++;
+  }
   PopulationList* populations =
       world_constructor->create_populations(habitat_ctr);
   assert(populations);
@@ -100,11 +106,6 @@ const HftList& World::get_hfts() const {
 }
 
 const Parameters& World::get_params() const {
-  if (!activated)
-    throw std::logic_error(
-        "Fauna::World::get_params() "
-        "The megafauna model was created without an instruction file. "
-        "Parameters are not available.");
   if (!insfile.params)
     throw std::logic_error(
         "Fauna::World::get_params() "
@@ -164,7 +165,7 @@ World::InsfileContent World::read_instruction_file(
 }
 
 void World::simulate_day(const Date& date, const bool do_herbivores) {
-  if (!activated) return;
+  if (mode != SimMode::Simulate) return;
 
   // Sanity checks for simulation units
   if (!simulation_units_checked) {
@@ -172,6 +173,7 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     // differ. Compare the habitat count against HFT count only if necessary.
     const int habitat_count = get_habitat_count_per_agg_unit();
     if (get_params().one_hft_per_habitat &&
+        (get_params().herbivore_type == HerbivoreType::Cohort) &&
         (habitat_count % get_hfts().size() != 0))
       throw std::logic_error(
           "Fauna::World::simulate_day() "
@@ -230,8 +232,6 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     if (do_herbivores) days_since_last_establishment++;
 
     // Create function object to delegate all simulations for this day to.
-    // TODO: Create function object only once per day and for all simulation
-    //       units.
     SimulateDay simulate_day(date.get_julian_day(), sim_unit, feed_herbivores);
 
     // Call the function object.
