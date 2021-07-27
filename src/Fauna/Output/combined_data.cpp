@@ -33,23 +33,25 @@ CombinedData& CombinedData::merge(const CombinedData& other) {
   // HERBIVORE DATA
   // Merge herbivore data for each output group.
 
+  // Groups can be for instance HFTs.
   typedef std::map<const std::string, HerbivoreData> GroupMap;
 
-  // First, create empty HerbivoreData objects for all groups that are not
-  // yet present in this object.
-  for (const auto& itr : hft_data) {
-    // create new object if group not found.
+  // First, create empty HerbivoreData objects for all HFTs/groups from the
+  // *other* object that are not yet present in *this* object.
+  for (const auto& itr : other.hft_data) {
+    // Create new, empty object if the group is new to this object.
     if (!hft_data.count(itr.first)) hft_data[itr.first] = HerbivoreData();
   }
 
-  // Second, merge all herbivore data.
+  // Now we have all groups in this->hft_data, and we can merge for each
+  // group/HFT.
   for (auto& itr : hft_data) {
-    // try to find this group in the other object
-    GroupMap::const_iterator found = other.hft_data.find(itr.first);
-
-    // If the other object doesn’t contain this HFT, we use an empty
-    // object.
-    HerbivoreData other_herbi_data;
+    // If an HFT/group in this->hft_data is not in other.hft_data, we create a
+    // temporary empty HerbivoreData object.
+    const auto& found = other.hft_data.find(itr.first);
+    HerbivoreData other_herbi_data;  // Temporary empty object for now.
+    // If we did find the HFT/group in the other object, we use that for
+    // merging.
     if (found != other.hft_data.end()) other_herbi_data = found->second;
 
     // Let the class HerbivoreData do the actual merge.
