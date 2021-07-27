@@ -167,6 +167,91 @@ TEST_CASE("FAUNA::World", "") {
     }
   }
 
+  SECTION("Every HFT in every habitat") {
+    REQUIRE(PARAMS->herbivore_type == HerbivoreType::Cohort);
+    REQUIRE(PARAMS->one_hft_per_habitat == false);
+    World world(PARAMS, HFTLIST);
+    REQUIRE(HFTLIST->size() > 1);
+
+    SECTION("1 habitat, 1 aggregation unit") {
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      // Check all HFTs are in each habitat.
+      for (const auto& sim_unit : world.get_sim_units()) {
+        REQUIRE(sim_unit.get_populations().size() == HFTLIST->size());
+        for (const auto& hft : *HFTLIST) {
+          bool hft_found = false;
+          for (const auto& pop : sim_unit.get_populations())
+            hft_found |= (((CohortPopulation*)pop.get())->get_hft() == *hft);
+          CHECK(hft_found);
+        }
+      }
+    }
+
+    SECTION("2 habitats, 1 aggregation unit") {
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      // Check all HFTs are in each habitat.
+      for (const auto& sim_unit : world.get_sim_units()) {
+        REQUIRE(sim_unit.get_populations().size() == HFTLIST->size());
+        for (const auto& hft : *HFTLIST) {
+          bool hft_found = false;
+          for (const auto& pop : sim_unit.get_populations())
+            hft_found |= (((CohortPopulation*)pop.get())->get_hft() == *hft);
+          CHECK(hft_found);
+        }
+      }
+    }
+
+    SECTION("1 habitats, 2 aggregation unit") {
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("2")));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      // Check all HFTs are in each habitat.
+      for (const auto& sim_unit : world.get_sim_units()) {
+        REQUIRE(sim_unit.get_populations().size() == HFTLIST->size());
+        for (const auto& hft : *HFTLIST) {
+          bool hft_found = false;
+          for (const auto& pop : sim_unit.get_populations())
+            hft_found |= (((CohortPopulation*)pop.get())->get_hft() == *hft);
+          CHECK(hft_found);
+        }
+      }
+    }
+
+    SECTION("2 habitats, 3 aggregation unit") {
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("2")));
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("2")));
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("3")));
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("3")));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      // Check all HFTs are in each habitat.
+      for (const auto& sim_unit : world.get_sim_units()) {
+        REQUIRE(sim_unit.get_populations().size() == HFTLIST->size());
+        for (const auto& hft : *HFTLIST) {
+          bool hft_found = false;
+          for (const auto& pop : sim_unit.get_populations())
+            hft_found |= (((CohortPopulation*)pop.get())->get_hft() == *hft);
+          CHECK(hft_found);
+        }
+      }
+    }
+  }
+
   SECTION("Habitat count as multiple of HFT count") {
     std::shared_ptr<Parameters> params(new Parameters);
     params->one_hft_per_habitat = true;
