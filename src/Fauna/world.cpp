@@ -233,8 +233,6 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     if (do_herbivores) days_since_last_establishment++;
 
     // Create function object to delegate all simulations for this day to.
-    // TODO: Create function object only once per day and for all simulation
-    //       units.
     SimulateDay simulate_day(date.get_julian_day(), sim_unit, feed_herbivores);
 
     // Call the function object.
