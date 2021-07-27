@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [Unreleased]
+
 ## [1.1.2] - 2021-07-27
 
 ### Added
