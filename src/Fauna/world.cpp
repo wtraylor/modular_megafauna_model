@@ -45,23 +45,27 @@ Output::WriterInterface* World::construct_output_writer() const {
 }
 
 World::World(const std::string instruction_filename, const SimMode mode)
-    : activated(true),
+    : mode(mode),
       insfile(read_instruction_file(instruction_filename)),
       days_since_last_establishment(get_params().herbivore_establish_interval),
       output_aggregator(new Output::Aggregator()),
       output_writer(mode == SimMode::Lint ? NULL : construct_output_writer()),
       world_constructor(new WorldConstructor(insfile.params, get_hfts())) {}
 
-World::World() : activated(false) {}
-
 World::World(const std::shared_ptr<const Parameters> params,
              const std::shared_ptr<const HftList> hftlist)
-    : activated(true),
-      insfile({hftlist, params}),
+    : insfile({hftlist, params}),
       days_since_last_establishment(get_params().herbivore_establish_interval),
       output_aggregator(new Output::Aggregator()),
       output_writer(construct_output_writer()),
-      world_constructor(new WorldConstructor(insfile.params, get_hfts())) {}
+      world_constructor(new WorldConstructor(insfile.params, get_hfts())) {
+  if (params.get() == NULL)
+    throw std::invalid_argument(
+        "Fauna::World::World() The argument 'params' is NULL.");
+  if (hftlist.get() == NULL)
+    throw std::invalid_argument(
+        "Fauna::World::World() The argument 'hftlist' is NULL.");
+}
 
 // The destructor must be implemented here in the source file, where the
 // forward-declared types are complete.
@@ -71,7 +75,7 @@ void World::create_simulation_unit(std::shared_ptr<Habitat> habitat) {
   if (habitat == NULL)
     throw std::invalid_argument(
         "World::create_simulation_unit(): Pointer to habitat is NULL.");
-  if (!activated) return;
+  if (mode != SimMode::Simulate) return;
 
   int habitat_ctr = 0;
   // Find the number of habitats already created in this aggregation unit.
@@ -102,11 +106,6 @@ const HftList& World::get_hfts() const {
 }
 
 const Parameters& World::get_params() const {
-  if (!activated)
-    throw std::logic_error(
-        "Fauna::World::get_params() "
-        "The megafauna model was created without an instruction file. "
-        "Parameters are not available.");
   if (!insfile.params)
     throw std::logic_error(
         "Fauna::World::get_params() "
@@ -166,7 +165,7 @@ World::InsfileContent World::read_instruction_file(
 }
 
 void World::simulate_day(const Date& date, const bool do_herbivores) {
-  if (!activated) return;
+  if (mode != SimMode::Simulate) return;
 
   // Sanity checks for simulation units
   if (!simulation_units_checked) {

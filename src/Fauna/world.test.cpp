@@ -19,23 +19,23 @@
 using namespace Fauna;
 
 TEST_CASE("FAUNA::World", "") {
-  SECTION("Dummy Constructor") {
-    World w;
-    REQUIRE(!w.is_activated());
-    CHECK_THROWS(w.get_params());
-    CHECK_THROWS(w.create_simulation_unit(NULL));
-    CHECK_NOTHROW(w.simulate_day(Date(1, 2), true));
-    CHECK_NOTHROW(w.simulate_day(Date(1, 2), false));
-  }
-
   static const std::shared_ptr<const Parameters> PARAMS(new Parameters);
   static const std::shared_ptr<const HftList> HFTLIST(create_hfts(3, *PARAMS));
+
+  CHECK_THROWS(World(NULL, NULL));
+  CHECK_THROWS(World(NULL, HFTLIST));
+  CHECK_THROWS(World(PARAMS, NULL));
+  REQUIRE_NOTHROW(World(PARAMS, HFTLIST));
+  CHECK_THROWS(World(PARAMS, HFTLIST).create_simulation_unit(NULL));
+  CHECK_NOTHROW(World(PARAMS, HFTLIST).get_params());
+  CHECK_NOTHROW(World(PARAMS, HFTLIST).simulate_day(Date(1, 2), true));
+  CHECK_NOTHROW(World(PARAMS, HFTLIST).simulate_day(Date(1, 2), false));
+
   SECTION("Unit test constructor") {
     CHECK_THROWS(World(NULL, NULL));
     CHECK_THROWS(World(PARAMS, NULL));
     CHECK_THROWS(World(NULL, HFTLIST));
     CHECK_NOTHROW(World(PARAMS, HFTLIST));
-    REQUIRE(World(PARAMS, HFTLIST).is_activated());
     REQUIRE(World(PARAMS, HFTLIST).get_sim_units().empty());
   }
 
