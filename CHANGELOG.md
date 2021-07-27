@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ## [Unreleased]
 
+### Added
+- `demo_results.Rmd` now only tries to plot those files that are available [#39]
+
 ## [1.1.1] - 2021-07-26
 
 ### Fixed
@@ -282,6 +285,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#31]: https://github.com/wtraylor/modular_megafauna_model/issues/31
 [#32]: https://github.com/wtraylor/modular_megafauna_model/issues/32
 [#34]: https://github.com/wtraylor/modular_megafauna_model/issues/34
+[#39]: https://github.com/wtraylor/modular_megafauna_model/issues/39
 [#41]: https://github.com/wtraylor/modular_megafauna_model/issues/41
 [#43]: https://github.com/wtraylor/modular_megafauna_model/issues/43
 [#44]: https://github.com/wtraylor/modular_megafauna_model/issues/44
