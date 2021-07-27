@@ -38,7 +38,8 @@ PopulationList* WorldConstructor::create_populations(
   assert(!get_hftlist().empty());
 
   if (get_params().herbivore_type == HerbivoreType::Cohort) {
-    if (get_params().one_hft_per_habitat) {
+    if (get_params().one_hft_per_habitat &&
+        (get_params().herbivore_type == HerbivoreType::Cohort)) {
       // Create only one HFT, i.e. one population.
       const int hft_idx = habitat_ctr_in_agg_unit % get_hftlist().size();
       assert(hft_idx >= 0);

@@ -168,6 +168,7 @@ TEST_CASE("FAUNA::World", "") {
   SECTION("Habitat count as multiple of HFT count") {
     std::shared_ptr<Parameters> params(new Parameters);
     params->one_hft_per_habitat = true;
+    REQUIRE(params->herbivore_type == HerbivoreType::Cohort);
     World world(params, HFTLIST);
 
     REQUIRE(HFTLIST->size() > 1);
