@@ -10,10 +10,12 @@
  */
 #include "world.h"
 #include "catch.hpp"
+#include "cohort_population.h"
 #include "date.h"
 #include "dummy_habitat.h"
 #include "dummy_hft.h"
 #include "parameters.h"
+#include "simulation_unit.h"
 using namespace Fauna;
 
 TEST_CASE("FAUNA::World", "") {
@@ -188,6 +190,17 @@ TEST_CASE("FAUNA::World", "") {
             std::shared_ptr<Habitat>(new DummyHabitat("3")));
       }
       CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      // Check that all HFT populations are created.
+      for (const auto& hft : *HFTLIST) {
+        int hft_ctr = 0;
+        for (const auto& sim_unit : world.get_sim_units()) {
+          REQUIRE(sim_unit.get_populations().size() == 1);
+          const CohortPopulation* pop =
+              (CohortPopulation*)sim_unit.get_populations().front().get();
+          if (pop->get_hft() == *hft) hft_ctr++;
+        }
+        CHECK(hft_ctr == 3);  // This HFT once in each of the 3 agg. units
+      }
     }
 
     SECTION("Habitat count == 2 * HFT count") {
@@ -201,10 +214,21 @@ TEST_CASE("FAUNA::World", "") {
             std::shared_ptr<Habitat>(new DummyHabitat("3")));
       }
       CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      // Check that all HFT populations are created.
+      for (const auto& hft : *HFTLIST) {
+        int hft_ctr = 0;
+        for (const auto& sim_unit : world.get_sim_units()) {
+          REQUIRE(sim_unit.get_populations().size() == 1);
+          const CohortPopulation* pop =
+              (CohortPopulation*)sim_unit.get_populations().front().get();
+          if (pop->get_hft() == *hft) hft_ctr++;
+        }
+        CHECK(hft_ctr == 2 * 3);  // HFT 2 times in each of the 3 agg. units
+      }
     }
 
     SECTION("Habitat count == 3 * HFT count") {
-      // Create 3 aggregation units with 3 habitats for each HFT.
+      // Create 4 aggregation units with 3 habitats for each HFT.
       for (int i = 0; i < 3 * HFTLIST->size(); i++) {
         world.create_simulation_unit(
             std::shared_ptr<Habitat>(new DummyHabitat("1")));
@@ -212,8 +236,21 @@ TEST_CASE("FAUNA::World", "") {
             std::shared_ptr<Habitat>(new DummyHabitat("2")));
         world.create_simulation_unit(
             std::shared_ptr<Habitat>(new DummyHabitat("3")));
+        world.create_simulation_unit(
+            std::shared_ptr<Habitat>(new DummyHabitat("4")));
       }
       CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      // Check that all HFT populations are created.
+      for (const auto& hft : *HFTLIST) {
+        int hft_ctr = 0;
+        for (const auto& sim_unit : world.get_sim_units()) {
+          REQUIRE(sim_unit.get_populations().size() == 1);
+          const CohortPopulation* pop =
+              (CohortPopulation*)sim_unit.get_populations().front().get();
+          if (pop->get_hft() == *hft) hft_ctr++;
+        }
+        CHECK(hft_ctr == 3 * 4);  // HFT 3 times in each of the 4 agg. units
+      }
     }
 
     SECTION("Habitat count == 1") {
