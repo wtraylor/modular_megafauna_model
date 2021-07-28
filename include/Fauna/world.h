@@ -70,6 +70,17 @@ class World {
   World(const std::shared_ptr<const Parameters> params,
         const std::shared_ptr<const HftList> hftlist);
 
+  /// Constructor: Create deactivated `World` object.
+  /**
+   * Even if the megafauna model should be completely deactivated, there might
+   * be a need to create a "dummy" \ref World instance. An object created with
+   * this constructor will not simulate anything.
+   * \deprecated Rather don’t create a Fauna::World object at all instead of a
+   * “dummy” one. For example, use `std::shared_ptr<Fauna::World>` and leave
+   * the pointer `NULL` if you don’t need it.
+   */
+  World();
+
   /// Default destructor.
   ~World();
 
@@ -106,6 +117,9 @@ class World {
    * \ref create_simulation_unit() works.
    */
   const std::list<SimulationUnit>& get_sim_units() const { return sim_units; }
+
+  /// Whether this \ref World object is in \ref SimModel::Simulate mode.
+  const bool is_activated() const { return mode == SimMode::Simulate; }
 
   /// Iterate through all simulation units and perform simulation for this day.
   /**

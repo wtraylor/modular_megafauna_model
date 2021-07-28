@@ -67,6 +67,8 @@ World::World(const std::shared_ptr<const Parameters> params,
         "Fauna::World::World() The argument 'hftlist' is NULL.");
 }
 
+World::World() : mode(SimMode::Lint) {}  // deprecated
+
 // The destructor must be implemented here in the source file, where the
 // forward-declared types are complete.
 World::~World() = default;

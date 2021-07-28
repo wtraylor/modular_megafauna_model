@@ -31,6 +31,15 @@ TEST_CASE("FAUNA::World", "") {
   CHECK_NOTHROW(World(PARAMS, HFTLIST).simulate_day(Date(1, 2), true));
   CHECK_NOTHROW(World(PARAMS, HFTLIST).simulate_day(Date(1, 2), false));
 
+  SECTION("Dummy Constructor (deprecated)") {
+    World w;
+    REQUIRE(!w.is_activated());
+    CHECK_THROWS(w.get_params());
+    CHECK_THROWS(w.create_simulation_unit(NULL));
+    CHECK_NOTHROW(w.simulate_day(Date(1, 2), true));
+    CHECK_NOTHROW(w.simulate_day(Date(1, 2), false));
+  }
+
   SECTION("Unit test constructor") {
     CHECK_THROWS(World(NULL, NULL));
     CHECK_THROWS(World(PARAMS, NULL));
