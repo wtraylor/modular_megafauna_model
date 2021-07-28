@@ -14,6 +14,12 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ## [Unreleased]
 
+### Added
+- Option to reset date in `Fauna::World` - e.g. to start simulation from the beginning in the next location/gridcell
+
+### Fixed
+- Restore library interface for backward compatibility: `Fauna::World::World()` and `Fauna::World::is_activated()`
+
 ## [1.1.2] - 2021-07-27
 
 ### Added

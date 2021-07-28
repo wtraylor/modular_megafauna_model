@@ -70,6 +70,17 @@ class World {
   World(const std::shared_ptr<const Parameters> params,
         const std::shared_ptr<const HftList> hftlist);
 
+  /// Constructor: Create deactivated `World` object.
+  /**
+   * Even if the megafauna model should be completely deactivated, there might
+   * be a need to create a "dummy" \ref World instance. An object created with
+   * this constructor will not simulate anything.
+   * \deprecated Rather don’t create a Fauna::World object at all instead of a
+   * “dummy” one. For example, use `std::shared_ptr<Fauna::World>` and leave
+   * the pointer `NULL` if you don’t need it.
+   */
+  World();
+
   /// Default destructor.
   ~World();
 
@@ -107,33 +118,75 @@ class World {
    */
   const std::list<SimulationUnit>& get_sim_units() const { return sim_units; }
 
+  /// Whether this \ref World object is in \ref SimModel::Simulate mode.
+  const bool is_activated() const { return mode == SimMode::Simulate; }
+
+  /// Options passed to \ref simulate_day()
+  struct SimDayOptions {
+    /// Constructor
+    SimDayOptions() {}
+
+    /// Whether to perform herbivore simulations.
+    /** If false, only the output data of the habitats are updated. */
+    bool do_herbivores = true;
+
+    /// Whether to reset the simulation so we start from the beginning.
+    /**
+     * Enable this if you want to move on to simulate another area for
+     * instance. Then you restart from the beginning of your simulation time
+     * and set the date accordingly. (\ref simulate_day() will not throw an
+     * error about non-consecutive dates.)
+     *
+     * \note When you reset the date, it is advisable to clear the simulation
+     * units (\ref SimulationUnit) in the \ref World object. Do that by marking
+     * all habitats as “dead” (\ref Habitat::is_dead()). Simulation units with
+     * dead habitats will automatically be cleared.
+     */
+    bool reset_date = false;
+  };
+
   /// Iterate through all simulation units and perform simulation for this day.
   /**
    * This is the central access point to start the perform the herbivore
    * simulations.
    *
-   * If a \ref Habitat instance is marked as dead, the corresponding simulation
-   * unit will be released from memory.
+   * If a \ref Habitat instance is marked as dead (\ref Habitat::is_dead()),
+   * the corresponding simulation unit will be released from memory.
    *
-   * If the \ref World class was constructed without an instruction file, this
-   * function will do nothing.
+   * If the \ref World class was constructed without parameters, this function
+   * will do nothing.
    *
    * \param date The current simulation day.
-   * \param do_herbivores Whether to perform herbivore simulations. If false,
-   * only the output data of the habitats are updated.
+   * \param opts Options for today’s simulation.
+   *
    * \throw std::invalid_argument If `date` has not been correctly incremented
-   * by one day since the last call.
+   * by one day since the last call. However, no exception will be thrown if
+   * \ref SimDayOptions::reset_date is `true`.
+   *
    * \throw logic_error If \ref Parameters::one_hft_per_habitat, but for at
    * least one aggregation unit (\ref Habitat::get_aggregation_unit()) the
    * number of associated habitats is not an integer multiple of the number of
    * HFTs.
+   *
    * \throw logic_error If the aggregation units
    * (\ref Habitat::get_aggregation_unit()) created with
    * \ref create_simulation_unit() do not all have the same number of habitats
    * each. It would bias the output if the means for each aggregation unit
    * would have different “sample counts.”
    */
-  void simulate_day(const Date& date, const bool do_herbivores);
+  void simulate_day(const Date& date,
+                    const SimDayOptions& opts = SimDayOptions());
+
+  /// \copybrief simulate_day(const Date&, const SimDayOptions)
+  /**
+   * \param do_herbivores see \ref SimDayOptions::do_herbivores
+   * \deprecated Use simulate_day(const Date&, const SimDayOptions)
+   */
+  void simulate_day(const Date& date, const bool do_herbivores) {
+    SimDayOptions opts;
+    opts.do_herbivores = do_herbivores;
+    simulate_day(date, opts);
+  }
 
  private:
   /// Get the number of habitats per aggregation unit.
