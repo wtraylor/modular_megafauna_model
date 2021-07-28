@@ -28,16 +28,16 @@ TEST_CASE("FAUNA::World", "") {
   REQUIRE_NOTHROW(World(PARAMS, HFTLIST));
   CHECK_THROWS(World(PARAMS, HFTLIST).create_simulation_unit(NULL));
   CHECK_NOTHROW(World(PARAMS, HFTLIST).get_params());
-  CHECK_NOTHROW(World(PARAMS, HFTLIST).simulate_day(Date(1, 2), true));
-  CHECK_NOTHROW(World(PARAMS, HFTLIST).simulate_day(Date(1, 2), false));
+  CHECK_NOTHROW(World(PARAMS, HFTLIST).simulate_day(Date(1, 2)));
+  CHECK_NOTHROW(World(PARAMS, HFTLIST).simulate_day(Date(1, 2)));
 
   SECTION("Dummy Constructor (deprecated)") {
     World w;
     REQUIRE(!w.is_activated());
     CHECK_THROWS(w.get_params());
     CHECK_THROWS(w.create_simulation_unit(NULL));
-    CHECK_NOTHROW(w.simulate_day(Date(1, 2), true));
-    CHECK_NOTHROW(w.simulate_day(Date(1, 2), false));
+    CHECK_NOTHROW(w.simulate_day(Date(1, 2)));
+    CHECK_NOTHROW(w.simulate_day(Date(1, 2)));
   }
 
   SECTION("Unit test constructor") {
@@ -50,28 +50,54 @@ TEST_CASE("FAUNA::World", "") {
 
   SECTION("simulate_day()") {
     World world(PARAMS, HFTLIST);
-    world.simulate_day(Date(0, 0), true);
+    world.simulate_day(Date(0, 0));
     // Run for some days
-    CHECK_NOTHROW(world.simulate_day(Date(1, 0), true));
-    CHECK_NOTHROW(world.simulate_day(Date(2, 0), true));
-    CHECK_NOTHROW(world.simulate_day(Date(3, 0), true));
+    CHECK_NOTHROW(world.simulate_day(Date(1, 0)));
+    CHECK_NOTHROW(world.simulate_day(Date(2, 0)));
+    CHECK_NOTHROW(world.simulate_day(Date(3, 0)));
     // Try to simulate the same day again.
-    CHECK_THROWS(world.simulate_day(Date(3, 0), true));
+    CHECK_THROWS(world.simulate_day(Date(3, 0)));
     // Try to simulate the previous day again
-    CHECK_THROWS(world.simulate_day(Date(2, 0), true));
+    CHECK_THROWS(world.simulate_day(Date(2, 0)));
     // Try to simulate some bad arbitrary days.
-    CHECK_THROWS(world.simulate_day(Date(4, 1), true));
-    CHECK_THROWS(world.simulate_day(Date(14, 0), true));
-    CHECK_THROWS(world.simulate_day(Date(14, 3), true));
-    CHECK_THROWS(world.simulate_day(Date(10, 3), true));
-    CHECK_THROWS(world.simulate_day(Date(10, 3), true));
+    CHECK_THROWS(world.simulate_day(Date(4, 1)));
+    CHECK_THROWS(world.simulate_day(Date(14, 0)));
+    CHECK_THROWS(world.simulate_day(Date(14, 3)));
+    CHECK_THROWS(world.simulate_day(Date(10, 3)));
+    CHECK_THROWS(world.simulate_day(Date(10, 3)));
 
     // Check that the year boundary works.
     for (int day = 4; day < 365; day++)
-      CHECK_NOTHROW(world.simulate_day(Date(day, 0), true));
-    CHECK_NOTHROW(world.simulate_day(Date(0, 1), true));
-    CHECK_NOTHROW(world.simulate_day(Date(1, 1), true));
-    CHECK_NOTHROW(world.simulate_day(Date(2, 1), true));
+      CHECK_NOTHROW(world.simulate_day(Date(day, 0)));
+    CHECK_NOTHROW(world.simulate_day(Date(0, 1)));
+    CHECK_NOTHROW(world.simulate_day(Date(1, 1)));
+    CHECK_NOTHROW(world.simulate_day(Date(2, 1)));
+
+    SECTION("no herbivores") {
+      CHECK_THROWS(world.simulate_day(Date(0, 0)));
+      World::SimDayOptions opts;
+      opts.do_herbivores = false;
+      CHECK_NOTHROW(world.simulate_day(Date(3, 1), opts));
+      CHECK_NOTHROW(world.simulate_day(Date(4, 1), opts));
+      CHECK_NOTHROW(world.simulate_day(Date(5, 1), opts));
+    }
+
+    SECTION("reset date") {
+      CHECK_THROWS(world.simulate_day(Date(0, 0)));
+      World::SimDayOptions opts;
+      opts.reset_date = true;
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)), opts);
+      CHECK_NOTHROW(world.simulate_day(Date(3, 2)), opts);
+      opts.reset_date = false;
+      CHECK_NOTHROW(world.simulate_day(Date(4, 2)), opts);
+      CHECK_NOTHROW(world.simulate_day(Date(5, 2)), opts);
+      CHECK_THROWS(world.simulate_day(Date(0, 0)), opts);
+    }
+
+    SECTION("deprecated simulate_day()") {
+      CHECK_NOTHROW(world.simulate_day(Date(3, 1), true));
+      CHECK_NOTHROW(world.simulate_day(Date(4, 1), false));
+    }
   }
 
   SECTION("Unequal habitat count per aggregation unit") {
@@ -85,8 +111,8 @@ TEST_CASE("FAUNA::World", "") {
           std::shared_ptr<Habitat>(new DummyHabitat("1")));
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("1")));
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
-      CHECK_NOTHROW(world.simulate_day(Date(1, 0), false));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
+      CHECK_NOTHROW(world.simulate_day(Date(1, 0)));
     }
     SECTION("Good habitat count: 2-2-2") {
       world.create_simulation_unit(
@@ -101,16 +127,16 @@ TEST_CASE("FAUNA::World", "") {
           std::shared_ptr<Habitat>(new DummyHabitat("3")));
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("3")));
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
-      CHECK_NOTHROW(world.simulate_day(Date(1, 0), false));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
+      CHECK_NOTHROW(world.simulate_day(Date(1, 0)));
     }
     SECTION("Good habitat count: 1-1") {
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("1")));
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("2")));
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
-      CHECK_NOTHROW(world.simulate_day(Date(1, 0), false));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
+      CHECK_NOTHROW(world.simulate_day(Date(1, 0)));
     }
     SECTION("Bad habitat count: 2-2-1") {
       world.create_simulation_unit(
@@ -123,8 +149,8 @@ TEST_CASE("FAUNA::World", "") {
           std::shared_ptr<Habitat>(new DummyHabitat("2")));
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("3")));
-      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
-      CHECK_THROWS(world.simulate_day(Date(1, 0), false));
+      CHECK_THROWS(world.simulate_day(Date(0, 0)));
+      CHECK_THROWS(world.simulate_day(Date(1, 0)));
     }
     SECTION("Bad habitat count: 2-3") {
       world.create_simulation_unit(
@@ -137,8 +163,8 @@ TEST_CASE("FAUNA::World", "") {
           std::shared_ptr<Habitat>(new DummyHabitat("2")));
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("2")));
-      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
-      CHECK_THROWS(world.simulate_day(Date(1, 0), false));
+      CHECK_THROWS(world.simulate_day(Date(0, 0)));
+      CHECK_THROWS(world.simulate_day(Date(1, 0)));
     }
     SECTION("Bad habitat count: 1-3") {
       world.create_simulation_unit(
@@ -149,8 +175,8 @@ TEST_CASE("FAUNA::World", "") {
           std::shared_ptr<Habitat>(new DummyHabitat("2")));
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("2")));
-      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
-      CHECK_THROWS(world.simulate_day(Date(1, 0), false));
+      CHECK_THROWS(world.simulate_day(Date(0, 0)));
+      CHECK_THROWS(world.simulate_day(Date(1, 0)));
     }
     SECTION("Bad habitat count: 4-2-3") {
       world.create_simulation_unit(
@@ -171,8 +197,8 @@ TEST_CASE("FAUNA::World", "") {
           std::shared_ptr<Habitat>(new DummyHabitat("3")));
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("3")));
-      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
-      CHECK_THROWS(world.simulate_day(Date(1, 0), false));
+      CHECK_THROWS(world.simulate_day(Date(0, 0)));
+      CHECK_THROWS(world.simulate_day(Date(1, 0)));
     }
   }
 
@@ -185,7 +211,7 @@ TEST_CASE("FAUNA::World", "") {
     SECTION("1 habitat, 1 aggregation unit") {
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("1")));
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
       // Check all HFTs are in each habitat.
       for (const auto& sim_unit : world.get_sim_units()) {
         REQUIRE(sim_unit.get_populations().size() == HFTLIST->size());
@@ -203,7 +229,7 @@ TEST_CASE("FAUNA::World", "") {
           std::shared_ptr<Habitat>(new DummyHabitat("1")));
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("1")));
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
       // Check all HFTs are in each habitat.
       for (const auto& sim_unit : world.get_sim_units()) {
         REQUIRE(sim_unit.get_populations().size() == HFTLIST->size());
@@ -221,7 +247,7 @@ TEST_CASE("FAUNA::World", "") {
           std::shared_ptr<Habitat>(new DummyHabitat("1")));
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("2")));
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
       // Check all HFTs are in each habitat.
       for (const auto& sim_unit : world.get_sim_units()) {
         REQUIRE(sim_unit.get_populations().size() == HFTLIST->size());
@@ -247,7 +273,7 @@ TEST_CASE("FAUNA::World", "") {
           std::shared_ptr<Habitat>(new DummyHabitat("3")));
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("3")));
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
       // Check all HFTs are in each habitat.
       for (const auto& sim_unit : world.get_sim_units()) {
         REQUIRE(sim_unit.get_populations().size() == HFTLIST->size());
@@ -270,7 +296,7 @@ TEST_CASE("FAUNA::World", "") {
     REQUIRE(HFTLIST->size() > 1);
 
     SECTION("Habitat count == 0") {
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
     }
 
     SECTION("Habitat count == HFT count") {
@@ -283,7 +309,7 @@ TEST_CASE("FAUNA::World", "") {
         world.create_simulation_unit(
             std::shared_ptr<Habitat>(new DummyHabitat("3")));
       }
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
       // Check that all HFT populations are created.
       for (const auto& hft : *HFTLIST) {
         int hft_ctr = 0;
@@ -307,7 +333,7 @@ TEST_CASE("FAUNA::World", "") {
         world.create_simulation_unit(
             std::shared_ptr<Habitat>(new DummyHabitat("3")));
       }
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
       // Check that all HFT populations are created.
       for (const auto& hft : *HFTLIST) {
         int hft_ctr = 0;
@@ -333,7 +359,7 @@ TEST_CASE("FAUNA::World", "") {
         world.create_simulation_unit(
             std::shared_ptr<Habitat>(new DummyHabitat("4")));
       }
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0), true));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
       // Check that all HFT populations are created.
       for (const auto& hft : *HFTLIST) {
         int hft_ctr = 0;
@@ -350,7 +376,7 @@ TEST_CASE("FAUNA::World", "") {
     SECTION("Habitat count == 1") {
       world.create_simulation_unit(
           std::shared_ptr<Habitat>(new DummyHabitat("1")));
-      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
+      CHECK_THROWS(world.simulate_day(Date(0, 0)));
     }
 
     SECTION("Habitat count == HFT count - 1") {
@@ -362,7 +388,7 @@ TEST_CASE("FAUNA::World", "") {
         world.create_simulation_unit(
             std::shared_ptr<Habitat>(new DummyHabitat("3")));
       }
-      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
+      CHECK_THROWS(world.simulate_day(Date(0, 0)));
     }
 
     SECTION("Habitat count == HFT count + 1") {
@@ -374,7 +400,7 @@ TEST_CASE("FAUNA::World", "") {
         world.create_simulation_unit(
             std::shared_ptr<Habitat>(new DummyHabitat("3")));
       }
-      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
+      CHECK_THROWS(world.simulate_day(Date(0, 0)));
     }
 
     SECTION("Habitat count == 2 * HFT count - 1") {
@@ -386,7 +412,7 @@ TEST_CASE("FAUNA::World", "") {
         world.create_simulation_unit(
             std::shared_ptr<Habitat>(new DummyHabitat("3")));
       }
-      CHECK_THROWS(world.simulate_day(Date(0, 0), true));
+      CHECK_THROWS(world.simulate_day(Date(0, 0)));
     }
   }
 }

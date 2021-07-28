@@ -166,7 +166,7 @@ World::InsfileContent World::read_instruction_file(
   }
 }
 
-void World::simulate_day(const Date& date, const bool do_herbivores) {
+void World::simulate_day(const Date& date, const SimDayOptions opts) {
   if (mode != SimMode::Simulate) return;
 
   // Sanity checks for simulation units
@@ -231,13 +231,13 @@ void World::simulate_day(const Date& date, const bool do_herbivores) {
     }
 
     // Keep track of the establishment cycle.
-    if (do_herbivores) days_since_last_establishment++;
+    if (opts.do_herbivores) days_since_last_establishment++;
 
     // Create function object to delegate all simulations for this day to.
     SimulateDay simulate_day(date.get_julian_day(), sim_unit, feed_herbivores);
 
     // Call the function object.
-    simulate_day(do_herbivores, establish_as_needed);
+    simulate_day(opts.do_herbivores, establish_as_needed);
 
     // Aggregate output.
     assert(output_aggregator.get() != NULL);
