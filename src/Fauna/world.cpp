@@ -166,7 +166,7 @@ World::InsfileContent World::read_instruction_file(
   }
 }
 
-void World::simulate_day(const Date& date, const SimDayOptions opts) {
+void World::simulate_day(const Date& date, const SimDayOptions& opts) {
   if (mode != SimMode::Simulate) return;
 
   // Sanity checks for simulation units
@@ -187,9 +187,10 @@ void World::simulate_day(const Date& date, const SimDayOptions opts) {
   }
   simulation_units_checked = true;
 
+  if (opts.reset_date) last_date.reset(NULL);
   // Check if `date` follows `last_date`, but only if `last_date` has already
-  // been initialized (which happens on the first call.
-  if (last_date && !last_date->is_successive(date))
+  // been initialized (which happens on the first call).
+  if (!opts.reset_date && last_date && !last_date->is_successive(date)) {
     throw std::invalid_argument(
         "Fauna::World::simulate_day() "
         "Simulation dates did not come in consecutively.\n"
@@ -198,6 +199,7 @@ void World::simulate_day(const Date& date, const SimDayOptions opts) {
         std::to_string(last_date->get_year()) + ".\n" +
         "Now I received Julian day " + std::to_string(date.get_julian_day()) +
         " in year " + std::to_string(date.get_year()));
+  }
 
   // Create one function object to feed all herbivores.
   const FeedHerbivores feed_herbivores(

@@ -175,7 +175,7 @@ class World {
    * would have different “sample counts.”
    */
   void simulate_day(const Date& date,
-                    const SimDayOptions opts = SimDayOptions());
+                    const SimDayOptions& opts = SimDayOptions());
 
   /// \copybrief simulate_day(const Date&, const SimDayOptions)
   /**

@@ -86,12 +86,12 @@ TEST_CASE("FAUNA::World", "") {
       CHECK_THROWS(world.simulate_day(Date(0, 0)));
       World::SimDayOptions opts;
       opts.reset_date = true;
-      CHECK_NOTHROW(world.simulate_day(Date(0, 0)), opts);
-      CHECK_NOTHROW(world.simulate_day(Date(3, 2)), opts);
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0), opts));
+      CHECK_NOTHROW(world.simulate_day(Date(3, 2), opts));
       opts.reset_date = false;
-      CHECK_NOTHROW(world.simulate_day(Date(4, 2)), opts);
-      CHECK_NOTHROW(world.simulate_day(Date(5, 2)), opts);
-      CHECK_THROWS(world.simulate_day(Date(0, 0)), opts);
+      CHECK_NOTHROW(world.simulate_day(Date(4, 2), opts));
+      CHECK_NOTHROW(world.simulate_day(Date(5, 2), opts));
+      CHECK_THROWS(world.simulate_day(Date(0, 0), opts));
     }
 
     SECTION("deprecated simulate_day()") {
