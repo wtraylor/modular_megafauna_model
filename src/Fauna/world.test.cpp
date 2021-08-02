@@ -31,6 +31,10 @@ TEST_CASE("FAUNA::World", "") {
   CHECK_NOTHROW(World(PARAMS, HFTLIST).simulate_day(Date(1, 2)));
   CHECK_NOTHROW(World(PARAMS, HFTLIST).simulate_day(Date(1, 2)));
 
+  // Fauna::World should also work without HFTs: for simulations without any
+  // herbivores, but with producing MMM output files.
+  CHECK_NOTHROW(World(PARAMS, std::shared_ptr<const HftList>(new HftList)));
+
   SECTION("Dummy Constructor (deprecated)") {
     World w;
     REQUIRE(!w.is_activated());
@@ -413,6 +417,32 @@ TEST_CASE("FAUNA::World", "") {
             std::shared_ptr<Habitat>(new DummyHabitat("3")));
       }
       CHECK_THROWS(world.simulate_day(Date(0, 0)));
+    }
+  }
+
+  SECTION("one_hft_per_habitat doesn’t matter without HFTs") {
+    std::shared_ptr<Parameters> params(new Parameters);
+    params->one_hft_per_habitat = true;
+    World world(PARAMS, std::shared_ptr<const HftList>(new HftList));
+
+    SECTION("1 habitat") {
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
+    }
+    SECTION("2 habitat") {
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
+    }
+    SECTION("2 habitat in 2 agg. units") {
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("1")));
+      world.create_simulation_unit(
+          std::shared_ptr<Habitat>(new DummyHabitat("2")));
+      CHECK_NOTHROW(world.simulate_day(Date(0, 0)));
     }
   }
 }
