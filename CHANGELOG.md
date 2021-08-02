@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ### Fixed
 - Restore library interface for backward compatibility: `Fauna::World::World()` and `Fauna::World::is_activated()`
+- Exception if started without HFTs
 
 ## [1.1.2] - 2021-07-27
 
