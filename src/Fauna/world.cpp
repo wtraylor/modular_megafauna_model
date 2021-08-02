@@ -174,7 +174,7 @@ void World::simulate_day(const Date& date, const SimDayOptions& opts) {
     // Count the number of habitats in any case to throw an exception if they
     // differ. Compare the habitat count against HFT count only if necessary.
     const int habitat_count = get_habitat_count_per_agg_unit();
-    if (get_params().one_hft_per_habitat &&
+    if (get_params().one_hft_per_habitat && !get_hfts().empty() &&
         (get_params().herbivore_type == HerbivoreType::Cohort) &&
         (habitat_count % get_hfts().size() != 0))
       throw std::logic_error(
