@@ -35,7 +35,7 @@ PopulationList* WorldConstructor::create_populations(
     const unsigned int habitat_ctr_in_agg_unit) const {
   PopulationList* plist = new PopulationList();
 
-  assert(!get_hftlist().empty());
+  if (get_hftlist().empty()) return plist;
 
   if (get_params().herbivore_type == HerbivoreType::Cohort) {
     if (get_params().one_hft_per_habitat) {

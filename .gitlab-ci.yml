@@ -237,6 +237,10 @@ demo_toml_files:
     - ./build/megafauna_demo_simulator
       "tests/good_insfiles/two_hfts_01.toml"
       "tests/good_demosim_insfiles/habitats_is_multiple_of_hfts_01.toml";
+    - "rm -f *.tsv"
+    - ./build/megafauna_demo_simulator
+      "tests/good_insfiles/no_hfts.toml"
+      "tests/good_demosim_insfiles/minimal.toml";
 
 demo_simulation:
   image: gcc:latest
