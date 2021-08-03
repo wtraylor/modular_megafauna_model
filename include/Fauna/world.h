@@ -177,10 +177,10 @@ class World {
   void simulate_day(const Date& date,
                     const SimDayOptions& opts = SimDayOptions());
 
-  /// \copybrief simulate_day(const Date&, const SimDayOptions)
+  /// \copybrief simulate_day(const Date&, const SimDayOptions&)
   /**
    * \param do_herbivores see \ref SimDayOptions::do_herbivores
-   * \deprecated Use simulate_day(const Date&, const SimDayOptions)
+   * \deprecated Use simulate_day(const Date&, const SimDayOptions&)
    */
   void simulate_day(const Date& date, const bool do_herbivores) {
     SimDayOptions opts;
