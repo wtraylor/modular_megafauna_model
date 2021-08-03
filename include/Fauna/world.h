@@ -118,7 +118,7 @@ class World {
    */
   const std::list<SimulationUnit>& get_sim_units() const { return sim_units; }
 
-  /// Whether this \ref World object is in \ref SimModel::Simulate mode.
+  /// Whether this \ref World object is in \ref SimMode::Simulate mode.
   const bool is_activated() const { return mode == SimMode::Simulate; }
 
   /// Options passed to \ref simulate_day()
