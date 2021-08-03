@@ -179,6 +179,7 @@ class World {
 
   /// \copybrief simulate_day(const Date&, const SimDayOptions&)
   /**
+   * \param date The current simulation day.
    * \param do_herbivores see \ref SimDayOptions::do_herbivores
    * \deprecated Use simulate_day(const Date&, const SimDayOptions&)
    */
