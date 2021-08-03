@@ -4,6 +4,7 @@
 
 # This instruction file has *no* HFTs. It should still work for the purpose of
 # generating MMM output without simulating herbivores.
+# The herbivore-specific output files should *not* be created, though.
 
 [simulation]
 establishment_interval = 3650 # every 10 years
@@ -23,10 +24,10 @@ directory = "."
 precision = 4
 tables = [
   "available_forage",
-  "body_fat",
+  "body_fat",               # not created
   "digestibility",
-  "eaten_forage_per_ind",
-  "eaten_nitrogen_per_ind",
-  "individual_density",
-  "mass_density"
+  "eaten_forage_per_ind",   # not created
+  "eaten_nitrogen_per_ind", # not created
+  "individual_density",     # not created
+  "mass_density"            # not created
 ]
