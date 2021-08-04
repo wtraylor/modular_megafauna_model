@@ -35,7 +35,7 @@ TextTableWriter::TextTableWriter(const OutputInterval interval,
     file_streams.push_back(&available_forage);
     available_forage.open(path);
   }
-  if (options.body_fat) {
+  if (options.body_fat && !hft_names.empty()) {
     const std::string path = dir + "/body_fat" + FILE_EXTENSION;
     check_file_exists(path);
     file_streams.push_back(&body_fat);
@@ -47,31 +47,31 @@ TextTableWriter::TextTableWriter(const OutputInterval interval,
     file_streams.push_back(&digestibility);
     digestibility.open(path);
   }
-  if (options.eaten_forage_per_ind) {
+  if (options.eaten_forage_per_ind && !hft_names.empty()) {
     const std::string path = dir + "/eaten_forage_per_ind" + FILE_EXTENSION;
     check_file_exists(path);
     file_streams.push_back(&eaten_forage_per_ind);
     eaten_forage_per_ind.open(path);
   }
-  if (options.eaten_nitrogen_per_ind) {
+  if (options.eaten_nitrogen_per_ind && !hft_names.empty()) {
     const std::string path = dir + "/eaten_nitrogen_per_ind" + FILE_EXTENSION;
     check_file_exists(path);
     file_streams.push_back(&eaten_nitrogen_per_ind);
     eaten_nitrogen_per_ind.open(path);
   }
-  if (options.individual_density) {
+  if (options.individual_density && !hft_names.empty()) {
     const std::string path = dir + "/individual_density" + FILE_EXTENSION;
     check_file_exists(path);
     file_streams.push_back(&individual_density);
     individual_density.open(path);
   }
-  if (options.mass_density) {
+  if (options.mass_density && !hft_names.empty()) {
     const std::string path = dir + "/mass_density" + FILE_EXTENSION;
     check_file_exists(path);
     file_streams.push_back(&mass_density);
     mass_density.open(path);
   }
-  if (options.mass_density_per_hft) {  // deprecated
+  if (options.mass_density_per_hft && !hft_names.empty()) {  // deprecated
     const std::string path = dir + "/mass_density_per_hft" + FILE_EXTENSION;
     check_file_exists(path);
     file_streams.push_back(&mass_density_per_hft);

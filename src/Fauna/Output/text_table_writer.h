@@ -34,7 +34,8 @@ class TextTableWriter : public WriterInterface {
  public:
   /// Constructor
   /**
-   * Create all files that are selected in `options` as empty files.
+   * Create all files that are selected in `options` as empty files. Herbivore
+   * output files are only created if `hft_names` is not empty.
    * \param interval Selector if output is daily/monthly/annual/...
    * \param options Specific user-defined options for this class.
    * \param hft_names All HFTs in the simulation (see \ref Fauna::Hft::name).
