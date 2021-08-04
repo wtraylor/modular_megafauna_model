@@ -243,10 +243,18 @@ demo_toml_files:
       "tests/good_insfiles/two_hfts_01.toml"
       "tests/good_demosim_insfiles/habitats_is_multiple_of_hfts_01.toml";
     - "rm -f *.tsv"
-      # A simulation should run without HFTs and still produce output.
+      # A simulation should run without HFTs and still produce (non-herbivore)
+      # output.
     - ./build/megafauna_demo_simulator
       "tests/good_insfiles/no_hfts_01.toml"
       "tests/good_demosim_insfiles/minimal.toml";
+    - test -f available_forage.tsv
+    - test -f digestibility.tsv
+    - (! test -f body_fat.tsv)
+    - (! test -f eaten_forage_per_ind.tsv)
+    - (! test -f eaten_nitrogen_per_ind.tsv)
+    - (! test -f individual_density.tsv)
+    - (! test -f mass_density.tsv)
 
 demo_simulation:
   image: gcc:latest
