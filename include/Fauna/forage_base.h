@@ -57,7 +57,20 @@ class ForageBase {
   void set_nitrogen_mass(const double n_mass);
 
  protected:
-  /** \copydoc ForageValues::merge() */
+  /// Merge this object with another one by building (weighted) means.
+  /**
+   * Forage mass is simply weighted with the number of data points given by
+   * `this_weight` and `other_weight`.
+   * In contrast, weighting digestibility considers also the forage mass of
+   * this and the other object. This way, merging a \ref ForageBase object
+   * that has zero forage will disregard its digestibility.
+   * \param other Other object to merge into this one.
+   * \param this_weight Number of data points this object aggregates.
+   * \param other_weight Number of data points the other object aggregates.
+   * \return This object.
+   * \throw std::invalid_argument The same as \ref average().
+   * \see \ref Fauna::average().
+   */
   ForageBase& merge_base(const ForageBase& other, const double this_weight,
                          const double other_weight);
 };

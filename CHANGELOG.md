@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 - Restore library interface for backward compatibility: `Fauna::World::World()` and `Fauna::World::is_activated()`
 - Exception if started without HFTs
 - Now HFT table files won’t be created if there are no HFTs defined.
+- Too low digestibility values in output, due to wrong weights in aggregation.
 
 ## [1.1.2] - 2021-07-27
 
