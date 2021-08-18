@@ -47,8 +47,10 @@ check_release_version:
   image: debian:stable-slim
   stage: lint
   rules:
-    # Only execute on tags that look like a version, e.g.: "0.5.1"
-    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+.*/'
+    # Only execute on tags that look like a release version, e.g., "0.5.1".
+    # Prerelease versions (e.g., "1.2.0-alpha.1" or "1.2.0-beta.3") are not
+    # required to have the version as metadata.
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+/'
       when: always
   script:
     - echo "If this fails, check that the Git tag matches VERSION in CMakeLists.txt."
