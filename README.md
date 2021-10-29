@@ -98,7 +98,7 @@ It is called `demo_results.Rmd`.
 You can open and render it in [RStudio](https://www.rstudio.com/).
 
 Alternatively, you can compile the RMarkdown file into an HTML file without RStudio.
-You will need to have [R](https://www.r-project.org/) (version 3, 4, or later) installed.
+You will need to have [R](https://www.r-project.org/) (version 3, 4, or later) and [Pandoc](https://pandoc.org) installed.
 
 Open a terminal in the `build` directory and execute `R` to get into an interactive R session.
 In the R console, you execute the following commands:
