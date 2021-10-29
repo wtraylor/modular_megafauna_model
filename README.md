@@ -106,7 +106,7 @@ In the R console, you execute the following commands:
 ```r
 install.packages("rmarkdown")
 library(rmarkdown)
-render("demo_results.md")
+render("demo_results.Rmd")
 quit(save = "no")
 ```
 
