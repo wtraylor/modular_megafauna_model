@@ -7,6 +7,15 @@ SPDX-License-Identifier: CC0-1.0
 # Modular Megafauna Output
 
 ```{r setup, include = FALSE}
+# Installing packages non-interactively is generally not a good practice.
+# However, this file is intended to be run by first-time users as a quickstart.
+# We don’t want to elaborate on R package installation in the quicksart guide.
+cran_mirror <- "http://cran.us.r-project.org"
+if (!require("ggplot2"))
+  install.packages("ggplot2", repos = cran_mirror)
+if (!require("tidyr"))
+  install.packages("tidyr", repos = cran_mirror)
+
 library(ggplot2)
 library(tidyr)
 
