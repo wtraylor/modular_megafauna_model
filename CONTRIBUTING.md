@@ -10,6 +10,17 @@ This document is a guide for developers who want to contribute to the megafauna 
 It explains the organization of the software project and sets guidelines for code style, structure, and format.
 This document is only about *syntax* only.
 
+After contributing something, don’t forget to add your name to:
+
+- the file header in a new line starting with `SPDX-FileCopyrightText: ...` (following the [REUSE][] standard),
+- the “Authors” section in the `README.md`, and
+- the list of authors in the citation files [CITATION.cff](CITATION.cff) and [codemeta.json](codemeta.json).
+
+Note that the authors list in the [Zenodo archive][] is automatically derived from the contributors in the Git history.
+
+[REUSE]: https://reuse.software
+[Zenodo archive]: <https://zenodo.org/badge/latestdoi/228426088>
+
 ## Table of Contents
 
 <!-- vim-markdown-toc GFM -->

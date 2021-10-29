@@ -16,6 +16,8 @@ Modular Megafauna Model
 
 [REUSE]: https://reuse.software
 
+
+
 Overview
 --------
 
@@ -48,18 +50,106 @@ This project follows the [Pitchfork Layout](https://github.com/vector-of-bool/pi
 - `tests/`: Unit tests and test scripts.
 - `tools/`: Different helper tools for the developer.
 
-Usage
------
+Quickstart
+----------
 
-The first step in working with the model is to create the documentation and read the introductory pages.
-On the Quickstart page you will find instructions for compiling the source code.
+### Compile and Run Unit Tests
 
-### Compile the Doxygen Documentation
+To check if the modular megafauna model works by itself correctly, you should compile it and run the unit tests.
+You will need [Cmake](https://cmake.org) (3.10 or later) and a C++ compiler supporting the C++11 standard.
+It should work well with GCC, the [GNU C++ compiler](https://gcc.gnu.org) (4.8 or later).
+
+Open a Unix shell in the root of this repository and run:
+
+```sh
+mkdir -p build
+cd build
+cmake -DBUILD_TESTING=ON ..
+make megafauna_unit_tests
+./megafauna_unit_tests
+```
+
+If the unit tests all pass successfully, you are good to go!
+
+### Run the Demo Simulator
+
+With the CMake option `BUILD_DEMO_SIMULATOR=ON` you can compile the demo simulator.
+This independent program is a very simple grass simulator that hosts the megafauna library.
+It should work out of the box with the instructions files in the `examples/` folder.
+
+Again, open a terminal in the repository root folder and run:
+
+```sh
+mkdir -p build
+cd build
+cmake -DBUILD_DEMO_SIMULATOR=ON ..
+make megafauna_demo_simulator
+./megafauna_demo_simulator "../examples/megafauna.toml" "../examples/demo_simulation.toml"
+```
+
+Congratulations, you have run your first simulation!
+
+The output files are tab-separated text (`.tsv`) files.
+The simulator does not want to have you lose your results and will refuse to overwrite existing output files.
+So if you want to run it again, you will first need to remove the previously created output tables: `rm *.tsv`
+
+A very simple [RMarkdown](https://rmarkdown.rstudio.com/) file to visualize the demo output is provided in the `build` folder.
+It is called `demo_results.Rmd`.
+You can open and render it in [RStudio](https://www.rstudio.com/).
+
+Alternatively, you can compile the RMarkdown file into an HTML file without RStudio.
+You will need to have [R](https://www.r-project.org/) (version 3, 4, or later) installed.
+
+Open a terminal in the `build` directory and execute `R` to get into an interactive R session.
+In the R console, you execute the following commands:
+
+```r
+install.packages("rmarkdown")
+library(rmarkdown)
+render("demo_results.md")
+quit(save = "no")
+```
+
+This should have produced the HTML file `demo_results.html`, which you can open in your web browser.
+The results should show a rising population curve, which means that the example herbivore has been able to survive and reproduce.
+
+Feel free to play with the MMM parameters in `megafauna.toml` and the Demo Simulator parameters in `demo_simulation.toml`.
+
+### Customize the Instruction File
+
+The Modular Megafauna Model library requires a single instruction file to set general simulation parameters and herbivore (HFT = Herbivore Functional Type) parameters.
+The instruction file is in [TOML v0.5][] format; see there for a description of the syntax.
+String parameters are generally case insensitive.
+
+[TOML v0.5]: https://github.com/toml-lang/toml/tree/v0.5.0
+
+All possible options are listed in the example file under [examples/megafauna.toml](examples/megafauna.toml).
+You will find all parameters explained in detail in the Doxygen documentation of the two classes [Fauna::Parameters][] and [Fauna::Hft][].
+The parameter names and cascaded categories are kept as consistent as possible between the C++ classes and the TOML file.
+
+[Fauna::Parameters]: <https://modular-megafauna-model.readthedocs.io/en/latest/structFauna_1_1Parameters.html>
+[Fauna::Hft]: <https://modular-megafauna-model.readthedocs.io/en/latest/classFauna_1_1Hft.html>
+
+Note that the example HFT in [examples/megafauna.toml](examples/megafauna.toml) is intentionally fictional.
+The parameter values do fall in a range realistic for an ungulate grazer, but for your study you will want to parametrize your organism of interest based on physiological data from the literature.
+
+Both HFTs and HFT groups are represented as arrays of tables in the TOML syntax.
+You can define any number of HFTs, but they need to have unique names.
+Any HFT can be assigned to any number of groups to inherit parameters from that group.
+However, you cannot cascade groups, and an HFT cannot inherit from another HFT.
+
+In general, the user is forced to specify all parameters.
+This way one instruction file is always complete and self-explanatory.
+Default values in the C++ code might change between model versions.
+However, the model should still yield the same results with the same instruction file.
+
+Compiling the Documentation
+---------------------------
 
 You can find the automatically compiled documentation of the latest release here:
 <https://modular-megafauna-model.readthedocs.io/>
 
-As a bare minimum, you will need to have [CMake](https://cmake.org) (version 3.10 or higher) and [Doxygen](https://www.doxygen.nl) installed.
+As a bare minimum, you will need to have [CMake](https://cmake.org) (version 3.10 or higher) and [Doxygen](https://www.doxygen.nl) (version 1.8.16 or higher) installed.
 
 Open a Unix shell (terminal) in the root directory of the megafauna library, and execute the following lines.
 On Windows, you can use the [Windows Subsystem for Linux]() <!--TODO-->(Windows 10 or higher) or try to compile it with the CMake GUI and/or an IDE.
@@ -75,11 +165,12 @@ Don’t worry if warning messages appear. Usually, most of the documentation
 will be fine.
 Now open the created file `docs/index.html` in a web browser.
 
-#### Optional Build Requirements for the Documentation
+### Optional Build Requirements for the Documentation
 - Java Runtime Environment (JRE) and [Graphviz](www.graphviz.org) to compile [PlantUML](http://plantuml.com) diagrams. See [here](http://plantuml.com/graphviz-dot) for details.
 - [LaTeX](www.latex-project.org) to render mathematical formulas offline, and [BibTeX](www.bibtex.org) for the bibliography.
 
-### Existing Integrations
+Existing Integrations
+---------------------
 
 Originally this megafauna model was developed for the dynamic global vegetation model [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/).
 On the Lund subversion server there exists a branch `megafauna` that integrates this library into LPJ-GUESS.
@@ -89,32 +180,23 @@ Please contact the maintainers of LPJ-GUESS to kindly ask for access.
 Other dynamic vegetation models can include the megafauna model as an external library, too.
 Learn more in the Doxygen documentation.
 
-### Changing the Codebase
+Changing the Codebase
+---------------------
 
 Flexibility and extensibility were high design goals for developing the megafauna model.
 Hopefully you will find it possible to implement the necessary code changes/extensions for your particular research questions.
 You will need basic skills with Git and C++ (C++11 standard) in order to contribute.
 
 On the index/main page of the Doxygen documentation you will be directed to the resources you need to contribute.
-Please also read through the file [`CONTRIBUTING.md`][].
-
-After contributing something, don’t forget to add your name to:
-
-- the file header in a new line starting with `SPDX-FileCopyrightText: ...` (following the [REUSE][] standard),
-- the “[Authors][#authors]” section in this README, and
-- the list of authors in the citation file [`CITATION.cff`][].
-
-(Note that the authors list in the [Zenodo archive][] is automatically derived from the contributors in the Git history.)
-
-[Zenodo archive]: <https://zenodo.org/badge/latestdoi/228426088>
+Please also read through the file [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Continuous Integration (CI) runs through gitlab.com in this mirror repository: <https://gitlab.com/wtraylor/modular_megafauna_model>
 
 Note that for running the model, you don’t need to change the source code.
 Most parameters can be set in the instruction file.
 
-Known Bugs and Issues
----------------------
+Bugs and Issues
+---------------
 
 Known bugs and improvements are collected in the [GitHub issue tracker](https://github.com/wtraylor/modular_megafauna_model/issues/).
 If you discover a new bug, please use the issue tracker to [report](https://github.com/wtraylor/modular_megafauna_model/issues/new) it.

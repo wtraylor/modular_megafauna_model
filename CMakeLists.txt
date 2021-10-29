@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
 cmake_minimum_required (VERSION 3.10)
+# Update README.md if you increase required CMake version.
+
 project ("Modular Megafauna Model"
   # This version must match exactly the Git tag!
   # Compare the "check_version" job in ".gitlab-ci.yml".

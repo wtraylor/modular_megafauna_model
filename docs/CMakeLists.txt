@@ -4,6 +4,7 @@
 
 cmake_minimum_required (VERSION 3.10)
 set (REQUIRED_DOXYGEN_VERSION 1.8.16)
+# Update README.md if you change the required versions here.
 
 find_package (LATEX COMPONENTS BIBTEX)
 find_package (Java COMPONENTS Runtime)
@@ -82,7 +83,7 @@ if (DOXYGEN_FOUND)
     mainpage.md
     model.md
     objectorientation.md
-    quickstart.md
+    recipes.md
     separate_docs.h
     tutor.md
     ALL
