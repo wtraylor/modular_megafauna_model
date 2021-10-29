@@ -17,6 +17,9 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 ### Added
 - Option to reset date in `Fauna::World` - e.g. to start simulation from the beginning in the next location/gridcell
 
+### Changed
+- Move quickstart guide from Doxygen docs to `README.md` [#52]
+
 ### Fixed
 - Restore library interface for backward compatibility: `Fauna::World::World()` and `Fauna::World::is_activated()`
 - Exception if started without HFTs
@@ -306,3 +309,4 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#43]: https://github.com/wtraylor/modular_megafauna_model/issues/43
 [#44]: https://github.com/wtraylor/modular_megafauna_model/issues/44
 [#45]: https://github.com/wtraylor/modular_megafauna_model/issues/45
+[#52]: https://github.com/wtraylor/modular_megafauna_model/issues/52
