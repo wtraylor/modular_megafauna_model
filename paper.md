@@ -59,9 +59,10 @@ The currently implemented model concepts originate in large parts from @pachzelt
 Later studies have implemented conceptually similar grazer models for other DGVMs: @dangal2017integrating for DLEM and @zhu2018large for ORCHIDEE.
 However, to my knowledge, none of these implementations is reusable across different vegetation models.
 
-At this point, MMM is being used by the author to simulate potential densities of mammoths, steppe bison, and horse in the last ice age.
+The author is currently using MMM to simulate potential densities of mammoths, steppe bison, and horse in the last ice age.
 Here, MMM is coupled with LPJ-GUESS [@smith2001representation; @smith2014implications], using daily grass growth [@bokeolen2018estimating].
 LPJ-GUESS is proprietary software and not publicly available.
+MMM could also be parametrized for extant herbivores, such as Scandinavian reindeer or Mongolian gazelles.
 
 # Features
 
