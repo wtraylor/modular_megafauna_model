@@ -57,7 +57,7 @@ Once a model is sufficiently mature, its predictions can inform nature conservat
 The currently implemented model concepts originate in large parts from @pachzelt2013coupling and the earlier works by @illius2000resource and @illius1999scaling.
 @pachzelt2013coupling integrated African grazers into LPJ-GUESS, a dynamic global vegetation model (DGVM) [@smith2001representation].
 Later studies have implemented conceptually similar grazer models for other DGVMs: @dangal2017integrating for DLEM and @zhu2018large for ORCHIDEE.
-However, to my knowledge, none of these implementations is reusable across different vegetation models.
+However, to my knowledge, none of these implementations are reusable across different vegetation models.
 
 The author is currently using MMM to simulate potential densities of mammoths, steppe bison, and horse in the last ice age.
 Here, MMM is coupled with LPJ-GUESS [@smith2001representation; @smith2014implications], using daily grass growth [@bokeolen2018estimating].
