@@ -174,6 +174,7 @@ Existing Integrations
 
 Originally this megafauna model was developed for the dynamic global vegetation model [LPJ-GUESS](http://iis4.nateko.lu.se/lpj-guess/).
 On the Lund subversion server there exists a branch `megafauna` that integrates this library into LPJ-GUESS.
+The educational version of LPJ-GUESS does *not* integrate MMM.
 LPJ-GUESS is proprietary and closed-source.
 Please contact the maintainers of LPJ-GUESS to kindly ask for access.
 
