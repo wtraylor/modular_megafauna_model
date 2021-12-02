@@ -112,6 +112,9 @@ quit(save = "no")
 
 This should have produced the HTML file `demo_results.html`, which you can open in your web browser.
 The results should show a rising population curve, which means that the example herbivore has been able to survive and reproduce.
+You can compare it to the expected output (“artifacts”) produced in the last Continuous Integration (CI) run on [GitLab][gitlab_ci_result] (download “demo_simulation:archive” through the three-dots menu).
+
+[gitlab_ci_result]: <https://gitlab.com/wtraylor/modular_megafauna_model/-/pipelines?page=1&scope=all&ref=master&status=success>
 
 Feel free to play with the MMM parameters in `megafauna.toml` and the Demo Simulator parameters in `demo_simulation.toml`.
 
