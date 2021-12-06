@@ -83,10 +83,12 @@ It is up to the vegetation model to give these spatial units meaning by linking 
 With this flexibility, MMM can be used for studies on different scales, from local to continental.
 
 Modularity is a primary design goal of the library.
-Through the instruction file, users can turn mechanisms on or off and parametrize herbivore species or herbivore functional types.
+Through the instruction file[^example_insfiles], users can turn mechanisms on or off and parametrize herbivore species or herbivore functional types.
 Parameters include, for example, body mass, components of energy expenditure, maximum feed intake, background mortality, body fat reserves, etc.
 There are no hard-coded parameters; all can be defined in the instruction file.
 MMM’s flexible framework allows developers to integrate new mechanisms, such as a more detailed energy budget model, mortality from hunting and predation, or a new forage type.
+
+[^example_insfiles]: Example instruction files are included in the code repository: <https://github.com/wtraylor/modular_megafauna_model/tree/master/examples>
 
 While monolithic ecosystem models can easily become “black boxes,” whose internal mechanisms have grown too complex to be understood intuitively, a modular model is more transparent.
 Developing mechanistic ecosystem models is typically an exploratory, iterative process.
