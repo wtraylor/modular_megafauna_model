@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# This instruction file has *no* HFTs. It should still work for the purpose of
+# generating MMM output without simulating herbivores.
+# The herbivore-specific output files should *not* be created, though.
+
+[simulation]
+establishment_interval = 3650 # every 10 years
+forage_distribution    = "Equally"
+herbivore_type         = "Cohort"
+one_hft_per_habitat    = false
+
+[forage]
+gross_energy = { grass = 19.0 } # MJ/kgDM
+
+[output]
+format = "TextTables"
+interval = "Annual"
+
+[output.text_tables]
+directory = "."
+precision = 4
+tables = [
+  "available_forage",
+  "body_fat",               # not created
+  "digestibility",
+  "eaten_forage_per_ind",   # not created
+  "eaten_nitrogen_per_ind", # not created
+  "individual_density",     # not created
+  "mass_density"            # not created
+]

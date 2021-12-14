@@ -12,7 +12,7 @@ Before you continue, make sure you have read the `README.md` in the root of this
 This documentation contains auto-generated source code documentation and in addition a few pages that generally describe the model and the source code architecture.
 You can find all of these manually written pages under “Related Pages” in the upper navigation bar.
 
-A good first read for users and developers are the \ref page_quickstart and the \ref page_model.
+A good first read for users and developers is the \ref page_model.
 
 Throughout this documentation you will find diagrams in UML (Unified Modeling Language), mostly class diagrams.
 If you are not familiar with UML at all, consider looking at one of the many introductions you can find online.

@@ -47,8 +47,10 @@ check_release_version:
   image: debian:stable-slim
   stage: lint
   rules:
-    # Only execute on tags that look like a version, e.g.: "0.5.1"
-    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+.*/'
+    # Only execute on tags that look like a release version, e.g., "0.5.1".
+    # Prerelease versions (e.g., "1.2.0-alpha.1" or "1.2.0-beta.3") are not
+    # required to have the version as metadata.
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+/'
       when: always
   script:
     - echo "If this fails, check that the Git tag matches VERSION in CMakeLists.txt."
@@ -230,6 +232,11 @@ demo_toml_files:
       "tests/good_insfiles/two_hfts_01.toml"
       "tests/bad_demosim_insfiles/habitats_not_multiple_of_hfts_01.toml");
     - "rm -f *.tsv"
+      # Without HFTs, the option "one_hft_per_habitat" has no effect.
+    - ./build/megafauna_demo_simulator
+      "tests/good_insfiles/no_hfts_02.toml"
+      "tests/bad_demosim_insfiles/habitats_not_multiple_of_hfts_01.toml";
+    - "rm -f *.tsv"
     - (! ./build/megafauna_demo_simulator
       "good_insfiles/two_hfts_01.toml"
       "tests/bad_demosim_insfiles/habitats_not_multiple_of_hfts_02.toml");
@@ -237,6 +244,19 @@ demo_toml_files:
     - ./build/megafauna_demo_simulator
       "tests/good_insfiles/two_hfts_01.toml"
       "tests/good_demosim_insfiles/habitats_is_multiple_of_hfts_01.toml";
+    - "rm -f *.tsv"
+      # A simulation should run without HFTs and still produce (non-herbivore)
+      # output.
+    - ./build/megafauna_demo_simulator
+      "tests/good_insfiles/no_hfts_01.toml"
+      "tests/good_demosim_insfiles/minimal.toml";
+    - test -f available_forage.tsv
+    - test -f digestibility.tsv
+    - (! test -f body_fat.tsv)
+    - (! test -f eaten_forage_per_ind.tsv)
+    - (! test -f eaten_nitrogen_per_ind.tsv)
+    - (! test -f individual_density.tsv)
+    - (! test -f mass_density.tsv)
 
 demo_simulation:
   image: gcc:latest
@@ -261,13 +281,14 @@ demo_simulation:
     expire_in: 20 minutes
 
 plot_demo_results:
+  # This job should match the quickstart guide in the README.md.
   image: r-base:latest
   stage: postprocess
   needs: ["demo_simulation"]
   before_script:
     - apt-get update -qq
     - apt-get install -y -qq pandoc
-    - Rscript -e 'install.packages(c("ggplot2", "rmarkdown", "tidyr"))'
+    - Rscript -e 'install.packages("rmarkdown")'
   script:
     - cd build
     - Rscript -e "rmarkdown::render('demo_results.Rmd')"

@@ -12,6 +12,22 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [1.1.3] - 2021-12-14
+
+### Added
+- Option to reset date in `Fauna::World` - e.g. to start simulation from the beginning in the next location/gridcell
+
+### Changed
+- Move quickstart guide from Doxygen docs to `README.md` [#52]
+- Update PlantUML from 1.2019.09 to 1.2021.15
+
+### Fixed
+- Restore library interface for backward compatibility: `Fauna::World::World()` and `Fauna::World::is_activated()`
+- Exception if started without HFTs
+- Now HFT table files won’t be created if there are no HFTs defined.
+- Too low digestibility values in output, due to wrong weights in aggregation.
+- CI doxygen generation failing with error "sh: 1: /usr/sbin/dot: not found". `dot` is now disabled.
+
 ## [1.1.2] - 2021-07-27
 
 ### Added
@@ -248,7 +264,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Illius & O’Connor (2000)]: <https://doi.org/10.2307/3800911>
 [Taylor et al. (1981)]: <https://doi.org/10.1017/S0003356100040617>
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.2...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.3...develop
+[1.1.3]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.2...1.1.3
 [1.1.2]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/wtraylor/modular_megafauna_model/compare/1.0.3...1.1.0
@@ -295,3 +312,4 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#43]: https://github.com/wtraylor/modular_megafauna_model/issues/43
 [#44]: https://github.com/wtraylor/modular_megafauna_model/issues/44
 [#45]: https://github.com/wtraylor/modular_megafauna_model/issues/45
+[#52]: https://github.com/wtraylor/modular_megafauna_model/issues/52

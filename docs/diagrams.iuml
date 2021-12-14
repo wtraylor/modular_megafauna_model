@@ -114,7 +114,6 @@
 
 @startuml (id=herbivorebase_compartments)
   hide methods
-  namespace Fauna{
   abstract HerbivoreBase{
     -Hft hft
     -int age_days
@@ -182,7 +181,6 @@
     }
   }
   HerbivoreBase ..> "*" "Mortality"
-  }
 @enduml
 
 @startuml (id=important_classes)

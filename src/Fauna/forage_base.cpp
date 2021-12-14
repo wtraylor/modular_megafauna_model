@@ -17,9 +17,12 @@ ForageBase& ForageBase::merge_base(const ForageBase& other,
                                    const double this_weight,
                                    const double other_weight) {
   if (this == &other) return *this;
-  set_digestibility(average(this->get_digestibility(),
-                            other.get_digestibility(), this_weight,
-                            other_weight));
+  if (this->get_mass() > 0.0 || other.get_mass() > 0.0)
+    set_digestibility(average(
+        this->get_digestibility(), other.get_digestibility(),
+        this_weight * this->get_mass(), other_weight * other.get_mass()));
+  else
+    set_digestibility(0.0);  // NA, so to say
   set_mass(
       average(this->get_mass(), other.get_mass(), this_weight, other_weight));
   return *this;

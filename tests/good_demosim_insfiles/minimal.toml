@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2020 W. Traylor <wolfgang.traylor@senckenberg.de>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# This instruction file is very minimal: 1 habitat and short simulation time.
+
+[general]
+years = 2
+habitat_groups = 1
+habitats_per_group = 1
+
+[environment]
+air_temperature = [10]
+
+[grass]
+daily_decay_rate = [ 0.005 ]
+daily_growth_rate = [0.03]
+digestibility = [0.7]
+fpc = 0.8
+initial_mass = 100
+saturation_mass = 200
+ungrazeable_reserve = 20

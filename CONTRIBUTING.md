@@ -10,6 +10,17 @@ This document is a guide for developers who want to contribute to the megafauna 
 It explains the organization of the software project and sets guidelines for code style, structure, and format.
 This document is only about *syntax* only.
 
+After contributing something, don’t forget to add your name to:
+
+- the file header in a new line starting with `SPDX-FileCopyrightText: ...` (following the [REUSE][] standard),
+- the “Authors” section in the `README.md`, and
+- the list of authors in the citation files [CITATION.cff](CITATION.cff) and [codemeta.json](codemeta.json).
+
+Note that the authors list in the [Zenodo archive][] is automatically derived from the contributors in the Git history.
+
+[REUSE]: https://reuse.software
+[Zenodo archive]: <https://zenodo.org/badge/latestdoi/228426088>
+
 ## Table of Contents
 
 <!-- vim-markdown-toc GFM -->
@@ -45,10 +56,22 @@ This document is only about *syntax* only.
 ### Release Versioning
 This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 
-- The pattern is `MAJOR.MINOR.PATCH`.
+- The pattern of realease tas is `MAJOR.MINOR.PATCH` (e.g., `1.9.1` or `1.12.0`).
 - If the new version cannot read old instruction files anymore or breaks the library interface, increment `MAJOR`.
 - If the new version introduces a new feature, but still interoperates like the old version, increment `MINOR`.
 - If the new version only fixes bugs, extends or amends the documentation or refactors code, increment `PATCH`.
+
+#### Prereleases
+Prerelease versions stay on the `develop` branch.
+You can create tags, but don’t merge into the `master` branch.
+
+The tag name should have some meaningful and numbered appendix to the release version it is moving towards.
+For example, if the prerelease prepares version `1.3.0`, the tag may be `1.3.0-alpha.1` in the early development phase.
+For final testing you may use `1.3.0-beta.1`, `1.3.0-beta.2`, and so on.
+
+Don’t write the prerelease version into `CMakeLists.txt`, `codemeta.json`, and `CITATION.cff`.
+That would be difficult to maintain because if you don’t revert the version number in these files to `0.0.0` (which indicates development) immediately and just continue to commit, you end up with different commits containing the same version number in the metadata.
+The version numbers in `CMakeLists.txt`, `codemeta.json`, and `CITATION.cff` are really only for actual releases, which are citeable and documented on Read the Docs.
 
 #### Checklist for merging into `master`
 

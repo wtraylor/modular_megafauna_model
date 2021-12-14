@@ -66,7 +66,30 @@ TEST_CASE("Fauna::GrassForage", "") {
 
     g1.merge(g2, W1, W2);
     CHECK(g1.get_mass() == Approx(average(M1, M2, W1, W2)));
-    CHECK(g1.get_digestibility() == Approx(average(D1, D2, W1, W2)));
+    CHECK(g1.get_digestibility() == Approx(average(D1, D2, W1 * M1, W2 * M2)));
     CHECK(g1.get_fpc() == Approx(average(F1, F2, W1, W2)));
+  }
+
+  SECTION("merge with zero forage") {
+    GrassForage g1, g2;
+    const double W1 = 956;
+    const double W2 = 123;
+    const double M1 = 23;
+    const double M2 = 0;  // zero forage
+    const double D1 = 0.342;
+    const double D2 = 0.56;
+    const double F1 = 0.76;
+    const double F2 = 0.0;  // must be zero if mass is zero
+    g1.set_mass(M1);
+    g2.set_mass(M2);
+    g1.set_digestibility(D1);
+    g2.set_digestibility(D2);
+    g1.set_fpc(F1);
+    g2.set_fpc(F2);
+
+    g1.merge(g2, W1, W2);
+    CHECK(g1.get_mass() == Approx(M1 * W1 / (W1 + W2)));
+    CHECK(g1.get_digestibility() == D1);  // unchanged digestibility!
+    CHECK(g1.get_fpc() == Approx(F1 * W1 / (W1 + W2)));
   }
 }

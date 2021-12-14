@@ -4,6 +4,7 @@
 
 cmake_minimum_required (VERSION 3.10)
 set (REQUIRED_DOXYGEN_VERSION 1.8.16)
+# Update README.md if you change the required versions here.
 
 find_package (LATEX COMPONENTS BIBTEX)
 find_package (Java COMPONENTS Runtime)
@@ -19,6 +20,9 @@ if (DOXYGEN_FOUND)
     set (DOXYGEN_WARN_AS_ERROR NO)
   endif()
 
+  # The following CMake options correspond to Doxygen configuration file
+  # options, which are documented here:
+  # https://www.doxygen.nl/manual/config.html
   set (DOXYGEN_CITE_BIB_FILES "bibliography.bib")
   set (DOXYGEN_DISTRIBUTE_GROUP_DOC YES)
   set (DOXYGEN_EXAMPLE_PATH "../examples")
@@ -27,6 +31,7 @@ if (DOXYGEN_FOUND)
   set (DOXYGEN_EXTRACT_PRIVATE YES)
   set (DOXYGEN_FORMULA_FONTSIZE 13)
   set (DOXYGEN_GENERATE_TREEVIEW YES)
+  set (DOXYGEN_HAVE_DOT NO) # Docker img. readthedocs/build:6.0 couldn’t find /usr/sbin/dot...
   set (DOXYGEN_IMAGE_PATH "images")
   set (DOXYGEN_LATEX_BIB_STYLE "ieeetr")
   set (DOXYGEN_PLANTUML_INCLUDE_PATH "./")
@@ -82,7 +87,7 @@ if (DOXYGEN_FOUND)
     mainpage.md
     model.md
     objectorientation.md
-    quickstart.md
+    recipes.md
     separate_docs.h
     tutor.md
     ALL
