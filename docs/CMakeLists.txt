@@ -31,6 +31,7 @@ if (DOXYGEN_FOUND)
   set (DOXYGEN_EXTRACT_PRIVATE YES)
   set (DOXYGEN_FORMULA_FONTSIZE 13)
   set (DOXYGEN_GENERATE_TREEVIEW YES)
+  set (DOXYGEN_HAVE_DOT NO) # Docker img. readthedocs/build:6.0 couldn’t find /usr/sbin/dot...
   set (DOXYGEN_IMAGE_PATH "images")
   set (DOXYGEN_LATEX_BIB_STYLE "ieeetr")
   set (DOXYGEN_PLANTUML_INCLUDE_PATH "./")
