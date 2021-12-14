@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ### Changed
 - Move quickstart guide from Doxygen docs to `README.md` [#52]
+- Update PlantUML from 1.2019.09 to 1.2021.15
 
 ### Fixed
 - Restore library interface for backward compatibility: `Fauna::World::World()` and `Fauna::World::is_activated()`
