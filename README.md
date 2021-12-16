@@ -7,12 +7,14 @@ SPDX-License-Identifier: CC-BY-4.0
 Modular Megafauna Model
 =======================
 
-[![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
+[![JOSS](https://joss.theoj.org/papers/10.21105/joss.03631/status.svg)](https://doi.org/10.21105/joss.03631)
+[![DOI](docs/images/zenodo_doi.svg)](https://zenodo.org/badge/latestdoi/228426088)
 [![REUSE-compliant](docs/images/reuse-compliant.svg)][REUSE]
 [![Documentation Status](https://readthedocs.org/projects/modular-megafauna-model/badge/?version=latest)](https://modular-megafauna-model.readthedocs.io/en/latest/?badge=latest)
 [![Pipeline Status](https://gitlab.com/wtraylor/modular_megafauna_model/badges/master/pipeline.svg)](https://gitlab.com/wtraylor/modular_megafauna_model/-/commits/master)
 [![codecov](https://codecov.io/gh/wtraylor/modular_megafauna_model/branch/master/graph/badge.svg)](https://codecov.io/gh/wtraylor/modular_megafauna_model)
-[![DOI](docs/images/zenodo_doi.svg)](https://zenodo.org/badge/latestdoi/228426088)
+
+[![LGPL logo](docs/images/lgpl.svg)](https://choosealicense.com/licenses/lgpl-3.0/)
 
 [REUSE]: https://reuse.software
 
