@@ -34,7 +34,8 @@ FatmassEnergyBudget::FatmassEnergyBudget(const double initial_fatmass,
     throw std::invalid_argument(
         "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
         "initial_fatmass < 0.0");
-  if (initial_fatmass > maximum_fatmass)
+  // Allow for floating point imprecision by comparing to 10 g/ind.
+  if ((int)(initial_fatmass * 100) > (int)(maximum_fatmass * 100))
     throw std::logic_error(
         "Fauna::FatmassEnergyBudget::FatmassEnergyBudget() "
         "initial_fatmass > maximum_fatmass");
