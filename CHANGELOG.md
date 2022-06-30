@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 
 ## [Unreleased]
 
+### Fixed
+- Error `initial_fatmass > maximum_fatmass` [#35]
+- Nitrogen mass was not considered in `Fauna::ForageBase::merge_base()`.
+
 ## [1.1.3] - 2021-12-14
 
 ### Added
@@ -309,6 +313,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#31]: https://github.com/wtraylor/modular_megafauna_model/issues/31
 [#32]: https://github.com/wtraylor/modular_megafauna_model/issues/32
 [#34]: https://github.com/wtraylor/modular_megafauna_model/issues/34
+[#35]: https://github.com/wtraylor/modular_megafauna_model/issues/35
 [#39]: https://github.com/wtraylor/modular_megafauna_model/issues/39
 [#41]: https://github.com/wtraylor/modular_megafauna_model/issues/41
 [#43]: https://github.com/wtraylor/modular_megafauna_model/issues/43
