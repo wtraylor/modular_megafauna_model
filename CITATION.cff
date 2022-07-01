@@ -8,6 +8,7 @@ authors:
   - family-names: Traylor
     given-names: Wolfgang
     affiliation: Senckenberg Biodiversity and Climate Research Centre
+    orcid: https://orcid.org/0000-0002-4813-1072
 title: "Modular Megafauna Model"
 version: 1.1.4
 # This DOI represents all versions, and will always resolve to the latest one.
