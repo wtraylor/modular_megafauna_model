@@ -12,6 +12,12 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [1.1.4] - 2022-07-01
+
+### Fixed
+- Error `initial_fatmass > maximum_fatmass` [#35]
+- Nitrogen mass was not considered in `Fauna::ForageBase::merge_base()`.
+
 ## [1.1.3] - 2021-12-14
 
 ### Added
@@ -264,7 +270,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Illius & O’Connor (2000)]: <https://doi.org/10.2307/3800911>
 [Taylor et al. (1981)]: <https://doi.org/10.1017/S0003356100040617>
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.3...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.4...develop
+[1.1.4]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.3...1.1.4
 [1.1.3]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.2...1.1.3
 [1.1.2]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.0...1.1.1
@@ -307,6 +314,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [#31]: https://github.com/wtraylor/modular_megafauna_model/issues/31
 [#32]: https://github.com/wtraylor/modular_megafauna_model/issues/32
 [#34]: https://github.com/wtraylor/modular_megafauna_model/issues/34
+[#35]: https://github.com/wtraylor/modular_megafauna_model/issues/35
 [#39]: https://github.com/wtraylor/modular_megafauna_model/issues/39
 [#41]: https://github.com/wtraylor/modular_megafauna_model/issues/41
 [#43]: https://github.com/wtraylor/modular_megafauna_model/issues/43

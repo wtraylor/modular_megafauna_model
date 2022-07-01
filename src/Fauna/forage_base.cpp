@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "forage_base.h"
+#include <cassert>
 #include "average.h"
 
 using namespace Fauna;
@@ -23,8 +24,14 @@ ForageBase& ForageBase::merge_base(const ForageBase& other,
         this_weight * this->get_mass(), other_weight * other.get_mass()));
   else
     set_digestibility(0.0);  // NA, so to say
-  set_mass(
-      average(this->get_mass(), other.get_mass(), this_weight, other_weight));
+
+  dry_matter_mass =
+      average(this->get_mass(), other.get_mass(), this_weight, other_weight);
+  nitrogen_mass = average(this->get_nitrogen_mass(), other.get_nitrogen_mass(),
+                          this_weight, other_weight);
+  assert(dry_matter_mass >= 0.0);
+  assert(nitrogen_mass >= 0.0);
+  assert(dry_matter_mass >= nitrogen_mass);
   return *this;
 }
 
