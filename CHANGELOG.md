@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 ## [Unreleased]
 ### Fixed
 - Floating point rounding error in `Fauna::GetForageDemands::add_eaten()`
+- Fix wrong ORCID in `CITATION.cff` and `codemeta.json`
 
 ## [1.1.4] - 2022-07-01
 
