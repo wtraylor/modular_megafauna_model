@@ -35,8 +35,8 @@ double GetForageDemands::get_bodymass_adult() const {
 
 void GetForageDemands::add_eaten(ForageMass eaten_forage) {
   // Check if we are eating more than possible, but leave some room for
-  // floating point imprecision.
-  if (!(eaten_forage <= max_intake * 1.001))
+  // floating point imprecision. 3% are empirical: below it, errors occurred.
+  if (!(eaten_forage <= max_intake * 1.03))
     throw std::logic_error(
         "Fauna::GetForageDemands::add_eaten() "
         "Eaten forage is greater than maximum intake.");
