@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "simulation_unit.h"
+
 #include "catch.hpp"
 #include "dummy_habitat.h"
 #include "population_list.h"

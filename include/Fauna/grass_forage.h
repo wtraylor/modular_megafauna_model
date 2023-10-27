@@ -12,6 +12,7 @@
 #define FAUNA_GRASS_FORAGE_H
 
 #include <cassert>
+
 #include "Fauna/forage_base.h"
 
 namespace Fauna {

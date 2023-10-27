@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "herbivore_cohort.h"
+
 #include "catch.hpp"
 #include "dummy_hft.h"
 #include "parameters.h"

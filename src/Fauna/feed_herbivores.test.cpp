@@ -9,7 +9,9 @@
  * \date 2019
  */
 #include "feed_herbivores.h"
+
 #include <list>
+
 #include "catch.hpp"
 #include "dummy_herbivore.h"
 #include "dummy_hft.h"

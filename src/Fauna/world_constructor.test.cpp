@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "world_constructor.h"
+
 #include "catch.hpp"
 #include "cohort_population.h"
 #include "dummy_habitat.h"

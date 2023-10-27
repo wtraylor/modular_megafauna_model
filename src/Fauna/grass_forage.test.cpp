@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "grass_forage.h"
+
 #include "average.h"
 #include "catch.hpp"
 

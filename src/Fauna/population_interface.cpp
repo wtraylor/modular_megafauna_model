@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "population_interface.h"
+
 #include "herbivore_interface.h"
 
 using namespace Fauna;

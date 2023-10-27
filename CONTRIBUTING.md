@@ -148,13 +148,12 @@ Here is a summary of the relevant parts:
 ### Code Format
 The C++ code layout follows the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
 No worries, you don’t need to read everything.
-Just see that your IDE or text editor auto-formats your code using [Clang](http://clang.llvm.org/).
-The default Google layout is exported in the [.clang-format](.clang-format) file, ready to be read by `clang`.
+Perhaps your IDE or text editor cat automatically format your code using [Clang](http://clang.llvm.org/) in Google style.
 
-Do the code formatting automatically in a Git pre-commit by adding this line to `.git/hooks/pre-commit` in each of your working copies:
+Alternatively, do the code formatting automatically in a Git pre-commit by adding this line to `.git/hooks/pre-commit` in each of your working copies:
 
     #!/bin/bash
-    git-clang-format --quiet
+    git-clang-format --extensions cpp,h --style Google --staged --quiet
 
 Make sure to make it executable: `chmod +x .git/hooks/pre-commit`.
 The command `git-clang-format` may be already installed with Clang, otherwise install it separately for your platform.

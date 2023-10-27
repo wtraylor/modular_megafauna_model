@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "logistic_grass.h"
+
 #include "catch.hpp"
 
 using namespace Fauna;

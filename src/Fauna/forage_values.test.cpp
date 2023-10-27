@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "forage_values.h"
+
 #include "catch.hpp"
 
 using namespace Fauna;

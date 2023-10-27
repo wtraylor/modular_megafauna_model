@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "herbivore_cohort.h"
+
 #include "fatmass_energy_budget.h"
 #include "hft.h"
 

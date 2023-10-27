@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "habitat_data.h"
+
 #include "catch.hpp"
 using namespace Fauna;
 using namespace Fauna::Output;

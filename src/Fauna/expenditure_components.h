@@ -12,6 +12,7 @@
 #define FAUNA_EXPENDITURE_COMPONENTS_H
 
 #include <assert.h>
+
 #include <cmath>
 #include <stdexcept>
 

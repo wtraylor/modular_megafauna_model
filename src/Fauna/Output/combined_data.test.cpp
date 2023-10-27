@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "combined_data.h"
+
 #include "catch.hpp"
 #include "dummy_hft.h"
 #include "parameters.h"

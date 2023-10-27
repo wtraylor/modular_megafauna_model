@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "habitat_forage.h"
+
 #include "forage_values.h"
 
 using namespace Fauna;

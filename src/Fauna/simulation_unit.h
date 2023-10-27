@@ -12,6 +12,7 @@
 #define FAUNA_SIMULATION_UNIT_H
 
 #include <memory>
+
 #include "population_list.h"
 
 namespace Fauna {

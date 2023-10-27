@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "herbivore_data.h"
+
 #include "catch.hpp"
 #include "dummy_hft.h"
 using namespace Fauna;

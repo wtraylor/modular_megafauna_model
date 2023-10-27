@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "combined_data.h"
+
 #include "grass_forage.h"
 
 using namespace Fauna::Output;

@@ -12,6 +12,7 @@
 #define FAUNA_HERBIVORE_BASE_H
 
 #include <memory>
+
 #include "breeding_season.h"
 #include "environment.h"
 #include "fatmass_energy_budget.h"

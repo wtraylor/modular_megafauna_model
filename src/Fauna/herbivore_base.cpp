@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "herbivore_base.h"
+
 #include "expenditure_components.h"
 #include "hft.h"
 #include "mortality_factors.h"

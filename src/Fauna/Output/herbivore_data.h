@@ -12,6 +12,7 @@
 #define FAUNA_OUTPUT_HERBIVORE_DATA_H
 
 #include <map>
+
 #include "forage_values.h"
 #include "hft.h"
 

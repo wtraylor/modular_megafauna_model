@@ -9,6 +9,7 @@
  * \date 2020
  */
 #include "world.h"
+
 #include "catch.hpp"
 #include "cohort_population.h"
 #include "date.h"

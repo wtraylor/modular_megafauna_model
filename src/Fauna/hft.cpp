@@ -9,8 +9,10 @@
  * \date 2019
  */
 #include "hft.h"
+
 #include <iomanip>
 #include <sstream>
+
 #include "foraging_limits.h"
 #include "net_energy_models.h"
 #include "parameters.h"

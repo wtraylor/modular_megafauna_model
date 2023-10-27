@@ -12,6 +12,7 @@
 #define FAUNA_OUTPUT_DATA_POINT_H
 
 #include <string>
+
 #include "combined_data.h"
 #include "date_interval.h"
 

@@ -12,6 +12,7 @@
 #define TESTS_DUMMY_HFT_H
 
 #include <sstream>
+
 #include "hft.h"
 
 namespace Fauna {

@@ -13,6 +13,7 @@
 
 #include <cassert>
 #include <stdexcept>
+
 #include "forage_values.h"
 #include "text_table_writer_options.h"
 

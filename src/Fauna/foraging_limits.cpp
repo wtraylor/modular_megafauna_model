@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "foraging_limits.h"
+
 #include <cmath>
 
 using namespace Fauna;

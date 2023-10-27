@@ -14,6 +14,7 @@
 #include <cassert>
 #include <memory>
 #include <vector>
+
 #include "population_list.h"
 
 namespace Fauna {

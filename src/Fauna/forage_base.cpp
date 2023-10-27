@@ -9,7 +9,9 @@
  * \date 2019
  */
 #include "forage_base.h"
+
 #include <cassert>
+
 #include "average.h"
 
 using namespace Fauna;

@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "foraging_limits.h"
+
 #include "catch.hpp"
 
 using namespace Fauna;

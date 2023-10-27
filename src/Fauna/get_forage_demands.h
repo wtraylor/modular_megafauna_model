@@ -12,6 +12,7 @@
 #define FAUNA_GET_FORAGE_DEMANDS_H
 
 #include <memory>
+
 #include "forage_values.h"
 #include "habitat_forage.h"
 

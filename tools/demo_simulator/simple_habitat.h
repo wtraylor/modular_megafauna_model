@@ -12,6 +12,7 @@
 #define FAUNA_DEMO_SIMPLE_HABITAT_H
 
 #include <vector>
+
 #include "logistic_grass.h"
 
 using namespace Fauna;

@@ -9,8 +9,10 @@
  * \date 2019
  */
 #include "date_interval.h"
+
 #include <algorithm>
 #include <stdexcept>
+
 #include "parameters.h"
 
 using namespace Fauna;

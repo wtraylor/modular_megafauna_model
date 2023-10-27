@@ -12,6 +12,7 @@
 #define FAUNA_COHORT_POPULATION_H
 
 #include <list>
+
 #include "create_herbivore_cohort.h"
 #include "population_interface.h"
 

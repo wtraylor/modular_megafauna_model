@@ -12,6 +12,7 @@
 #define FAUNA_DEMO_SIMULATOR_H
 
 #include <vector>
+
 #include "simple_habitat.h"
 
 namespace Fauna {

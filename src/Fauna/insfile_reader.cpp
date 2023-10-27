@@ -9,9 +9,11 @@
  * \date 2019
  */
 #include "insfile_reader.h"
+
 #include <algorithm>
 #include <iostream>
 #include <string>
+
 #include "forage_types.h"
 #include "hft.h"
 
