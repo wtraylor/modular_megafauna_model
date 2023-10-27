@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [Unreleased]
+
 ## [1.1.6] - 2023-10-27
 ### Maintenance
 - Updated Catch test framework to version 2.13.10
