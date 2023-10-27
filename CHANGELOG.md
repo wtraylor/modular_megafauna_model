@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
 ## [Unreleased]
+### Maintenance
+- Updated Catch test framework to version 2.13.10
 
 ## [1.1.5] - 2022-11-30
 ### Fixed
