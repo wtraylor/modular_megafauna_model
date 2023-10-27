@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "simulation_unit.h"
+
 #include "combined_data.h"
 #include "habitat.h"
 #include "herbivore_interface.h"

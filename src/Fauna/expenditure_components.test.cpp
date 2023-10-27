@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "expenditure_components.h"
+
 #include "catch.hpp"
 using namespace Fauna;
 

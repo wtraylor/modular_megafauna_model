@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "parameters.h"
+
 #include "catch.hpp"
 using namespace Fauna;
 

@@ -9,7 +9,9 @@
  * \date 2019
  */
 #include "text_table_writer.h"
+
 #include <sstream>
+
 #include "datapoint.h"
 #include "fileystem.h"
 

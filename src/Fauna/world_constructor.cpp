@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "world_constructor.h"
+
 #include "cohort_population.h"
 #include "forage_distribution_algorithms.h"
 #include "hft.h"

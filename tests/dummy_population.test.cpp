@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "dummy_population.h"
+
 #include "catch.hpp"
 using namespace Fauna;
 

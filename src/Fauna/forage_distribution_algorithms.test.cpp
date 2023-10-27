@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "forage_distribution_algorithms.h"
+
 #include "catch.hpp"
 #include "dummy_herbivore.h"
 #include "dummy_hft.h"

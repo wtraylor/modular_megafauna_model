@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "habitat.h"
+
 #include "catch.hpp"
 #include "dummy_habitat.h"
 #include "habitat_data.h"

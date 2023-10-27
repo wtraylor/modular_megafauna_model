@@ -12,6 +12,7 @@
 #define FAUNA_FEED_HERBIVORES_H
 
 #include <memory>
+
 #include "herbivore_vector.h"
 
 namespace Fauna {

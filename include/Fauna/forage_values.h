@@ -15,6 +15,7 @@
 #include <cmath>
 #include <numeric>
 #include <stdexcept>
+
 #include "Fauna/average.h"
 #include "Fauna/forage_types.h"
 

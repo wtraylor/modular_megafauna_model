@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "average.h"
+
 #include "catch.hpp"
 
 using namespace Fauna;

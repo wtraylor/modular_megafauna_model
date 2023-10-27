@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "aggregator.h"
+
 #include "catch.hpp"
 
 using namespace Fauna;

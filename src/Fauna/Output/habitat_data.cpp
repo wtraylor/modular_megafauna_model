@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "habitat_data.h"
+
 #include "average.h"
 
 using namespace Fauna::Output;

@@ -9,8 +9,10 @@
  * \date 2019
  */
 #include "world.h"
+
 #include <algorithm>
 #include <stdexcept>
+
 #include "aggregator.h"
 #include "date.h"
 #include "feed_herbivores.h"

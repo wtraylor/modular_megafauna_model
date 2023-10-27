@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "reproduction_models.h"
+
 #include "catch.hpp"
 using namespace Fauna;
 

@@ -9,7 +9,9 @@
  * \date 2019
  */
 #include "net_energy_models.h"
+
 #include <sstream>
+
 #include "catch.hpp"
 #include "hft.h"
 #include "parameters.h"

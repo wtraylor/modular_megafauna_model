@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "aggregator.h"
+
 #include "date.h"
 #include "habitat.h"
 #include "herbivore_interface.h"

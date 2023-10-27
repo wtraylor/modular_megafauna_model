@@ -9,7 +9,9 @@
  * \date 2019
  */
 #include "fileystem.h"
+
 #include <fstream>
+
 #include "catch.hpp"
 
 using namespace Fauna;

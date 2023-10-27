@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "forage_types.h"
+
 #include <stdexcept>
 
 using namespace Fauna;

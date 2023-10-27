@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "mortality_factors.h"
+
 #include "catch.hpp"
 using namespace Fauna;
 

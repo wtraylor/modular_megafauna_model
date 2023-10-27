@@ -12,6 +12,7 @@
 #define FAUNA_DEMO_LOGISTIC_GRASS_H
 #include <string>
 #include <vector>
+
 #include "megafauna.h"
 
 namespace Fauna {

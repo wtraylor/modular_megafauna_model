@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "get_forage_demands.h"
+
 #include "catch.hpp"
 #include "dummy_hft.h"
 #include "herbivore_base.h"

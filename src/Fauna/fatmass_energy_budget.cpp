@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "fatmass_energy_budget.h"
+
 #include <cassert>
 #include <stdexcept>
 

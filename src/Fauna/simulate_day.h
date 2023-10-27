@@ -12,6 +12,7 @@
 #define FAUNA_SIMULATE_DAY_H
 
 #include <map>
+
 #include "environment.h"
 #include "habitat_forage.h"
 #include "herbivore_vector.h"

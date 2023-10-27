@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "herbivore_base.h"
+
 #include "catch.hpp"
 #include "dummy_herbivore_base.h"
 #include "dummy_hft.h"

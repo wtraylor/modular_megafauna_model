@@ -9,13 +9,16 @@
  * \date 2019
  */
 #include "text_table_writer.h"
+
 #include <unistd.h>
+
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
 #include <iostream>
 #include <string>
+
 #include "catch.hpp"
 #include "datapoint.h"
 #include "dummy_hft.h"

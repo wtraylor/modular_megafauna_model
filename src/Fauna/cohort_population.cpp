@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "cohort_population.h"
+
 #include "herbivore_cohort.h"
 #include "hft.h"
 

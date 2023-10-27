@@ -9,10 +9,12 @@
  * \date 2019
  */
 #include "demo_simulator.h"
+
 #include <cassert>
 #include <cfloat>
 #include <climits>
 #include <iostream>
+
 #include "cpptoml.h"
 #include "megafauna.h"
 

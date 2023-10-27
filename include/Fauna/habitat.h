@@ -14,6 +14,7 @@
 #include <cassert>
 #include <list>
 #include <memory>
+
 #include "Fauna/Output/habitat_data.h"
 
 namespace Fauna {

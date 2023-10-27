@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "feed_herbivores.h"
+
 #include "forage_distribution_algorithms.h"
 #include "habitat_forage.h"
 #include "herbivore_interface.h"

@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Keep a Changelog]: <https://keepachangelog.com/en/1.0.0/>
 [Semantic Versioning]: <https://semver.org/spec/v2.0.0.html>
 
+## [1.1.6] - 2023-10-27
+### Maintenance
+- Updated Catch test framework to version 2.13.10
+
 ## [1.1.5] - 2022-11-30
 ### Fixed
 - Floating point rounding error in `Fauna::GetForageDemands::add_eaten()`
@@ -275,7 +279,8 @@ The format is based on [Keep a Changelog][] by Olivier Lacan, and this project a
 [Illius & O’Connor (2000)]: <https://doi.org/10.2307/3800911>
 [Taylor et al. (1981)]: <https://doi.org/10.1017/S0003356100040617>
 
-[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.5...develop
+[Unreleased]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.6...develop
+[1.1.6]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.5...1.1.6
 [1.1.5]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.4...1.1.5
 [1.1.4]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.3...1.1.4
 [1.1.3]: https://github.com/wtraylor/modular_megafauna_model/compare/1.1.2...1.1.3

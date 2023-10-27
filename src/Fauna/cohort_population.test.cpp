@@ -9,6 +9,7 @@
  * \date 2019
  */
 #include "cohort_population.h"
+
 #include "catch.hpp"
 #include "dummy_hft.h"
 #include "environment.h"

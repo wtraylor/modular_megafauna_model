@@ -10,6 +10,7 @@
  */
 #include <fstream>
 #include <iostream>
+
 #include "megafauna.h"
 
 using namespace Fauna;
