@@ -8,5 +8,14 @@
 
 version: 2
 
-sphinx:
-   configuration: docs/sphinx/conf.py
+# Set the version of Python and other tools you might need
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.11"
+  commands:
+    - cmake -DBUILD_DOC=ON -DDOXYGEN_OUTPUT_DIRECTORY=$READTHEDOCS_OUTPUT .
+    - make megafauna_docs
+
+conda:
+  environment: docs/conda_env.yml
