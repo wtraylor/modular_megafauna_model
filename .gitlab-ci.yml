@@ -73,7 +73,7 @@ clang-format:
       $(find -not -path './external/*' \( -iname '*.cpp' -or -iname '*.h' \) )
 
 compile:
-  image: gcc:latest
+  image: gcc:latest # should always build with latest GNU compiler
   stage: build
   before_script:
     - apt-get update -qq
@@ -99,6 +99,22 @@ compile:
       - build/megafauna_insfile_linter
       - build/megafauna_unit_tests
     expire_in: 20 minutes
+
+# In addition to GCC, also check that compilation with clang.
+compile_clang:
+  image: silkeh/clang:latest # should always build latest clang
+  stage: build
+  script:
+    - mkdir --parents build
+    - cd build
+    - cmake
+      -DBUILD_TESTING=ON
+      -DBUILD_DEMO_SIMULATOR=ON
+      -DBUILD_DOC=OFF ..
+    - make --jobs=6
+      megafauna_demo_simulator
+      megafauna_insfile_linter
+      megafauna_unit_tests
 
 # Compare the Sphinx instructions in "docs/sphinx/conf.py".
 doxygen:
