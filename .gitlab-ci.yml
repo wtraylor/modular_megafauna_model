@@ -60,22 +60,17 @@ check_release_version:
     - echo "If this fails, check that the Git tag matches version in codemeta.json."
     - test "$CI_COMMIT_TAG" == $(grep '"version"' codemeta.json | grep -oP '(?<=")\d+\.\d+\.\d+.*(?=")')
 
-# Check that all files are correctly formatted according to ".clang-format".
+# Check that all files are correctly formatted.
 # Exclude the "external/" directory because they will use different formatting.
 clang-format:
   image:
-    name: mikedld/clang-format:12-latest # Update this to later clang versions as necessary.
+    name: silkeh/clang:16 # Update this to later clang versions as necessary.
     entrypoint: [""]
   stage: lint
   script:
-    # We need to use simple BusyBox `find` syntax here.
     - >
-      clang-format --dry-run --Werror
-      $(find src/     -iname '*.cpp' -or -iname '*.h')
-      $(find docs/    -iname '*.cpp' -or -iname '*.h')
-      $(find include/ -iname '*.cpp' -or -iname '*.h')
-      $(find tests/   -iname '*.cpp' -or -iname '*.h')
-      $(find tools/   -iname '*.cpp' -or -iname '*.h')
+      clang-format --dry-run -Werror --style=Google
+      $(find -not -path './external/*' \( -iname '*.cpp' -or -iname '*.h' \) )
 
 compile:
   image: gcc:latest
