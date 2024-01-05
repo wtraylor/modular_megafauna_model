@@ -14,6 +14,7 @@ build:
   tools:
     python: "3.11"
   commands:
+    - conda activate mmm_readthedocs
     - cmake -DBUILD_DOC=ON -DDOXYGEN_OUTPUT_DIRECTORY=$READTHEDOCS_OUTPUT .
     - make megafauna_docs
 
